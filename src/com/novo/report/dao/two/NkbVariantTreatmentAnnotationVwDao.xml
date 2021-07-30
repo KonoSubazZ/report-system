@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.NkbVariantTreatmentAnnotationVwDao">
+	
+	<select id="getThisGeneticmarkerVwList" resultType="ThisGeneticmarkerVw">
+		SELECT distinct mapped_variant_id, gene, variant, ori_variant,  mutFreq,exon,codon FROM this_genetic_marker_vw where report_id = #{report_id} order by gene
+	</select>
+	<select id="getPreviewReportList" resultType="PreviewReport">
+		select distinct gene_symbol,gene_variant from nkb_variant_treatment_annotation
+		where gene_variant_id = #{gene_variant_id}
+	</select>
+	<select id="getDescriptionChinese" resultType="String">
+		SELECT  distinct description_chinese FROM nkb.onco_gene_variant_desc_vw
+		where gene_variant_id =  #{gene_variant_id} and checking_status='Approved'
+	</select>
+	<!-- 没条件 本癌种  -->
+	<select id="getDrugResearchList1" resultType="DrugResearch">
+		SELECT distinct a.drug_id, a.drug_name_chinese, a.disease_name_chinese,  a.relationship_category_chinese, a.annotation_chinese, a.evidence_phase_id, a.evidence_phase_chinese 
+		FROM nkb_variant_treatment_annotation a join panel_display t on t.evidence_cancer_id  = a.approved_disease_id  and t.is_primary='Y'
+		where a.relationship_category = 'Sensitive' and a.evidence_phase_id is not null and a.gene_variant_id = #{gene_variant_id} and t.primary_cancer_id = #{primary_cancer_id}
+		order by a.evidence_phase_id desc;
+	</select>
+	<!-- 没条件 其他癌种  -->
+	<select id="getDrugResearchList2" resultType="DrugResearch">
+		SELECT distinct a.drug_id, a.drug_name_chinese, a.disease_name_chinese,  a.relationship_category_chinese, a.annotation_chinese, a.evidence_phase_id, a.evidence_phase_chinese 
+		FROM nkb_variant_treatment_annotation a 
+		where  a.relationship_category = 'Sensitive' 
+			and a.evidence_phase_id is not null 
+			and a.gene_variant_id = #{gene_variant_id} 
+			and a.approved_disease_id is not null
+			and a.approved_disease_id not in (select evidence_cancer_id from panel_display where primary_cancer_id = #{primary_cancer_id}  and is_primary='Y')
+		order by a.evidence_phase_id desc;
+	</select>
+	<!--肺 &&KRAS 本癌种  -->
+	<select id="getDrugResearchList3" resultType="DrugResearch">
+		SELECT distinct a.drug_id, a.drug_name_chinese, a.disease_name_chinese,  a.relationship_category_chinese, a.annotation_chinese, a.evidence_phase_id, a.evidence_phase_chinese 
+		FROM nkb_variant_treatment_annotation a join panel_display t on t.evidence_cancer_id  = a.approved_disease_id  and t.is_primary='Y'
+		where a.relationship_category = 'Sensitive' and a.evidence_phase_id is not null and a.evidence_phase_id != 12 and a.gene_variant_id = #{gene_variant_id} and t.primary_cancer_id = #{primary_cancer_id}
+		order by a.evidence_phase_id desc;
+	</select>
+	<!--肺 &&KRAS 其他癌种  -->
+	<select id="getDrugResearchList4" resultType="DrugResearch">
+		SELECT distinct a.drug_id, a.drug_name_chinese, a.disease_name_chinese,  a.relationship_category_chinese, a.annotation_chinese, a.evidence_phase_id, a.evidence_phase_chinese 
+		FROM nkb_variant_treatment_annotation a 
+		where a.relationship_category = 'Sensitive'
+			and a.evidence_phase_id is not null 
+			and a.evidence_phase_id != 12
+			and a.gene_variant_id = #{gene_variant_id} 
+			and a.approved_disease_id is not null
+			and a.approved_disease_id not in (select evidence_cancer_id from panel_display where primary_cancer_id = #{primary_cancer_id}  and is_primary='Y')
+		order by a.evidence_phase_id desc;
+	</select>
+	<!--肺 &&！KRAS&&！TP53 本癌种  -->
+	<select id="getDrugResearchList5" resultType="DrugResearch">
+		SELECT distinct a.drug_id, a.drug_name_chinese, a.disease_name_chinese,  a.relationship_category_chinese, a.annotation_chinese,a.evidence_phase_id, a.evidence_phase_chinese 
+		FROM nkb_variant_treatment_annotation a join panel_display t on t.evidence_cancer_id  = a.approved_disease_id  and t.is_primary='Y'
+		where a.relationship_category = 'Sensitive' and a.evidence_phase_id is not null and a.evidence_phase_id != 12 and a.approved_disease_id is not null and a.gene_variant_id = #{gene_variant_id} and t.primary_cancer_id = #{primary_cancer_id}
+		order by a.evidence_phase_id desc;
+	</select>
+	<!--肺 &&KRAS 其他癌种  -->
+	<select id="getDrugResearchList6" resultType="DrugResearch">
+		SELECT distinct a.drug_id, a.drug_name_chinese, a.disease_name_chinese,  a.relationship_category_chinese, a.annotation_chinese, a.evidence_phase_id, a.evidence_phase_chinese 
+		FROM nkb_variant_treatment_annotation a 
+		where a.relationship_category = 'Sensitive'
+			and a.evidence_phase_id is not null 
+			and a.evidence_phase_id != 12
+			and a.approved_disease_id is not null
+			and a.gene_variant_id = #{gene_variant_id} 
+			and a.approved_disease_id is not null
+			and a.approved_disease_id not in (select evidence_cancer_id from panel_display where primary_cancer_id = #{primary_cancer_id}  and is_primary='Y')
+		order by a.evidence_phase_id desc;
+	</select>
+	<select id="getClinicalTrialInformationListfirst" resultType="ClinicalTrialInformation">
+		SELECT distinct a.drug_id, a.drug_name_chinese,d.disease_name_chinese as evidence_disease_name_chinese,a.clinical_trial_id, c.official_title_chinese, a.disease_name_chinese,c.phase,c.location_chinese 
+		FROM omics.nkb_variant_treatment_annotation a join nkb.clinical_trial c on a.clinical_trial_id = c.clinical_trial_id
+		left outer join nkb.disease d on a.trial_disease_id = d.do_id  where a.gene_variant_id = #{gene_variant_id} and a.relationship_category = 'Sensitive' and a.trial_indication = 'all' 
+		order by c.phase desc 
+	</select>
+	<select id="getClinicalTrialInformationList" resultType="ClinicalTrialInformation">
+		SELECT distinct a.drug_id, a.drug_name_chinese,a.disease_name_chinese as evidence_disease_name_chinese,a.clinical_trial_id, c.official_title_chinese, d.disease_name_chinese,c.phase,c.location_chinese 
+		FROM omics.nkb_variant_treatment_annotation a join nkb.clinical_trial c on a.clinical_trial_id = c.clinical_trial_id
+		left outer join nkb.disease d on a.trial_disease_id = d.do_id  where a.gene_variant_id = #{gene_variant_id} and a.relationship_category = 'Sensitive' and a.trial_indication != 'all' 
+		order by c.phase desc 
+	</select>
+	<select id="getClinicalTrialInformationList1" resultType="ClinicalTrialInformation">
+		SELECT distinct a.drug_id, a.drug_name_chinese,a.disease_name_chinese as evidence_disease_name_chinese,a.clinical_trial_id, c.official_title_chinese, d.disease_name_chinese,c.phase,c.location_chinese 
+		FROM omics.nkb_variant_treatment_annotation a join nkb.clinical_trial c on a.clinical_trial_id = c.clinical_trial_id
+		left outer join nkb.disease d on a.trial_disease_id = d.do_id  where a.gene_variant_id = #{gene_variant_id} and a.relationship_category = 'Sensitive' and a.trial_indication != 'all' and a.evidence_phase_id != 12
+		order by c.phase desc 
+	</select>
+	<select id="getClinicalTrialInformationList2" resultType="ClinicalTrialInformation">
+		SELECT distinct a.drug_id, a.drug_name_chinese,a.disease_name_chinese as evidence_disease_name_chinese,a.clinical_trial_id, c.official_title_chinese, d.disease_name_chinese,c.phase,c.location_chinese 
+		FROM omics.nkb_variant_treatment_annotation a join nkb.clinical_trial c on a.clinical_trial_id = c.clinical_trial_id
+		left outer join nkb.disease d on a.trial_disease_id = d.do_id  where a.gene_variant_id = #{gene_variant_id} and a.relationship_category = 'Sensitive' and a.trial_indication != 'all' and a.evidence_phase_id != 12 and a.approved_disease_id is not null
+		order by c.phase desc 
+	</select>
+	<select id="getPotentialDrugList" resultType="PotentialDrug">
+		SELECT distinct a.drug_id, a.drug_name_chinese, a.disease_name_chinese,  a.relationship_category_chinese, a.annotation_chinese, a.evidence_phase_id, a.evidence_phase_chinese 
+		FROM  nkb_variant_treatment_annotation a 
+		where  a.relationship_category = 'Resistance' and a.evidence_phase_id != 12 and a.gene_variant_id = #{gene_variant_id}
+		order by a.evidence_phase_id desc
+	</select>
+	<select id="getPotentialDrugList1" resultType="PotentialDrug">
+		SELECT distinct a.drug_id, a.drug_name_chinese, a.disease_name_chinese,  a.relationship_category_chinese, a.annotation_chinese, a.evidence_phase_id, a.evidence_phase_chinese 
+		FROM  nkb_variant_treatment_annotation a 
+		where  a.relationship_category = 'Resistance' and a.evidence_phase_id != 12 and a.gene_variant_id = #{gene_variant_id}
+		order by a.evidence_phase_id desc
+	</select>
+	<select id="getPotentialDrugList2" resultType="PotentialDrug">
+		SELECT distinct a.drug_id, a.drug_name_chinese, a.disease_name_chinese,  a.relationship_category_chinese, a.annotation_chinese, a.evidence_phase_id, a.evidence_phase_chinese 
+		FROM  nkb_variant_treatment_annotation a 
+		where  a.relationship_category = 'Resistance' and a.evidence_phase_id != 12 and a.approved_disease_id is not null and a.gene_variant_id = #{gene_variant_id}
+		order by a.evidence_phase_id desc
+	</select>
+	<update id="TruncateTable" parameterType="String">
+		TRUNCATE TABLE ${tableName}
+	</update>
+	<insert id="InsertTable" parameterType="String">
+		insert into  ${tableName1} select * FROM ${tableName2} where (select count(*) from ${tableName1})=0
+	</insert>
+	<select id="getNkbVariantTreatmentAnnotationList" resultType="NkbVariantTreatmentAnnotation">
+		select annotation_id,gene_variant_id,gene_id,gene_symbol,gene_variant,variant_desc,annotation_type,parent_variant_id,drug_id,drug_name_chinese,approved_disease_id,
+			approved_indication,disease_id,disease_name_chinese,relationship_id,relationship_category,relationship_category_chinese,relationship_chinese,annotation_chinese,
+			clinical_trial_id,trial_disease_id,trial_indication,evidence_type_id,evidence_type,evidence_phase_id,evidence_phase,evidence_phase_chinese,evidence_ranking_id,
+			evidence_ranking,evidence_ranking_chinese,standard_export,professional_export,checking_status_id,checking_status
+		from omics.nkb_variant_treatment_annotation_vw
+	</select>
+	<insert id="InsertNkbVariantTreatmentAnnotation" >
+		insert into snkb.nkb_variant_treatment_annotation values(#{annotation_id},#{gene_variant_id},#{gene_id},#{gene_symbol},#{gene_variant},#{variant_desc},#{annotation_type},#{parent_variant_id},#{drug_id},#{drug_name_chinese},#{approved_disease_id},
+		#{approved_indication},#{disease_id},#{disease_name_chinese},#{relationship_id},#{relationship_category},#{relationship_category_chinese},#{relationship_chinese},#{annotation_chinese},
+		#{clinical_trial_id},#{trial_disease_id},#{trial_indication},#{evidence_type_id},#{evidence_type},#{evidence_phase_id},#{evidence_phase},#{evidence_phase_chinese},#{evidence_ranking_id},
+		#{evidence_ranking},#{evidence_ranking_chinese},#{standard_export},#{professional_export},#{checking_status_id},#{checking_status})
+	</insert>
+	<select id="getNkbChemicalDrugAnnotationList" resultType="NkbChemicalDrugAnnotation">
+		select annotation_id,drug_name,drug_name_chinese,drug_type_chinese,gene,rs_id,genotype,allele_info,annotation_chinese,evidence,annotation_type,toxicity,efficacy,allele_id,
+		cancer_do_id,cancer_type_chinese from omics.nkb_chemical_drug_annotation_vw
+	</select>
+	<insert id="InsertNkbChemicalDrugAnnotation" >
+		insert into snkb.nkb_chemical_drug_annotation values(#{annotation_id},#{drug_name},#{drug_name_chinese},#{drug_type_chinese},#{gene},#{rs_id},#{genotype},#{allele_info},#{annotation_chinese},#{evidence},
+		#{annotation_type},#{toxicity},#{efficacy},#{allele_id},#{cancer_do_id},#{cancer_type_chinese})
+	</insert>
+</mapper>

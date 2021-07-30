@@ -1,0 +1,1366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.IntegratedMutationFileDao">
+	<select id="getPlatformAndCount" resultType="NameAndDataBean">
+		select platform name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by platform order by platform
+	</select>
+	<select id="getPlatformAndCountAll" resultType="NameAndDataBean">
+		select platform name, count(distinct subbarcode) data FROM omics.integrated_data_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by platform order by platform
+	</select>
+	<select id="getHospitalAndCount" resultType="NameAndDataBean">
+		select hospital name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by hospital order by hospital
+	</select>
+	<select id="getHospitalAndCountAll" resultType="NameAndDataBean">
+		select hospital name, count(distinct subbarcode) data FROM omics.integrated_data_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by hospital order by hospital
+	</select>
+	<select id="getSpecimenTypeAndCount" resultType="NameAndDataBean">
+		select specimen_type name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by specimen_type order by specimen_type
+	</select>
+	<select id="getSpecimenTypeAndCountAll" resultType="NameAndDataBean">
+		select specimen_type name, count(distinct subbarcode) data FROM omics.integrated_data_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by specimen_type order by specimen_type
+	</select>
+	<select id="getProductNameAndCount" resultType="NameAndDataBean">
+		select product_name name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by product_name order by product_name
+	</select>
+	<select id="getProductNameAndCountAll" resultType="NameAndDataBean">
+		select product_name name, count(distinct subbarcode) data FROM omics.integrated_data_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by product_name order by product_name
+	</select>
+	<select id="getCancertypeAndCount" resultType="NameAndDataBean">
+		select cancertype name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by cancertype order by cancertype
+	</select>
+	<select id="getCancertypeAndCountAll" resultType="NameAndDataBean">
+		select cancertype name, count(distinct subbarcode) data FROM omics.integrated_data_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by cancertype order by cancertype
+	</select>
+	<select id="getClinicalremarkAndCount" resultType="NameAndDataBean">
+		select clinicalremark name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by clinicalremark order by count(distinct subbarcode) desc
+	</select>
+	<select id="getClinicalremarkAndCountAll" resultType="NameAndDataBean">
+		select clinicalremark name, count(distinct subbarcode) data FROM omics.integrated_data_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by clinicalremark order by clinicalremark
+	</select>
+	<select id="getPathologicaltypeAndCount" resultType="NameAndDataBean">
+		select pathologicaltype name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by pathologicaltype order by count(distinct subbarcode) desc
+	</select>
+	<select id="getPathologicaltypeAndCountAll" resultType="NameAndDataBean">
+		select pathologicaltype name, count(distinct subbarcode) data FROM omics.integrated_data_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by pathologicaltype order by pathologicaltype
+	</select>
+	<select id="getMutationFrequencyAndCount" resultType="NameAndDataBean">
+		select round(mutation_frequency,1) name, count(distinct subbarcode) data 
+		FROM omics.integrated_mutation_file 
+		<where>
+			mutation_frequency &lt; 0.95
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+			and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by round(mutation_frequency,1) 
+		union
+		select round(mutation_frequency,0) name, count(distinct subbarcode) data 
+		FROM omics.integrated_mutation_file 
+		<where>
+			mutation_frequency >=0.95
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+			and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>  
+		group by round(mutation_frequency,0) 
+		union
+		select round(mutation_frequency,-1) name, count(distinct subbarcode) data 
+		FROM omics.integrated_mutation_file 
+		<where>
+			mutation_frequency >=9.5
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+			and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where> 
+		group by round(mutation_frequency,-1) order by name
+	</select>
+	<select id="getMutationFrequencyAndCountAll" resultType="NameAndDataBean">
+		select count(distinct subbarcode) data
+		FROM omics.integrated_data_file 
+		<where>
+			<if test="platform!=null and platform!=''">
+				platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+			and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+	</select>
+	<select id="getGeneAndCount" resultType="NameAndDataBean">
+		select gene name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by gene order by gene
+	</select>
+	<select id="getGeneAndCountAll" resultType="NameAndDataBean">
+		select count(distinct subbarcode) data FROM omics.integrated_data_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+			and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+	</select>
+	<select id="getGeneMutationAndCount" resultType="NameAndDataBean">
+		select concat(gene, mutation) name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by concat(gene, mutation) order by concat(gene, mutation) desc
+	</select>
+	<select id="getGeneMutationAndCountAll" resultType="NameAndDataBean">
+		select count(distinct subbarcode) data FROM omics.integrated_data_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+			and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+	</select>
+	<select id="getFastcodeAndCount" resultType="NameAndDataBean">
+		select fastcode name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+		group by fastcode order by fastcode desc
+	</select>
+	<select id="getFastcodeAndCountAll" resultType="NameAndDataBean">
+		select count(distinct subbarcode) data FROM omics.integrated_data_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+			and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+		</where>
+	</select>
+	
+	<!-- 用药样本数开始 -->
+	
+	<select id="getPlatformByDrugs" resultType="NameAndDataBean">
+		select platform name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N}
+				and ${drugs} != ''
+		</where>
+		group by platform order by platform
+	</select>
+	<select id="getHospitalByDrugs" resultType="NameAndDataBean">
+		select hospital name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+				and ${drugs} != ''
+		</where>
+		group by hospital order by hospital
+	</select>
+	<select id="getSpecimenTypeByDrugs" resultType="NameAndDataBean">
+		select specimen_type name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+				and ${drugs} != ''
+		</where>
+		group by specimen_type order by specimen_type
+	</select>
+	<select id="getProductNameByDrugs" resultType="NameAndDataBean">
+		select product_name name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+				and ${drugs} != ''
+		</where>
+		group by product_name order by product_name
+	</select>
+	<select id="getCancertypeByDrugs" resultType="NameAndDataBean">
+		select cancertype name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+				and ${drugs} != ''
+		</where>
+		group by cancertype order by cancertype
+	</select>
+	<select id="getClinicalremarkByDrugs" resultType="NameAndDataBean">
+		select clinicalremark name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+				and ${drugs} != ''
+		</where>
+		group by clinicalremark order by count(distinct subbarcode) desc
+	</select>
+	<select id="getPathologicaltypeByDrugs" resultType="NameAndDataBean">
+		select pathologicaltype name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+				and ${drugs} != ''
+		</where>
+		group by pathologicaltype order by count(distinct subbarcode) desc
+	</select>
+	<select id="getMutationFrequencyByDrugs" resultType="NameAndDataBean">
+		select round(mutation_frequency,1) name, count(distinct subbarcode) data 
+		FROM omics.integrated_mutation_file 
+		<where>
+			mutation_frequency &lt; 0.95
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+			and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+			and ${drugs} != ''
+		</where>
+		group by round(mutation_frequency,1) 
+		union
+		select round(mutation_frequency,0) name, count(distinct subbarcode) data 
+		FROM omics.integrated_mutation_file 
+		<where>
+			mutation_frequency >=0.95
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+			and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+			and ${drugs} != ''
+		</where>  
+		group by round(mutation_frequency,0) 
+		union
+		select round(mutation_frequency,-1) name, count(distinct subbarcode) data 
+		FROM omics.integrated_mutation_file 
+		<where>
+			mutation_frequency >=9.5
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+			and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+			and ${drugs} != ''
+		</where> 
+		group by round(mutation_frequency,-1) order by name
+	</select>
+	<select id="getGeneByDrugs" resultType="NameAndDataBean">
+		select gene name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+				and ${drugs} != ''
+		</where>
+		group by gene order by gene
+	</select>
+	<select id="getGeneMutationByDrugs" resultType="NameAndDataBean">
+		select concat(gene, mutation) name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+				and ${drugs} != ''
+		</where>
+		group by concat(gene, mutation) order by concat(gene, mutation) desc
+	</select>
+	
+	<select id="getFastcodeByDrugs" resultType="NameAndDataBean">
+		select fastcode name, count(distinct subbarcode) data FROM omics.integrated_mutation_file
+		<where>
+			<if test="platform!=null and platform!=''">
+				platform =#{platform}
+			</if>
+			<if test="hospital!=null and hospital!=''">
+				and hospital =#{hospital}
+			</if>
+			<if test="specimen_type!=null and specimen_type!=''">
+				and specimen_type =#{specimen_type}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+			<if test="cancertype!=null and cancertype!=''">
+				and cancertype =#{cancertype}
+			</if>
+			<if test="clinicalremark!=null and clinicalremark!=''">
+				and clinicalremark =#{clinicalremark}
+			</if>
+			<if test="pathologicaltype!=null and pathologicaltype!=''">
+				and pathologicaltype =#{pathologicaltype}
+			</if>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+			<if test="mutation!=null and mutation!=''">
+				and mutation like '%' #{mutation} '%'
+			</if>
+			<if test="fastcode!=null and fastcode!=''">
+				and fastcode =#{fastcode}
+			</if>
+				and analysis_date between #{analysis_date_B} and #{analysis_date_N} 
+				and ${drugs} != ''
+		</where>
+		group by fastcode order by fastcode
+	</select>
+	
+	<!-- 用药样本数开结束-->
+	
+	
+	
+	
+	<select id="getPlatformList" resultType="String">
+		select distinct platform from data_file_status where platform is not null
+	</select>
+	<select id="getHospitalList" resultType="String">
+		select distinct hospital from sample_file where hospital is not null
+	</select>
+	<select id="getSpecimenTypeList" resultType="String">
+		select distinct specimen_type from sample_file where specimen_type is not null
+	</select>
+	<select id="getProductNameList" resultType="String">
+		select distinct product_name from sample_file where product_name is not null
+	</select>
+	<select id="getCancertypeList" resultType="String">
+		select distinct cancertype from sample_file where cancertype is not null
+	</select>
+	<select id="getClinicalremarkList" resultType="String">
+		select distinct clinicalremark from sample_file where clinicalremark is not null
+	</select>
+	<select id="getGeneList" resultType="String">
+		select distinct gene from mutation_file where gene is not null
+	</select>
+	<select id="getPathologicaltypeList" resultType="String">
+		select distinct pathologicaltype from sample_file where pathologicaltype is not null
+	</select>
+	<select id="getFastcodeList" resultType="String">
+		select distinct fastcode from sample_file where fastcode is not null
+	</select>
+	
+</mapper>

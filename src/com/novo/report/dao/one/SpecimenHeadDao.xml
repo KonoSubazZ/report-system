@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.one.SpecimenHeadDao">
+		
+      <select id="count" resultType="Integer">
+      	SELECT COUNT(PATIENTID) FROM SPECIMENHEAD
+      </select>
+      <select id="getSpecimenHeadList" resultType="SpecimenHead">
+      	select sh.CANCERTYPE,sh.PATHOLOGICALTYPE,sr.SUBBARCODE,sh.ERPSALERNAME,sh.AGE,
+      		sh.BARCODE,sh.ENTERDATE,sh.GETSPECDATE,sh.REPORTRECEIVER,
+      		sh.PATIENTNAME,sh.SEX,sh.BIRTHDAY,sh.CLINICALREMARK,
+      		sh.CUSTOMERNAME,sh.COLLECTDATE,sh.SPECIMENNUM,sh.UNIT,sh.SAMPLETYPE SHSAMPLETYPE, 
+      		sh.CLINICALSTAGES, sh.DOCTORNAME, sh.LOCATIONNAME,
+      		sr.SAMPLETYPE SRSAMPLETYPE,sr.SAMPLENUM,sr.SAMPLEUNIT,sh.ERPTESTNAME,dep.LIBRARYNAME,area.FASTCODE,oper.OPERATEDATE,
+      		sh.SAMPLESOURCE,sh.FROMORGAN,sh.GENETYPE,sh.GENERESULT,sh.BIRTHPLACE,sh.FAMILYHISTORY,sh.SENDDATE,sh.IDNUM
+      		from SPECIMENHEAD sh
+      		left join SPECIMENHEADDETAIL smd
+      		on sh.BARCODE=smd.BARCODE
+      		left join SPECIMENRESULT sr
+      		on sr.SUBBARCODE =smd.SUBBARCODE
+      		left join DICTUSER us 
+      		on sh.ENTERBY = us.DICTUSERID
+			left join DICTLIBRARY dep 
+			on us.DICTDEPARTMENTID = dep.DICTLIBRARYID
+			left join DICTLIBRARY area 
+			on us.USERCODE = area.ENGLIBRARYNAME
+			left join OPERATIONLOG oper
+			on sh.BARCODE=oper.BARCODE and  oper.OPERATIONTYPE='节点-样本报告-报告上传'
+      		where sr.SUBBARCODE!='000000000000'
+      </select>
+      <select id="getSpecimenHeadBySubbarcode" resultType="SpecimenHead">
+      select sh.CANCERTYPE,sh.PATHOLOGICALTYPE,sr.SUBBARCODE,sh.ERPSALERNAME,sh.AGE,
+      		sh.BARCODE,sh.ENTERDATE,sh.GETSPECDATE,sh.REPORTRECEIVER,
+      		sh.PATIENTNAME,sh.SEX,sh.BIRTHDAY,sh.CLINICALREMARK,
+      		sh.CUSTOMERNAME,sh.COLLECTDATE,sh.SPECIMENNUM,sh.UNIT,sh.SAMPLETYPE SHSAMPLETYPE, 
+      		sh.CLINICALSTAGES, sh.DOCTORNAME, sh.LOCATIONNAME,
+      		sr.SAMPLETYPE SRSAMPLETYPE,sr.SAMPLENUM,sr.SAMPLEUNIT,sh.ERPTESTNAME,dep.LIBRARYNAME,area.FASTCODE,oper.OPERATEDATE,
+      		sh.SAMPLESOURCE,sh.FROMORGAN,sh.GENETYPE,sh.GENERESULT,sh.BIRTHPLACE,sh.FAMILYHISTORY,sh.SENDDATE,sh.IDNUM
+      		from SPECIMENHEAD sh
+      		left join SPECIMENHEADDETAIL smd
+      		on sh.BARCODE=smd.BARCODE
+      		left join SPECIMENRESULT sr
+      		on sr.SUBBARCODE =smd.SUBBARCODE
+      		left join DICTUSER us 
+      		on sh.ENTERBY = us.DICTUSERID
+			left join DICTLIBRARY dep 
+			on us.DICTDEPARTMENTID = dep.DICTLIBRARYID
+			left join DICTLIBRARY area 
+			on us.USERCODE = area.ENGLIBRARYNAME
+			left join OPERATIONLOG oper
+			on sh.BARCODE=oper.BARCODE and  oper.OPERATIONTYPE='节点-样本报告-报告上传'
+      		where sr.SUBBARCODE=#{subbarcode}
+      </select>
+      <select id="getSpecimenHeadByBarcode" resultType="SpecimenHead">
+      	select sh.CANCERTYPE,sh.PATHOLOGICALTYPE,sr.SUBBARCODE,sh.ERPSALERNAME,sh.age,
+      		sh.BARCODE,sh.ENTERDATE,sh.GETSPECDATE,sh.REPORTRECEIVER,
+      		sh.PATIENTNAME,sh.SEX,sh.BIRTHDAY,sh.CLINICALREMARK,
+      		sh.CUSTOMERNAME,sh.COLLECTDATE,sh.SPECIMENNUM,sh.UNIT,sh.SAMPLETYPE SHSAMPLETYPE,
+      		sr.SAMPLETYPE SRSAMPLETYPE,sr.SAMPLENUM,sr.SAMPLEUNIT,sh.ERPTESTNAME,
+      		sh.SAMPLESOURCE,sh.FROMORGAN,sh.GENETYPE,sh.GENERESULT,sh.BIRTHPLACE,sh.FAMILYHISTORY,sh.SENDDATE,sh.IDNUM
+      		from SPECIMENHEAD sh
+      		left join SPECIMENHEADDETAIL smd
+      		on sh.BARCODE=smd.BARCODE
+      		left join SPECIMENRESULT sr
+      		on sr.SUBBARCODE =smd.SUBBARCODE
+      		where sh.BARCODE=#{barcode}
+      </select>
+</mapper>

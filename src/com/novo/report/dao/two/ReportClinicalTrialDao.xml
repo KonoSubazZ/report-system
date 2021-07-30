@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.ReportClinicalTrialDao">
+	
+	<insert id="insertRpClinicalTrial">
+		insert into rp_clinical_trial(clinical_trial_id,lang,title,recruiting_condition,phase,location,inclusion_criteria,exclusion_criteria,modified,update_by,update_date)
+			values(#{clinical_trial_id},#{lang},#{title},#{recruiting_condition},#{phase},#{location},#{inclusion_criteria},#{exclusion_criteria},0,#{update_by},sysdate())
+	</insert>
+	
+	<update id="updateRpClinicalTrial">
+		update rp_clinical_trial 
+		<set>
+			<if test="clinical_trial_id !=null">
+				clinical_trial_id=#{clinical_trial_id},
+			</if>
+			<if test="title !=null">
+				title=#{title},
+			</if>
+			<if test="recruiting_condition !=null">
+				recruiting_condition=#{recruiting_condition},
+			</if>
+			<if test="phase !=null">
+				phase=#{phase},
+			</if>
+			<if test="location !=null">
+				location=#{location},
+			</if>
+			<if test="inclusion_criteria !=null">
+				inclusion_criteria=#{inclusion_criteria},
+			</if>
+			<if test="exclusion_criteria !=null">
+				exclusion_criteria=#{exclusion_criteria},
+			</if>
+			<if test="modified !=null">
+				modified=#{modified},
+			</if>
+			<if test="update_by !=null">
+				update_by=#{update_by},
+			</if>
+			update_date = sysdate()
+		</set>
+		where clinical_trial_id=#{old_clinical_trial_id} and lang = #{lang}
+	</update>
+	
+	<select id="selectOneClinicalTrialById" resultType="java.util.Map">
+		select record_id,clinical_trial_id,title,recruiting_condition,phase,location,inclusion_criteria,exclusion_criteria,modified,update_by,unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
+		from rp_clinical_trial
+		where clinical_trial_id = #{clinical_trial_id} and lang = #{lang}
+	</select>
+	
+	<select id="selectMultiClinicalTrialById" resultType="java.util.Map">
+		select record_id,clinical_trial_id,title,condition,phase,location,inclusion_criteria,exclusion_criteria,modified,update_by,unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
+		from rp_clinical_trial
+		where clinical_trial_id in 
+		<foreach collection="list" item="item" index="index"
+	             open="(" close=")" separator=",">
+	      #{item}
+	    </foreach>
+	    and lang = #{lang}
+	</select>
+	
+	<select id="selectOneNkbClinicalTrialById" resultType="java.util.Map">
+		select clinical_trial_id,official_title as title,recruiting_condition,phase,location,inclusion_criteria,exclusion_criteria,unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
+		from nkb_clinical_trial_evw
+		where clinical_trial_id = #{clinical_trial_id} and lang = #{lang}
+	</select>
+	
+	<select id="getTotal" resultType="Long">
+		select count(*) from rp_clinical_trial
+		<where>
+			<if test="recruiting_condition!=null and recruiting_condition!=''">modified=1</if>
+			<if test="before_date!=null and before_date!=''">
+				and update_date &gt;= #{before_date}
+			</if>
+			<if test="after_date!=null and after_date!=''">
+				and update_date &lt; #{after_date}
+			</if>
+		</where>
+	</select>
+	
+	<!--分页查询 -->
+	<select id="selectRecordByPage" resultType="java.util.LinkedHashMap">
+		select record_id,clinical_trial_id,lang,title,recruiting_condition,phase,location,modified,update_by,date_format(update_date,'%Y-%m-%d %H:%i:%s') as update_date 
+		from rp_clinical_trial
+		<where>
+			<if test="recruiting_condition!=null and recruiting_condition!=''">modified=1</if>
+			<if test="before_date!=null and before_date!=''">
+				and update_date &gt;= #{before_date}
+			</if>
+			<if test="after_date!=null and after_date!=''">
+				and update_date &lt; #{after_date}
+			</if>
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	
+	<select id="exportFile" resultType="java.util.LinkedHashMap">
+		select record_id,clinical_trial_id,lang,title,recruiting_condition,phase,location,modified,update_by,date_format(update_date,'%Y-%m-%d %H:%i:%s') as update_date 
+		from rp_clinical_trial
+		<where>
+			<if test="recruiting_condition!=null and recruiting_condition!=''">modified=1</if>
+			<if test="before_date!=null and before_date!=''">
+				and update_date &gt;= #{before_date}
+			</if>
+			<if test="after_date!=null and after_date!=''">
+				and update_date &lt; #{after_date}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="insertRpVariantOrder">
+		INSERT ignore INTO rp_variant_order (analysis_report_id, variant,ori_variant, index_id) VALUES (#{analysis_report_id},#{variant},#{ori_variant},#{order})
+	</insert>
+	
+	<select id="selectOrderByAnalysisReportId" resultType="RpVatiantOrder">
+		SELECT analysis_report_id FROM rp_variant_order where analysis_report_id = #{analysis_report_id}
+	</select>
+	
+	<update id="updateRpVariantOrder">
+		UPDATE rp_variant_order SET index_id=#{index_id} WHERE analysis_report_id=#{analysis_report_id} AND variant=#{variant} and ori_variant=#{ori_variant}
+	</update>
+	<update id="updateRpVariantOrder2">
+		UPDATE rp_variant_order SET index_id = #{index_id} WHERE index_id = #{index_id2} and analysis_report_id = #{analysis_report_id}
+	</update>
+	
+	<select id="selectIndexOf" resultType="Integer">
+		SELECT index_id from rp_variant_order WHERE analysis_report_id = #{analysis_report_id} AND variant=#{variant} and ori_variant = #{ori_variant}
+	</select>
+	
+	<select id="selectMaxIndexOf" resultType="Integer">
+		SELECT Max(index_id) from rp_variant_order WHERE analysis_report_id = #{analysis_report_id}
+	</select>
+	
+	<select id="selectMinIndexOf" resultType="Integer">
+		SELECT Min(index_id) from rp_variant_order WHERE analysis_report_id = #{analysis_report_id}
+	</select>
+	
+	<delete id="deleteRpVariantOrder">
+		DELETE from rp_variant_order where 1=1
+		<if test="analysis_report_id != null and analysis_report_id != ''">
+			and analysis_report_id=#{analysis_report_id}
+		</if>
+		<if test="variant != null and variant != ''">
+			and variant=#{variant}
+		</if>
+		<if test="ori_variant != null and ori_variant != ''">
+			and ori_variant=#{ori_variant}
+		</if>
+	</delete>
+</mapper>

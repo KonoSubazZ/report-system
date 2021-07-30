@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.NkbChemicalDrugAnnotationVwDao">
+	<select id="getnkbChemicalDrugAnnotationVw1" resultType="NkbChemicalDrugAnnotationVw">
+		SELECT distinct a.drug_name_chinese, a.drug_type_chinese, a.gene, a.rs_id, a.genotype,a.annotation_chinese, 
+		a.evidence, a.annotation_type
+		FROM omics.nkb_chemical_drug_annotation_vw a 
+		join this_chemical_marker_vw b on a.allele_id = b.mapped_allele_id
+		join nkb_do_tree t on t.id = a.cancer_do_id 
+		where a.annotation_type = 'Efficacy' and b.report_id = #{report_id} and t.parent_id = #{primary_cancer_id}
+		union
+		SELECT distinct a.drug_name_chinese, a.drug_type_chinese, a.gene, a.rs_id, a.genotype,a.annotation_chinese, 
+		a.evidence, a.annotation_type
+		FROM omics.nkb_chemical_drug_annotation_vw a 
+		join this_chemical_marker_vw b on a.allele_id = b.mapped_allele_id
+		where a.annotation_type = 'Efficacy' and b.report_id = #{report_id} and a.cancer_do_id = 162
+		order by evidence,drug_type_chinese, drug_name_chinese desc;
+	</select>
+	<select id="getnkbChemicalDrugAnnotationVw2" resultType="NkbChemicalDrugAnnotationVw">
+		SELECT distinct a.drug_name_chinese, a.drug_type_chinese, a.gene, a.rs_id, a.genotype,a.annotation_chinese, 
+		a.evidence, a.annotation_type
+		FROM omics.nkb_chemical_drug_annotation_vw a 
+		join this_chemical_marker_vw b on a.allele_id = b.mapped_allele_id
+		where a.annotation_type= 'Efficacy' and b.report_id = #{report_id} 
+		and a.cancer_do_id not in (select id from nkb_do_tree where parent_id =  #{primary_cancer_id})
+		order by a.evidence,a.drug_type_chinese, a.drug_name_chinese desc;
+	</select>
+	
+	<select id="getnkbChemicalDrugAnnotationVw3" resultType="NkbChemicalDrugAnnotationVw">
+		SELECT distinct a.drug_name_chinese, a.drug_type_chinese, a.gene, a.rs_id, a.genotype,a.annotation_chinese, 
+		a.evidence, a.annotation_type
+		FROM omics.nkb_chemical_drug_annotation_vw a 
+		join this_chemical_marker_vw b on a.allele_id = b.mapped_allele_id
+		join nkb_do_tree t on t.id = a.cancer_do_id 
+		where a.annotation_type = 'Toxicity/ADR' and b.report_id = #{report_id} and t.parent_id = #{primary_cancer_id}
+		union
+		SELECT distinct a.drug_name_chinese, a.drug_type_chinese, a.gene, a.rs_id, a.genotype,a.annotation_chinese, 
+		a.evidence, a.annotation_type
+		FROM omics.nkb_chemical_drug_annotation_vw a 
+		join this_chemical_marker_vw b on a.allele_id = b.mapped_allele_id
+		where a.annotation_type = 'Toxicity/ADR' and b.report_id = #{report_id} and a.cancer_do_id = 162
+		order by evidence,drug_type_chinese, drug_name_chinese desc;
+	</select>
+	<select id="getnkbChemicalDrugAnnotationVw4" resultType="NkbChemicalDrugAnnotationVw">
+		SELECT distinct a.drug_name_chinese, a.drug_type_chinese, a.gene, a.rs_id, a.genotype,a.annotation_chinese, 
+		a.evidence, a.annotation_type
+		FROM omics.nkb_chemical_drug_annotation_vw a 
+		join this_chemical_marker_vw b on a.allele_id = b.mapped_allele_id
+		where a.annotation_type = 'Toxicity/ADR' and b.report_id = #{report_id} 
+		and a.cancer_do_id not in (select id from nkb_do_tree where parent_id = #{primary_cancer_id})
+		order by a.evidence,a.drug_type_chinese, a.drug_name_chinese desc;
+	</select>
+	<select id="getnkbChemicalDrugAnnotationVw5" resultType="NkbChemicalDrugAnnotationVw">
+		SELECT distinct a.drug_name_chinese, a.drug_type_chinese, a.gene, a.rs_id, a.genotype,a.annotation_chinese, a.evidence, a.annotation_type
+		FROM omics.nkb_chemical_drug_annotation_vw a 
+		join this_chemical_marker_vw b on a.allele_id = b.mapped_allele_id
+		join nkb_do_tree t on t.id = a.cancer_do_id 
+		where a.annotation_type = 'Dosage' and b.report_id = #{report_id} and t.parent_id = #{primary_cancer_id}
+		union
+		SELECT distinct a.drug_name_chinese, a.drug_type_chinese, a.gene, a.rs_id, a.genotype,a.annotation_chinese, 
+		a.evidence, a.annotation_type
+		FROM omics.nkb_chemical_drug_annotation_vw a 
+		join this_chemical_marker_vw b on a.allele_id = b.mapped_allele_id
+		where a.annotation_type ='Dosage' and b.report_id = #{report_id} and a.cancer_do_id = 162
+		order by evidence,drug_type_chinese, drug_name_chinese desc;
+	</select>
+</mapper>

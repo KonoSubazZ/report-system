@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.NgsPersonListDao">
+	
+	<select id="getAllPersonByPage" resultType="Person">
+		SELECT a.sample_id,b.person_id,a.subbarcode,a.received_date,a.person_name,a.gender,a.birthday,a.clinicalremark,a.remark,a.cancertype,a.specimen_quantity,a.hospital,a.collect_date FROM omics.sample_file a left outer join omics.person b on b.person_id = a.person_id
+		where a.person_name = #{person_name} and a.gender = #{gender}
+	</select>
+	
+	<select id="isExistPerson" resultType="Integer">
+		SELECT person_id FROM omics.person where person_name =#{0} and gender =#{1}
+	</select>
+	
+	<insert id="savePerson" useGeneratedKeys="true" keyProperty="person_id">
+		insert into person (person_name,gender,birthday,remark,created_by,created_date) values (#{person_name},#{gender},#{birthday},#{remark},#{created_by},#{created_date});
+	</insert>
+	
+	<update id="updatePersonId">
+		update sample_file set person_id = #{1} where sample_id = #{0}
+	</update>
+	
+	<select id="getSampleIdAndSubbarcode" resultType="Person">
+		select sample_id,subbarcode FROM omics.sample_file where person_id=#{id}
+	</select>
+</mapper>

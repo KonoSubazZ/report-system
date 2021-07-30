@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.PanelDisplayDao">
+	
+	<select id="getPaneDisplayList" resultType="PanelDisplay">
+		SELECT display_id,primary_cancer_id, primary_cancer, gene, variant, gene_variant_id, evidence_cancer_id, evidence_cancer, created_by, created_date from panel_display 
+		<where>
+			<if test="gene_variant_id!=null and gene_variant_id!=''">
+				and gene_variant_id = #{gene_variant_id}
+			</if>
+			<if test="primary_cancer_id!=null and primary_cancer_id!=''">
+				and primary_cancer_id = #{primary_cancer_id}
+			</if>
+			<if test="category!=null and category!=''">
+				and category = #{category}
+			</if>
+		</where>
+		order by display_id;
+	</select>
+	<select id="getPaneDisplayList2" resultType="PanelDisplay">
+		SELECT display_id,primary_cancer_id, primary_cancer, gene, variant, gene_variant_id, evidence_cancer_id, evidence_cancer, created_by, created_date from panel_display 
+		<where>
+			<if test="primary_cancer_id!=null and primary_cancer_id!=''">
+				and primary_cancer_id = #{primary_cancer_id}
+			</if>
+			<if test="category!=null and category!=''">
+				and category = #{category}
+			</if>
+				and gene_variant_id is null
+		</where>
+		order by display_id;
+	</select>
+	
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.QualityStatFileVwDao">
+	<!--分页查询 -->
+	<select id="getTotal" resultType="Long">
+		select count(record_id) from quality_stat_file_vw
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform  = #{platform} 
+			</if>
+			<if test="analysis_date!=null and analysis_date!=''">
+				and analysis_date  = #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and subbarcode  = #{subbarcode} 
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name  = #{product_name} 
+			</if>
+			<if test="data_type!=null and data_type!=''">
+				and data_type  = #{data_type} 
+			</if>
+		</where>
+	</select>
+	<select id="getPage" resultType="QualityStatFileVw">
+		select record_id,file_id,platform,product_name,subbarcode,data_type,file_type,stat_param_id,category,param_name,value,loaded_date,operator1,standard_value1,operator2,standard_value2
+		 from quality_stat_file_vw
+		<where>
+			<if test="platform!=null and platform!=''">
+				and platform  = #{platform} 
+			</if>
+			<if test="analysis_date!=null and analysis_date!=''">
+				and analysis_date  = #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and subbarcode  = #{subbarcode} 
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name  = #{product_name} 
+			</if>
+			<if test="data_type!=null and data_type!=''">
+				and data_type  = #{data_type} 
+			</if>
+		</where>
+		order by operator1 desc, operator2 desc, stat_param_id
+		limit #{pageNo},#{pageSize}
+	</select>
+	
+	<select id="getDataType" resultType="String">
+		select distinct data_type from quality_stat_file_vw
+	</select>
+	
+</mapper>

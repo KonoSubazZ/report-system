@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.UserRoleDao">
+	<select id="getAllUserRole" resultType="UserRole">
+		select role_id,user_role,user_role_chinese,priviledge,created_by,created_date,update_by,update_date 
+			from user_role
+	</select>
+	
+	<insert id="saveUserRole">
+		insert into user_role (user_role,user_role_chinese,created_by,created_date,update_date)
+			values(#{user_role},#{user_role_chinese},#{created_by},#{created_date},#{update_date})
+	</insert>
+	
+	<update id="updateUserRole">
+		update user_role set 
+			user_role=#{user_role},priviledge=#{priviledge},
+			user_role_chinese=#{user_role_chinese},
+			update_by=#{update_by},update_date=#{update_date}
+			where role_id=#{role_id}
+	</update>
+	<select id="getTotal" resultType="Long">
+		select count(role_id) from user_role
+	</select>
+	
+	<select id="getUserRoleById" resultType="UserRole">
+		select role_id, user_role,user_role_chinese,priviledge from user_role
+		where role_id=#{id}
+	</select>
+	
+	<select id="getUserRoleByPage" resultType="UserRole">
+		select role_id,user_role,user_role_chinese,priviledge,created_by,created_date,update_by,update_date
+		from user_role
+		limit #{pageNo},#{pageSize}
+	</select>
+	
+	<delete id="deleteUserRoleById">
+		delete from user_role where role_id=#{id}
+	</delete>
+	
+</mapper>

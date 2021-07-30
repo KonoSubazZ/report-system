@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.PcrVariantDao">
+
+	<select id="selectVariantByTestId" resultType="PcrVariant">
+		select pcr_variant_id,gene_symbol,variant from pcr_variant where test_id=#{test_id} order by pcr_variant_id asc
+	</select>
+
+	<select id="getPcrVariantId" resultType="Integer">
+		select pcr_variant_id from pcr_variant where gene_symbol=#{gene_symbol} and variant=#{variant}
+	</select>
+
+</mapper>

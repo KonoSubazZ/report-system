@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+		<!-- 配置 读取properties文件 jdbc.properties -->
+	<context:property-placeholder location="classpath:jdbc.properties" />
+	
+	    <!-- 配置 数据源一 -->
+	<bean id="dataSourceOne" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+		<property name="driverClassName" value="${dbOne.jdbc.driver}" />
+		<property name="url" value="${dbOne.jdbc.url}" />
+		<property name="username" value="${dbOne.jdbc.username}" />
+		<property name="password" value="${dbOne.jdbc.password}" />
+		<!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="1" />
+        <property name="minIdle" value="1" />
+        <property name="maxActive" value="20" />
+	</bean>
+	<!-- 配置SqlSessionFactory 一 -->
+	<bean  id="one_ssf" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 设置数据源 -->
+		<property name="dataSource" ref="dataSourceOne" />
+		<!-- 可选：别名    定义了实体的包，则在mapper文件中使用实体时，直接写类名即可 -->
+		<property name="typeAliasesPackage" value="com.novo.report.beans" />  
+	</bean>
+	<!-- 配置Mapper扫描 一-->
+	<bean id="one" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="one_ssf"></property>
+		<!-- 设置Mapper扫描包 -->
+		<property name="basePackage" value="com.novo.report.dao.one" />
+	</bean>
+	 <!-- 配置 数据源二 -->
+  
+    <bean id="dataSourceTwo" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">  
+		<property name="driverClassName" value="${dbTwo.jdbc.driver}" />
+		<property name="url" value="${dbTwo.jdbc.url}" />
+		<property name="username" value="${dbTwo.jdbc.username}" />
+		<property name="password" value="${dbTwo.jdbc.password}" />
+		<!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="1" />
+        <property name="minIdle" value="1" />
+        <property name="maxActive" value="20" />
+    </bean>  
+	<!-- 配置SqlSessionFactory 二-->
+	<bean  id="two_ssf" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 设置数据源 -->
+		<property name="dataSource" ref="dataSourceTwo" />
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+		<!-- 可选：别名    定义了实体的包，则在mapper文件中使用实体时，直接写类名即可 -->
+		<property name="typeAliasesPackage" value="com.novo.report.beans" />
+	</bean>
+	<!-- 配置Mapper扫描 二-->
+	<bean id="two" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="two_ssf"></property>
+		<!-- 设置Mapper扫描包 -->
+		<property name="basePackage" value="com.novo.report.dao.two" />
+	</bean>
+	
+	 <!-- 配置 数据源三 -->
+  
+    <bean id="dataSourceThree" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">  
+		<property name="driverClassName" value="${dbThree.jdbc.driver}" />
+		<property name="url" value="${dbThree.jdbc.url}" />
+		<property name="username" value="${dbThree.jdbc.username}" />
+		<property name="password" value="${dbThree.jdbc.password}" />
+		<!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="1" />
+        <property name="minIdle" value="1" />
+        <property name="maxActive" value="20" />
+    </bean>  
+	<!-- 配置SqlSessionFactory 二-->
+	<bean  id="three_ssf" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 设置数据源 -->
+		<property name="dataSource" ref="dataSourceThree" />
+		<!-- 可选：别名    定义了实体的包，则在mapper文件中使用实体时，直接写类名即可 -->
+		<property name="typeAliasesPackage" value="com.novo.report.beans" />
+	</bean>
+	<!-- 配置Mapper扫描 二-->
+	<bean id="three" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="three_ssf"></property>
+		<!-- 设置Mapper扫描包 -->
+		<property name="basePackage" value="com.novo.report.dao.three" />
+	</bean>
+<!-- ********************************************************************************************************************* -->
+<!-- transactionManager -->
+	<!-- 1 3数据源只查询 不需要事务 -->
+	<!-- 使用annotation定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- 支持 @Transactional 标记 -->
+	<tx:annotation-driven />
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceTwo"/>
+	</bean>
+	
+	<!-- 事务通知Advice 横切面Aspect  Advices是Aspect的具体实现-->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="create*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="insert*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="delete*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="get*" read-only="true"/>
+			<tx:method name="find*" read-only="true"/>
+			<tx:method name="select*" read-only="true"/>
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 切入 -->
+	<aop:config>
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* com.novo.report.service..*.*(..))"/>
+	</aop:config>
+<!-- ********************************************************************************************************************* -->
+	
+	
+	
+</beans>

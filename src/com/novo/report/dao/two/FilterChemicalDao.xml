@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.FilterChemicalDao">
+	<!--分页查询 -->
+	<select id="getIlluminaTotal" resultType="Long">
+		select distinct count(a.record_id) from chemical_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+			<if test=" isPass_list!=null and isPass_list.length>0">
+			and ( '1' is null
+				<if test="pass!=null and pass!=''">
+					or (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					or (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					or a.mapped_allele_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					or a.mapped_allele_id is not null
+				</if>	
+				)
+			</if>
+			<if test=" isPass_one!=null and isPass_one != ''">
+				<if test="pass!=null and pass!=''">
+					and (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					and (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					and a.mapped_allele_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					and a.mapped_allele_id is not null
+				</if>					
+			</if>
+		</where>
+	</select>
+
+	<select id="getIlluminaChemicalByPage" resultType="FilterIlluminaChemical">
+		SELECT distinct a.* FROM chemical_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+			
+			<if test=" isPass_list!=null and isPass_list.length>0">
+			and ( '1' is null
+				<if test="pass!=null and pass!=''">
+					or (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					or (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					or a.mapped_allele_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					or a.mapped_allele_id is not null
+				</if>	
+				)
+			</if>
+			<if test=" isPass_one!=null and isPass_one != ''">
+				<if test="pass!=null and pass!=''">
+					and (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					and (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					and a.mapped_allele_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					and a.mapped_allele_id is not null
+				</if>					
+			</if>
+			
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	
+	<!--分页查询 -->
+	<select id="getLifeTotal" resultType="Long">
+		select distinct count(a.record_id) from life_chemical_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+			
+			<if test=" isPass_list!=null and isPass_list.length>0">
+			and ( '1' is null
+				<if test="pass!=null and pass!=''">
+					or (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					or (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					or a.mapped_allele_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					or a.mapped_allele_id is not null
+				</if>	
+				)
+			</if>
+			<if test=" isPass_one!=null and isPass_one != ''">
+				<if test="pass!=null and pass!=''">
+					and (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					and (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					and a.mapped_allele_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					and a.mapped_allele_id is not null
+				</if>					
+			</if>
+		</where>
+	</select>
+
+	<select id="getLifeChemicalByPage" resultType="FilterLifeChemical">
+		SELECT distinct a.* FROM life_chemical_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+			
+			<if test=" isPass_list!=null and isPass_list.length>0">
+			and ( '1' is null
+				<if test="pass!=null and pass!=''">
+					or (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					or (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					or a.mapped_allele_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					or a.mapped_allele_id is not null
+				</if>	
+				)
+			</if>
+			<if test=" isPass_one!=null and isPass_one != ''">
+				<if test="pass!=null and pass!=''">
+					and (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					and (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					and a.mapped_allele_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					and a.mapped_allele_id is not null
+				</if>					
+			</if>
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	
+	
+	<update id="updateIlluminaReportNull">
+		update chemical_file set report=Null where record_id=#{id}
+	</update> 
+	<update id="updateIlluminaReport">
+		update chemical_file set report=#{0} where record_id=#{1}
+	</update>
+	<update id="updateLifeReport">
+		update life_chemical_file set report=#{0} where record_id=#{1}
+	</update>
+	<update id="updateLifeReportNull">
+		update life_chemical_file set report=Null where record_id=#{id}
+	</update>
+	<update id="updateFiltered">
+		update chemical_file set filtered_rationale=#{0} where record_id=#{1}
+	</update>
+	<update id="updateLifeFiltered">
+		update life_chemical_file set filtered_rationale=#{0} where record_id=#{1}
+	</update> 
+	
+	<select id="getLifeChemicalListByFileId" resultType="FilterLifeChemical">
+		select file_id, genotype, rs, record_id,f_freq from life_chemical_file where file_id=#{fileId}
+	</select>
+	
+	<select id="getIlluminaChemicalListByFileId" resultType="FilterIlluminaChemical">
+		select file_id, genotype, rs_id, record_id,freq from chemical_file where file_id=#{fileId}
+	</select>
+	
+	<update id="updateLifeChemical">
+		update life_chemical_file 
+		set mapped_allele_id=#{mapped_allele_id}
+		where record_id=#{record_id}
+	</update>
+	
+	<update id="updateIlluminaChemical">
+		update chemical_file 
+		set mapped_allele_id=#{mapped_allele_id}
+		where record_id=#{record_id}
+	</update>
+	
+	<!-- <select id="getLifeCnvListByFileId" resultType="FilterLifeCnv">
+		select record_id,gene,copynumberratio,adjust_cn_value from life_cnv_file where file_id=#{fileId}
+	</select>
+	
+	<select id="getIlluminaCnvListByFileId" resultType="FilterIlluminaCnv">
+		select record_id,gene,copy_number from cnv_file where file_id=#{fileId}
+	</select>
+	
+	<update id="updateLifeCnv">
+		update life_cnv_file 
+		set mapped_variant_id=#{mapped_variant_id},mapped_variant=#{mapped_variant}
+		where record_id=#{record_id}
+	</update>
+	
+	<update id="updateIlluminaCnv">
+		update cnv_file 
+		set mapped_variant_id=#{mapped_variant_id},mapped_variant=#{mapped_variant}
+		where record_id=#{record_id}
+	</update>
+	
+	
+	
+	-->
+</mapper>

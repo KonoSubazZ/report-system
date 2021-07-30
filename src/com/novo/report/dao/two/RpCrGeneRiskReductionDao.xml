@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.RpCrGeneRiskReductionDao">
+	
+	 <insert id="insertRpCrGeneRiskReduction" keyProperty="record_id" useGeneratedKeys="true">
+		INSERT into rp_cr_gene_risk_reduction (gene,lang,hom_flag,cancer,age,measure,frequency,update_by,update_time) 
+		values(#{gene},#{lang},#{hom_flag},#{cancer},#{age},#{measure},#{frequency},#{update_by},sysdate())
+	</insert>
+	
+	<update id="updateRpCrGeneRiskReduction">
+		update rp_cr_gene_risk_reduction 
+		<set>
+			<if test="hom_flag !=null and hom_flag !=''">
+				hom_flag=#{hom_flag},
+			</if>
+			<if test="cancer !=null and cancer !=''">
+				cancer=#{cancer},
+			</if>
+			<if test="age !=null and age !=''">
+				age=#{age},
+			</if>
+			<if test="measure !=null and measure !=''">
+				measure=#{measure},
+			</if>
+			<if test="frequency !=null and frequency !=''">
+				frequency=#{frequency},
+			</if>
+			<if test="update_by !=null and update_by !=''">
+				update_by=#{update_by},
+			</if>
+			update_time = sysdate()
+		</set>
+		where record_id=#{record_id}
+	</update>
+	
+	<select id="getRpCrGeneRiskReductionList" resultType="java.util.Map">
+		select record_id,gene,lang,hom_flag,cancer,age,measure,frequency,check_date from rp_cr_gene_risk_reduction WHERE gene = #{gene} and lang = #{lang}
+	</select>
+	
+	<select id="getRpCrGeneRiskReductionByRecordId" resultType="java.util.Map">
+		select record_id,gene,lang,hom_flag,cancer,age,measure,frequency,check_date from rp_cr_gene_risk_reduction WHERE record_id=#{record_id}
+	</select>
+	
+	<delete id="deleteDiseaseRiskReductionByRecordId">
+		DELETE FROM rp_cr_gene_risk_reduction WHERE record_id = #{record_id}
+	</delete>
+	
+</mapper>

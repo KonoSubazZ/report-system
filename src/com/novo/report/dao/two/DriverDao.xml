@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.DriverDao">
+	<!--分页查询 -->
+	<select id="getTotalByAnalysisDate" resultType="Long">
+		select count(file_id) from data_file_status where analysis_date=#{analysis_date}
+	</select>
+	<select id="getDataFileStatusByAnalysisDate" resultType="DataFileStatus">
+		select file_id,file_path,file_name,data_type,file_type,file_text,analysis_date,analyzer,barcode,subbarcode,product_name,platform,status,message,created_by,created_date,update_by,update_date
+			from data_file_status
+			where analysis_date=#{analysis_date}
+			limit #{pageNo},#{pageSize}
+	</select>
+	
+	<delete id="deleteParseFile">
+		delete from data_file_status where file_id=#{file_id}
+	</delete>
+	
+	
+</mapper>

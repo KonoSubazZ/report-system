@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.SampleRetrievalDao">
+	<select id="getsampleRetrievalList" resultType="SampleRetrieval">
+		select sf.customer as customer,sf.person_name as person_name,sf.subbarcode as subbarcode,sf.gender as gender,sf.cancertype as cancertype,sf.pathologicaltype as pathologicaltype,
+		sf.age as age,var.ori_variant as ori_variant,var.report_id as report_id,sf.loaded_date as loaded_date,sf.specimen_type as specimen_type from (
+		select report_id,gene,variant,ori_variant from this_genetic_marker_vw2 where gene=#{gene} and variant=#{variant}
+		union select report_id,gene,variant,ori_variant from cr_evw where gene=#{gene} and variant=#{variant}
+		) var
+		join analysis_report ar on ar.report_id = var.report_id 
+		join sample_file sf on sf.subbarcode = ar.subbarcode
+		where ar.status ="报告发送成功"
+		<if test="before_date !=null and before_date !=''">
+			and sf.loaded_date &gt; #{before_date}
+		</if>
+		<if test="after_date !=null and after_date !=''">
+			and sf.loaded_date &lt; #{after_date}
+		</if>
+		<if test="primary_cancer_id !=null and primary_cancer_id !=''">
+			and ar.primary_cancer_id = #{primary_cancer_id}
+		</if>
+		
+	</select>
+	
+	<select id="getsampleRetrievalList2" resultType="SampleRetrieval">
+		select sf.customer as customer,sf.person_name as person_name,sf.subbarcode as subbarcode,sf.gender as gender,sf.cancertype as cancertype,sf.pathologicaltype as pathologicaltype,
+		sf.age as age,var.ori_variant as ori_variant,var.report_id as report_id,sf.loaded_date as loaded_date  from (
+		select report_id,gene,variant,ori_variant from this_genetic_marker_vw2 where mut_type="融合" and (gene=#{gene} or ori_variant LIKE concat(#{gene},'-%'))
+		) var
+		join analysis_report ar on ar.report_id = var.report_id 
+		join sample_file sf on sf.subbarcode = ar.subbarcode
+		where ar.status = "报告发送成功"
+		<if test="before_date !=null and before_date !=''">
+			and sf.loaded_date &gt; #{before_date}
+		</if>
+		<if test="after_date !=null and after_date !=''">
+			and sf.loaded_date &lt; #{after_date}
+		</if>
+		<if test="primary_cancer_id !=null and primary_cancer_id !=''">
+			and ar.primary_cancer_id = #{primary_cancer_id}
+		</if>
+		
+	</select>
+	
+	
+	
+</mapper>

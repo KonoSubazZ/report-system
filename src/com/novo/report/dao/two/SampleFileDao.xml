@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.SampleFileDao">
+		
+	<insert id="insertSampleFile">
+		<selectKey keyProperty="count" resultType="java.lang.Integer" order="BEFORE">
+			select count(*) from sample_file where subbarcode = #{subbarcode}
+		</selectKey>
+		 <if test="count == 0">
+			insert into sample_file(person_id,person_name,age,
+				gender,birthday,patient_id,barcode,subbarcode,hospital,received_date,
+				specimen_type,specimen_quantity,testing_program,disease_type,
+				comparison,client,commission_date,sales_contact,report_receiver,
+				collect_date,data_path,info_officer,sample_nature,selected_genes,
+				testing_before_medicine,other_description,loaded_date,clinicalremark,
+				cancertype,pathologicaltype,remark,product_name,clinicalstages,libraryname,
+				doctorname,fastcode,locationname,report_upload_date,sample_source,
+				from_organ,turmor_cell_ratio,gene_type,gene_result,
+				medication_history,birthplace,family_history,sample_type,room,bed,emailaddress,saleremail,supportemail,manageremail,pmemail,customer)
+			values(#{person_id},#{person_name},#{age},#{gender},#{birthday},
+				#{patient_id},#{barcode},#{subbarcode},#{hospital},#{received_date},
+				#{specimen_type},#{specimen_quantity},#{testing_program},
+				#{disease_type},#{comparison},#{client},#{commission_date},
+				#{sales_contact},#{report_receiver},#{collect_date},
+				#{data_path},#{info_officer},#{sample_nature},
+				#{selected_genes},#{testing_before_medicine},
+				#{other_description},sysdate(),#{clinicalremark},#{cancertype},#{pathologicaltype},#{remark},#{product_name},
+				#{clinicalstages},#{libraryname},#{doctorname},#{fastcode},#{locationname},#{report_upload_date},#{sample_source},
+				#{from_organ},#{turmor_cell_ratio},#{gene_type},#{gene_result},#{medication_history},#{birthplace},#{family_history},
+				#{sample_type},#{room},#{bed},#{emailaddress},#{saleremail},#{supportemail},#{manageremail},#{pmemail},#{customer})
+		 </if>
+		 <if test="count > 0">
+			 update sample_file set barcode=#{barcode},person_id=#{person_id},person_name=#{person_name},age=#{age},
+				gender=#{gender},birthday=#{birthday},patient_id=#{patient_id},
+				hospital=#{hospital},received_date=#{received_date},specimen_type=#{specimen_type},
+				specimen_quantity=#{specimen_quantity},testing_program=#{testing_program},
+				disease_type=#{disease_type},comparison=#{comparison},client=#{client},
+				commission_date=#{commission_date},sales_contact=#{sales_contact},
+				report_receiver=#{report_receiver},collect_date=#{collect_date},
+				data_path=#{data_path},info_officer=#{info_officer},sample_nature=#{sample_nature},
+				selected_genes=#{selected_genes},testing_before_medicine=#{testing_before_medicine},
+				other_description=#{other_description},loaded_date=sysdate(),clinicalremark=#{clinicalremark},
+				cancertype=#{cancertype},pathologicaltype=#{pathologicaltype},remark=#{remark},product_name=#{product_name},
+				clinicalstages=#{clinicalstages},libraryname=#{libraryname},doctorname=#{doctorname},fastcode=#{fastcode},
+				locationname=#{locationname},report_upload_date=#{report_upload_date},sample_source=#{sample_source},
+				from_organ=#{from_organ},turmor_cell_ratio=#{turmor_cell_ratio},gene_type=#{gene_type},
+				gene_result=#{gene_result},medication_history=#{medication_history},birthplace=#{birthplace},family_history=#{family_history},
+				sample_type=#{sample_type},room=#{room},bed=#{bed},emailaddress=#{emailaddress},saleremail=#{saleremail},
+				supportemail=#{supportemail},manageremail=#{manageremail},pmemail=#{pmemail},customer=#{customer}
+			where subbarcode=#{subbarcode}
+		 </if>
+	</insert>
+	
+	<select id="getSampleIdByBarcode" resultType="Integer">
+		select count(sample_id) from sample_file where barcode=#{barcode}
+	</select>
+	<select id="getDiseaseTypeBySubbarcode" resultType="String">
+		select disease_type from sample_file where subbarcode=#{subbarcode}
+	</select>
+	<select id="getSampleIdBySubbarcode" resultType="Long">
+		select sample_id from sample_file where subbarcode=#{subbarcode}
+	</select>
+	
+	<select id="selectSampleFileBySubbarcode" resultType="SampleFile">
+		select sample_id,person_id,person_name,age,
+			gender,birthday,patient_phone,patient_id,hospital,received_date,barcode,subbarcode,specimen_type,specimen_quantity,testing_program,disease_type,
+			comparison,client,commission_date,sales_contact,report_receiver,collect_date,data_path,info_officer,sample_nature,selected_genes,
+			testing_before_medicine,other_description,loaded_date,clinicalremark,cancertype,pathologicaltype,remark,product_name,clinicalstages,
+			libraryname,doctorname,fastcode,locationname,report_upload_date,sample_source,from_organ,turmor_cell_ratio,
+			gene_type,gene_result,medication_history,birthplace,family_history,sample_type,room,bed,emailaddress,saleremail,supportemail,manageremail,pmemail,customer
+		from sample_file where subbarcode=#{subbarcode}
+	</select>
+	<!--分页查询 -->
+	<select id="getTotal" resultType="Long">
+		select count(*) from sample_file
+		<where>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and subbarcode =#{subbarcode}
+			</if>
+			<if test="disease_type!=null and disease_type!=''">
+				and disease_type =#{disease_type}
+			</if>
+		</where>
+	</select>
+	<select id="getsampleFileByPage" resultType="SampleFile">
+		select sample_id,person_id,person_name,age,
+			gender,birthday,patient_id,hospital,received_date,barcode,subbarcode,specimen_type,specimen_quantity,testing_program,disease_type,
+			comparison,client,commission_date,sales_contact,report_receiver,collect_date,data_path,info_officer,sample_nature,selected_genes,
+			testing_before_medicine,other_description,loaded_date,clinicalremark,cancertype,pathologicaltype,remark,product_name,clinicalstages,
+			libraryname,doctorname,fastcode,locationname,report_upload_date,sample_source,from_organ,turmor_cell_ratio,
+			gene_type,gene_result,medication_history,birthplace,family_history
+		from sample_file
+		<where>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and subbarcode =#{subbarcode}
+			</if>
+			<if test="disease_type!=null and disease_type!=''">
+				and disease_type =#{disease_type}
+			</if>
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	<select id="getSampleFileListByBarcode" resultType="SampleFile">
+		select sample_id,person_id,person_name,age,
+			gender,birthday,patient_id,hospital,received_date,barcode,subbarcode,specimen_type,specimen_quantity,testing_program,disease_type,
+			comparison,client,commission_date,sales_contact,report_receiver,collect_date,data_path,info_officer,sample_nature,selected_genes,
+			testing_before_medicine,other_description,loaded_date,clinicalremark,cancertype,pathologicaltype,remark,product_name,clinicalstages,
+			libraryname,doctorname,fastcode,locationname,report_upload_date,sample_source,from_organ,turmor_cell_ratio,
+			gene_type,gene_result,medication_history,birthplace,family_history
+		from sample_file
+		where barcode =#{barcode}
+		order by subbarcode
+	</select>
+	
+	<update id="updateSmapleType">
+		update sample_file set sample_type=#{sample_type} where subbarcode=#{subbarcode}
+	</update>
+	
+	<select id="isExistPerson_id" resultType="Integer">
+		select count(*) from sample_file where person_id=#{person_id}
+	</select>
+	
+	<update id="saveMutationsNum">
+		update data_file_status 
+		<set>
+			<if test="SNP !=null">
+				mut_num=#{SNP},
+			</if>
+			<if test="Indel !=null">
+				mut_num=#{Indel},
+			</if>
+			<if test="CNV !=null">
+				mut_num=#{CNV},
+			</if>
+			<if test="Fusion !=null">
+				mut_num=#{Fusion},
+			</if>
+			<if test="Chemical_all !=null">
+				mut_num=#{Chemical_all},
+			</if>
+			<if test="CR_ALL !=null">
+				mut_num=#{CR_ALL},
+			</if>
+		</set>
+		WHERE subbarcode = #{subbarcode} and analysis_date = #{analysis_date} and 
+			<if test="SNP !=null">
+				file_type='SNP'
+			</if>
+			<if test="Indel !=null">
+				file_type='Indel'
+			</if>
+			<if test="CNV !=null">
+				file_type='CNV'
+			</if>
+			<if test="Fusion !=null">
+				file_type='Fusion'
+			</if>
+			<if test="Chemical_all !=null">
+				file_type='Chemical_all'
+			</if>
+			<if test="CR_ALL !=null">
+				file_type='CR_ALL'
+			</if>
+	</update>
+	
+	<update id="saveMutationsNum2">
+		update data_file_status set mut_num = #{mut_num} 
+		WHERE subbarcode = #{subbarcode} and analysis_date = #{analysis_date} and file_type = #{file_type}
+	</update>
+	
+	<select id="findMutationsNum" resultType="java.util.Map">
+		SELECT mut_num,file_type FROM data_file_status WHERE subbarcode = #{subbarcode} and analysis_date = #{analysis_date}
+	</select>
+</mapper>

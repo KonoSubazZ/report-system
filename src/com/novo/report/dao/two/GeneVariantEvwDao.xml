@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.GeneVariantEvwDao">
+	
+	<select id="getGeneVariantEvw" resultType="GeneVariantEvw">
+		select gene_variant_id,gene_symbol,gene_variant
+		from nkb.gene_variant_evw
+		where gene_symbol=#{gene_symbol} and gene_variant=#{gene_variant} and checking_status != 'Obsolete'
+	</select>
+	
+	<select id="getGeneVariantEvwByFiveCondition" resultType="GeneVariantEvw">
+		select gene_variant_id,gene_symbol,gene_variant
+		from nkb.gene_variant_evw
+		where gene_symbol=#{gene_symbol} and chrom=#{chrom} and start=#{start} and end=#{end} and ref=#{ref} and alt=#{alt} and checking_status != 'Obsolete'
+	</select>
+	
+	<select id="getAllele" resultType="Allele">
+		select distinct allele_id from nkb.allele
+		where allele=#{genotype} and rs_id=#{rs} 
+		limit 1
+	</select>
+	
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.Pdl1ResultDao">
+	<!--视图分页查询 -->
+	<select id="getTotal" resultType="Long">
+		select count(*) from pdl1_result_vw
+		<where>
+			<if test="report_date_B!=null and report_date_B!='' and report_date_N!=null and report_date_N!='' ">
+				and report_date between #{report_date_B} And #{report_date_N} 
+			</if>
+		</where>
+	</select>
+	<select id="getPdl1ResultByPage" resultType="Pdl1ResultVw">
+		select result_id,report_id,sample_id,barcode,subbarcode,disease_type,test_id,category,test_name,
+		tumor_expression_result,tumor_expression_pct,immuno_expression_result,immuno_expression_pct,
+		tumor_cell_dying,immuno_cell_dying,pdl1_scope_description,purity_scope_description,tested_date,
+		tested_by,checked_date,checked_by,report_date from pdl1_result_vw
+		<where>
+			<if test="report_date_B!=null and report_date_B!='' and report_date_N!=null and report_date_N!='' ">
+				and report_date between #{report_date_B} And #{report_date_N} 
+			</if>
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>	
+	
+	<insert id="insertPdl1Result">
+		insert into pdl1_result(report_id,tumor_expression_result,
+			tumor_expression_pct,immuno_expression_result,immuno_expression_pct,
+			tumor_cell_dying,immuno_cell_dying,pdl1_scope_description,
+			purity_scope_description,created_by,created_date,update_by,update_date)
+		values(#{report_id},#{tumor_expression_result},#{tumor_expression_pct},
+			#{immuno_expression_result},#{immuno_expression_pct},#{tumor_cell_dying},
+			#{immuno_cell_dying},#{pdl1_scope_description},#{purity_scope_description},
+			#{created_by},#{created_date},#{update_by},#{update_date})
+	</insert>
+	
+	<delete id="deletePdl1ResultReportId">
+		delete from pdl1_result where report_id=#{report_id}
+	</delete>
+	
+</mapper>

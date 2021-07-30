@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.OfflineReportDao">
+	<!--分页查询 -->
+	<select id="getTotal" resultType="Long">
+		select count(*) from offline_report
+		<where>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and subbarcode =#{subbarcode}
+			</if>
+			<if test="tested_date!=null and tested_date!=''">
+				and tested_date like '%' #{tested_date} '%'
+			</if>
+			<if test="status!=null and status!=''">
+				and  status =#{status}
+			</if>
+		</where>
+	</select>
+	<select id="getReportByPage" resultType="OfflineReport">
+		select report_id,subbarcode,person_name,tested_date, tested_by,report_filenameone,report_filenametwo,report_file_path,emailaddress,send_date,status,checked_by,checked_date,saleremail,supportemail,manageremail,pmemail
+		from offline_report
+		<where>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and subbarcode =#{subbarcode}
+			</if>
+			<if test="tested_date!=null and tested_date!=''">
+				and tested_date like '%' #{tested_date} '%'
+			</if>
+			<if test="status!=null and status!=''">
+				and  status =#{status}
+			</if>
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	<insert id="addOfflineReport"  keyProperty="report_id" useGeneratedKeys="true" >
+		insert into offline_report(subbarcode,person_name,tested_date, tested_by,report_filenameone,report_filenametwo,report_file_path,emailaddress,send_date,status,checked_by,checked_date,saleremail,supportemail,manageremail,pmemail)
+		values(#{subbarcode},#{person_name},#{tested_date},#{tested_by},#{report_filenameone},#{report_filenametwo},#{report_file_path},
+			#{emailaddress},#{send_date},#{status},#{checked_by},#{checked_date},#{saleremail},#{supportemail},#{manageremail},#{pmemail})
+	</insert>
+	<select id="getOfflineReportById" resultType="OfflineReport">
+		select report_id,subbarcode,person_name,tested_date, tested_by,report_filenameone,report_filenametwo,report_file_path,emailaddress,send_date,status,checked_by,checked_date,saleremail,supportemail,manageremail,pmemail
+		from offline_report where report_id = #{report_id}
+	</select>
+	<update id="updateFileNameOneById">
+		update offline_report set report_filenameone=#{1} where report_id=#{0}
+	</update>
+	<update id="updateFileNameTwoById">
+		update offline_report set report_filenametwo=#{1} where report_id=#{0}
+	</update>
+	<select id="getStatus" resultType="String">
+		select status from offline_report where report_id = #{report_id}
+	</select>
+	<update id="editStatus" parameterType="OfflineReport">
+		update offline_report set status=#{status},checked_by=#{checked_by},checked_date=#{checked_date} where report_id=#{report_id}
+	</update>
+	<update id="UpdateStatus" parameterType="OfflineReport">
+		update offline_report set status=#{status},send_date=#{send_date} where report_id=#{report_id}
+	</update>
+	
+</mapper>

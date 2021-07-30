@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.AutoCompleteDao">
+	<!-- 查询 test_name -->
+	<select id="getCategory" resultType="AutoComplete">
+		select distinct category name from genetic_test where platform = 'PCR'
+	</select>
+	<!-- 查询test_id  test_name -->
+	<select id="getTestIdAndNameByCategory" resultType="AutoComplete">
+		select test_id id,test_name name from genetic_test where category =#{category}
+	</select>
+	<!-- 查询DiseaseClassChineseAndId -->
+	<select id="getDiseaseClassChineseAndId" resultType="AutoComplete">
+		select class_id id,disease_class_chinese name from disease_class where disease_area = 'onco' and disease_class_chinese not in ('本癌种','其他癌种')
+	</select>
+	<select id="getProductNameChineseAndId" resultType="AutoComplete">
+		select product_id id,product_name_chinese name from product where path_name = #{path_name}
+	</select>
+	<select id="getGeneVariant" resultType="AutoComplete">
+		SELECT gene_variant_id id,concat_ws(' ',gene_symbol,gene_variant) name from nkb.gene_variant_evw WHERE checking_status = 'Approved' and gene_symbol = #{gene_symbol}
+	</select>
+	<select id="getGeneVariantId" resultType="Integer">
+		SELECT gene_variant_id id from nkb.gene_variant_evw WHERE checking_status = 'Approved' and gene_symbol = #{gene_symbol} and gene_variant = #{gene_variant}
+	</select>
+	<!-- 查询DiseaseClassChineseById -->
+	<select id="getDiseaseClassChineseById" resultType="AutoComplete">
+		select disease_class_chinese name from disease_class where class_id=#{class_id}
+	</select>
+	<!-- 查询test_id  test_name -->
+	<select id="getTemplateIdAndNameByFS" resultType="AutoComplete">
+		select template_id id,template_name name from pcr_template_mapping_vw where result =#{0} and test_id=#{1}
+	</select>
+	<!-- 查询subbarcode  -->
+	<select id="getSubBarcodeList" resultType="SFAutoComplete">
+		select subbarcode  from sample_file 
+	</select>
+	<!-- 查询disease_type  -->
+	<select id="getDiseaseTypeList" resultType="SFAutoComplete">
+		select distinct disease_type  from sample_file where disease_type is not null
+	</select>
+	<select id="getPdl1TemplateIdAndName" resultType="AutoComplete">
+		select template_id id,template_name name from pcr_template where platform = 'PDL1'
+	</select>
+	
+	<select id="getMsiTemplateIdAndName" resultType="AutoComplete">
+		select template_id id,template_name name from pcr_template where platform = 'MSI'
+	</select>
+	
+	<select id="getReportTemplateIdAndName" resultType="AutoComplete">
+		select template_id id,template_name name
+			from ngs_template_mapping_vw
+			where product_id = #{product_id} order by template_id 
+	</select>
+	<select id="getPlatformList" resultType="String">
+		select distinct platform from data_file_status where platform is not null
+	</select>
+	<select id="getSpecimenTypeList" resultType="String">
+		select distinct specimen_type from sample_file where specimen_type is not null
+	</select>
+	<select id="getSubbarcodeList" resultType="String">
+		select distinct subbarcode from data_file_status where subbarcode is not null
+	</select>
+	<select id="getProductNameList" resultType="String">
+		select distinct product_name from sample_file where product_name is not null
+	</select>
+	<select id="getClinicalremarkList" resultType="String">
+		select distinct clinicalremark from sample_file where clinicalremark is not null
+	</select>
+	<select id="getGeneList" resultType="String">
+		select distinct gene from mutation_file where gene is not null
+	</select>
+	<select id="getMutationListByGene" resultType="String">
+		select distinct mutation from mutation_file where mutation is not null and gene=#{gene}
+	</select>
+	<select id="getVariantListByGene" resultType="String">
+		select distinct variant from pcr_result_vw where variant is not null and gene_symbol=#{gene_symbol}
+	</select>
+	<select id="getGeneSymbolList" resultType="String">
+		select distinct gene_symbol from pcr_result_vw where gene_symbol is not null
+	</select>
+	<select id="getCategoryList" resultType="String">
+		select distinct category from pcr_result_vw where category is not null
+	</select>
+	<select id="getHospitalList" resultType="String">
+		select distinct hospital from sample_file where hospital is not null
+	</select>
+	<select id="getFastcodeList" resultType="String">
+		select distinct fastcode from sample_file where fastcode is not null
+	</select>
+	
+	<select id="getFalsePositiveIsGeneList" resultType="AutoComplete">
+		select distinct gene name from nkb.false_positive
+	</select>
+	<select id="getOfflineReportSubbarcodeList" resultType="String">
+		select distinct subbarcode from offline_report 
+	</select>
+	<!-- 查询getDrugNameAndDrugId -->
+	<select id="getDrugNameAndDrugId" resultType="AutoComplete">
+		SELECT drug_name name, drug_id id from nkb_approved_drug_evw WHERE lang = #{lang}
+	</select>
+	<select id="getProductNameByUserId" resultType="AutoComplete">
+		SELECT product_id id,path_name name from product
+	</select>
+	<select id="getCustomer" resultType="AutoComplete">
+		SELECT DISTINCT customer name from sample_file where customer is not null
+	</select>
+</mapper>

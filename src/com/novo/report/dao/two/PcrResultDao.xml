@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.PcrResultDao">
+	<!--视图分页查询 -->
+	<select id="getTotal" resultType="Long">
+		select count(*) from pcr_result_vw
+		<where>
+			<if test="gene_symbol!=null and gene_symbol!=''">
+				and gene_symbol =#{gene_symbol}
+			</if>
+			<if test="variant!=null and variant!=''">
+				and variant =#{variant}
+			</if>
+			<if test="category!=null and category!=''">
+				and category =#{category}
+			</if>
+			<if test="variant_frequency_sta!=null and variant_frequency_sta!=''">
+				and variant_frequency &gt;= #{variant_frequency_sta}
+			</if>
+			<if test="variant_frequency_end!=null and variant_frequency_end!=''">
+				and variant_frequency  &lt;= #{variant_frequency_end}
+			</if>
+			<if test="tested_date_B!=null and tested_date_B!='' and tested_date_N!=null and tested_date_N!='' ">
+				and tested_date between #{tested_date_B} And #{tested_date_N} 
+			</if>
+			<if test=" sample_ids!=null and sample_ids.length>0">
+				and sample_id in
+				<foreach collection="sample_ids" open="(" close=")" separator="," item="item">
+					#{item}
+				</foreach>
+				
+			</if>
+			<if test=" sample_id!=null and sample_id!=''">
+				and sample_id = #{sample_id}
+			</if>
+		</where>
+	</select>
+	<select id="getpcrResultByPage" resultType="PcrResultVw">
+		select result_id, report_id, sample_id,barcode,subbarcode, disease_type,category,
+		pcr_variant_id,gene_symbol, variant,variant_frequency,tested_date,tested_by,checked_date,
+		checked_by,report_date from pcr_result_vw
+		<where>
+			<if test="gene_symbol!=null and gene_symbol!=''">
+				and gene_symbol =#{gene_symbol}
+			</if>
+			<if test="variant!=null and variant!=''">
+				and variant =#{variant}
+			</if>
+			<if test="category!=null and category!=''">
+				and category =#{category}
+			</if>
+			<if test="variant_frequency_sta!=null and variant_frequency_sta!=''">
+				and variant_frequency &gt;= #{variant_frequency_sta}
+			</if>
+			<if test="variant_frequency_end!=null and variant_frequency_end!=''">
+				and variant_frequency  &lt;= #{variant_frequency_end}
+			</if>
+			<if test="tested_date_B!=null and tested_date_B!='' and tested_date_N!=null and tested_date_N!='' ">
+				and tested_date between #{tested_date_B} And #{tested_date_N} 
+			</if>
+			<if test=" sample_ids!=null and sample_ids.length>0">
+				and sample_id in
+				<foreach collection="sample_ids" open="(" close=")" separator="," item="item">
+					#{item}
+				</foreach>
+				
+			</if>
+			<if test=" sample_id!=null and sample_id!=''">
+				and sample_id = #{sample_id}
+			</if>
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	<!-- 获取视图getGeneSymbolListByVw-->
+	<select id="getGeneSymbolListByVw" resultType="String">
+		select distinct gene_symbol from pcr_result_vw where gene_symbol is not null
+	</select>
+	<!-- 获取视图getVariantListByVw-->
+	<select id="getVariantListByVw" resultType="String">
+		select distinct variant from pcr_result_vw where variant is not null
+	</select>
+	<!-- 插入数据 -->
+	<insert id="addResult" >
+		insert into pcr_result (report_id,pcr_variant_id,variant_frequency,created_by,created_date,update_by) 
+		values(#{report_id},#{pcr_variant_id},#{variant_frequency},#{created_by},#{created_date},#{update_by})
+	</insert>
+	<select id="getSpecimenTypeAndCount" resultType="NameAndDateBean">
+		select specimen_type name, count(distinct subbarcode) data FROM pcr_result_vw
+		<where>
+			<if test="category!=null and category!=''">
+				and category =#{category}
+			</if>
+			<if test="gene_symbol!=null and gene_symbol!=''">
+				and gene_symbol =#{gene_symbol}
+			</if>
+			<if test="variant!=null and variant!=''">
+				and variant =#{variant}
+			</if>
+				and tested_date between #{tested_date_B} and #{tested_date_E} 
+			<if test="variant_frequency_sta!=null and variant_frequency_sta!=''">
+				and variant_frequency &gt;= #{variant_frequency_sta}
+			</if>
+			<if test="variant_frequency_end!=null and variant_frequency_end!=''">
+				and variant_frequency  &lt;= #{variant_frequency_end}
+			</if>
+		</where>
+		group by specimen_type order by count(distinct subbarcode) desc
+	</select>
+	<select id="getCategoryAndCount" resultType="NameAndDateBean">
+		select category name, count(distinct subbarcode) data FROM pcr_result_vw
+		<where>
+			<if test="category!=null and category!=''">
+				and category =#{category}
+			</if>
+			<if test="gene_symbol!=null and gene_symbol!=''">
+				and gene_symbol =#{gene_symbol}
+			</if>
+			<if test="variant!=null and variant!=''">
+				and variant =#{variant}
+			</if>
+				and tested_date between #{tested_date_B} and #{tested_date_E} 
+			<if test="variant_frequency_sta!=null and variant_frequency_sta!=''">
+				and variant_frequency &gt;= #{variant_frequency_sta}
+			</if>
+			<if test="variant_frequency_end!=null and variant_frequency_end!=''">
+				and variant_frequency  &lt;= #{variant_frequency_end}
+			</if>
+		</where>
+		group by category order by count(distinct subbarcode) desc
+	</select>
+	
+	<select id="getCancertypeAndCount" resultType="NameAndDateBean">
+		select cancertype name, count(distinct subbarcode) data FROM pcr_result_vw
+		<where>
+			<if test="category!=null and category!=''">
+				and category =#{category}
+			</if>
+			<if test="gene_symbol!=null and gene_symbol!=''">
+				and gene_symbol =#{gene_symbol}
+			</if>
+			<if test="variant!=null and variant!=''">
+				and variant =#{variant}
+			</if>
+				and tested_date between #{tested_date_B} and #{tested_date_E} 
+			<if test="variant_frequency_sta!=null and variant_frequency_sta!=''">
+				and variant_frequency &gt;= #{variant_frequency_sta}
+			</if>
+			<if test="variant_frequency_end!=null and variant_frequency_end!=''">
+				and variant_frequency  &lt;= #{variant_frequency_end}
+			</if>
+		</where>
+		group by cancertype order by count(distinct subbarcode) desc
+	</select>
+	
+	<select id="getClinicalremarkAndCount" resultType="NameAndDateBean">
+		select clinicalremark name, count(distinct subbarcode) data FROM pcr_result_vw
+		<where>
+			<if test="category!=null and category!=''">
+				and category =#{category}
+			</if>
+			<if test="gene_symbol!=null and gene_symbol!=''">
+				and gene_symbol =#{gene_symbol}
+			</if>
+			<if test="variant!=null and variant!=''">
+				and variant =#{variant}
+			</if>
+				and tested_date between #{tested_date_B} and #{tested_date_E} 
+			<if test="variant_frequency_sta!=null and variant_frequency_sta!=''">
+				and variant_frequency &gt;= #{variant_frequency_sta}
+			</if>
+			<if test="variant_frequency_end!=null and variant_frequency_end!=''">
+				and variant_frequency  &lt;= #{variant_frequency_end}
+			</if>
+		</where>
+		group by clinicalremark order by count(distinct subbarcode) desc
+	</select>
+	<select id="getPathologicaltypeAndCount" resultType="NameAndDateBean">
+		select pathologicaltype name, count(distinct subbarcode) data FROM pcr_result_vw
+		<where>
+			<if test="category!=null and category!=''">
+				and category =#{category}
+			</if>
+			<if test="gene_symbol!=null and gene_symbol!=''">
+				and gene_symbol =#{gene_symbol}
+			</if>
+			<if test="variant!=null and variant!=''">
+				and variant =#{variant}
+			</if>
+				and tested_date between #{tested_date_B} and #{tested_date_E} 
+			<if test="variant_frequency_sta!=null and variant_frequency_sta!=''">
+				and variant_frequency &gt;= #{variant_frequency_sta}
+			</if>
+			<if test="variant_frequency_end!=null and variant_frequency_end!=''">
+				and variant_frequency  &lt;= #{variant_frequency_end}
+			</if>
+		</where>
+		group by pathologicaltype order by count(distinct subbarcode) desc
+	</select>
+	
+	<select id="getMutationFrequencyAndCount" resultType="NameAndDateBean">
+		select round(variant_frequency,1) as name, count(distinct subbarcode) data FROM omics.pcr_result_vw  
+		<where>
+			variant_frequency &lt; 0.95
+			<if test="category!=null and category!=''">
+				and category =#{category}
+			</if>
+			<if test="gene_symbol!=null and gene_symbol!=''">
+				and gene_symbol =#{gene_symbol}
+			</if>
+			<if test="variant!=null and variant!=''">
+				and variant =#{variant}
+			</if>
+				and tested_date between #{tested_date_B} and #{tested_date_E} 
+			<if test="variant_frequency_sta!=null and variant_frequency_sta!=''">
+				and variant_frequency &gt;= #{variant_frequency_sta}
+			</if>
+			<if test="variant_frequency_end!=null and variant_frequency_end!=''">
+				and variant_frequency  &lt;= #{variant_frequency_end}
+			</if>
+		</where>
+		group by round(variant_frequency,1) 
+		union
+	    select round(variant_frequency,0) as name, count(distinct subbarcode) data FROM omics.pcr_result_vw  
+	    <where>
+	    	variant_frequency >= 0.95 and variant_frequency &lt; 9.5
+	     	<if test="category!=null and category!=''">
+				and category =#{category}
+			</if>
+			<if test="gene_symbol!=null and gene_symbol!=''">
+				and gene_symbol =#{gene_symbol}
+			</if>
+			<if test="variant!=null and variant!=''">
+				and variant =#{variant}
+			</if>
+				and tested_date between #{tested_date_B} and #{tested_date_E} 
+			<if test="variant_frequency_sta!=null and variant_frequency_sta!=''">
+				and variant_frequency &gt;= #{variant_frequency_sta}
+			</if>
+			<if test="variant_frequency_end!=null and variant_frequency_end!=''">
+				and variant_frequency  &lt;= #{variant_frequency_end}
+			</if>
+	    </where>
+	    group by round(variant_frequency,0)	
+	    union
+	    select round(variant_frequency,-1) as name, count(distinct subbarcode) data FROM omics.pcr_result_vw 
+	    <where>
+	         variant_frequency >= 9.5 
+	    	<if test="category!=null and category!=''">
+				and category =#{category}
+			</if>
+			<if test="gene_symbol!=null and gene_symbol!=''">
+				and gene_symbol =#{gene_symbol}
+			</if>
+			<if test="variant!=null and variant!=''">
+				and variant =#{variant}
+			</if>
+				and tested_date between #{tested_date_B} and #{tested_date_E} 
+			<if test="variant_frequency_sta!=null and variant_frequency_sta!=''">
+				and variant_frequency &gt;= #{variant_frequency_sta}
+			</if>
+			<if test="variant_frequency_end!=null and variant_frequency_end!=''">
+				and variant_frequency  &lt;= #{variant_frequency_end}
+			</if>
+		</where>
+ 		group by round(variant_frequency,-1) 
+ 		order by name
+	</select>
+	
+	<select id="getGeneAndCount" resultType="NameAndDateBean">
+		select gene_symbol name, count(distinct subbarcode) data FROM pcr_result_vw
+		<where>
+			<if test="category!=null and category!=''">
+				and category =#{category}
+			</if>
+			<if test="gene_symbol!=null and gene_symbol!=''">
+				and gene_symbol =#{gene_symbol}
+			</if>
+			<if test="variant!=null and variant!=''">
+				and variant =#{variant}
+			</if>
+				and tested_date between #{tested_date_B} and #{tested_date_E} 
+			<if test="variant_frequency_sta!=null and variant_frequency_sta!=''">
+				and variant_frequency &gt;= #{variant_frequency_sta}
+			</if>
+			<if test="variant_frequency_end!=null and variant_frequency_end!=''">
+				and variant_frequency  &lt;= #{variant_frequency_end}
+			</if>
+		</where>
+		group by gene_symbol order by count(distinct subbarcode) desc
+	</select>
+	
+	<select id="getVariantAndCount" resultType="NameAndDateBean">
+		select concat(gene_symbol, ' ', variant) name, count(distinct subbarcode) data FROM pcr_result_vw
+		<where>
+			<if test="category!=null and category!=''">
+				and category =#{category}
+			</if>
+			<if test="gene_symbol!=null and gene_symbol!=''">
+				and gene_symbol =#{gene_symbol}
+			</if>
+			<if test="variant!=null and variant!=''">
+				and variant =#{variant}
+			</if>
+				and tested_date between #{tested_date_B} and #{tested_date_E} 
+			<if test="variant_frequency_sta!=null and variant_frequency_sta!=''">
+				and variant_frequency &gt;= #{variant_frequency_sta}
+			</if>
+			<if test="variant_frequency_end!=null and variant_frequency_end!=''">
+				and variant_frequency  &lt;= #{variant_frequency_end}
+			</if>
+		</where>
+		group by concat(gene_symbol, ' ', variant) order by count(distinct subbarcode) desc
+	</select>
+	
+	<select id="exportPcrFile" resultType="ExportPcrResultVw">
+		select received_date, subbarcode, person_name,specimen_type,category, cancertype,pathologicaltype,
+		clinicalstages,libraryname, sales_contact,hospital,locationname,doctorname,report_date,
+		variant,variant_frequency from pcr_result_vw
+		<where>
+			<if test="gene_symbol!=null and gene_symbol!=''">
+				and gene_symbol =#{gene_symbol}
+			</if>
+			<if test="variant!=null and variant!=''">
+				and variant =#{variant}
+			</if>
+			<if test="category!=null and category!=''">
+				and category =#{category}
+			</if>
+			<if test="variant_frequency_sta!=null and variant_frequency_sta!=''">
+				and variant_frequency &gt;= #{variant_frequency_sta}
+			</if>
+			<if test="variant_frequency_end!=null and variant_frequency_end!=''">
+				and variant_frequency  &lt;= #{variant_frequency_end}
+			</if>
+			<if test="tested_date_B!=null and tested_date_B!='' and tested_date_N!=null and tested_date_N!='' ">
+				and tested_date between #{tested_date_B} And #{tested_date_N} 
+			</if>
+		</where>
+	</select>
+	
+	<select id="getGeneSymbolList" resultType="String">
+		SELECT distinct gene_symbol FROM pcr_variant where test_id = #{test_id}
+	</select>
+	
+	<select id="getVariantListByGene" resultType="String">
+		SELECT distinct variant FROM pcr_variant where test_id =10 and gene_symbol = #{gene_symbol}
+	</select>
+	
+</mapper>

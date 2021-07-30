@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.GeneticMarkerVwDao">
+
+	<select id="getGeneFromGeneticMarkerVw" resultType="GeneticMarkerVw">
+		select distinct gene,variant,exon,codon from genetic_marker_vw
+		<where>
+			<if test="platform!=null and platform!=''">
+				platform = #{platform} 
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}	
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and subbarcode=#{subbarcode}
+			</if>
+			<if test="analysis_date!=null and analysis_date!=''">
+			  and analysis_date = #{analysis_date}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getGeneFromThisGeneticMarkerVw" resultType="GeneticMarkerVw">
+		select distinct gene from this_genetic_marker_vw
+		<where>
+			<if test="platform!=null and platform!=''">
+				platform = #{platform} 
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}	
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and subbarcode=#{subbarcode}
+			</if>
+			<if test="analysis_date!=null and analysis_date!=''">
+			  and analysis_date = #{analysis_date}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getGeneFromThisChemicalMarkerVw" resultType="GeneticMarkerVw">
+		select distinct gene from this_chemical_marker_vw
+		<where>
+			<if test="platform!=null and platform!=''">
+				platform = #{platform} 
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}	
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and subbarcode=#{subbarcode}
+			</if>
+			<if test="analysis_date!=null and analysis_date!=''">
+			  and analysis_date = #{analysis_date}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getMET14ExonJump" resultType="GeneVariantParentVw">
+		select distinct gene_symbol,gene_variant, parent_variant
+		FROM nkb.gene_variant_parent_vw 
+		where gene_symbol ='MET' and parent_variant ='Exon 14 Skipping Mutation'
+			  and gene_variant_id = #{mapped_variant_id} 
+	</select>
+	<select id="getDetectionResultList" resultType="DetectionResult">
+		SELECT distinct gene, mutation_type, ori_variant,concat(ori_variant, ' 突变丰度=', mutFreq) as mutation_result FROM omics.this_genetic_marker_vw
+			where report_id = #{report_id} order by gene
+	</select>
+	
+</mapper>

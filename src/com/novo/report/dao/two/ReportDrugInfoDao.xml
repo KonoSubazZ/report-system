@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.ReportDrugInfoDao">
+	
+	<insert id="insertRpDrugInfo">
+		insert into rp_drug_info(drug_id,lang,drug_name,disease_id,cfda,approval_desc,modified,update_by,update_date)
+			values(#{drug_id},#{lang},#{drug_name},#{disease_id},#{cfda},#{approval_desc},0,#{update_by},sysdate())
+	</insert>
+	
+	<update id="updateRpDrugInfo">
+		update rp_drug_info 
+		<set>
+			<if test="drug_name !=null">
+				drug_name=#{drug_name},
+			</if>
+			<if test="cfda !=null">
+				cfda=#{cfda},
+			</if>
+			<if test="approval_desc !=null">
+				approval_desc=#{approval_desc},
+			</if>
+			<if test="modified !=null">
+				modified=#{modified},
+			</if>
+			<if test="update_by !=null">
+				update_by=#{update_by},
+			</if>
+			update_date = sysdate()
+		</set>
+		where drug_name=#{old_drug_name} and lang = #{lang} and disease_id = #{disease_id}
+	</update>
+	
+	<select id="selectOneByDrugChineseName" resultType="java.util.Map">
+	    SELECT record_id,drug_id,drug_name,disease_id,if(CFDA=1,concat(drug_name,'*'),drug_name) as drug_name2,CAST(cfda AS SIGNED) as cfda,approval_desc,modified,update_by,unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
+	     from rp_drug_info
+	    WHERE drug_name = #{drug_name} and lang = #{lang} and disease_id = #{disease_id}
+  	</select>
+	
+	<select id="selectMultiByDrugChineseName" resultType="java.util.Map">
+	    SELECT record_id,drug_id,drug_name,if(CFDA=1,concat(drug_name,'*'),drug_name) as drug_name2,CAST(cfda AS SIGNED) as cfda,approval_desc,modified,update_by,unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
+	     from rp_drug_info
+	    WHERE lang = #{lang} and drug_name IN
+	    <foreach collection="list" item="item" index="index"
+	             open="(" close=")" separator=",">
+	      #{item}
+	    </foreach>
+  	</select>
+  	
+  	<select id="selectOneNkbByDrugChineseName" resultType="java.util.Map">
+	    SELECT drug_id,drug_name,disease_id,if(CFDA=1,concat(drug_name,'*'),drug_name) as drug_name2,CAST(cfda AS SIGNED) as cfda,approved,drug_approval_description as approval_desc,unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
+	     from nkb_approved_drug_evw
+	    WHERE drug_name = #{drug_name} and lang = #{lang}
+  	</select>
+  	<select id="selectNkbListByDrugChineseName" resultType="java.util.Map">
+	    SELECT drug_id,drug_name,disease_id,if(CFDA=1,concat(drug_name,'*'),drug_name) as drug_name2,CAST(cfda AS SIGNED) as cfda,approved,drug_approval_description as approval_desc,unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
+	     from nkb_approved_drug_evw
+	    WHERE drug_name = #{drug_name} and lang = #{lang} and disease_id in
+	    <foreach collection="diseaseIdList" item="item" index="index"
+	             open="(" close=")" separator=",">
+	      #{item}
+	    </foreach>
+	    order by field(disease_id,
+		<foreach collection="diseaseIdList" item="item" index="index" open="" close="" separator=",">
+			#{item}
+		</foreach>
+		)
+  	</select>
+  	
+  	<select id="selectMultiNkbByDrugChineseName" resultType="java.util.Map">
+	    SELECT drug_id,drug_name,if(CFDA=1,concat(drug_name,'*'),drug_name) as drug_name2,CAST(cfda AS SIGNED) as cfda,drug_approval_description as approval_desc,unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
+	     from nkb_approved_drug_evw
+	    WHERE drug_name IN
+	    <foreach collection="list" item="item" index="index"
+	             open="(" close=")" separator=",">
+	      #{item}
+	    </foreach> and lang = #{lang}
+  	</select>
+  	
+  	<select id="getTotal" resultType="Long">
+		select count(*) from rp_drug_info
+		<where>
+			<if test="condition!=null and condition!=''">modified=1</if>
+			<if test="before_date!=null and before_date!=''">
+				and update_date &gt;= #{before_date}
+			</if>
+			<if test="after_date!=null and after_date!=''">
+				and update_date &lt; #{after_date}
+			</if>
+		</where>
+	</select>
+	
+	<!--分页查询 -->
+	<select id="selectRecordByPage" resultType="java.util.LinkedHashMap">
+		select record_id,drug_id,lang,drug_name,disease_id,cfda,approval_desc,modified,update_by,date_format(update_date,'%Y-%m-%d %H:%i:%s') as update_date 
+		from rp_drug_info
+		<where>
+			<if test="condition!=null and condition!=''">modified=1</if>
+			<if test="before_date!=null and before_date!=''">
+				and update_date &gt;= #{before_date}
+			</if>
+			<if test="after_date!=null and after_date!=''">
+				and update_date &lt; #{after_date}
+			</if>
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	
+	<select id="exportFile" resultType="java.util.LinkedHashMap">
+		select record_id,drug_id,lang,drug_name,disease_id,cfda,approval_desc,modified,update_by,date_format(update_date,'%Y-%m-%d %H:%i:%s') as update_date 
+		from rp_drug_info
+		<where>
+			<if test="condition!=null and condition!=''">modified=1</if>
+			<if test="before_date!=null and before_date!=''">
+				and update_date &gt;= #{before_date}
+			</if>
+			<if test="after_date!=null and after_date!=''">
+				and update_date &lt; #{after_date}
+			</if>
+		</where>
+	</select>
+</mapper>

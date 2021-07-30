@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.Pdl1ReportDao">
+	<!--分页查询 -->
+	<select id="getTotal" resultType="Long">
+		select count(*) from pdl1_report_vw
+		<where>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and subbarcode =#{subbarcode}
+			</if>
+			<if test="tested_date!=null and tested_date!=''">
+				and tested_date like '%' #{tested_date} '%'
+			</if>
+		</where>
+	</select>
+	<select id="getReportByPage" resultType="PCRReportVw">
+		select report_id, sample_id, subbarcode,barcode,test_id, platform,category,
+		test_name,tested_date, tested_by,checked_date,
+		checked_by,report_date,report_filename,report_file_path,created_by,created_date,update_by,update_date
+		from pdl1_report_vw
+		<where>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and subbarcode =#{subbarcode}
+			</if>
+			<if test="tested_date!=null and tested_date!=''">
+				and tested_date like '%' #{tested_date} '%'
+			</if>
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	<!-- 获取视图sampleIdList-->
+	<select id="getSubbarcodeListByVw" resultType="String">
+		select distinct subbarcode from pdl1_report_vw where subbarcode is not null
+	</select>
+	
+	<delete id="deletePdl1ByReportId">
+		 delete from report where report_id=#{report_id}
+	</delete>
+	
+	<!-- 根据id获取 PCRReportVw-->
+	<select id="getReportFileNameByReportId" resultType="String">
+		select report_filename from report where report_id =#{report_id}
+	</select>
+	
+	<!-- <insert id="insertPcrReport"  keyProperty="report_id" useGeneratedKeys="true" >
+		insert into report(sample_id, test_id,tested_date, tested_by,checked_date,
+			checked_by,report_date,report_filename,report_file_path,
+			created_by,created_date,update_by,update_date)
+		values(#{sample_id},#{test_id},#{tested_date},#{tested_by},#{checked_date},
+			#{checked_by},#{report_date},#{report_filename},#{report_file_path},
+			#{created_by},#{created_date},#{update_by},#{update_date})
+	</insert> -->
+	
+	
+</mapper>

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.FilterFusionDao">
+	<!--分页查询 -->
+	<select id="getIlluminaTotal" resultType="Long">
+		select distinct count(a.record_id) from fusion_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+			
+			<if test=" isPass_list!=null and isPass_list.length>0">
+			and ( '1' is null
+				<if test="pass!=null and pass!=''">
+					or (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					or (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					or a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					or a.mapped_variant_id is not null
+				</if>	
+				)
+			</if>
+			<if test=" isPass_one!=null and isPass_one != ''">
+				<if test="pass!=null and pass!=''">
+					and (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					and (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					and a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					and a.mapped_variant_id is not null
+				</if>					
+			</if> 
+			
+		</where>
+	</select>
+
+	<select id="getIlluminaFusionByPage" resultType="FilterIlluminaFusion">
+		SELECT distinct a.* FROM fusion_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+			
+			<if test=" isPass_list!=null and isPass_list.length>0">
+			and ( '1' is null
+				<if test="pass!=null and pass!=''">
+					or (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					or (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					or a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					or a.mapped_variant_id is not null
+				</if>	
+				)
+			</if>
+			<if test=" isPass_one!=null and isPass_one != ''">
+				<if test="pass!=null and pass!=''">
+					and (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					and (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					and a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					and a.mapped_variant_id is not null
+				</if>					
+			</if> 
+			
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	
+	<!--分页查询 -->
+	<select id="getLifeTotal" resultType="Long">
+		select distinct count(a.record_id) from life_fusion_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+			
+			<if test=" isPass_list!=null and isPass_list.length>0">
+			and ( '1' is null
+				<if test="pass!=null and pass!=''">
+					or (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					or (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					or a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					or a.mapped_variant_id is not null
+				</if>	
+				)
+			</if>
+			<if test=" isPass_one!=null and isPass_one != ''">
+				<if test="pass!=null and pass!=''">
+					and (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					and (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					and a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					and a.mapped_variant_id is not null
+				</if>					
+			</if> 
+			
+		</where>
+	</select>
+
+	<select id="getLifeFusionByPage" resultType="FilterLifeFusion">
+		SELECT distinct a.* FROM life_fusion_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+			
+			<if test=" isPass_list!=null and isPass_list.length>0">
+			and ( '1' is null
+				<if test="pass!=null and pass!=''">
+					or (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					or (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					or a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					or a.mapped_variant_id is not null
+				</if>	
+				)
+			</if>
+			<if test=" isPass_one!=null and isPass_one != ''">
+				<if test="pass!=null and pass!=''">
+					and (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					and (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					and a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					and a.mapped_variant_id is not null
+				</if>					
+			</if> 
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	<select id="getIlluminaFusionListByFileId" resultType="FilterIlluminaFusion">
+		select record_id,gene1,variant from fusion_file where file_id=#{fileId}
+	</select>
+	<select id="getLifeFusionListByFileId" resultType="FilterLifeFusion">
+		select record_id,gene,variant,ndf from life_fusion_file where file_id=#{fileId}
+	</select>
+	
+	<update id="updateIlluminaFusion">
+		update fusion_file 
+		set mapped_variant_id=#{mapped_variant_id},mapped_variant=#{mapped_variant},report=#{report}
+		where record_id=#{record_id}
+	</update>
+	
+	<update id="updateLifeFusion">
+		update life_fusion_file 
+		set report=#{report},mapped_variant_id=#{mapped_variant_id},mapped_variant=#{mapped_variant}
+		where record_id=#{record_id}
+	</update>
+	
+	<update id="updateIlluminaReport">
+		update fusion_file set report=#{0} where record_id=#{1}
+	</update>
+	<update id="updateFiltered">
+		update fusion_file set filtered_rationale=#{0} where record_id=#{1}
+	</update>
+	
+	<update id="updateLifeReport">
+		update life_fusion_file set report=#{0} where record_id=#{1}
+	</update>
+	
+	<update id="updateLifeFiltered">
+		update life_fusion_file set filtered_rationale=#{0} where record_id=#{1}
+	</update>
+</mapper>

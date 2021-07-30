@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.UserDao">
+	<select id="getTotal" resultType="Long">
+		select count(*) from user 
+	</select>
+	
+	<select id="getByPage" resultType="User">
+		select u.user_id,u.user_account,u.full_name,r.user_role_chinese,u.checking_status,u.created_date,u.update_date from user u, user_role r where u.role_id = r.role_id
+		limit #{pageNo},#{pageSize}
+	</select>
+	
+	<select id="login" resultType="User">
+      	select u.user_id,u.user_account,u.encoded_password,u.full_name,u.role_id,u.checking_status,r.user_role 
+      		from user u left join user_role r
+	      	on u.role_id=r.role_id
+	      	where u.user_account = #{user_account} and u.encoded_password = #{encoded_password}
+    </select>
+		
+	<insert id="save">
+		insert into user (user_account,encoded_password,full_name,created_date,checking_status,created_by,update_date,role_id) 
+		values(#{user_account},#{encoded_password},#{full_name},#{created_date},#{checking_status},#{created_by},#{update_date},#{role_id})
+	</insert>
+	
+	<select id="getById" resultType="User">
+     	select user_id,user_account,full_name,encoded_password,checking_status,role_id from user where user_id= #{user_id}
+     </select>
+     
+    <update id="update">
+     		update user set user_account=#{user_account},full_name=#{full_name},role_id=#{role_id},checking_status=#{checking_status},update_by=#{update_by},update_date=#{update_date} where user_id=#{user_id}
+    </update>
+    
+    <update id="updatepwd">
+      		update user set encoded_password=#{0} where user_id=#{1}
+    </update>
+	<insert id="saveUserLogging">
+		insert into user_logging (user_id,logon_time,session_id) values(#{user_id},sysdate(),#{session_id})
+	</insert>
+</mapper>

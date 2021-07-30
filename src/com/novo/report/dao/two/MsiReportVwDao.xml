@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.MsiReportVwDao">
+	<!--分页查询 -->
+	<select id="getTotal" resultType="Long">
+		select count(*) from msi_report_vw
+		<where>
+			<if test="barcode!=null and barcode!=''">
+				and barcode =#{barcode}
+			</if>
+			<if test="tested_date!=null and tested_date!=''">
+				and tested_date like '%' #{tested_date} '%'
+			</if>
+		</where>
+	</select>
+	<select id="getMsiReportByPage" resultType="MsiReportVw">
+		select report_id,barcode,test_id, platform,category,
+		test_name,tested_date, tested_by,checked_date,
+		checked_by,report_date,report_filename,report_file_path,created_by,created_date,update_by,update_date
+		from msi_report_vw
+		<where>
+			<if test="barcode!=null and barcode!=''">
+				and barcode =#{barcode}
+			</if>
+			<if test="tested_date!=null and tested_date!=''">
+				and tested_date like '%' #{tested_date} '%'
+			</if>
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	<!-- 获取视图getBarcodeListByVw-->
+	<select id="getBarcodeListByVw" resultType="String">
+		select distinct barcode from msi_report_vw where barcode is not null
+	</select>
+	
+	<!-- <insert id="insertPcrReport"  keyProperty="report_id" useGeneratedKeys="true" >
+		insert into report(sample_id, test_id,tested_date, tested_by,checked_date,
+			checked_by,report_date,report_filename,report_file_path,
+			created_by,created_date,update_by,update_date)
+		values(#{sample_id},#{test_id},#{tested_date},#{tested_by},#{checked_date},
+			#{checked_by},#{report_date},#{report_filename},#{report_file_path},
+			#{created_by},#{created_date},#{update_by},#{update_date})
+	</insert> -->
+	
+	
+</mapper>

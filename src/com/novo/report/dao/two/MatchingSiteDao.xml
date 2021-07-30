@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.MatchingSiteDao">
+	
+	<select id="getLifeFusionFileId" resultType="Integer">
+		SELECT distinct a.file_id FROM life_fusion_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getIlluminaFusionFileId" resultType="Integer">
+		SELECT distinct a.file_id FROM fusion_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getLifeCnvFileId" resultType="Integer">
+		SELECT distinct a.file_id FROM life_cnv_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getIlluminaCnvFileId" resultType="Integer">
+		SELECT distinct a.file_id FROM cnv_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getLifeChemicalFileId" resultType="Integer">
+		SELECT distinct a.file_id FROM life_chemical_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getLifeSnpIndelFileId" resultType="Integer">
+		SELECT distinct a.file_id FROM life_snp_indel_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getIlluminaSnpIndelFileId" resultType="Integer">
+		SELECT distinct a.file_id FROM omics.snp_indel_file a join omics.data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getIlluminaChemicalFileId" resultType="Integer">
+		SELECT distinct a.file_id FROM chemical_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.ReportCrDao">
+	
+	<insert id="insertRpCr" keyProperty="record_id" useGeneratedKeys="true">
+		insert into rp_cr(Gene,lang,Mutation,ori_mutation,Clinical_significance,GeneDesc,VarClianno,has_drug,updated_by,update_time,vardesc,suggestion,conclusion)
+			values(#{Gene},#{lang},#{Mutation},#{ori_mutation},
+				#{Clinical_significance},#{GeneDesc},#{VarClianno},#{has_drug},#{updated_by},sysdate(),#{vardesc},#{suggestion},#{conclusion})
+	</insert>
+	
+	<update id="updateRpCr">
+		update rp_cr 
+		<set>
+			<if test="Clinical_significance !=null">
+				Clinical_significance=#{Clinical_significance},
+			</if>
+			<if test="GeneDesc !=null">
+				GeneDesc=#{GeneDesc},
+			</if>
+			<if test="vardesc !=null">
+				vardesc=#{vardesc},
+			</if>
+			<if test="suggestion !=null">
+				suggestion=#{suggestion},
+			</if>
+			<if test="conclusion !=null">
+				conclusion=#{conclusion},
+			</if>
+			<if test="VarClianno !=null">
+				VarClianno=#{VarClianno},
+			</if>
+			<if test="has_drug !=null">
+				has_drug=#{has_drug},
+			</if>
+			<if test="updated_by !=null">
+				updated_by=#{updated_by},
+			</if>
+			update_time = sysdate()
+		</set>
+		where record_id=#{record_id}
+	</update>
+	
+	<update id="updateRpCrById">
+		update rp_cr set check_date = sysdate() where record_id=#{record_id}
+	</update>
+	
+	<update id="updateCheckDate">
+		update rp_cr set check_date = null where record_id=#{record_id}
+	</update>
+	
+	<select id="getTotal" resultType="Long">
+		select count(*) from rp_cr
+		<where>
+			1 = 1
+			<if test="before_date!=null and before_date!=''">
+				and update_time &gt;= #{before_date}
+			</if>
+			<if test="after_date!=null and after_date!=''">
+				and update_time &lt; #{after_date}
+			</if>
+		</where>
+	</select>
+	
+	<!--分页查询 -->
+	<select id="selectRecordByPage" resultType="java.util.LinkedHashMap">
+		select record_id,Gene,lang,Mutation,ori_mutation,Clinical_significance,GeneDesc,VarClianno,has_drug,updated_by,date_format(update_time,'%Y-%m-%d %H:%i:%s') as update_time,date_format(check_date,'%Y-%m-%d %H:%i:%s') as check_date 
+		from rp_cr
+		<where>
+			1 = 1
+			<if test="before_date!=null and before_date!=''">
+				and update_time &gt;= #{before_date}
+			</if>
+			<if test="after_date!=null and after_date!=''">
+				and update_time &lt; #{after_date}
+			</if>
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	
+	<update id="updateGeneDescById">
+		update rp_cr SET GeneDesc=#{gene_desc}, updated_by=#{user}, update_time=sysdate(),check_date=null where record_id=#{record_id}
+	</update>
+	
+	<select id="exportFile" resultType="java.util.LinkedHashMap">
+		select 
+		  Gene,
+		  lang,
+		  Mutation,
+		  ori_mutation,
+		  case Clinical_significance
+		  WHEN '1' then '致病'
+		  WHEN '2' THEN '可能致病'
+		  WHEN '3' THEN '临床意义未明'
+		  WHEN '4' THEN '可能良性'
+		  WHEN '5' THEN '良性'
+		  END AS Clinical_significance,
+		  GeneDesc,
+		  VarClianno,
+		  has_drug,
+		  updated_by,
+		  date_format(update_time, '%Y-%m-%d %H:%i:%s') AS update_time,
+		  date_format(check_date,'%Y-%m-%d %H:%i:%s') as check_date
+  		from rp_cr
+  		<where>
+			1 = 1
+			<if test="before_date!=null and before_date!=''">
+				and update_time &gt;= #{before_date}
+			</if>
+			<if test="after_date!=null and after_date!=''">
+				and update_time &lt; #{after_date}
+			</if>
+		</where>
+	</select>
+</mapper>

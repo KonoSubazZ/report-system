@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.FalsePositiveDao">
+	<!--分页查询 -->
+	<select id="getfalsePositiveTotal" resultType="Long">
+		select count(*) from nkb.false_positive
+		<where>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+		</where>
+	</select>
+	<select id="getfalsePositiveByPage" resultType="FalsePositive">
+		select id,platform,gene,chrom,start,end,aachange,matching_table,created_by,created_date from nkb.false_positive
+		<where>
+			<if test="gene!=null and gene!=''">
+				and gene =#{gene}
+			</if>
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	<insert id="saveFalsePositive">
+		insert into nkb.false_positive(platform,gene,chrom,start,end,aachange,matching_table,created_by,created_date)
+		values(#{platform},#{gene},#{chrom},#{start},#{end},#{aachange},
+			#{matching_table},#{created_by},#{created_date})
+	</insert>
+	
+	<delete id="deletefalsePositive">
+		delete from nkb.false_positive where id=#{id}
+	</delete>
+	
+	<select id="getFalsePositiveById" resultType="FalsePositive">
+		select id,platform,gene,chrom,start,end,aachange,matching_table,created_by,created_date from nkb.false_positive
+		where id = #{id}
+	</select>
+	
+	 <update id="updateFalsePositive">
+     		update nkb.false_positive set platform=#{platform},gene=#{gene},chrom=#{chrom},start=#{start},end=#{end},aachange=#{aachange},matching_table=#{matching_table} where id=#{id}
+    </update>
+    
+    <select id="getFalsePositiveAll" resultType="FalsePositive">
+		select id,platform,gene,chrom,start,end,aachange,matching_table,created_by,created_date from nkb.false_positive
+	</select>
+</mapper>

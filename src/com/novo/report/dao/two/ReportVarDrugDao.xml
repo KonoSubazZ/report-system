@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.ReportVarDrugDao">
+	
+	<insert id="insertRpVarDrug" keyProperty="record_id" useGeneratedKeys="true">
+		insert into rp_var_drug(gene,lang,variant,ori_variant,disease_id,var_drug_desc,drugsA,drugsB,drugsC,drugsD,resistant_drugs,clinical_trial,modified,update_by,update_date)
+			values(#{gene},#{lang},#{variant},#{ori_variant},#{disease_id},#{var_drug_desc},#{drugsA},#{drugsB},#{drugsC},#{drugsD},#{resistant_drugs},#{clinical_trial},#{modified},#{update_by},sysdate())
+	</insert>
+	
+	<update id="updateRpVarDrug">
+		update rp_var_drug 
+		<set>
+			<if test="var_drug_desc !=null">
+				var_drug_desc=#{var_drug_desc},
+			</if>
+			<if test="drugsA !=null">
+				drugsA=#{drugsA},
+			</if>
+			<if test="drugsB !=null">
+				drugsB=#{drugsB},
+			</if>
+			<if test="drugsC !=null">
+				drugsC=#{drugsC},
+			</if>
+			<if test="drugsD !=null">
+				drugsD=#{drugsD},
+			</if>
+			<if test="resistant_drugs !=null">
+				resistant_drugs=#{resistant_drugs},
+			</if>
+			<if test="clinical_trial !=null">
+				clinical_trial=#{clinical_trial},
+			</if>
+			<if test="modified !=null">
+				modified=#{modified},
+			</if>
+			<if test="update_by !=null">
+				update_by=#{update_by},
+			</if>
+			update_date = sysdate(),
+			check_date = #{check_date}
+		</set>
+		where gene = #{gene} and ori_variant = #{ori_variant} and disease_id = #{disease_id} and lang = #{lang}
+	</update>
+	
+	<update id="updateRpVarDrugById">
+		update rp_var_drug set check_date = sysdate() where record_id=#{record_id}
+	</update>
+	
+	<update id="updateModifiedById">
+		update rp_var_drug set modified = 1 where record_id=#{record_id}
+	</update>
+	
+	<update id="updateCheckDate">
+		update rp_var_drug set check_date = null where record_id=#{record_id}
+	</update>
+	
+	<select id="getTotal" resultType="Long">
+		select count(*) from rp_var_drug_evw
+		<where>
+			<if test="condition!=null and condition!=''">modified=1</if>
+			<if test="before_date!=null and before_date!=''">
+				and update_date &gt;= #{before_date}
+			</if>
+			<if test="after_date!=null and after_date!=''">
+				and update_date &lt; #{after_date}
+			</if>
+		</where>
+	</select>
+	
+	<!--分页查询 -->
+	<select id="selectRecordByPage" resultType="java.util.LinkedHashMap">
+		select record_id,lang, gene,variant,ori_variant,disease_id,disease_name_chinese,var_drug_desc,drugsA,drugsB,drugsC,drugsD,resistant_drugs,clinical_trial,modified,update_by,date_format(update_date,'%Y-%m-%d %H:%i:%s') as update_date,date_format(check_date,'%Y-%m-%d %H:%i:%s') as check_date 
+		from rp_var_drug_evw
+		<where>
+			<if test="condition!=null and condition!=''">modified=1</if>
+			<if test="before_date!=null and before_date!=''">
+				and update_date &gt;= #{before_date}
+			</if>
+			<if test="after_date!=null and after_date!=''">
+				and update_date &lt; #{after_date}
+			</if>
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	
+	<select id="exportFile" resultType="java.util.LinkedHashMap">
+		select gene,lang,variant,ori_variant,disease_id,disease_name_chinese,var_drug_desc,drugsA,drugsB,drugsC,drugsD,resistant_drugs,clinical_trial,modified,update_by,date_format(update_date,'%Y-%m-%d %H:%i:%s') as update_date ,date_format(check_date,'%Y-%m-%d %H:%i:%s') as check_date
+		from rp_var_drug_evw
+		<where>
+			<if test="condition!=null and condition!=''">modified=1</if>
+			<if test="before_date!=null and before_date!=''">
+				and update_date &gt;= #{before_date}
+			</if>
+			<if test="after_date!=null and after_date!=''">
+				and update_date &lt; #{after_date}
+			</if>
+		</where>
+	</select>
+</mapper>

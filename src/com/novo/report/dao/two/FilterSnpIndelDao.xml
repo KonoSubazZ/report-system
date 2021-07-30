@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.FilterSnpIndelDao">
+	<!--分页查询 -->
+	<select id="getTotal" resultType="Long">
+		select distinct count(a.record_id) from snp_indel_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+			<if test="Gene_knownGene!=null and Gene_knownGene!=''">
+				and a.Gene_knownGene =#{Gene_knownGene}
+			</if>
+			<if test=" isPass_list!=null and isPass_list.length>0">
+			and ( '1' is null
+				<if test="pass!=null and pass!=''">
+					or (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					or (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					or a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					or a.mapped_variant_id is not null
+				</if>	
+				)
+			</if>
+			<if test=" isPass_one!=null and isPass_one != ''">
+				<if test="pass!=null and pass!=''">
+					and (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					and (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					and a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					and a.mapped_variant_id is not null
+				</if>					
+			</if> 
+			
+		</where>
+	</select>
+	<resultMap type="FilterIlluminaSnpIndel" id="Filter">
+		<result column="1000g2012apr_all" property="e1000g2012apr_all"/>
+	</resultMap>
+	<select id="getIlluminaSnpIndelByPage" resultMap="Filter">
+		SELECT distinct a.* FROM omics.snp_indel_file a join omics.data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+			<if test="Gene_knownGene!=null and Gene_knownGene!=''">
+				and a.Gene_knownGene =#{Gene_knownGene}
+			</if>
+			<if test=" isPass_list!=null and isPass_list.length>0">
+			and ( '1' is null
+				<if test="pass!=null and pass!=''">
+					or (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					or (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					or a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					or a.mapped_variant_id is not null
+				</if>	
+				)
+			</if>
+			<if test=" isPass_one!=null and isPass_one != ''">
+				<if test="pass!=null and pass!=''">
+					and (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					and (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					and a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					and a.mapped_variant_id is not null
+				</if>					
+			</if> 
+			
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	
+	<!--Life分页查询 -->
+	<select id="getLifeSnpIndelTotal" resultType="Long">
+		select distinct count(a.record_id) from life_snp_indel_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+			<if test="Gene_knownGene!=null and Gene_knownGene!=''">
+				and a.gene =#{Gene_knownGene}
+			</if>
+			<if test=" isPass_list!=null and isPass_list.length>0">
+			and ( '1' is null
+				<if test="pass!=null and pass!=''">
+					or (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					or (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					or a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					or a.mapped_variant_id is not null
+				</if>	
+				)
+			</if>
+			<if test=" isPass_one!=null and isPass_one != ''">
+				<if test="pass!=null and pass!=''">
+					and (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					and (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					and a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					and a.mapped_variant_id is not null
+				</if>					
+			</if> 
+		</where>
+	</select>
+
+	<select id="getLifeSnpIndelByPage" resultType="FilterLifeSnpIndel">
+		SELECT distinct a.* FROM life_snp_indel_file a join data_file_status b ON b.file_id = a.file_id
+		<where>
+			<if test="platform!=null and platform!=''">
+				and b.platform=#{platform}
+			</if>
+			
+			<if test="analysis_date!=null and analysis_date!=''">
+				and b.analysis_date= #{analysis_date} 
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and b.subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and b.product_name =#{product_name}
+			</if>
+			<if test="Gene_knownGene!=null and Gene_knownGene!=''">
+				and a.gene =#{Gene_knownGene}
+			</if>
+			<if test=" isPass_list!=null and isPass_list.length>0">
+			and ( '1' is null
+				<if test="pass!=null and pass!=''">
+					or (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					or (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					or a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					or a.mapped_variant_id is not null
+				</if>	
+				)
+			</if>
+			<if test=" isPass_one!=null and isPass_one != ''">
+				<if test="pass!=null and pass!=''">
+					and (a.report =1 or a.report is null or report='')
+				</if>
+				<if test="passNo!=null and passNo!=''">
+					and (a.report =0 and report!='')
+				</if>
+				<if test="mateNo!=null and mateNo!=''">
+					and a.mapped_variant_id is null
+				</if>
+				<if test="mate!=null and mate!=''">
+					and a.mapped_variant_id is not null
+				</if>					
+			</if> 
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	
+	<update id="changeReportById">
+		update snp_indel_file set report=#{report} where record_id=#{record_id}
+	</update>
+	
+	<update id="changeFilteredRationaleById">
+		update snp_indel_file set filtered_rationale=#{filtered_rationale} where record_id=#{record_id}
+	</update>
+	
+	<select id="getLifeSnpIndelListByFileId" resultType="FilterLifeSnpIndel">
+		select record_id,gene,chr,start,end,ref,alt,depth,fdp,fdp4,f_freq,genotype,
+			   remark,report,aachange,variant,ori_variant,filtered_rationale,
+			   mapped_variant_id,mapped_variant
+		from life_snp_indel_file where file_id=#{fileId}
+	</select>
+	
+	<select id="getIlluminaSnpIndelListByFileId" resultType="FilterIlluminaSnpIndel">
+		select record_id,chr,start,end,ref,alt,Gene_knownGene,variant,mutFreq from snp_indel_file where file_id=#{fileId}
+	</select>
+	
+	<update id="updateIlluminaSnpIndel">
+		update snp_indel_file 
+		set mapped_variant_id=#{mapped_variant_id},mapped_variant=#{mapped_variant}
+		where record_id=#{record_id}
+	</update>
+	
+	<update id="updateLifeSnpIndel">
+		update life_snp_indel_file 
+		set report=#{report},filtered_rationale=#{filtered_rationale},mapped_variant_id=#{mapped_variant_id},mapped_variant=#{mapped_variant}
+		where record_id=#{record_id}
+	</update>
+	
+	<update id="updateIlluminaReport">
+		update snp_indel_file set report=#{0} where record_id=#{1}
+	</update>
+	<update id="updateIlluminaReportNull">
+		update snp_indel_file set report=Null where record_id=#{id}
+	</update>
+	
+	<update id="updateFiltered">
+		update snp_indel_file set filtered_rationale=#{0} where record_id=#{1}
+	</update>
+	
+	<update id="updateLifeReport">
+		update life_snp_indel_file set report=#{0} where record_id=#{1}
+	</update>
+	<update id="updateLifeReportNull">
+		update life_snp_indel_file set report=Null where record_id=#{id}
+	</update>
+	
+	<update id="updateLifeFiltered">
+		update life_snp_indel_file set filtered_rationale=#{0} where record_id=#{1}
+	</update>
+	
+	<select id="getSnpIndelForReport" resultType="ForReport">
+		select distinct a.product_id,c.path_name, a.sample_type, a.stat_param_id, b.param_name, a.operator1, a.value1
+		from omics.stat_param_standard a join omics.stat_parameter b on b.stat_param_id = a.stat_param_id
+		join omics.product c on c.product_id = a.product_id
+		where b.category = 'Filtering' and b.param_name = 'allele_frequency_cutoff' 
+			  and c.path_name = #{path_name} and a.sample_type = #{sample_type}
+	</select>
+	
+	<select id="getLifeCnvForReport" resultType="ForReport">
+		SELECT DISTINCT a.product_id,c.path_name, a.sample_type, a.stat_param_id, b.param_name, a.operator1, a.value1					
+			FROM stat_param_standard a join stat_parameter b ON b.stat_param_id = a.stat_param_id						
+			join product c ON c.product_id = a.product_id
+			where b.category = 'Filtering' and b.param_name like 'copy_number_%' and
+			c.path_name = #{path_name} and a.sample_type = #{sample_type}
+	</select>
+	
+	<select id="getIlluminaCnvForReport" resultType="ForReport">
+		SELECT DISTINCT a.product_id,c.path_name, a.sample_type, a.stat_param_id, b.param_name, a.operator1, a.value1					
+			FROM stat_param_standard a join stat_parameter b ON b.stat_param_id = a.stat_param_id						
+			join product c ON c.product_id = a.product_id
+			where b.category = 'Filtering' and b.param_name='copy_number_amplification' and
+			c.path_name = #{path_name} and a.sample_type = #{sample_type}
+	</select>
+	
+	<select id="getChemicalForReport" resultType="ForReport">
+		SELECT DISTINCT a.product_id,c.path_name, a.sample_type, a.stat_param_id, b.param_name, a.operator1, a.value1					
+			FROM stat_param_standard a join stat_parameter b ON b.stat_param_id = a.stat_param_id						
+			join product c ON c.product_id = a.product_id
+			where b.category = 'Filtering' and b.param_name = 'allele_frequency_cutoff' and
+			c.path_name = #{path_name} and a.sample_type = #{sample_type}
+	</select>
+	
+	<select id="getIlluminaGene_knownGene" resultType="String">
+		select DISTINCT Gene_knownGene from snp_indel_file WHERE Gene_knownGene is not NULL and Gene_knownGene != ''
+	</select>
+	
+	<select id="getLifeGene" resultType="String">
+		select DISTINCT gene from life_snp_indel_file WHERE gene is not NULL and gene != ''
+	</select>
+</mapper>

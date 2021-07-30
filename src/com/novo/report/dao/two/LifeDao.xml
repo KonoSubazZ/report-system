@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.LifeDao">
+	<!--分页查询 -->
+	<select id="getTotal" resultType="Long">
+		select count(file_id) from data_file_status
+		<where>
+			platform=#{platform}
+			<if test="analysis_date!=null and analysis_date!=''">
+				and analysis_date like '%' #{analysis_date} '%'
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+		</where>
+	</select>
+	<select id="getDataFileStatusByPage" resultType="DataFileStatus">
+		select file_id,file_path,file_name,data_type,file_type,file_text,analysis_date,analyzer,barcode,subbarcode,product_name,platform,status,message,created_by,created_date,update_by,update_date
+		from data_file_status
+		<where>
+			platform=#{platform}
+			<if test="analysis_date!=null and analysis_date!=''">
+				and analysis_date like '%' #{analysis_date} '%'
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and product_name =#{product_name}
+			</if>
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+	
+	<insert id="addAnalysisReport"  keyProperty="report_id" useGeneratedKeys="true" >
+		insert into analysis_report (subbarcode,platform,product_name,analysis_date,analyzer,status,created_by,created_date,
+		update_date)values(#{subbarcode},#{platform},#{product_name},#{analysis_date},#{analyzer},#{status},#{created_by},#{created_date},#{update_date})
+	</insert>
+	
+	<delete id="deleteParseFile">
+		delete from data_file_status where file_id=#{file_id}
+	</delete>
+	
+	<select id="getStatus" resultType="String">
+		select status from analysis_report where report_id=#{id}
+	</select>
+	<select id="getPrimaryCancerIdByRID" resultType="Integer">
+		select primary_cancer_id from analysis_report where report_id=#{report_id}
+	</select>
+	<update id="editStatus">
+		update analysis_report set status=#{status}
+		<if test="bioinfo_checker!=null and bioinfo_checker!=''">
+			,bioinfo_checker=#{bioinfo_checker},bioinfo_check_time=sysdate()
+		</if>
+		<if test="report_checker!=null and report_checker!=''">
+			,report_checker=#{report_checker},report_check_time=sysdate()
+		</if>
+		<if test="report_sender!=null and report_sender!=''">
+			,report_sender=#{report_sender},report_send_time=sysdate()
+		</if>
+		 where report_id=#{report_id}
+	</update>
+	<update id="updatePrimaryCancerIdBySubbarcode">
+		update omics.analysis_report a set a.primary_cancer_id = (select distinct  c.class_id
+			from nkb.disease aa join nkb.nkb_do_tree b on aa.do_id = b.id
+			join omics.disease_class c on b.parent_id = c.do_id and c.disease_area = 'onco'
+			join omics.sample_file s on aa.disease_name_chinese = s.clinicalremark
+			where s.subbarcode = a.subbarcode) 
+		where a.primary_cancer_id is null and a.subbarcode = #{0} and a.report_id=#{1}
+	</update>
+	<select id="getClassIdCount" resultType="Integer">
+		select distinct count(c.class_id)
+			from nkb.disease aa join nkb_do_tree b on aa.do_id = b.id
+			join disease_class c on b.parent_id = c.do_id and c.disease_area = 'onco'
+			join sample_file s on aa.disease_name_chinese = s.clinicalremark
+			where s.subbarcode = #{subbarcode}
+	</select>
+	<select id="getDiseaseClass" resultType="DiseaseClass">
+		select class_id,disease_class_chinese from disease_class where class_id=(select primary_cancer_id from analysis_report where report_id=#{report_id})
+	</select>
+	
+	<select id="getDiseaseClassFromSampleInfo" resultType="DiseaseClass">
+		select class_id,disease_class_chinese from disease_class
+		where disease_class_chinese IN (select disease_type from sample_file where subbarcode IN (select subbarcode from analysis_report where report_id=#{report_id}))
+		and disease_area = 'onco' limit 1
+	</select>
+	
+	<update id="updatePrimaryCancerId">
+		update analysis_report  set primary_cancer_id =#{0} where report_id = #{1}
+	</update>
+	<update id="updateProductId">
+		update analysis_report set product_id =#{0} where report_id = #{1}
+	</update>
+	<select id="getDiseaseClassChineseById" resultType="String">
+		select disease_class_chinese from disease_class where class_id=#{primary_cancer_id}
+	</select>
+	<select id="getProduct" resultType="Product">
+		select product_id,product_name_chinese from product where product_id=(select product_id from analysis_report where report_id=#{report_id})
+	</select>
+	<select id="getProductByPathName" resultType="Product">
+		select product_id,product_name_chinese from product where path_name=#{path_name} limit 1
+	</select>
+</mapper>
