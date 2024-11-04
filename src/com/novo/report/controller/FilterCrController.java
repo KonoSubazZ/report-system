@@ -18,7 +18,11 @@ public class FilterCrController {
 	@RequestMapping("illuminaCrList")
 	public String illuminaFusionList(CurrentNgsAvailableData currentNgsAvailable, Model model) {
 		model.addAttribute("currentNgsAvailable", currentNgsAvailable);
-		return "ngs/illuminaCrList";
+		if (currentNgsAvailable.getFlag() != null && currentNgsAvailable.getFlag() == 1) {
+			return "ngs/illuminaCrList1";
+		} else {
+			return "ngs/illuminaCrList";
+		}
 	}
 	
 	// 分页查询

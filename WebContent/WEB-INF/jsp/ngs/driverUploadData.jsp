@@ -220,6 +220,44 @@
 			        </div>
 				</div>
 		    </td>
+			<td>
+				<div class="form-group">
+					<div class="label" style="width:75px">
+						<label></label>
+					</div>
+					<div class="field">
+						<button id="deletePendingAndError" class="button bg-main icon-check-square-o" type="button" style="width: 240px"> 删除Pending/Error状态</button>
+						<span id="message2" style="color: red;font-size: 14px;margin-left: 30px;"></span>
+						<script type="text/javascript">
+							$(function(){
+								$("#deletePendingAndError").click(function(){
+									$.ajax({
+										cache: false,
+										type: "POST",
+										url:"${pageContext.request.contextPath}/driver/deletePendingAndError", //把表单数据发送到ajax.jsp
+										data:{
+											"analysis_date":$("#analysis_date").val(),
+										},
+										beforeSend:function(){
+											$("#message2").text("正在更新请稍等...");
+											return true;
+										},
+										success:function(data){
+											$("#message2").text("");
+											if(data){
+												alert("删除成功！");
+												displayData(0);
+											}else{
+												alert("删除失败！");
+											}
+										}
+									});
+								});
+							});
+						</script>
+					</div>
+				</div>
+			</td>
 		    <c:if test="${user.role_id == 6 || user.role_id == 1}">
 		    <td>
 				<div class="form-group">

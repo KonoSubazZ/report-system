@@ -228,10 +228,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		set report=#{report},mapped_variant_id=#{mapped_variant_id},mapped_variant=#{mapped_variant}
 		where record_id=#{record_id}
 	</update>
-	
+
 	<update id="updateIlluminaReport">
 		update fusion_file set report=#{0} where record_id=#{1}
 	</update>
+	<update id="updateIlluminaReportNull">
+		update fusion_file set report=NULL where record_id=#{1}
+	</update>
+
 	<update id="updateFiltered">
 		update fusion_file set filtered_rationale=#{0} where record_id=#{1}
 	</update>
@@ -242,5 +246,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<update id="updateLifeFiltered">
 		update life_fusion_file set filtered_rationale=#{0} where record_id=#{1}
+	</update>
+
+	<update id="updateGene">
+		update fusion_file set gene=#{0} where record_id=#{1}
+	</update>
+
+	<update id="updateVariant">
+		update fusion_file set gene1=#{gene1},bp1=#{bp1},gene2=#{gene2},bp2=#{bp2},variant=#{variant},ori_variant=#{variant},chromosome1=#{chromosome2},softclip1=#{softclip2},sclip1_info=#{sclip2_info},chromosome2=#{chromosome1},softclip2=#{softclip1},sclip2_info=#{sclip1_info} where record_id=#{record_id}
 	</update>
 </mapper>

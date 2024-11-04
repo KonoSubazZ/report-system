@@ -26,6 +26,18 @@
 <script src="${pageContext.request.contextPath}/js/tools.js"></script>
 <style type="text/css">
 	td{vertical-align: middle;}
+	input::-webkit-input-placeholder{
+		 color:red;
+	}
+	input::-moz-placeholder{   /* Mozilla Firefox 19+ */
+		color:red;
+	}
+	input:-moz-placeholder{    /* Mozilla Firefox 4 to 18 */
+		color:red;
+	}
+	input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
+		color:red;
+	}
 </style>
 </head>
 <body>
@@ -49,6 +61,7 @@
 		<input type="hidden" id="created_date" name="created_date" />
 		<input type="hidden" id="update_date" name="update_date">
 		<input type="hidden" name="test_id" value="9">
+		<input type="hidden" name="moduleFlag" value="${moduleFlag}">
 		<script type="text/javascript">
 			$(function(){
 				getTime("update_date");
@@ -100,6 +113,36 @@
 			          })
 		          </script>
 		          <div class="tips"></div>
+		        </div>
+		       </div>
+	       </td>
+	       <td>
+		       <div class="form-group">
+		        <div class="label" style="width:75px">
+				 <label>化疗癌种：</label>
+				</div>
+				<div class="field">
+				  <input type="text" id="chem_cancer" name="chem_cancer" class="input w50" value="${chem_cancer}" style="cursor: pointer;" placeholder="请选择化疗癌种" data-validate="required:请选择化疗癌种" />
+					<script type="text/javascript">
+						$(function(){
+							var data = [{name: "非小细胞肺癌"}, {name: "结直肠癌"}, {name: "乳腺癌"}, {name: "胃癌"}, {name: "卵巢癌"}, {name: "睾丸癌"}, {name: "骨肉瘤"}, {name: "前列腺癌"}, {name: "胰腺癌"}, {name: "食管癌"}, {name: "间皮瘤"}, {name: "小细胞肺癌"}, {name: "其他癌种"}];
+							$('#chem_cancer').autocomplete(data, {
+								max : data.length, //列表里的条目数
+								minChars : 0, //自动完成激活之前填入的最小字符
+								width : 288, //提示的宽度，溢出隐藏
+								scrollHeight : 300, //提示的高度，溢出显示滚动条
+								matchContains : true, //包含匹配，就是data参数里的数据，是否只要包含文本框里的数据就显示
+								autoFill : false, //自动填充
+								formatItem : function(row, i, max) {
+									return row.name;
+								},
+								formatResult : function(row) {
+									return row.name;
+								}
+							});
+						})
+					</script>
+				<div class="tips"></div>
 		        </div>
 		       </div>
 	       </td>
@@ -155,6 +198,36 @@
 			        </div>
 			       </div>
 		      </td>
+			 <td>
+				 <div class="form-group">
+					 <div class="label" style="width:75px">
+						 <label>靶向癌种：</label>
+					 </div>
+					 <div class="field">
+						 <input type="text" id="target_cancer" name="target_cancer" class="input w50" value="${target_cancer}" style="cursor: pointer;" placeholder="请选择靶向癌种" data-validate="required:请选择靶向癌种" />
+						 <script type="text/javascript">
+							 $(function(){
+								 var data = [{name: "泛癌种"}, {name: "肺癌"}, {name: "结直肠癌"}, {name: "乳腺癌"}];
+								 $('#target_cancer').autocomplete(data, {
+									 max : data.length, //列表里的条目数
+									 minChars : 0, //自动完成激活之前填入的最小字符
+									 width : 288, //提示的宽度，溢出隐藏
+									 scrollHeight : 300, //提示的高度，溢出显示滚动条
+									 matchContains : true, //包含匹配，就是data参数里的数据，是否只要包含文本框里的数据就显示
+									 autoFill : false, //自动填充
+									 formatItem : function(row, i, max) {
+										 return row.name;
+									 },
+									 formatResult : function(row) {
+										 return row.name;
+									 }
+								 });
+							 })
+						 </script>
+						 <div class="tips"></div>
+					 </div>
+				 </div>
+			 </td>
 	     </tr>
 	     <tr>
 	     	<td>
@@ -163,16 +236,18 @@
 		          <label>报告模板：</label>
 		        </div>
 		        <div class="field">
-		          <input type="text" class="input w50"  value="" id="template_name" name="template_name" placeholder="请选择报告模板"  data-validate="required:请选择报告模板" />
+		          <%--<input type="text" class="input w50"  value="" id="template_name" name="template_name" placeholder="请选择报告模板"  data-validate="required:请选择报告模板" />--%>
+		          <input type="text" class="input w50"  value="" id="template_name" name="template_name" placeholder="请选择报告模板" />
 		          <input type="hidden" id="template_id" name="template_id">
 		          <div class="tips"></div>
+                    <input id="mybtn" type="button" onclick="moreTemplate();" value="更多" />
 		          <script type="text/javascript">
 		          	$(function(){
 		          		$.post("${pageContext.request.contextPath}/autoComplete/getReportTemplateIdAndName", 
-		          			{"product_id":"${product.product_id}"},
+		          			{"product_id":"${product.product_id}","subbarcode":"${currentNgsAvailableData.subbarcode}","flag":"1"},
 		          			function(data){
 		          			$('#template_name').autocomplete(data, {
-		          				max : 20, //列表里的条目数
+		          				max : false, //列表里的条目数
 		          				minChars : 0, //自动完成激活之前填入的最小字符
 		          				width : 288, //提示的宽度，溢出隐藏
 		          				scrollHeight : 300, //提示的高度，溢出显示滚动条
@@ -194,9 +269,37 @@
 		          			});
 		          		},"json");
 		          	});
+					function moreTemplate(){
+						$.post("${pageContext.request.contextPath}/autoComplete/getReportTemplateIdAndName",
+								{"product_id":"${product.product_id}","subbarcode":"${currentNgsAvailableData.subbarcode}","flag":"2"},
+								function(data){
+									$('#template_name').autocomplete(data, {
+										max : false, //列表里的条目数
+										minChars : 0, //自动完成激活之前填入的最小字符
+										width : 288, //提示的宽度，溢出隐藏
+										scrollHeight : 300, //提示的高度，溢出显示滚动条
+										matchContains : true, //包含匹配，就是data参数里的数据，是否只要包含文本框里的数据就显示
+										autoFill : false, //自动填充
+										formatItem : function(row, i, max) {
+											return row.name;
+										},
+										formatResult : function(row) {
+											return row.name;
+										}
+									}).result(function(event, row, formatted) {
+										$("#template_id").val(row.id);
+										if(row.name=='肺癌10基因报告模板-医生版' || row.name=='肠癌10基因模板-组织版'){
+											$(".pic").prop("hidden",false);
+										}else{
+											$(".pic").prop("hidden",true);
+										}
+									});
+								},"json");
+						document.getElementById('mybtn').style.backgroundColor='red';
+					}
 		          </script>
 		        </div>
-		      </div>  
+		      </div>
 		    </td>
 		    <td>
 		       <div class="form-group">
@@ -217,7 +320,15 @@
 						<label>检测人：</label>
 					</div>
 					<div class="field">
-						<input type="text" class="input w50" value="" name="tested_by" placeholder="请输入检测人" data-validate="required:请输入检测人" />
+						<c:choose>
+							<c:when test="${user.user_account=='houlitao'}"><input type="text" class="input w50" value="1" name="tested_by" placeholder="盖章版请输入检测人" /></c:when>
+							<c:when test="${user.user_account=='liuxiaomin'}"><input type="text" class="input w50" value="2" name="tested_by" placeholder="盖章版请输入检测人" /></c:when>
+							<c:when test="${user.user_account=='sunpeiya'}"><input type="text" class="input w50" value="3" name="tested_by" placeholder="盖章版请输入检测人" /></c:when>
+							<c:when test="${user.user_account=='gaoyuan'}"><input type="text" class="input w50" value="4" name="tested_by" placeholder="盖章版请输入检测人" /></c:when>
+							<c:when test="${user.user_account=='liulijie'}"><input type="text" class="input w50" value="5" name="tested_by" placeholder="盖章版请输入检测人" /></c:when>
+							<c:when test="${user.user_account=='wangyiping'}"><input type="text" class="input w50" value="6" name="tested_by" placeholder="盖章版请输入检测人" /></c:when>
+							<c:otherwise><input type="text" class="input w50" value="" name="tested_by" placeholder="盖章版请输入检测人" /></c:otherwise>
+						</c:choose>
 						<div class="tips"></div>
 					</div>
 				</div>  
@@ -241,14 +352,14 @@
 						<label>复核人：</label>
 					</div>
 					<div class="field">
-						<input type="text" class="input w50" value=""  id="checked_by" name="checked_by" placeholder="请输入复核人" data-validate="required:请输入复核人" />
+						<input type="text" class="input w50" value=""  id="checked_by" name="checked_by" placeholder="盖章版请输入复核人" />
 						<div class="tips"></div>
 					</div>
 				</div> 
 			</td> 
 			<td>
 		       <div class="form-group">
-		        <div class="label">
+		        <div class="label" style="width:75px">
 		          <label>复核时间：</label>
 		        </div>
 		        <div class="field">
@@ -333,18 +444,22 @@
 		        		$("#reportBtn").click(function(){
 		        			$("#ngsForm").validate({
 	   	    					rules:{
-	   	    						"tested_by":{"required":true},"tested_date":{"required":true},
-	   	    						"checked_by":{"required":true},"checked_date":{"required":true},
+	   	    						// "tested_by":{"required":true},"tested_date":{"required":true},
+	   	    						// "checked_by":{"required":true},"checked_date":{"required":true},
 	   	    						"template_name":{"required":true},"report_date":{"required":true},
 	   	    						"disease_class_chinese":{"disease_class_chinese":true},
-	   	    						"product_name_chinese":{"product_name_chinese":true}
+	   	    						"product_name_chinese":{"product_name_chinese":true},
+	   	    						"chem_cancer":{"required":true},
+	   	    						"target_cancer":{"required":true}
 	   	    					},
 	   	    					messages:{
-	   	    						"tested_by":{"required":""},"tested_date":{"required":""},
-	   	    						"checked_by":{"required":""},"checked_date":{"required":""},
+	   	    						// "tested_by":{"required":""},"tested_date":{"required":""},
+	   	    						// "checked_by":{"required":""},"checked_date":{"required":""},
 	   	    						"template_name":{"required":""},"report_date":{"required":""},
 	   	    						"disease_class_chinese":{"required":""},
-	   	    						"product_name_chinese":{"required":""}
+	   	    						"product_name_chinese":{"required":""},
+	   	    						"chem_cancer":{"required":""},
+	   	    						"target_cancer":{"required":""}
 	   	    					},
 	   	    					submitHandler:function(){
 	   	    						var folder="";

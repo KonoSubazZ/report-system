@@ -17,11 +17,20 @@ public class FilterIlluminaCrSnpIndelFile {
 	private String SIFT_pred;
 	private String Polyphen2_HDIV_pred;
 	private String MutationTaster_pred;
+	private String revel;
+	private String gnomAD_genome_ALL;
+	private String Interpro_domain;
+	private String CLNSIG;
+	private String OMIM_Phenotypes;
+	private String HGMD_tag;
+	private String HGMD_disease;
+	private String HGMD_pmid;
 	private String loaded_date;
 	private Integer record_id;
 	private String report;
 	private String filtered_rationale;
 	private Integer mapped_variant_id;
+
 	public Integer getMapped_variant_id() {
 		return mapped_variant_id;
 	}
@@ -136,6 +145,71 @@ public class FilterIlluminaCrSnpIndelFile {
 	public void setMutationTaster_pred(String mutationTaster_pred) {
 		MutationTaster_pred = mutationTaster_pred;
 	}
+
+	public String getRevel() {
+		return revel;
+	}
+
+	public void setRevel(String revel) {
+		this.revel = revel;
+	}
+
+	public String getGnomAD_genome_ALL() {
+		return gnomAD_genome_ALL;
+	}
+
+	public void setGnomAD_genome_ALL(String gnomAD_genome_ALL) {
+		this.gnomAD_genome_ALL = gnomAD_genome_ALL;
+	}
+
+	public String getInterpro_domain() {
+		return Interpro_domain;
+	}
+
+	public void setInterpro_domain(String interpro_domain) {
+		Interpro_domain = interpro_domain;
+	}
+
+	public String getCLNSIG() {
+		return CLNSIG;
+	}
+
+	public void setCLNSIG(String CLNSIG) {
+		this.CLNSIG = CLNSIG;
+	}
+
+	public String getOMIM_Phenotypes() {
+		return OMIM_Phenotypes;
+	}
+
+	public void setOMIM_Phenotypes(String OMIM_Phenotypes) {
+		this.OMIM_Phenotypes = OMIM_Phenotypes;
+	}
+
+	public String getHGMD_tag() {
+		return HGMD_tag;
+	}
+
+	public void setHGMD_tag(String HGMD_tag) {
+		this.HGMD_tag = HGMD_tag;
+	}
+
+	public String getHGMD_disease() {
+		return HGMD_disease;
+	}
+
+	public void setHGMD_disease(String HGMD_disease) {
+		this.HGMD_disease = HGMD_disease;
+	}
+
+	public String getHGMD_pmid() {
+		return HGMD_pmid;
+	}
+
+	public void setHGMD_pmid(String HGMD_pmid) {
+		this.HGMD_pmid = HGMD_pmid;
+	}
+
 	public String getLoaded_date() {
 		return loaded_date;
 	}

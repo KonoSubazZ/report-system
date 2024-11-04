@@ -36,7 +36,6 @@
 		<property name="basePackage" value="com.novo.report.dao.one" />
 	</bean>
 	 <!-- 配置 数据源二 -->
-  
     <bean id="dataSourceTwo" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">  
 		<property name="driverClassName" value="${dbTwo.jdbc.driver}" />
 		<property name="url" value="${dbTwo.jdbc.url}" />
@@ -46,7 +45,7 @@
         <property name="initialSize" value="1" />
         <property name="minIdle" value="1" />
         <property name="maxActive" value="20" />
-    </bean>  
+    </bean>
 	<!-- 配置SqlSessionFactory 二-->
 	<bean  id="two_ssf" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<!-- 设置数据源 -->
@@ -61,9 +60,8 @@
 		<!-- 设置Mapper扫描包 -->
 		<property name="basePackage" value="com.novo.report.dao.two" />
 	</bean>
-	
+
 	 <!-- 配置 数据源三 -->
-  
     <bean id="dataSourceThree" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">  
 		<property name="driverClassName" value="${dbThree.jdbc.driver}" />
 		<property name="url" value="${dbThree.jdbc.url}" />
@@ -86,6 +84,31 @@
 		<property name="sqlSessionFactoryBeanName" value="three_ssf"></property>
 		<!-- 设置Mapper扫描包 -->
 		<property name="basePackage" value="com.novo.report.dao.three" />
+	</bean>
+
+	<!-- 配置 数据源四 -->
+	<bean id="dataSourceFour" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+		<property name="driverClassName" value="${dbFour.jdbc.driver}" />
+		<property name="url" value="${dbFour.jdbc.url}" />
+		<property name="username" value="${dbFour.jdbc.username}" />
+		<property name="password" value="${dbFour.jdbc.password}" />
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="1" />
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="20" />
+	</bean>
+	<!-- 配置SqlSessionFactory 二-->
+	<bean  id="four_ssf" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 设置数据源 -->
+		<property name="dataSource" ref="dataSourceFour" />
+		<!-- 可选：别名    定义了实体的包，则在mapper文件中使用实体时，直接写类名即可 -->
+		<property name="typeAliasesPackage" value="com.novo.report.beans" />
+	</bean>
+	<!-- 配置Mapper扫描 二-->
+	<bean id="four" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="four_ssf"></property>
+		<!-- 设置Mapper扫描包 -->
+		<property name="basePackage" value="com.novo.report.dao.four" />
 	</bean>
 <!-- ********************************************************************************************************************* -->
 <!-- transactionManager -->

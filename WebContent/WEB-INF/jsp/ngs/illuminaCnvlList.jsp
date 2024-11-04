@@ -89,13 +89,13 @@
 						htmlString += '<td>'+n.end+'</td>';
 						htmlString += '<td>'+n.copy_number+'</td>';
 						if(n.report == 0){
-							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option selected="selected" value="0">不出</option><option value="1">出</option><option value="2">default</option></select></td>';
+							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" name="check" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option selected="selected" value="0">不出</option><option value="1">出</option><option value="2">default</option></select></td>';
 						}
 						if(n.report == 1){
-							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option selected="selected" value="1">出</option><option value="2">default</option></select></td>';
+							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" name="check" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option selected="selected" value="1">出</option><option value="2">default</option></select></td>';
 						}
 						if(n.report == null || n.report == "."){
-							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option value="1">出</option><option selected="selected" value="2">default</option></select></td>';
+							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" name="check" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option value="1">出</option><option selected="selected" value="2">default</option></select></td>';
 						}
 						if(n.filtered_rationale==null){
 							htmlString += '<td><input id="inp'+i+'" type="text" onblur="updateFiltered('+n.record_id+','+i+')" onfocus="cleanMessage2()" value=""/></td>';
@@ -104,7 +104,7 @@
 						}
 						htmlString += '<td>'+(n.mapped_variant_id == null? "" : n.mapped_variant_id)+'</td>';
 						htmlString += '<td>'+(n.mapped_variant == null? "" : n.mapped_variant)+'</td>';
-						htmlString += '</tr>'; 
+						htmlString += '</tr>';
 					});
 					//将上面拼接好的json字符串追加到tbody中
 					$("#tInfo2").append(htmlString);
@@ -178,6 +178,12 @@
 		}); 
 		
 	}
+
+    //report批量选择
+    function selects() {
+        var report = $("#report").val();
+        $("[name='check']").val(report).change();
+    }
 </script>
 
 </head>
@@ -201,7 +207,11 @@
          <li>Gene</li>
         <li>
           <input type="text" placeholder="请输入搜索关键字" id="gene" name="gene" value="" class="input" style="width:250px; line-height:17px;display:inline-block" />
-        </li>    
+        </li>
+        <li>report</li>
+        <li>
+          <select id="report" onchange="selects();"><option value="0">不出</option><option value="1">出</option><option selected="selected" value="2">default</option></select>
+        </li>
         <li style="padding-left:800px;float: left;color: red;font-size: 14px"><span id="message2"></span></li>
       </ul>
     </div>

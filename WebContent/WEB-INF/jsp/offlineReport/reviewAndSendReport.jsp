@@ -154,6 +154,64 @@
 	        	});
 	        </script>
 	  </form>
+		  <form id="reportFileFormThree" method="post" enctype="multipart/form-data">
+			  <table style="width:100%">
+				  <tr>
+					  <td>
+						  <div class="form-group">
+							  <div class="label" style="width:75px;float: left;margin-top: 10px">
+								  <label >文件三：</label>
+							  </div>
+							  <div class="field">
+								  <input type="text" id="report_filenamethree" name="report_filenamethree" readonly="readonly" class="input w50" style="width:350px;float: left;" value="${offlineReport.report_filenamethree }"  />
+								  <div class="tips"></div>
+								  <input type="hidden" id="report_file_path" name="report_file_path" value="${offlineReport.report_file_path }"  />
+							  </div>
+						  </div>
+					  </td>
+					  <td>
+						  <div class="form-group">
+							  <input type="file" id="reportFileThree" name="reportFileThree">
+							  <button id="updateReportFileThree"  style="width: 150px;" class="button bg-main icon-file-o" > 更换报告文件</button>
+						  </div>
+						  <input type="hidden" name="report_id"  value="${offlineReportIframeBean.report_id}" >
+					  </td>
+				  </tr>
+			  </table>
+			  <script type="text/javascript">
+				  $(function(){
+					  $("#updateReportFileThree").click(function(){
+						  if(confirm("确定更换报告文件？")){
+							  var filename = $("#reportFileThree").val().split(".")[0];
+							  var report_filename = $("#report_filenamethree").val().split(".")[0];
+							  if(report_filename!=""){
+								  var from =document.getElementById("reportFileFormThree");
+								  var formData = new FormData(from);
+								  $.ajax({
+									  async: false,
+									  cache: false,
+									  type: "POST",
+									  url:"${pageContext.request.contextPath}/offlineReport/updateReportFileByReportId",
+									  data:formData,
+									  contentType: false,
+									  processData: false,
+									  dataType:"json",
+									  success:function(data){
+										  if(data){
+											  alert("文件更换成功！");
+										  }else{
+											  alert("文件更换失败！");
+										  }
+									  }
+								  });
+							  }else{
+								  alert("尚未上传报告文件三！");
+							  }
+						  }
+					  });
+				  });
+			  </script>
+		  </form>
 			<table style="width:100%">
 				<tr>
 			     	<td>
@@ -182,6 +240,7 @@
 						        		if(data=="审核通过" || data=="报告已发送"){
 						        			$("#updateReportFileOne").prop("disabled","disabled");
 						        			$("#updateReportFileTwo").prop("disabled","disabled");
+						        			$("#updateReportFileThree").prop("disabled","disabled");
 						        			$("#review").prop("disabled","disabled");
 			        						$("#reviewfalse").prop("disabled","disabled");
 							        		$("#sendEmail").prop("disabled",false);
@@ -193,6 +252,7 @@
 				        					function(data){
 				        						$("#updateReportFileOne").prop("disabled","disabled");
 							        			$("#updateReportFileTwo").prop("disabled","disabled");
+							        			$("#updateReportFileThree").prop("disabled","disabled");
 							        			$("#review").prop("disabled","disabled");
 				        						$("#reviewfalse").prop("disabled","disabled");
 							        			$("#sendEmail").prop("disabled",false);
@@ -216,7 +276,7 @@
 				        				$.post("${pageContext.request.contextPath}/offlineReport/sendEmail",{"report_id":"${offlineReportIframeBean.report_id}"},
 					        					function(data){
 				        							if(data){
-						        						$.myAlert('报告发送成功！');
+														$.myAlert(data.errorMessage);
 				        							}
 					        		    		},"json"
 					        		    	);

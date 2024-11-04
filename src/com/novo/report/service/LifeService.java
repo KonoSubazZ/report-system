@@ -37,4 +37,16 @@ public interface LifeService {
 	void updateProductByProductId(AnalysisReport pr);
 
 	Product getProduct(Integer report_id);
+
+	DiseaseClass getDiseaseClassFromSampleCancertype(Integer report_id);
+
+	String getGender(Integer report_id);
+
+	String getAnalysis_date(Integer report_id);
+
+	String getAnalyzer(Integer report_id);
+
+	String getFilePath(String subbarcode,String analysis_date);
+
+	Integer getPendingAndErrorCount(String subbarcode,String analysis_date);
 }

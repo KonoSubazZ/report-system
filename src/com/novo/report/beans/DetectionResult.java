@@ -3,8 +3,11 @@ package com.novo.report.beans;
 public class DetectionResult {
 	private String gene;
 	private String mutation_type;
+	private String mutFreq;
 	private String mutation_result;
 	private String ori_variant;
+	private String variant;
+	private boolean red;
 	public String getGene() {
 		return gene;
 	}
@@ -17,6 +20,15 @@ public class DetectionResult {
 	public void setMutation_type(String mutation_type) {
 		this.mutation_type = mutation_type;
 	}
+
+	public String getMutFreq() {
+		return mutFreq;
+	}
+
+	public void setMutFreq(String mutFreq) {
+		this.mutFreq = mutFreq;
+	}
+
 	public String getMutation_result() {
 		return mutation_result;
 	}
@@ -29,5 +41,20 @@ public class DetectionResult {
 	public void setOri_variant(String ori_variant) {
 		this.ori_variant = ori_variant;
 	}
-	
+
+    public String getVariant() {
+        return variant;
+    }
+
+    public void setVariant(String variant) {
+        this.variant = variant;
+    }
+
+    public boolean getRed() {
+		return red;
+	}
+
+	public void setRed(boolean red) {
+		this.red = red;
+	}
 }

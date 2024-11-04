@@ -73,13 +73,14 @@
 						dataList = jsonObject.dataList;
 						$.each(jsonObject.dataList,function(i,n){
 							htmlString += '<tr class="odd">';
-							if($("#dataGrid").val()=='rp_var_drug') {
+							if($("#dataGrid").val()=='rp_var_drug_en7') {
 								htmlString += '<td><input type="checkbox" name="cb"></td>';
 								htmlString += '<td>'+(n.lang||'')+'</td>';
 								htmlString += '<td>'+(n.gene||'')+'</td>';
 								htmlString += '<td>'+(n.variant||'')+'</td>';
 								htmlString += '<td>'+(n.ori_variant||'')+'</td>';
 								htmlString += '<td>'+(n.disease_id||'')+'</td>';
+								htmlString += '<td>'+(n.gender||'')+'</td>';
 								htmlString += '<td>'+(n.disease_name_chinese||'')+'</td>';
 								htmlString += '<td>'+(n.var_drug_desc1||'')+'</td>';
 								htmlString += '<td>'+(n.var_drug_desc||'')+'</td>';
@@ -87,7 +88,10 @@
 								htmlString += '<td>'+(n.drugsB||'')+'</td>';
 								htmlString += '<td>'+(n.drugsC||'')+'</td>';
 								htmlString += '<td>'+(n.drugsD||'')+'</td>';
-								htmlString += '<td>'+(n.resistant_drugs||'')+'</td>';
+								htmlString += '<td>'+(n.resistant_drugsA||'')+'</td>';
+								htmlString += '<td>'+(n.resistant_drugsB||'')+'</td>';
+								htmlString += '<td>'+(n.resistant_drugsC||'')+'</td>';
+								htmlString += '<td>'+(n.resistant_drugsD||'')+'</td>';
 								htmlString += '<td>'+(n.clinical_trial||'')+'</td>';
 								htmlString += '<td>'+(n.modified)+'</td>';
 								htmlString += '<td>'+(n.update_by||'')+'</td>';
@@ -190,7 +194,7 @@
         <li>
 	        	<select id="dataGrid" name="dataGrid" class="input w50">
 	        		<option value="">请选择数据库表</option>
-	        		<option value="rp_var_drug">rp_var_drug</option>
+	        		<option value="rp_var_drug_en7">rp_var_drug_en7</option>
 	        		<option value="rp_unknown_var">rp_unknown_var</option>
 	        		<option value="rp_drug_info">rp_drug_info</option>
 	        		<option value="rp_clinical_trial">rp_clinical_trial</option>
@@ -298,13 +302,14 @@
           <span id="message" style="color: red;font-size: 14px; padding-left: 20px;width: 30%;" ></span>
     </div>
     <table id="dataable" class="table table-hover text-center" border=1 style=" border-width: 0px;">
-      <tr id="rp_var_drug_tr" style="display:none" name="rp_tr">
+      <tr id="rp_var_drug_en7_tr" style="display:none" name="rp_tr">
       	<th><div style="width:50px"><input type="checkbox" name="cb_selectAll">全选</div></th>
       	<th>lang</th>
         <th>gene</th>
         <th>variant</th>
         <th>ori_variant</th>
         <th>disease_id</th>
+        <th>gender</th>
         <th>disease_name_chinese</th>
         <th>var_drug_desc标记</th>
         <th>var_drug_desc</th>
@@ -312,7 +317,10 @@
         <th>drugsB</th>
         <th>drugsC</th>
         <th>drugsD</th>
-        <th>resistant_drugs</th>
+        <th>resistant_drugsA</th>
+        <th>resistant_drugsB</th>
+        <th>resistant_drugsC</th>
+        <th>resistant_drugsD</th>
         <th>clinical_trial</th>
         <th>modified</th>
         <th>update_by</th>

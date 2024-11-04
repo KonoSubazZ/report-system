@@ -19,6 +19,7 @@ public class FilterIlluminaFusion {
 	private String bp1;
 	private String gene2;
 	private String bp2;
+	private String gene;
 	private String variant;
 	private String ori_variant;
 	private String report;
@@ -27,6 +28,7 @@ public class FilterIlluminaFusion {
 	private Integer record_id;
 	private Integer mapped_variant_id;
 	private String mapped_variant;
+	private String igv_st;
 	public Integer getFile_id() {
 		return file_id;
 	}
@@ -135,6 +137,15 @@ public class FilterIlluminaFusion {
 	public void setBp2(String bp2) {
 		this.bp2 = bp2;
 	}
+
+	public String getGene() {
+		return gene;
+	}
+
+	public void setGene(String gene) {
+		this.gene = gene;
+	}
+
 	public String getVariant() {
 		return variant;
 	}
@@ -182,5 +193,13 @@ public class FilterIlluminaFusion {
 	}
 	public void setMapped_variant(String mapped_variant) {
 		this.mapped_variant = mapped_variant;
+	}
+
+	public String getIgv_st() {
+		return igv_st;
+	}
+
+	public void setIgv_st(String igv_st) {
+		this.igv_st = igv_st;
 	}
 }

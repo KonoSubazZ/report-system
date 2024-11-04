@@ -85,6 +85,10 @@ public class OfflineReportServiceImpl implements OfflineReportService {
 		offlineReportDao.updateFileNameTwoById(report_id,report_filenametwo);
 	}
 	@Override
+	public void updateFileNameThreeById(String report_id, String report_filenamethree) {
+		offlineReportDao.updateFileNameThreeById(report_id,report_filenamethree);
+	}
+	@Override
 	public String getStatus(Integer report_id) {
 		return offlineReportDao.getStatus(report_id);
 	}

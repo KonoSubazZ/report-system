@@ -11,7 +11,7 @@ from docx.shared import Mm, Pt
 from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWLINE_XML, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
 import time
 from unicodedata import name
-from six import iteritems, text_type 
+from six import iteritems, text_type
 
 try:
     from html import escape
@@ -116,16 +116,47 @@ def mystyle(value,bold,highlight=False):
     else:
         return MyRichText(value,bold=bold,cnfont='微软雅黑', font='Times New Roman', size=18)
 
+def mystyle2(value,bold,size,cnfont,font,highlight=False):
+    if highlight:
+        return MyRichText(value,bold=bold,cnfont=cnfont, font=font, size=size,highlight='lightGray')
+    else:
+        return MyRichText(value,bold=bold,cnfont=cnfont, font=font, size=size)
+
+def mystyleSong(value,bold,highlight=False):
+    if highlight:
+        return MyRichText(value,bold=bold,cnfont='宋体', font='Times New Roman', size=18,highlight='lightGray')
+    else:
+        return MyRichText(value,bold=bold,cnfont='宋体', font='Times New Roman', size=18)
+
+def mystyleSong2(value,bold,highlight=False):
+    if highlight:
+        return MyRichText(value,bold=bold,cnfont='宋体', font='Times New Roman', size=21,highlight='lightGray')
+    else:
+        return MyRichText(value,bold=bold,cnfont='宋体', font='Times New Roman', size=21)
 
 def myimage(value):
+    imgdata = base64.b64decode(value)
+    file = open('a.png', 'wb')
+    file.write(imgdata)
+    file.close()
+    myimage = InlineImage(tpl, 'a.png', width=Pt(283.5), height=Pt(225))
+    return myimage
+
+def pdimage(value,width,height):
+    imgdata = base64.b64decode(value)
+    file = open('aa.jpg', 'wb')
+    file.write(imgdata)
+    file.close()
+    pdimage = InlineImage(tpl, 'aa.jpg', width=Pt(width), height=Pt(height))
+    return pdimage
+
+def currencyimage(value,width,height):
     imgdata = base64.b64decode(value)
     file = open('aa.png', 'wb')
     file.write(imgdata)
     file.close()
-
-    myimage = InlineImage(tpl, 'aa.png', width=Pt(283.5), height=Pt(225))
-    return myimage
-	
+    currencyimage = InlineImage(tpl, 'aa.png', width=Pt(width), height=Pt(height))
+    return currencyimage
 
 def red_gene(value,line_num,size=18,italic=True):
     red_list = []
@@ -144,8 +175,187 @@ def red_gene(value,line_num,size=18,italic=True):
         red_list.append(new_line)
     return red_list
 
-	
+def red_gene2(value,line_num,size,cnfont,font,italic=True):
+    red_list = []
+    b = value.split(',')
+    for i in range(math.ceil(len(b)/int(line_num))):
+        line =  b[i*int(line_num):(i+1)*int(line_num)]
+        if len(b[i*int(line_num):(i+1)*int(line_num)]) < int(line_num):
+            for x in range(int(line_num)-len(b[i*int(line_num):(i+1)*int(line_num)])):
+                line.append('')
+        new_line = []
+        for li in line:
+            if li.replace('*','') in GENE_LIST:
+                new_line.append(MyRichText(li,color='#ff0000',cnfont=cnfont, font=font, size=size,italic=italic))
+            else:
+                new_line.append(MyRichText(li,cnfont=cnfont, font=font, size=size,italic=italic))
+        red_list.append(new_line)
+    return red_list
 
+def red_bodyGene(value,line_num,size=18,italic=True):
+    red_list = []
+    b = value.split(',')
+    for i in range(math.ceil(len(b)/int(line_num))):
+        line =  b[i*int(line_num):(i+1)*int(line_num)]
+        if len(b[i*int(line_num):(i+1)*int(line_num)]) < int(line_num):
+            for x in range(int(line_num)-len(b[i*int(line_num):(i+1)*int(line_num)])):
+                line.append('')
+        new_line = []
+        for li in line:
+            if li.replace('*','') in BodyGene_LIST:
+                new_line.append(MyRichText(li,color='#ff0000',cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
+            else:
+                new_line.append(MyRichText(li,cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
+        red_list.append(new_line)
+    return red_list
+
+
+def red_embryonalGene(value,line_num,size=18,italic=True):
+    red_list = []
+    b = value.split(',')
+    for i in range(math.ceil(len(b)/int(line_num))):
+        line =  b[i*int(line_num):(i+1)*int(line_num)]
+        if len(b[i*int(line_num):(i+1)*int(line_num)]) < int(line_num):
+            for x in range(int(line_num)-len(b[i*int(line_num):(i+1)*int(line_num)])):
+                line.append('')
+        new_line = []
+        for li in line:
+            if li.replace('*','') in EmbryonalGene_LIST:
+                new_line.append(MyRichText(li,color='#ff0000',cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
+            else:
+                new_line.append(MyRichText(li,cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
+        red_list.append(new_line)
+    return red_list
+
+
+def red_chemoGene(value,line_num,size=18,italic=True):
+    red_list = []
+    b = value.split(',')
+    for i in range(math.ceil(len(b)/int(line_num))):
+        line =  b[i*int(line_num):(i+1)*int(line_num)]
+        if len(b[i*int(line_num):(i+1)*int(line_num)]) < int(line_num):
+            for x in range(int(line_num)-len(b[i*int(line_num):(i+1)*int(line_num)])):
+                line.append('')
+        new_line = []
+        for li in line:
+            if li.replace('*','') in ChemoGene_LIST:
+                new_line.append(MyRichText(li,color='#ff0000',cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
+            else:
+                new_line.append(MyRichText(li,cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
+        red_list.append(new_line)
+    return red_list
+
+
+def genes(value,line_num,size=18,italic=True):
+    genes = []
+    b = value.split(',')
+    for i in range(math.ceil(len(b)/int(line_num))):
+        line =  b[i*int(line_num):(i+1)*int(line_num)]
+        if len(b[i*int(line_num):(i+1)*int(line_num)]) < int(line_num):
+            for x in range(int(line_num)-len(b[i*int(line_num):(i+1)*int(line_num)])):
+                line.append('')
+        new_line = []
+        for li in line:
+            new_line.append(MyRichText(li,cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
+        genes.append(new_line)
+    return genes
+
+
+def cancerRisk(value):
+    red_list = "普通风险"
+    b = value.split(',')
+    for li in b:
+        if li.replace('*','') in CancerRiskGene_LIST:
+            red_list = MyRichText("风险升高",color='#ff0000',cnfont='微软雅黑', font='Times New Roman', size='18')
+            break
+    return red_list
+
+
+def detectionMutation(value):
+    red_list = "阴性"
+    if value in DetectionMutation_LIST:
+        red_list = MyRichText("阳性",color='#ff0000',cnfont='微软雅黑', font='Times New Roman', size='28')
+    return red_list
+
+
+def promoteGene(value):
+    s = "未检出"
+    if value in PromoteGene_LIST:
+        s = "检出"
+    return s
+
+
+def reducedGene(value):
+    s = "未检出"
+    if value in ReducedGene_LIST:
+        s = "检出"
+    return s
+
+
+def progressionGene(value):
+    s = "未检出"
+    if value in ProgressionGene_LIST:
+        s = "检出"
+    return s
+
+
+def parpinhibitorGene(value):
+    s = "未检出"
+    if value in ParpinhibitorGene_LIST:
+        s = "检出"
+    return s
+
+
+def predictorGene(value):
+    s = "-"
+    if value in PredictorGene_LIST:
+        s = "检出"
+    return s
+
+
+def immunopositiveGene(value):
+    s = "-"
+    if value in ImmunopositiveGene_LIST:
+        s = "检出"
+    return s
+
+
+def immunonegativeGene(value):
+    s = "-"
+    if value in ImmunonegativeGene_LIST:
+        s = "检出"
+    return s
+
+
+def overallQualityAssessment(value,qualified,alert):
+    overall_quality_assessment = ""
+    if len(value) != 0:
+        value = str(value).replace('X','')
+        if float(value) >= float(qualified):
+            overall_quality_assessment = "合格"
+        elif float(value) >= float(alert):
+            overall_quality_assessment = "警戒"
+        else:
+            overall_quality_assessment = "不合格"
+    return overall_quality_assessment
+
+
+def newline(value):
+    return value.split("\\r\\n")
+
+
+def newBold(value):
+    return value.split("|")
+
+
+def split(value,regex):
+    return value.split(regex)
+
+
+def markInRed(value):
+    if value == "阳性" or value == "检出":
+        value = MyRichText(value,color='#ff0000',cnfont='微软雅黑', font='Times New Roman', size='21')
+    return value
 
 def set_updatefields_true(docx_path):
     """ Opens the docx and adds <w:updateFields w:val="true"/> to
@@ -169,6 +379,15 @@ def set_updatefields_true(docx_path):
     element_updatefields.set(namespace+"val", "true")
     doc.save(docx_path)
 
+# 20241029-1238贵医 在检测小结去重
+def unique_genes(genes):
+    seen = set()
+    unique = []
+    for gene in genes:
+        if gene not in seen:  # 假设 tdd 对象有 gene 属性
+            unique.append(gene)
+            seen.add(gene.gene)
+    return unique
 
 # jinja_env = jinja2.Environment()
 # jinja_env.filters['ms'] = mystyle
@@ -188,11 +407,53 @@ if __name__ == '__main__':
         tpl = DocxTemplate(sys.argv[1])
         f = open(sys.argv[2], encoding='utf-8')
         info_json = json.load(f)
+        # 在页眉中插入图片
+        # header_image = info_json['pageHeaderPic']
+        # if header_image is not "":
+        #     header = tpl.sections[0].header
+        #     header.paragraphs[0].add_run().add_picture(header_image, width=Pt(492.6), height=Pt(38))
         GENE_LIST = info_json['allGeneSet'] if info_json['allGeneSet'] else []
+        BodyGene_LIST = info_json['bodyGeneSet'] if info_json['bodyGeneSet'] else []
+        EmbryonalGene_LIST = info_json['embryonalGeneSet'] if info_json['embryonalGeneSet'] else []
+        ChemoGene_LIST = info_json['chemoGeneSet'] if info_json['chemoGeneSet'] else []
+        CancerRiskGene_LIST = info_json['cancerRiskGene'] if info_json['cancerRiskGene'] else []
+        DetectionMutation_LIST = info_json['detectionMutationSet'] if info_json['detectionMutationSet'] else []
+        PromoteGene_LIST = info_json['promoteGeneSet'] if info_json['promoteGeneSet'] else []
+        ReducedGene_LIST = info_json['reducedGeneSet'] if info_json['reducedGeneSet'] else []
+        ProgressionGene_LIST = info_json['progressionGeneSet'] if info_json['progressionGeneSet'] else []
+        ParpinhibitorGene_LIST = info_json['parpinhibitorGeneSet'] if info_json['parpinhibitorGeneSet'] else []
+        PredictorGene_LIST = info_json['predictorGeneSet'] if info_json['predictorGeneSet'] else []
+        ImmunopositiveGene_LIST = info_json['immunopositiveGeneSet'] if info_json['immunopositiveGeneSet'] else []
+        ImmunonegativeGene_LIST = info_json['immunonegativeGeneSet'] if info_json['immunonegativeGeneSet'] else []
         jinja_env = jinja2.Environment()
         jinja_env.filters['ms'] = mystyle
+        jinja_env.filters['ms2'] = mystyle2
+        jinja_env.filters['mss'] = mystyleSong
+        jinja_env.filters['mss2'] = mystyleSong2
         jinja_env.filters['mi'] = myimage
+        jinja_env.filters['pdi'] = pdimage
+        jinja_env.filters['ci'] = currencyimage
         jinja_env.filters['red'] = red_gene
+        jinja_env.filters['red2'] = red_gene2
+        jinja_env.filters['redBody'] = red_bodyGene
+        jinja_env.filters['redEmbryonal'] = red_embryonalGene
+        jinja_env.filters['redChemo'] = red_chemoGene
+        jinja_env.filters['genes'] = genes
+        jinja_env.filters['cancerRisk'] = cancerRisk
+        jinja_env.filters['detectionMutation'] = detectionMutation
+        jinja_env.filters['promoteGene'] = promoteGene
+        jinja_env.filters['reducedGene'] = reducedGene
+        jinja_env.filters['progressionGene'] = progressionGene
+        jinja_env.filters['parpinhibitorGene'] = parpinhibitorGene
+        jinja_env.filters['predictorGene'] = predictorGene
+        jinja_env.filters['immunopositiveGene'] = immunopositiveGene
+        jinja_env.filters['immunonegativeGene'] = immunonegativeGene
+        jinja_env.filters['oqa'] = overallQualityAssessment
+        jinja_env.filters['nl'] = newline
+        jinja_env.filters['nb'] = newBold
+        jinja_env.filters['split'] = split
+        jinja_env.filters['mr'] = markInRed
+        jinja_env.filters['unique_genes'] = unique_genes
         #tpl.add_page_break()
         tpl.render(info_json, jinja_env,autoescape=True)
         tpl.save(sys.argv[3])

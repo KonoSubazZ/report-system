@@ -1,5 +1,6 @@
 package com.novo.report.controller;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,7 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import com.novo.report.beans.*;
+import com.novo.report.dao.two.*;
+import com.novo.report.utils.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,25 +29,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
-import com.novo.report.beans.AnalysisReport;
-import com.novo.report.beans.CurrentNgsAvailableData;
-import com.novo.report.beans.DataFileStatusPageBean;
-import com.novo.report.beans.Json;
-import com.novo.report.beans.Person;
-import com.novo.report.beans.SampleFile;
-import com.novo.report.beans.User;
-import com.novo.report.dao.two.AnalysisReportDao;
-import com.novo.report.dao.two.ReportCrDao;
-import com.novo.report.dao.two.ReportUnknownVarDao;
-import com.novo.report.dao.two.ReportVarDrugDao;
 import com.novo.report.service.LifeService;
 import com.novo.report.service.NgsPersonListService;
 import com.novo.report.service.SampleFileService;
 import com.novo.report.service.SystemPropertyService;
-import com.novo.report.utils.DateUtil;
-import com.novo.report.utils.SendRequestUtil;
-
-
 
 
 @Controller
@@ -72,11 +62,15 @@ public class LifeController {
 	
 	@Autowired
 	private SystemPropertyService systemPropertyService;
+
+	@Autowired
+	private LifeDao lifeDao;
 	
 	@RequestMapping("lifeMain")
-	public String lifeMain(CurrentNgsAvailableData currentNgsAvailable, Model model,HttpServletRequest request) {
+	public String lifeMain(CurrentNgsAvailableData currentNgsAvailable, Model model,HttpServletRequest request, HttpServletResponse response) throws IOException {
 		AnalysisReport analysisReport =new AnalysisReport();
-		if(currentNgsAvailable.getReport_id() == 0){
+		Integer count = analysisReportDao.getCountBySubbarcodeAndAnalysisDate(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
+		if(currentNgsAvailable.getReport_id() == 0 && count == 0){
 			analysisReport.setSubbarcode(currentNgsAvailable.getSubbarcode());
 			analysisReport.setPlatform(currentNgsAvailable.getPlatform());
 			analysisReport.setProduct_name(currentNgsAvailable.getProduct_name());
@@ -90,6 +84,16 @@ public class LifeController {
 			analysisReport.setUpdate_date(DateUtil.getSystemTime());
 			lifeService.addAnalysisReport(analysisReport);
 			currentNgsAvailable.setReport_id(analysisReport.getReport_id());
+			List<Object> ips = Arrays.asList(IpUtil.getLocalIp4Address().toArray());
+			if (ips.contains(ServerConfig.getServerFormalIP())) {
+				if (user != null) {
+					// 发送审核人（接口部署在公司）
+					WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/update_report_status/" + user.getUser_account() + "/" + currentNgsAvailable.getSubbarcode());
+				}else {
+					//重定向到登录页面
+					response.sendRedirect(request.getContextPath());
+				}
+			}
 		}
 		if(currentNgsAvailable.getProduct_id()==null){
 			Integer productId = analysisReportDao.getProductIdByReportId(currentNgsAvailable.getReport_id());
@@ -97,6 +101,33 @@ public class LifeController {
 		}
 		model.addAttribute("currentNgsAvailable", currentNgsAvailable);
 		return "ngs/iframe";
+	}
+
+	@RequestMapping("lifeMain1")
+	public String lifeMain1(CurrentNgsAvailableData currentNgsAvailable, Model model,HttpServletRequest request) {
+		AnalysisReport analysisReport =new AnalysisReport();
+		if(currentNgsAvailable.getReport_id() == 0){
+			analysisReport.setSubbarcode(currentNgsAvailable.getSubbarcode());
+			analysisReport.setPlatform(currentNgsAvailable.getPlatform());
+			analysisReport.setProduct_name(currentNgsAvailable.getProduct_name());
+			analysisReport.setAnalysis_date(currentNgsAvailable.getAnalysis_date());
+			User user = (User) request.getSession().getAttribute("user");
+			String user_account = user == null ? "" : user.getUser_account();
+			analysisReport.setAnalyzer(user_account);
+			analysisReport.setStatus("");
+			analysisReport.setCreated_by(user_account);
+			analysisReport.setCreated_date(DateUtil.getSystemTime());
+			analysisReport.setUpdate_date(DateUtil.getSystemTime());
+			lifeService.addAnalysisReport(analysisReport);
+			currentNgsAvailable.setReport_id(analysisReport.getReport_id());
+		}
+		if(currentNgsAvailable.getProduct_id()==null){
+			Integer productId = analysisReportDao.getProductIdByReportId(currentNgsAvailable.getReport_id());
+			currentNgsAvailable.setProduct_id(productId);
+		}
+		model.addAttribute("currentNgsAvailable", currentNgsAvailable);
+		WebserviceProxyUtils.status(currentNgsAvailable.getSubbarcode(), "client", String.valueOf(currentNgsAvailable.getReport_id()));
+		return "ngs/iframe1";
 	}
 	
 	@RequestMapping("addLife")
@@ -240,7 +271,8 @@ public class LifeController {
 		Map returnJson = new HashMap();
 		boolean flag = true;
 		User user = (User) httpServletRequest.getSession().getAttribute("user");
-		analysisReport.setReport_checker(user.getUser_account());
+		String user_account = user == null ? "" : user.getUser_account();
+		analysisReport.setReport_checker(user_account);
 		AnalysisReport analysisReportById = analysisReportDao.getAnalysisReportById(analysisReport.getReport_id());
 		if(analysisReportById.getReport_filename() != null && !analysisReportById.getReport_filename().equals("")) {
 			if(analysisReport.getReport_id()!=null && analysisReport.getStatus()!=null){
@@ -291,16 +323,20 @@ public class LifeController {
 						reportUnknownVarDao.updateRpUnknownVarById(record_id);
 					}
 				}
-				String propertyValueByPropertyName = systemPropertyService.getPropertyValueByPropertyName("HISTORY_API");
+				// 用于历史检出系统的服务器损坏，此导入信息功能暂停使用
+				/*String propertyValueByPropertyName = systemPropertyService.getPropertyValueByPropertyName("HISTORY_API");
 				if(propertyValueByPropertyName != null && !propertyValueByPropertyName.equals("")) {
 					String ajaxProxy = SendRequestUtil.ajaxProxy(propertyValueByPropertyName,jo.toString());
 					System.err.println(ajaxProxy);
-				}
+				}*/
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 		}
 		returnJson.put("flag", flag);
+		if (analysisReport.getFlag() != null && analysisReport.getFlag() == 1) {
+			WebserviceProxyUtils.status(analysisReport.getSubbarcode(), "report_status", analysisReport.getStatus());
+		}
 		return returnJson;
 	}
 	@RequestMapping("updateStatus")
@@ -340,7 +376,11 @@ public class LifeController {
 	@ResponseBody
 	private Object updateProductByProductId(AnalysisReport pr,CurrentNgsAvailableData cd,HttpServletRequest httpServletRequest){
 		User user = (User) httpServletRequest.getSession().getAttribute("user");
-		pr.setAnalyzer(user.getUser_account());
+		if (user != null) {
+			pr.setAnalyzer(user.getUser_account());
+		} else {
+			pr.setAnalyzer("");
+		}
 		lifeService.updateProductByProductId(pr);
 		cd.setReport_id(pr.getReport_id());
 		return pr.getReport_id();
@@ -364,6 +404,33 @@ public class LifeController {
         }else {
         	return "未审核";
         }
+	}
 
+	@RequestMapping("insertAnalysisReport")
+	@ResponseBody
+	public Integer insertAnalysisReport(CurrentNgsAvailableData currentNgsAvailable, HttpServletRequest request) {
+		try {
+			AnalysisReport analysisReport =new AnalysisReport();
+			analysisReport.setSubbarcode(currentNgsAvailable.getSubbarcode());
+			analysisReport.setPlatform(currentNgsAvailable.getPlatform());
+			analysisReport.setProduct_name(currentNgsAvailable.getProduct_name());
+			analysisReport.setAnalysis_date(currentNgsAvailable.getAnalysis_date());
+			Integer class_Id = lifeDao.getClassIdByDiseaseClassChinese(currentNgsAvailable.getDisease_class_chinese());
+			analysisReport.setPrimary_cancer_id(class_Id);
+			Product product = lifeDao.getProductByPathName(currentNgsAvailable.getProduct_name());
+			analysisReport.setProduct_id(product.getProduct_id());
+			Object Ouser = request.getSession().getAttribute("user");
+			User user = (User)Ouser;
+			analysisReport.setAnalyzer(user.getUser_account());
+			analysisReport.setStatus("");
+			analysisReport.setCreated_by(user.getUser_account());
+			analysisReport.setCreated_date(DateUtil.getSystemTime());
+			analysisReport.setUpdate_date(DateUtil.getSystemTime());
+			lifeService.addAnalysisReport(analysisReport);
+			return analysisReport.getReport_id();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
 	}
 }

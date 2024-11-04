@@ -14,13 +14,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	<!-- 查询DiseaseClassChineseAndId -->
 	<select id="getDiseaseClassChineseAndId" resultType="AutoComplete">
-		select class_id id,disease_class_chinese name from disease_class where disease_area = 'onco' and disease_class_chinese not in ('本癌种','其他癌种')
+		select class_id id,disease_class_chinese name
+		from disease_class
+		where disease_area = 'onco' and disease_class_chinese not in ('本癌种','其他癌种')
+		order by field(disease_class_chinese,'结肠癌','直肠癌','非小细胞肺癌','结直肠癌','肺鳞癌','肺腺癌','肺癌') desc
 	</select>
 	<select id="getProductNameChineseAndId" resultType="AutoComplete">
-		select product_id id,product_name_chinese name from product where path_name = #{path_name}
+		select product_id id,product_name_chinese name from product
 	</select>
 	<select id="getGeneVariant" resultType="AutoComplete">
-		SELECT gene_variant_id id,concat_ws(' ',gene_symbol,gene_variant) name from nkb.gene_variant_evw WHERE checking_status = 'Approved' and gene_symbol = #{gene_symbol}
+		SELECT gene_variant_id id,concat_ws(' ',gene_symbol,gene_variant) name from nkb.gene_variant_evw WHERE checking_status = 'Approved' and gene_symbol = #{gene_symbol} and gene_variant like '%Mutation%'
 	</select>
 	<select id="getGeneVariantId" resultType="Integer">
 		SELECT gene_variant_id id from nkb.gene_variant_evw WHERE checking_status = 'Approved' and gene_symbol = #{gene_symbol} and gene_variant = #{gene_variant}
@@ -106,5 +109,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	<select id="getCustomer" resultType="AutoComplete">
 		SELECT DISTINCT customer name from sample_file where customer is not null
+	</select>
+	<select id="getSendEmailIsCustomerList" resultType="AutoComplete">
+		select distinct customer name from send_email
+	</select>
+	<select id="getDiseaseNameAndDiseaseId" resultType="AutoComplete">
+		SELECT disease_name_chinese name, do_id id from nkb.disease
+		WHERE do_id in
+		<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+		and checking_status_id != 3
+	</select>
+    <select id="getEvidencePhaseNameAndEvidencePhaseId" resultType="AutoComplete">
+        SELECT evidence_phase_chinese name, evidence_phase_id id from nkb.evidence_phase
+    </select>
+	<select id="getRecordercodeBySubbarcode" resultType="String">
+		SELECT recordercode from sample_file where subbarcode = #{subbarcode}
+	</select>
+	<select id="getTemplateCorrespondenceByRecordercode" resultType="String">
+		SELECT template_name from template_correspondence where cus_branch = #{recordercode}
+	</select>
+	<select id="getCustomerBySubbarcode" resultType="String">
+		SELECT customer from sample_file where subbarcode = #{subbarcode}
+	</select>
+	<select id="getTemplateCorrespondenceByCustomer" resultType="String">
+		SELECT template_name from template_correspondence where customer = #{customer} and cus_branch = '默认'
+	</select>
+	<select id="getTemplateUniversal" resultType="String">
+		SELECT template_name from template_universal where universal = #{universal}
+	</select>
+	<select id="getCustomertypeBySubbarcode" resultType="String">
+		SELECT customertype name from sample_file where subbarcode = #{subbarcode}
 	</select>
 </mapper>

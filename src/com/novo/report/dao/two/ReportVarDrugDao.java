@@ -11,8 +11,8 @@ import com.novo.report.beans.ReportVarDrug;
 
 public interface ReportVarDrugDao {
 	
-	@Select("select * from rp_var_drug where gene = #{gene} and ori_variant = #{ori_variant} and disease_id = #{disease_id} and lang = #{lang}")
-	List<ReportVarDrug> selectRecord(@Param("gene") String gene, @Param("ori_variant") String ori_variant, @Param("disease_id") Integer disease_id, @Param("lang") Integer lang);
+	@Select("select * from rp_var_drug_en7 where gene = #{gene} and ori_variant = #{ori_variant} and disease_id = #{disease_id} and lang = #{lang} and gender = #{gender}")
+	List<ReportVarDrug> selectRecord(@Param("gene") String gene, @Param("ori_variant") String ori_variant, @Param("disease_id") Integer disease_id, @Param("lang") Integer lang, @Param("gender") String gender);
 	
 	void insertRpVarDrug(ReportVarDrug reportVarDrug);
 
@@ -22,18 +22,18 @@ public interface ReportVarDrugDao {
 	
 	void updateModifiedById(@Param("record_id") Integer record_id);
 	
-	@Select("select check_date from rp_var_drug where record_id = #{record_id}")
+	@Select("select check_date from rp_var_drug_en7 where record_id = #{record_id}")
 	String selectCheckDate(@Param("record_id") Integer record_id);
 	
 	void updateCheckDate(@Param("record_id") Integer record_id);
 	
-	@Delete("delete from rp_var_drug where gene = #{gene} and ori_variant = #{ori_variant} and disease_id = #{disease_id} and lang = #{lang}")
-	void deleteRpVarDrug(@Param("gene") String gene, @Param("ori_variant") String ori_variant, @Param("disease_id") Integer disease_id, @Param("lang")Integer lang);
+	@Delete("delete from rp_var_drug_en7 where gene = #{gene} and ori_variant = #{ori_variant} and disease_id = #{disease_id} and lang = #{lang} and gender = #{gender}")
+	void deleteRpVarDrug(@Param("gene") String gene, @Param("ori_variant") String ori_variant, @Param("disease_id") Integer disease_id, @Param("lang")Integer lang, @Param("gender") String gender);
 	
-	@Delete("delete from rp_var_drug where record_id = #{record_id}")
+	@Delete("delete from rp_var_drug_en7 where record_id = #{record_id}")
 	void deleteRpVarDrugById(@Param("record_id") Integer record_id);
 	
-	@Delete("delete from rp_var_drug")
+	@Delete("delete from rp_var_drug_en7")
 	void deleteAllRecord();
 	
 	@Select("select synonyms from nkb.drug where (drug_name_chinese = #{drug_name_chinese} or drug_name = #{drug_name_chinese}) and checking_status_id=2")

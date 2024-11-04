@@ -2,13 +2,11 @@ package com.novo.report.service.impl;
 
 import java.util.List;
 
+import com.novo.report.beans.*;
+import com.novo.report.dao.two.SampleFileDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.novo.report.beans.FilterIlluminaSnpIndel;
-import com.novo.report.beans.FilterLifeSnpIndel;
-import com.novo.report.beans.FilterPageBean;
-import com.novo.report.beans.PaginationVO;
 import com.novo.report.dao.two.FilterSnpIndelDao;
 import com.novo.report.service.FilterSnpIndelService;
 @Service
@@ -16,11 +14,13 @@ public class FilterSnpIndelServiceImpl implements FilterSnpIndelService {
 	
 	@Autowired
 	private FilterSnpIndelDao filterSnpIndelDao;
+
 	@Override
 	public PaginationVO<FilterIlluminaSnpIndel> getIlluminaSnpIndelByPage(FilterPageBean condition) {
-			PaginationVO<FilterIlluminaSnpIndel> paginationVO = new PaginationVO<FilterIlluminaSnpIndel>();
-			paginationVO.setTotal(filterSnpIndelDao.getTotal(condition));
-			paginationVO.setDataList(filterSnpIndelDao.getIlluminaSnpIndelByPage(condition));
+		PaginationVO<FilterIlluminaSnpIndel> paginationVO = new PaginationVO<FilterIlluminaSnpIndel>();
+		paginationVO.setTotal(filterSnpIndelDao.getTotal(condition));
+		List<FilterIlluminaSnpIndel> illuminaSnpIndelByPage = filterSnpIndelDao.getIlluminaSnpIndelByPage(condition);
+		paginationVO.setDataList(illuminaSnpIndelByPage);
 		return paginationVO;
 	}
 	

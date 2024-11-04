@@ -93,6 +93,11 @@
 							}else{
 								htmlString += '<td></td>';
 							}
+                          if(n.report_filenamethree!=null && n.report_filenamethree!=""){
+                            htmlString += '<td><div class="button-group"><a href="${pageContext.request.contextPath}/offlineReport/download?report_file_path='+n.report_file_path+'&report_filename='+n.report_filenamethree+'">'+n.report_filenamethree+'</a></div></td>';
+                          }else{
+                            htmlString += '<td></td>';
+                          }
 							htmlString += '<td><div class="button-group"><a class="button border-main"  href="${pageContext.request.contextPath}/offlineReport/offlineReportIframe?report_id='+n.report_id+'&subbarcode='+n.subbarcode+'&tested_date='+n.tested_date.substring(0,10)+'&status='+$("#status").val()+'&pageNo='+(pageNo+1)+'"><span class="icon-edit"></span>检查</a></div></td>';
 							htmlString += '</tr>';
 							
@@ -191,6 +196,7 @@
         <th>报告状态</th>
         <th>报告文件一(点击可下载）<span class="icon-download"></span></th>
         <th>报告文件二(点击可下载）<span class="icon-download"></span></th>
+        <th>报告文件三(点击可下载）<span class="icon-download"></span></th>
         <th>操作</th>
       </tr>
       <tr>

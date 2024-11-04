@@ -26,6 +26,21 @@ public class TemplateUtil2 {
 			if (pro.isAlive()) {
 				pro.waitFor();
 				System.err.println("完成");
+				/*final InputStream is1 = pro.getInputStream();
+				new Thread(() -> {
+					BufferedReader br = new BufferedReader(new InputStreamReader(is1));
+					try{
+						while(br.readLine() != null) ;
+					}
+					catch(Exception e) {
+						e.printStackTrace();
+					}
+				}).start();
+				InputStream is2 = pro.getErrorStream();
+				BufferedReader br2 = new BufferedReader(new InputStreamReader(is2));
+				while(br2.readLine() != null){}
+				pro.waitFor();
+				System.err.println("完成");*/
 			}
 			/*String str = "";
 			BufferedReader buffer = new BufferedReader(new InputStreamReader(pro.getInputStream()));

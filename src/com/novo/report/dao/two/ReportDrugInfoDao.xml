@@ -38,6 +38,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	     from rp_drug_info
 	    WHERE drug_name = #{drug_name} and lang = #{lang} and disease_id = #{disease_id}
   	</select>
+
+    <select id="selectManyByDrugChineseName" resultType="java.util.Map">
+	    SELECT record_id,drug_id,drug_name,disease_id,if(CFDA=1,concat(drug_name,'*'),drug_name) as drug_name2,CAST(cfda AS SIGNED) as cfda,approval_desc,modified,update_by,unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
+	     from rp_drug_info
+        WHERE drug_name = #{drug_name} and lang = #{lang} and disease_id in
+        <foreach collection="diseaseIdList" item="item" index="index"
+                 open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+  	</select>
 	
 	<select id="selectMultiByDrugChineseName" resultType="java.util.Map">
 	    SELECT record_id,drug_id,drug_name,if(CFDA=1,concat(drug_name,'*'),drug_name) as drug_name2,CAST(cfda AS SIGNED) as cfda,approval_desc,modified,update_by,unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
@@ -68,6 +78,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</foreach>
 		)
   	</select>
+	<select id="selectOneApprovedByDrugChineseName" resultType="java.util.Map">
+		SELECT drug_id,drug_name,disease_id,if(CFDA=1,concat(drug_name,'*'),drug_name) as drug_name2,CAST(cfda AS SIGNED) as cfda,approved,drug_approval_description as approval_desc,unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
+		from nkb_approved_drug_evw
+		WHERE drug_name = #{drug_name} and lang = #{lang} and disease_id = #{disease_id}
+	</select>
   	
   	<select id="selectMultiNkbByDrugChineseName" resultType="java.util.Map">
 	    SELECT drug_id,drug_name,if(CFDA=1,concat(drug_name,'*'),drug_name) as drug_name2,CAST(cfda AS SIGNED) as cfda,drug_approval_description as approval_desc,unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
@@ -121,4 +136,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
 		</where>
 	</select>
+
+    <select id="selectDiseaseByDrugId" resultType="String">
+        select disease_name_chinese from disease WHERE do_id = #{disease_id}
+    </select>
 </mapper>

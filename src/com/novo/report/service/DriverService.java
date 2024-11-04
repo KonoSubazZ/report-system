@@ -10,5 +10,5 @@ public interface DriverService {
 
 	void deleteParseFile(Integer file_id);
 
-
+	void deletePendingAndError(String analysis_date);
 }

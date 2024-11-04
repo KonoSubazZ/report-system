@@ -40,4 +40,6 @@ public interface ReportUnknownVarDao {
 	List<Map> exportFile(@Param("condition") String condition,@Param("before_date")String before_date,@Param("after_date")String after_date);
 	
 	Integer getApprovedDrugNum(@Param("drug_name") String DrugNameChinese, @Param("lang") Integer lang);
+
+	String getApprovedCFDANum(@Param("drug_name") String DrugNameChinese, @Param("lang") Integer lang);
 }

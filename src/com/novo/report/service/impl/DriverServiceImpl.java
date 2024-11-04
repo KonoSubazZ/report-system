@@ -26,4 +26,8 @@ public class DriverServiceImpl implements DriverService {
 		driverDao.deleteParseFile(file_id);
 	}
 
+	@Override
+	public void deletePendingAndError(String analysis_date) {
+		driverDao.deletePendingAndError(analysis_date);
+	}
 }

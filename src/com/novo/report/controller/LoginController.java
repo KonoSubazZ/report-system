@@ -49,7 +49,8 @@ public class LoginController {
 				}else {
 					//如果用户登陆成功之后，将用户信息放到session中
 					request.getSession().setAttribute("user", user);
-					request.getSession().setMaxInactiveInterval(7200);
+//					request.getSession().setMaxInactiveInterval(7200);
+					request.getSession().setMaxInactiveInterval(-1);
 					userService.saveUserLogging(user.getUser_id(),session_id);
 					jsonMap.put("success", true);
 				}

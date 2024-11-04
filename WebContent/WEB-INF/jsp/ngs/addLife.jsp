@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
@@ -77,6 +78,26 @@
 			  				     			$("#specimen_quantity").val(data.specimen_quantity);
 			  				     			$("#hospital").val(data.hospital);
 			  				     			$("#collect_date").val(data.collect_date);
+			  				     			$("#sample_type").val(data.sample_type);
+			  				     			$("#recordercode").val(data.recordercode);
+			  				     			$("#customer").val(data.customer);
+											$("#disease_type").val(data.disease_type);
+											$("#specimenno").val(data.specimenno);
+											var label = document.getElementById('specimenno_label');
+											if (data.customer.includes("阿克曼") || data.customer.includes("银丰") || data.customer.includes("迪安") || data.hospital.includes("常德")) {
+												$('#specimenno_div').show(); // 显示div
+												if (data.customer.includes("阿克曼")) {
+													label.innerText = "阿克曼编号：";
+												} else if (data.customer.includes("银丰")) {
+													label.innerText = "银丰编号：";
+												} else if (data.customer.includes("迪安")) {
+													label.innerText = "迪安编号：";
+												} else if (data.hospital.includes("常德")) {
+													label.innerText = "常德病理号：";
+												}
+											} else {
+												$('#specimenno_div').hide(); // 隐藏div
+											}
    				          				}else{
    				          					alert("抓取失败");
    				          				}
@@ -200,8 +221,32 @@
 	          <label>姓名：</label>
 	        </div>
 	        <div class="field">
-	          <input type="text" class="input w50" id="person_name" value="${sampleFile.person_name }" readonly="readonly" />
-	          <div class="tips"></div>
+	          <input type="text" class="input w50" id="person_name" onchange="updatePersonName()" value="${sampleFile.person_name }" />
+				<div class="tips"></div>
+				<span style="color:#FF0000; font-size:25px;  margin-left:15px">*</span>
+				<script type="text/javascript">
+					function updatePersonName(){
+						var sub_val = $("#subbarcode").val();
+						if(sub_val != ""){
+							$.ajax({
+								cache: false,
+								type: "POST",
+								url:"${pageContext.request.contextPath}/sampleFile/updatePersonName", //把表单数据发送到ajax.jsp
+								data:{"subbarcode":sub_val,"person_name":$("#person_name").val()}, //要发送的是ajaxFrm表单中的数据
+								success:function(data){
+									if(data){
+										$("#client").val($("#person_name").val());
+										alert("修改成功！");
+									}else{
+										alert("修改失败！");
+									}
+								}
+							});
+						}else{
+							alert("请先选择样本编号！");
+						}
+					}
+				</script>
 	        </div>
 	      </div>  
 	      </td> 
@@ -251,8 +296,36 @@
 	          <label>性别：</label>
 	        </div>
 	        <div class="field">
-	          <input type="text" class="input w50" id="gender" value="${sampleFile.gender }" readonly="readonly" />
-	          <div class="tips"></div>
+	          <%--<input type="text" class="input w50" id="gender" value="${sampleFile.gender }" readonly="readonly" />--%>
+				<select id="gender" name="gender" onchange="updateGender()" class="input w50">
+					<option value="" >-</option>
+					<option value="男" <c:if test="${sampleFile.gender=='男'}">selected="selected"</c:if>>男</option>
+					<option value="女" <c:if test="${sampleFile.gender=='女'}">selected="selected"</c:if>>女</option>
+				</select>
+				<div class="tips"></div>
+				<span style="color:#FF0000; font-size:25px;  margin-left:15px">*</span>
+				<script type="text/javascript">
+					function updateGender(){
+						var sub_val = $("#subbarcode").val();
+						if(sub_val != ""){
+							$.ajax({
+								cache: false,
+								type: "POST",
+								url:"${pageContext.request.contextPath}/sampleFile/updateGender", //把表单数据发送到ajax.jsp
+								data:{"subbarcode":sub_val,"gender":$("#gender").val()}, //要发送的是ajaxFrm表单中的数据
+								success:function(data){
+									if(data){
+										alert("修改成功！");
+									}else{
+										alert("修改失败！");
+									}
+								}
+							});
+						}else{
+							alert("请先选择样本编号！");
+						}
+					}
+				</script>
 	        </div>
 	      </div>  
       	</td>
@@ -262,8 +335,31 @@
 	          <label>年龄：</label>
 	        </div>
 	        <div class="field">
-	          <input type="text" class="input w50" id="age" value="${sampleFile.age }" readonly="readonly" />
-	          <div class="tips"></div>
+	          <input type="text" class="input w50" id="age" onchange="updateAge()" value="${sampleFile.age }" />
+				<div class="tips"></div>
+				<span style="color:#FF0000; font-size:25px;  margin-left:15px">*</span>
+				<script type="text/javascript">
+					function updateAge(){
+						var sub_val = $("#subbarcode").val();
+						if(sub_val != ""){
+							$.ajax({
+								cache: false,
+								type: "POST",
+								url:"${pageContext.request.contextPath}/sampleFile/updateAge", //把表单数据发送到ajax.jsp
+								data:{"subbarcode":sub_val,"age":$("#age").val()}, //要发送的是ajaxFrm表单中的数据
+								success:function(data){
+									if(data){
+										alert("修改成功！");
+									}else{
+										alert("修改失败！");
+									}
+								}
+							});
+						}else{
+							alert("请先选择样本编号！");
+						}
+					}
+				</script>
 	        </div>
 	      </div>  
 	      </td> 
@@ -275,7 +371,7 @@
 	          <label>检测癌种：</label>
 	        </div>
 	        <div class="field">
-	          <input type="text" class="input w50" id="cancertype" value="${sampleFile.cancertype }" readonly="readonly" />
+				  <input type="text" class="input w50" id="cancertype" value="${sampleFile.cancertype }" readonly="readonly" />
 	          <div class="tips"></div>
 	        </div>
 	      </div> 
@@ -299,7 +395,7 @@
 	          <label>病理分型：</label>
 	        </div>
 	        <div class="field">
-	          <input type="text" class="input w50" id="pathologicaltype" value="${sampleFile.pathologicaltype }" readonly="readonly" />
+				  <input type="text" class="input w50" id="pathologicaltype" value="${sampleFile.pathologicaltype }" readonly="readonly" />
 	          <div class="tips"></div>
 	        </div>
 	      </div>  
@@ -364,6 +460,117 @@
 	      </div>  
       	</td>
       </tr>
+      <tr>
+     	<td>
+	      <div class="form-group">
+	        <div class="label" style="width:85px">
+	          <label>创建人编码：</label>
+	        </div>
+	        <div class="field">
+	          <input type="text" class="input w50" id="recordercode" value="${sampleFile.recordercode }" readonly="readonly" />
+	          <div class="tips"></div>
+	        </div>
+	      </div> 
+		</td>
+		<td>
+	       <div class="form-group">
+	        <div class="label" style="width:85px">
+	          <label>送检单位：</label>
+	        </div>
+	        <div class="field">
+	          <input type="text" class="input w50" id="customer" value="${sampleFile.customer }" readonly="readonly" />
+	          <div class="tips"></div>
+	        </div>
+	      </div>  
+      	</td>
+      </tr>
+		 <tr>
+			 <td>
+				 <div class="form-group" style="margin-right: 50px">
+					 <div class="label" style="width:85px">
+						 <label>临床诊断：</label>
+					 </div>
+					 <div class="field">
+						 <input type="text" class="input w50" id="disease_type" onchange="updateDiseaseType()" value="${sampleFile.disease_type }" />
+						 <div class="tips"></div>
+						 <span style="color:#FF0000; font-size:25px;  margin-left:15px">*</span>
+						 <script type="text/javascript">
+							 function updateDiseaseType(){
+								 var sub_val = $("#subbarcode").val();
+								 if(sub_val != ""){
+									 $.ajax({
+										 cache: false,
+										 type: "POST",
+										 url:"${pageContext.request.contextPath}/sampleFile/updateDiseaseType", //把表单数据发送到ajax.jsp
+										 data:{"subbarcode":sub_val,"disease_type":$("#disease_type").val()}, //要发送的是ajaxFrm表单中的数据
+										 success:function(data){
+											 if(data){
+												 alert("修改成功！");
+											 }else{
+												 alert("修改失败！");
+											 }
+										 }
+									 });
+								 }else{
+									 alert("请先选择样本编号！");
+								 }
+							 }
+						 </script>
+					 </div>
+				 </div>
+			 </td>
+			 <td>
+				 <div id="specimenno_div" class="form-group" style="margin-right: 50px">
+					 <div class="label" style="width:85px">
+						 <label id="specimenno_label" />
+					 </div>
+					 <div class="field">
+						 <input type="text" class="input w50" id="specimenno" onchange="updateSpecimenno()" value="${sampleFile.specimenno }" />
+						 <div class="tips"></div>
+						 <span style="color:#FF0000; font-size:25px;  margin-left:15px">*</span>
+						 <script type="text/javascript">
+							 var customer = $("#customer").val();
+							 var hospital = $("#hospital").val();
+							 var label = document.getElementById('specimenno_label');
+							 if (customer.includes("阿克曼") || customer.includes("银丰") || customer.includes("迪安") || hospital.includes("常德")) {
+								 $('#specimenno_div').show(); // 显示div
+								 if (customer.includes("阿克曼")) {
+									 label.innerText = "阿克曼编号：";
+								 } else if (customer.includes("银丰")) {
+									 label.innerText = "银丰编号：";
+								 } else if (customer.includes("迪安")) {
+									 label.innerText = "迪安编号：";
+								 } else if (hospital.includes("常德")) {
+									 label.innerText = "常德病理号：";
+								 }
+							 } else {
+								 $('#specimenno_div').hide(); // 隐藏div
+							 }
+							 function updateSpecimenno(){
+								 var sub_val = $("#subbarcode").val();
+								 if(sub_val != ""){
+									 $.ajax({
+										 cache: false,
+										 type: "POST",
+										 url:"${pageContext.request.contextPath}/sampleFile/updateSpecimenno", //把表单数据发送到ajax.jsp
+										 data:{"subbarcode":sub_val,"specimenno":$("#specimenno").val()}, //要发送的是ajaxFrm表单中的数据
+										 success:function(data){
+											 if(data){
+												 alert("修改成功！");
+											 }else{
+												 alert("修改失败！");
+											 }
+										 }
+									 });
+								 }else{
+									 alert("请先选择样本编号！");
+								 }
+							 }
+						 </script>
+					 </div>
+				 </div>
+			 </td>
+		 </tr>
       <%-- <tr>
 	      <td>
 	       <div class="form-group">

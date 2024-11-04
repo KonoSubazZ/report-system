@@ -233,7 +233,12 @@
              <li data-ui="tab-nav" class="fore3 abtest_caipiao">
             	<a id="clickFive" href="javascript:void(0);" onclick="urlRun4();"><s></s>筛选-CR<i></i></a>
             </li>
-            
+            <li data-ui="tab-nav" class="fore3 abtest_caipiao">
+                <a id="clickSix" href="javascript:void(0);" onclick="urlRun5();"><s></s>筛选-PD<i></i></a>
+            </li>
+            <li data-ui="tab-nav" class="fore3 abtest_caipiao">
+                <a id="clickSeven" href="javascript:void(0);" onclick="urlRun6();"><s></s>筛选-QC<i></i></a>
+            </li>
        </ul>
 		<div style="float: left; padding:13px 0px 20px 50px;">
 	         <input type="radio" name="tableName" id="subBut_SnpIndel" onchange="subBut1();" checked="checked" value="SnpIndel"/> SnpIndel &nbsp;&nbsp;&nbsp;&nbsp;
@@ -242,6 +247,8 @@
         	 <input type="radio" name="tableName" id="subBut_Chemical" onchange="subBut4();" value="Chemical_all"/> Chemical   &nbsp;&nbsp;&nbsp;&nbsp;
          	 <c:if test="${currentNgsAvailable.platform == 'Illumina'}">
          	 	<input type="radio" name="tableName" id="subBut_CR" onchange="subBut5();" value="CR_ALL"/> CR   &nbsp;&nbsp;&nbsp;&nbsp;
+         	 	<input type="radio" name="tableName" id="subBut_PD" onchange="subBut6();" value="PD"/> PD   &nbsp;&nbsp;&nbsp;&nbsp;
+         	 	<%--<input type="radio" name="tableName" id="subBut_QC" onchange="subBut7();" value="QC"/> QC   &nbsp;&nbsp;&nbsp;&nbsp;--%>
        		 </c:if>
          </div>
         <c:if test="${ user.role_id == 11 || user.role_id == 8 || user.role_id == 6 || user.role_id == 1 }">
@@ -383,7 +390,9 @@
         						urlRun3();
         					}else if(whatTable=="CR"){
         						urlRun4();
-        					}
+        					}else if(whatTable=="PD"){
+                                urlRun5();
+                            }
 	        				$("#message").text("匹配位点成功！");
         				}else{
 	        				$("#message").text("匹配位点失败！");
@@ -417,6 +426,16 @@
        			$("#clickFive").trigger("click");
        			$("#whatTable").val("CR");
        		}
+            function subBut6(){
+                $("#message").text("");
+                $("#clickSix").trigger("click");
+                $("#whatTable").val("PD");
+            }
+            function subBut7(){
+                $("#message").text("");
+                $("#clickSeven").trigger("click");
+                $("#whatTable").val("PD");
+            }
        		function urlRun(){
        			 //alert('${currentNgsAvailable.platform}');
    			  var objFrm = document.getElementById('filterSnpIndel');
@@ -461,6 +480,20 @@
 	   			  }
 	   		      	objFrm.style.display = "block";
     		}
+            function urlRun5(){
+                var objFrm = document.getElementById('pd');
+                if('${currentNgsAvailable.platform}' == "Illumina"){
+                    objFrm.src = "${pageContext.request.contextPath}/filterPd/illuminaPd?subbarcode=${currentNgsAvailable.subbarcode}&platform=${currentNgsAvailable.platform}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}";
+                }
+                objFrm.style.display = "block";
+            }
+            function urlRun6(){
+                var objFrm = document.getElementById('qc');
+                if('${currentNgsAvailable.platform}' == "Illumina"){
+                    objFrm.src = "${pageContext.request.contextPath}/filterQc/illuminaQc?subbarcode=${currentNgsAvailable.subbarcode}&platform=${currentNgsAvailable.platform}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}";
+                }
+                objFrm.style.display = "block";
+            }
         </script>
     </div>
     <input type="hidden" id="whatTable" value="SnpIndel">
@@ -480,6 +513,12 @@
         </div>
          <div data-ui="tab-content" class="virtuals-iframes hide" data-loaded="true" style="display: none;  width:100%; height:100%;">
             <iframe id="cr" scrolling="auto" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+        <div data-ui="tab-content" class="virtuals-iframes hide" data-loaded="true" style="display: none;  width:100%; height:100%;">
+            <iframe id="pd" scrolling="auto" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+        <div data-ui="tab-content" class="virtuals-iframes hide" data-loaded="true" style="display: none;  width:100%; height:100%;">
+            <iframe id="qc" scrolling="auto" width="100%" height="100%" frameborder="0"></iframe>
         </div>
     </div>
 </div>

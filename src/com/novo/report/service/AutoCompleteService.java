@@ -29,7 +29,7 @@ public interface AutoCompleteService {
 
 	List<AutoComplete> getDiseaseClassChineseAndId();
 	
-	List<AutoComplete> getProductNameChineseAndId(String path_name);
+	List<AutoComplete> getProductNameChineseAndId();
 	
 	List<AutoComplete> getGeneVariant(String gene);
 	
@@ -56,4 +56,20 @@ public interface AutoCompleteService {
 	List<AutoComplete> getProductNameByUserId(Integer user_id);
 	
 	List<AutoComplete> getCustomer();
+
+	List<AutoComplete> getDiseaseNameAndDiseaseId(Integer primary_cancer_id);
+
+    List<AutoComplete> getEvidencePhaseNameAndEvidencePhaseId();
+
+	String getRecordercodeBySubbarcode(String subbarcode);
+
+	String getTemplateCorrespondenceByRecordercode(String recordercode);
+
+	String getCustomerBySubbarcode(String subbarcode);
+
+	String getTemplateCorrespondenceByCustomer(String customer);
+
+	String getTemplateUniversal(String universal);
+
+	String getCustomertypeBySubbarcode(String subbarcode);
 }

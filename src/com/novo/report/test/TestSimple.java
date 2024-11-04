@@ -37,15 +37,15 @@ public class TestSimple {
 		}
 		String string = JSONArray.fromObject(listdrug).toString();
 		System.out.println(string);
-		
-		
+
+
 		JSONArray array2 = JSONArray.fromObject(string);
 		List<Json> list = (List<Json>) JSONArray.toCollection(array2, Json.class);
 		for (Json json : list) {
 			System.out.println(json.getKey());
 			System.out.println(json.getValue());
 		}
-		
+
 		Map<String,Boolean> map = new HashMap<String,Boolean>();
 		map.put("aa", true);
 		map.put("bb", false);

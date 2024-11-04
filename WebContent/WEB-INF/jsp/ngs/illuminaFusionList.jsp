@@ -77,14 +77,15 @@
 					$.each(jsonObject.dataList,function(i,n){
 					    htmlString += '<tr class="odd">';
 						htmlString += '<td>'+n.file_id+'</td>';
-						htmlString += '<td>'+n.chromosome1+'</td>';
-						htmlString += '<td>'+n.softclip1+'</td>';
-						htmlString += '<td>'+n.sclip1_info+'</td>';
-						htmlString += '<td>'+n.chromosome2+'</td>';
-						htmlString += '<td>'+n.softclip2+'</td>';
-						htmlString += '<td>'+n.sclip2_info+'</td>';
+						htmlString += '<td id="chromosome1'+i+'">'+n.chromosome1+'</td>';
+						htmlString += '<td id="softclip1'+i+'">'+n.softclip1+'</td>';
+						htmlString += '<td id="sclip1_info'+i+'">'+n.sclip1_info+'</td>';
+						htmlString += '<td id="chromosome2'+i+'">'+n.chromosome2+'</td>';
+						htmlString += '<td id="softclip2'+i+'">'+n.softclip2+'</td>';
+						htmlString += '<td id="sclip2_info'+i+'">'+n.sclip2_info+'</td>';
 						htmlString += '<td>'+n.cosmic_info+'</td>';
 						htmlString += '<td>'+n.db_info+'</td>';
+						htmlString += '<td>'+n.fusion_quality+'</td>';
 						htmlString += '<td>'+n.sup_reads_hq+'</td>';
 						htmlString += '<td>'+n.sup_reads_uniq+'</td>';
 						htmlString += '<td>'+n.depth+'</td>';
@@ -93,16 +94,20 @@
 						htmlString += '<td>'+n.bp1+'</td>';
 						htmlString += '<td>'+n.gene2+'</td>';
 						htmlString += '<td>'+n.bp2+'</td>';
-						htmlString += '<td>'+(n.variant == null? "" : n.variant) +'</td>';
-						
+                        // htmlString += '<td><input id="gene'+i+'" type="text" style="width:80px"; onblur="updateGene('+n.record_id+','+i+')" onfocus="cleanMessage2()" value="'+n.gene+'"/></td>';
+                        htmlString += '<td><a><span style="color: red;cursor: pointer;" id="gene'+i+'" onclick="updateGene('+n.record_id+','+i+')" onfocus="cleanMessage2()">'+n.gene+'</span></a></td>';
+						// htmlString += '<td>'+(n.variant == null? "" : n.variant) +'</td>';
+                        // htmlString += '<td><input id="variant'+i+'" type="text" style="width:200px"; onblur="updateVariant('+n.record_id+','+i+')" onfocus="cleanMessage2()" value="'+n.variant+'"/></td>';
+                        htmlString += '<td><a><span style="color: red;cursor: pointer;" id="variant'+i+'" onclick="updateVariant('+n.record_id+','+i+')" onfocus="cleanMessage2()">'+n.variant+'</span></a></td>';
+
 						if(n.report == 0){
-							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option selected="selected" value="0">不出</option><option value="1">出</option><option value="2">default</option></select></td>';
+							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" name="check" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option selected="selected" value="0">不出</option><option value="1">出</option><option value="2">default</option></select></td>';
 						}
 						if(n.report == 1){
-							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option selected="selected" value="1">出</option><option value="2">default</option></select></td>';
+							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" name="check" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option selected="selected" value="1">出</option><option value="2">default</option></select></td>';
 						}
 						if(n.report == null || n.report == "."){
-							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option value="1">出</option><option selected="selected" value="2">default</option></select></td>';
+							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" name="check" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option value="1">出</option><option selected="selected" value="2">default</option></select></td>';
 						}
 						if(n.filtered_rationale==null){
 							htmlString += '<td><input id="inp'+i+'" type="text" onblur="updateFiltered('+n.record_id+','+i+')" onfocus="cleanMessage2()" value=""/></td>';
@@ -140,6 +145,44 @@
 		});
 	
 	}
+
+    function updateGene(record_id,id){
+        if(confirm($("#gene"+id).text()+"确定更换？")){
+            $.ajax({
+                url:"${pageContext.request.contextPath}/filterFusion/updateGene",
+                type:"POST",
+                data:{"record_id":record_id,"gene":$("#gene"+id).text(),"variant":$("#variant"+id).text()},
+                dataType:"json",
+                success:function(result){
+                    if(result){
+                        displayData(0);
+                        alert("gene修改成功！");
+                    }else{
+                        alert("gene修改失败！");
+                    }
+                }
+            });
+        }
+    }
+
+    function updateVariant(record_id,id){
+        if(confirm($("#variant"+id).text()+"确定更换？")){
+            $.ajax({
+                url:"${pageContext.request.contextPath}/filterFusion/updateVariant",
+                type:"POST",
+                data:{"record_id":record_id,"gene":$("#gene"+id).text(),"variant":$("#variant"+id).text(),"chromosome1":$("#chromosome1"+id).text(),"softclip1":$("#softclip1"+id).text(),"sclip1_info":$("#sclip1_info"+id).text(),"chromosome2":$("#chromosome2"+id).text(),"softclip2":$("#softclip2"+id).text(),"sclip2_info":$("#sclip2_info"+id).text()},
+                dataType:"json",
+                success:function(result){
+                    if(result){
+                        displayData(0);
+                        alert("variant修改成功！");
+                    }else{
+                        alert("variant修改失败！");
+                    }
+                }
+            });
+        }
+    }
 	
 	function updateReport(record_id,id){
 		
@@ -187,6 +230,12 @@
 		}); 
 		
 	}
+
+    //report批量选择
+    function selects() {
+        var report = $("#report").val();
+        $("[name='check']").val(report).change();
+    }
 </script>
 
 </head>
@@ -205,7 +254,11 @@
 	      <input onchange="displayData(0);" name="isPass" type="checkbox" value="passNo" />不通过&nbsp;
 	      <input onchange="displayData(0);" name="isPass" type="checkbox" value="mateNo" />无匹配&nbsp;
 	      <input onchange="displayData(0);" name="isPass" type="checkbox" value="mate" />匹配
-        </li>   
+        </li>
+        <li>report</li>
+        <li>
+          <select id="report" onchange="selects();"><option value="0">不出</option><option value="1">出</option><option selected="selected" value="2">default</option></select>
+        </li>
         <li style="padding-left:800px;float: left;color: red;font-size: 14px"><span id="message2"></span></li>      
       </ul>
     </div>
@@ -220,6 +273,7 @@
         <th>sclip2_info</th>
         <th>cosmic_info</th>
         <th>db_info</th>
+        <th>fusion_quality</th>
         <th>sup_reads_hq</th>
         <th>sup_reads_uniq</th>
         <th>depth</th>
@@ -228,6 +282,7 @@
         <th>bp1</th>
         <th>gene2</th>
         <th>bp2</th>
+        <th>gene</th>
         <th>variant</th>
         <th>report</th>
         <th>filtered_rationale</th>

@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/pintuer.css" role='reload'>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.autocomplete.css" ></link>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/myAlert.css">
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.form.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.validate.min.js"></script>
@@ -22,10 +23,19 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/autocomplete/getDate.js"></script>
 <script src="${pageContext.request.contextPath}/js/pintuer.js" role='reload'></script>
 <script src="${pageContext.request.contextPath}/js/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/myAlert.js"></script>
 <script type="text/javascript">
 
 </script>
 </head>
+<style>
+	input[type="file"] {
+		border: 2px solid #0056b3;
+		border-radius: 5px;
+		padding: 5px;
+		width: 600px;
+	}
+</style>
 <body>
 <div class="panel admin-panel">
   <div class="panel-head" id="add"><strong><span class="icon-pencil-square-o"></span>上传报告</strong></div>
@@ -40,8 +50,27 @@
 	          <label >样本编号：</label>
 	        </div>
 	        <div class="field">
-	          <input type="text" class="input w50" value="" name="subbarcode" id="subbarcode" data-validate="required:请正确填写样本 ID" />
+	          <input type="text" class="input w50" value="" name="subbarcode" id="subbarcode" onchange="getSampleFileBySubbarcode()" data-validate="required:请正确填写样本 ID" />
 	          <div class="tips"></div>
+				<script type="text/javascript">
+					function getSampleFileBySubbarcode(){
+						var sub_val = $("#subbarcode").val();
+						if(sub_val != ""){
+							$.ajax({
+								cache: false,
+								type: "POST",
+								url:"${pageContext.request.contextPath}/sampleFile/getSampleFileBySubbarcode", //把表单数据发送到ajax.jsp
+								data:{"subbarcode":sub_val}, //要发送的是ajaxFrm表单中的数据
+								success:function(result){
+									$("#person_name").val(result.person_name);
+									$("#specimen_type").val(result.specimen_type);
+									$("#disease_type").val(result.disease_type);
+									$("#emailaddress").val(result.emailaddress);
+								}
+							});
+						}
+					}
+				</script>
 	        </div>
 	      </div>
 	     </td>
@@ -143,12 +172,19 @@
 	          <div class="tips"></div>
 	        </div>
 	      </div>  
-	      </td> 
-	     <td>
-	     	<div class="form-group">
-	      </div>  
-      	</td>
-      </tr>
+	      </td>
+		  <td>
+			  <div class="form-group" style="margin-right: 50px">
+				  <div class="label" style="width:80px">
+					  <label>选择文件3：</label>
+				  </div>
+				  <div class="field">
+					  <input type="file" id="filenamethree" name="filenamethree">
+					  <div class="tips"></div>
+				  </div>
+			  </div>
+		  </td>
+	  </tr>
       <tr>
      	<td>
 	      <div class="form-group" style="margin-right: 50px">
@@ -197,11 +233,13 @@
 	        </div>
 	        <div class="field">
 	       	  <button id="reportBtn" class="button bg-main icon-check-square-o" type="submit"> 上传报告</button>
+	       	  <button id="sendEmail" class="button bg-main icon-send" > 发送邮件</button>
 	       	  <button  class="button bg-main icon-file-o" onclick="javascript: window.history.back();" style="width: 135px" type="button"> 返回列表</button>
 	        </div>
 	        <script type="text/javascript">
 	        	$(function(){
 	        		$("#reportBtn").click(function(){
+						$("#sendEmail").prop("disabled","disabled");
          				$("#offlineForm").validate({
    	    					rules:{
    	    						"subbarcode":{"required":true}
@@ -219,32 +257,79 @@
 	   	 		          			dataType:"json",
 	   	 		          			success:function(result){
 	   	 		          				if(!result){
-		   	 		          				$.ajax({   
+		   	 		          				$.ajax({
 		   	   	    							cache: false,
-		   	   	    							type: "POST",   
-					   	 		          		contentType: false,  
+		   	   	    							type: "POST",
+					   	 		          		contentType: false,
 										        processData: false,
 				   	 		          			dataType:"json",
-		   	   	    							url:"${pageContext.request.contextPath}/offlineReport/addOfflineReport", //把表单数据发送到ajax.jsp  
-		   	   	    							data:formData, 
+		   	   	    							url:"${pageContext.request.contextPath}/offlineReport/addOfflineReport", //把表单数据发送到ajax.jsp
+		   	   	    							data:formData,
 		   	   	    							success:function(data){
-		   	   	    								if(data.flag){
+		   	   	    								if(data){
 		   	   	    									alert("文件上传成功！");
 		   	   	    								}else{
 		   	   	    									alert("文件上传失败！"+data.errorMessage);
 		   	   	    								}
-		   	   	    							} 
-		   	   	    						}); 
+		   	   	    							}
+		   	   	    						});
    	 		          					}else{
    	 		          						alert("请从LIMS抓取数据!");
    	 		          						return;
    	 		          					}
    	 		          				}
    	 		          			});
-   	    			        }  
-   	    				}); 
-		          			
+   	    			        }
+   	    				});
 	        		});
+
+					$("#sendEmail").click(function () {
+						$("#reportBtn").prop("disabled","disabled");
+						$("#offlineForm").validate({
+							rules:{
+								"subbarcode":{"required":true}
+							},
+							messages:{
+								"subbarcode":{"required":""}
+							},
+							submitHandler:function(){
+								$.myConfirm({
+									title: '邮件发送确认', message: '确认发送邮件？', callback: function () {
+										var from = document.getElementById("offlineForm");
+										var formData = new FormData(from);
+										$.ajax({
+											url:"${pageContext.request.contextPath}/sampleFile/getSampleIdBySubbarcode",
+											type:"post",
+											data:{"subbarcode":$("#subbarcode").val()},
+											dataType:"json",
+											success:function(result){
+												if(!result){
+													$.ajax({
+														cache: false,
+														type: "POST",
+														contentType: false,
+														processData: false,
+														url: "${pageContext.request.contextPath}/offlineReport/addOfflineSendEmail", //把表单数据发送到ajax.jsp
+														data: formData,
+														dataType:"json",
+														success: function (data) {
+															if(data){
+																$.myAlert(data.errorMessage);
+															}
+														}
+													});
+												}else{
+													alert("请从LIMS抓取数据!");
+													return;
+												}
+
+											}
+										});
+									}
+								});
+							}
+						});
+					});
 	        	});
 	        </script>
 	      </div> 

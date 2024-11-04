@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</where>
 	</select>
 	<select id="getReportByPage" resultType="OfflineReport">
-		select report_id,subbarcode,person_name,tested_date, tested_by,report_filenameone,report_filenametwo,report_file_path,emailaddress,send_date,status,checked_by,checked_date,saleremail,supportemail,manageremail,pmemail
+		select report_id,subbarcode,person_name,tested_date, tested_by,report_filenameone,report_filenametwo,report_filenamethree,report_file_path,emailaddress,send_date,status,checked_by,checked_date,saleremail,supportemail,manageremail,pmemail
 		from offline_report
 		<where>
 			<if test="subbarcode!=null and subbarcode!=''">
@@ -36,12 +36,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		limit #{pageNo},#{pageSize}
 	</select>
 	<insert id="addOfflineReport"  keyProperty="report_id" useGeneratedKeys="true" >
-		insert into offline_report(subbarcode,person_name,tested_date, tested_by,report_filenameone,report_filenametwo,report_file_path,emailaddress,send_date,status,checked_by,checked_date,saleremail,supportemail,manageremail,pmemail)
-		values(#{subbarcode},#{person_name},#{tested_date},#{tested_by},#{report_filenameone},#{report_filenametwo},#{report_file_path},
+		insert into offline_report(subbarcode,person_name,tested_date, tested_by,report_filenameone,report_filenametwo,report_filenamethree,report_file_path,emailaddress,send_date,status,checked_by,checked_date,saleremail,supportemail,manageremail,pmemail)
+		values(#{subbarcode},#{person_name},#{tested_date},#{tested_by},#{report_filenameone},#{report_filenametwo},#{report_filenamethree},#{report_file_path},
 			#{emailaddress},#{send_date},#{status},#{checked_by},#{checked_date},#{saleremail},#{supportemail},#{manageremail},#{pmemail})
 	</insert>
 	<select id="getOfflineReportById" resultType="OfflineReport">
-		select report_id,subbarcode,person_name,tested_date, tested_by,report_filenameone,report_filenametwo,report_file_path,emailaddress,send_date,status,checked_by,checked_date,saleremail,supportemail,manageremail,pmemail
+		select report_id,subbarcode,person_name,tested_date, tested_by,report_filenameone,report_filenametwo,report_filenamethree,report_file_path,emailaddress,send_date,status,checked_by,checked_date,saleremail,supportemail,manageremail,pmemail
 		from offline_report where report_id = #{report_id}
 	</select>
 	<update id="updateFileNameOneById">
@@ -49,6 +49,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 	<update id="updateFileNameTwoById">
 		update offline_report set report_filenametwo=#{1} where report_id=#{0}
+	</update>
+	<update id="updateFileNameThreeById">
+		update offline_report set report_filenamethree=#{1} where report_id=#{0}
 	</update>
 	<select id="getStatus" resultType="String">
 		select status from offline_report where report_id = #{report_id}

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.novo.report.beans.CurrentNgsAvailableData;
@@ -19,7 +20,11 @@ public class FilterSnpIndelController {
 	@RequestMapping("illuminaSnpIndelList")
 	public String illuminaSnpIndelList(CurrentNgsAvailableData currentNgsAvailable, Model model) {
 		model.addAttribute("currentNgsAvailable", currentNgsAvailable);
-		return "ngs/illuminaSnpIndelList";
+		if (currentNgsAvailable.getFlag() != null && currentNgsAvailable.getFlag() == 1) {
+			return "ngs/illuminaSnpIndelList1";
+		} else {
+			return "ngs/illuminaSnpIndelList";
+		}
 	}
 	
 	// 分页查询

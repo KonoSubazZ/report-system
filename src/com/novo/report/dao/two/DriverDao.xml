@@ -18,6 +18,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<delete id="deleteParseFile">
 		delete from data_file_status where file_id=#{file_id}
 	</delete>
-	
-	
+
+	<update id="updateParseFile">
+		update data_file_status set product_name = #{product_name} where subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name != 'pd'
+	</update>
+
+	<delete id="deletePendingAndError">
+		delete from data_file_status where analysis_date = #{analysis_date} and (status = 'Pending' or status = 'Error')
+	</delete>
 </mapper>

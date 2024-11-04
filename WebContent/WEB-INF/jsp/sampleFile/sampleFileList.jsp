@@ -194,6 +194,9 @@
 	           <button id="rflims" class="button border-main icon-search-plus" onclick="refulshLims();" type="button"  style=<c:if test="${user.role_id != 6 }">"display: none;"</c:if>> 更新LIMS</button>
 	        </li>
         </c:if>
+        <li style="margin-left: 100px;">
+            <a class="button border-blue icon-plus-square-o" href="${pageContext.request.contextPath}/sampleFile/inputSampleFile">导入样本信息</a>
+        </li>
         <li style="float: right;margin-right: 200px">
        		<span id="msg2" style="color: red;font-size: 14px"></span>
         </li>

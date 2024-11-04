@@ -20,6 +20,8 @@ public interface OfflineReportService {
 
 	void updateFileNameTwoById(String report_id, String report_filenametwo);
 
+	void updateFileNameThreeById(String report_id, String report_filenamethree);
+
 	String getStatus(Integer report_id);
 
 	void editStatus(OfflineReport offlineReport);

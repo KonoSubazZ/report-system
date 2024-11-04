@@ -24,9 +24,9 @@
 <script src="${pageContext.request.contextPath}/js/My97DatePicker/WdatePicker.js"></script>
 <script type="text/javascript">
 	$(function(){
-		/* if("${flag}" == 1){
+		/*if("${flag}" == 1){
 			getTimeYMD("analysis_date");
-		} */
+		}*/
 		displayData(0);
 		$("#pageNo").keydown(function(event){
 			if(event.keyCode==13){
@@ -45,117 +45,148 @@
 		var pageSize=10;
 		var life="";
 		var illumina="";
+        var analysis_date = "";
 		if($("#Life").attr("checked")=="checked"){
 			life="Life";
 		}
 		if($("#Illumina").attr("checked")=="checked"){
 			illumina="Illumina";
 		}
+        if($("#analysis_date").val() == "" && $("#product_name").val() == "" && $("#subbarcode").val() == "" && $("#status").val()=="") {
+            analysis_date = new Date().getFullYear()+((new Date().getMonth()+1)<10?'0':'')+(new Date().getMonth()+1)+(new Date().getDate()<10?'0':'')+new Date().getDate();
+        } else {
+            analysis_date = $("#analysis_date").val()
+        }
 		
 		if($("#Life").attr("checked")=="checked" || $("#Illumina").attr("checked")=="checked"){
-			if($("#analysis_date").val() == "" && $("#product_name").val() == "" && $("#subbarcode").val() == "" && $("#status").val()==""){
-				$("#message").text("请选择筛选条件");
-			}else{
-				$("#message").text("");
-				$.ajax({
-					url:"${pageContext.request.contextPath}/NgsAvailableDataVw/getNgsAvailableDataVwByPage",
-					type:"post",
-					cache:false, //设置浏览器不缓存页面  
-					data:{
-						"pageNo":pageNo+1,
-						"pageSize":pageSize,
-						"life":life,
-						"illumina":illumina,
-						"analysis_date":$("#analysis_date").val(),
-						"subbarcode":$("#subbarcode").val(),
-						"product_name":$("#product_name").val(),
-						"status":$("#status").val()
-					},
-					beforeSend:function(){
-						$("#search-list").attr("onclick","");
-						$("#message").text("正在处理请稍等...");
-						return true;
-					},
-					success:function(jsonObject){
-						$("#search-list").attr("onclick","displayData(0);");
-						//清空内容
-						$("#tInfo2").empty();
-					    if(jsonObject.total==0){
-							$("#message").text("没数据");
-						}else{
-							$("#message").text("");
-							var htmlString="";
-							var report_id_N=0;
-							var userId=${user.role_id};
-							$.each(jsonObject.dataList,function(i,n){
-								htmlString += '<tr class="odd">';
-								htmlString += '<td>'+n.report_id+'</td>';
-								htmlString += '<td>'+n.analysis_date+'</td>';
-								htmlString += '<td>'+n.barcode+'</td>';
-								htmlString += '<td>'+n.subbarcode+'</td>';
-								htmlString += '<td>'+n.product_name+'</td>';
-								htmlString += '<td>'+n.analyzer+'</td>';
-								if(n.checked_date!=null && n.checked_date!=""){
-									htmlString += '<td>'+n.checked_date.substring(0,10)+'</td>';
-								}else{
-									htmlString += '<td>'+n.checked_date+'</td>';
-								}
-								htmlString += '<td>'+n.checked_by+'</td>';
-								htmlString += '<td>'+n.primary_cancer+'</td>';
-								if(n.report_date!=null && n.report_date!=""){
-									htmlString += '<td>'+n.report_date.substring(0,19)+'</td>';
-								}else{
-									htmlString += '<td>'+n.report_date+'</td>';
-								}
-								if(n.report_filename!=null){
-									htmlString += '<td><a style="cursor: pointer;" href="${pageContext.request.contextPath}/ngs/download?report_id='+n.report_id+'">'+n.report_filename+'</a></td>';
-								}else{
-									htmlString += '<td>'+n.report_filename+'</td>';
-								}
-								htmlString += '<td>'+n.status+'</td>';
-								if(n.report_id == null){
-									report_id_N=0;
-								}else{
-									report_id_N=n.report_id;
-								}
-								htmlString += '<td><div class="button-group"><a href="${pageContext.request.contextPath}/life/lifeMain?report_id='+report_id_N+'&platform='+n.platform+'&status='+n.status+'&subbarcode='+n.subbarcode+'&analysis_date='+n.analysis_date+'&product_name='+n.product_name+'&product_name_show='+$("#product_name").val()+'&subbarcode_show='+$("#subbarcode").val()+'&analysis_date_show='+$("#analysis_date").val()+'&life='+life+'&illumina='+illumina+'&pageNo='+(pageNo+1)+'">检查</a></div></td>';
-								if(n.report_filename!=null && userId!=12){
-									htmlString += '<td><a><span style="cursor: pointer;" onclick="deleteReport('+n.report_id+','+pageNo+');">删除报告</span></a></td>';
-								}else{
-									htmlString += '<td></td>';
-								}
-								htmlString += '</tr>';
-							});
-							//将上面拼接好的json字符串追加到tbody中
-							$("#tInfo2").append(htmlString);
-						} 
-					  
-					  //集成jquery的翻页插件
-						$("#pagination").pagination(jsonObject.total, {//总记录条数
-				            callback: displayData,//每次翻页的时候执行的回调函数  会自动传递当前页码索引   比正常页码小1
-				            items_per_page:pageSize, // 每页显示多少条数据
-				            current_page:pageNo,//当前页码索引
-				            link_to:"javascript:void(0)",//保留超链接的样式，执行js代码   不跳转到任何资源
-				            num_display_entries:5,//默认显示页码入口的个数
-				            next_text:"下一页",
-				            prev_text:"上一页",
-				            next_show_always:true,//如果没有下一页是否显示连接
-				            prev_show_always:true,//如果没有上一页是否显示连接
-				            num_edge_entries:2,//页码较多的时候 可以用...省略
-				            ellipse_text:"..."
-				        });
-						//获取总记录条数
-						$("#total").text(jsonObject.total); 
-						//显示总页数
-						var pageCount = jsonObject.total%pageSize==0?jsonObject.total/pageSize:parseInt(jsonObject.total/pageSize)+1;
-						$("#pageCount").text(pageCount);
-					}
-				});
-			}
+            // $("#message").text("请选择筛选条件");
+            $("#message").text("");
+            $.ajax({
+                url:"${pageContext.request.contextPath}/NgsAvailableDataVw/getNgsAvailableDataVwByPage",
+                type:"post",
+                cache:false, //设置浏览器不缓存页面
+                data:{
+                    "pageNo":pageNo+1,
+                    "pageSize":pageSize,
+                    "life":life,
+                    "illumina":illumina,
+                    "analysis_date":analysis_date,
+                    "subbarcode":$("#subbarcode").val(),
+                    "product_name":$("#product_name").val(),
+                    "status":$("#status").val()
+                },
+                beforeSend:function(){
+                    $("#search-list").attr("onclick","");
+                    $("#message").text("正在处理请稍等...");
+                    return true;
+                },
+                success:function(jsonObject){
+                    $("#search-list").attr("onclick","displayData(0);");
+                    //清空内容
+                    $("#tInfo2").empty();
+                    if(jsonObject.total==0){
+                        $("#message").text("没数据");
+                    }else{
+                        $("#message").text("");
+                        var htmlString="";
+                        var report_id_N=0;
+                        var userId=${user.role_id};
+                        $.each(jsonObject.dataList,function(i,n){
+                            htmlString += '<tr class="odd">';
+                            htmlString += '<td>'+n.report_id+'</td>';
+                            htmlString += '<td>'+n.analysis_date+'</td>';
+                            htmlString += '<td>'+n.barcode+'</td>';
+                            htmlString += '<td>'+n.subbarcode+'</td>';
+                            htmlString += '<td>'+n.product_name+'</td>';
+                            htmlString += '<td>'+n.analyzer+'</td>';
+                            if(n.checked_date!=null && n.checked_date!=""){
+                                htmlString += '<td>'+n.checked_date.substring(0,10)+'</td>';
+                            }else{
+                                htmlString += '<td>'+n.checked_date+'</td>';
+                            }
+                            htmlString += '<td>'+n.checked_by+'</td>';
+                            htmlString += '<td>'+n.primary_cancer+'</td>';
+                            htmlString += '<td>'+n.chem_cancer+'</td>';
+                            if(n.report_date!=null && n.report_date!=""){
+                                htmlString += '<td>'+n.report_date.substring(0,19)+'</td>';
+                            }else{
+                                htmlString += '<td>'+n.report_date+'</td>';
+                            }
+                            if(n.report_filename!=null){
+                                htmlString += '<td><a style="cursor: pointer;" href="${pageContext.request.contextPath}/ngs/download?report_id='+n.report_id+'">'+n.report_filename+'</a></td>';
+                            }else{
+                                htmlString += '<td>'+n.report_filename+'</td>';
+                            }
+                            htmlString += '<td>'+n.status+'</td>';
+                            if(n.report_id == null){
+                                report_id_N=0;
+                            }else{
+                                report_id_N=n.report_id;
+                            }
+                            htmlString += '<td><div class="button-group"><a href="${pageContext.request.contextPath}/life/lifeMain?report_id='+report_id_N+'&platform='+n.platform+'&status='+n.status+'&subbarcode='+n.subbarcode+'&analysis_date='+n.analysis_date+'&product_name='+n.product_name+'&product_name_show='+$("#product_name").val()+'&subbarcode_show='+$("#subbarcode").val()+'&analysis_date_show='+$("#analysis_date").val()+'&status_show='+$("#status").val()+'&life='+life+'&illumina='+illumina+'&pageNo='+(pageNo+1)+'">检查</a></div></td>';
+                            if(n.report_filename!=null && userId!=12){
+                                htmlString += '<td><a><span style="cursor: pointer;" onclick="deleteReport('+n.report_id+','+pageNo+');">删除报告</span></a></td>';
+                            }else{
+                                htmlString += '<td></td>';
+                            }
+                            htmlString += '</tr>';
+                        });
+                        //将上面拼接好的json字符串追加到tbody中
+                        $("#tInfo2").append(htmlString);
+                    }
+
+                    //集成jquery的翻页插件
+                    $("#pagination").pagination(jsonObject.total, {//总记录条数
+                        callback: displayData,//每次翻页的时候执行的回调函数  会自动传递当前页码索引   比正常页码小1
+                        items_per_page:pageSize, // 每页显示多少条数据
+                        current_page:pageNo,//当前页码索引
+                        link_to:"javascript:void(0)",//保留超链接的样式，执行js代码   不跳转到任何资源
+                        num_display_entries:5,//默认显示页码入口的个数
+                        next_text:"下一页",
+                        prev_text:"上一页",
+                        next_show_always:true,//如果没有下一页是否显示连接
+                        prev_show_always:true,//如果没有上一页是否显示连接
+                        num_edge_entries:2,//页码较多的时候 可以用...省略
+                        ellipse_text:"..."
+                    });
+                    //获取总记录条数
+                    $("#total").text(jsonObject.total);
+                    //显示总页数
+                    var pageCount = jsonObject.total%pageSize==0?jsonObject.total/pageSize:parseInt(jsonObject.total/pageSize)+1;
+                    $("#pageCount").text(pageCount);
+                }
+            });
 		}else{
 			$("#message").text("请选择平台");
 		}
 	}
+
+    function addData(){
+        if($("#subbarcode").val() == ""){
+            alert("请输入样本编号！");
+        } else {
+            if(confirm("确定添加？")){
+                $.ajax({
+                    url:"${pageContext.request.contextPath}/dataFileStatus/saveDataFileStatus",
+                    type:"post",
+                    cache:false, //设置浏览器不缓存页面
+                    data:{
+                        "analysis_date":$("#analysis_date").val(),
+                        "subbarcode":$("#subbarcode").val(),
+                        "product_name":$("#product_name").val(),
+                    },
+                    success:function(data){
+                        if(data.success){
+                            alert("添加成功！");
+                        }else{
+                            alert(data.mgs);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
 	function deleteReport(report_id,pageNo){
 		if(confirm("确定删除？")){
 			$.ajax({
@@ -255,19 +286,20 @@
         <li>
          <select id="status" name="status" class="input w50" style="width: 200px">
         	<option value="" selected="selected"></option>
-            <option value="初次看点" <c:if test="${currentNgsAvailable.status=='初次看点'}"> selected="selected" </c:if>>初次看点</option>
-            <option value="生信审核" <c:if test="${currentNgsAvailable.status=='生信审核'}"> selected="selected" </c:if>>生信审核</option>
-            <option value="报告生成成功" <c:if test="${currentNgsAvailable.status=='报告生成成功'}"> selected="selected" </c:if>>报告生成成功</option>
-            <option value="报告生成失败" <c:if test="${currentNgsAvailable.status=='报告生成失败'}"> selected="selected" </c:if>>报告生成失败</option>
-            <option value="报告审核通过" <c:if test="${currentNgsAvailable.status=='报告审核通过'}"> selected="selected" </c:if>>报告审核通过</option>
-            <option value="报告审核未通过" <c:if test="${currentNgsAvailable.status=='报告审核未通过'}"> selected="selected" </c:if>>报告审核未通过</option>
-            <option value="报告发送成功" <c:if test="${currentNgsAvailable.status=='报告发送成功'}"> selected="selected" </c:if>>报告发送成功</option>
+            <option value="初次看点" <c:if test="${currentNgsAvailable.status_show=='初次看点'}"> selected="selected" </c:if>>初次看点</option>
+            <option value="生信审核" <c:if test="${currentNgsAvailable.status_show=='生信审核'}"> selected="selected" </c:if>>生信审核</option>
+            <option value="报告生成成功" <c:if test="${currentNgsAvailable.status_show=='报告生成成功'}"> selected="selected" </c:if>>报告生成成功</option>
+            <option value="报告生成失败" <c:if test="${currentNgsAvailable.status_show=='报告生成失败'}"> selected="selected" </c:if>>报告生成失败</option>
+            <option value="报告审核通过" <c:if test="${currentNgsAvailable.status_show=='报告审核通过'}"> selected="selected" </c:if>>报告审核通过</option>
+            <option value="报告审核未通过" <c:if test="${currentNgsAvailable.status_show=='报告审核未通过'}"> selected="selected" </c:if>>报告审核未通过</option>
+            <option value="报告发送成功" <c:if test="${currentNgsAvailable.status_show=='报告发送成功'}"> selected="selected" </c:if>>报告发送成功</option>
           </select>
         </li>
         <li>
         	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
           <a href="javascript:void(0)"  class="button border-main icon-search" id="search-list" onclick="displayData(0);"> 搜索</a>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          <a href="javascript:void(0)" class="button border-main icon-plus-square-o" id="add" onclick="addData();"> 添加</a>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
        		<span id="message" style="color: red;font-size: 14px"></span>
         </li>
       </ul>
@@ -283,6 +315,7 @@
         <th>审核时间</th>
         <th>基因解读师</th>
         <th>原发癌种</th>
+        <th>化疗癌种</th>
         <th>报告时间</th>
         <th>报告文件名(点击即可下载)</th>
         <th>报告状态</th>

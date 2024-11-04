@@ -20,5 +20,7 @@ public interface NgsReportService {
 	void deleteNgsReportByReportId(Integer report_id);
 
 	void updateFileNameById(String report_id, String report_filename,String report_file_path);
-	
+
+	void updateFileName91360ById(String report_id, String filename91360,String file_path91360);
+
 }

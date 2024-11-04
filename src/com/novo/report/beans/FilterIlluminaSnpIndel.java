@@ -19,6 +19,7 @@ public class FilterIlluminaSnpIndel {
 	private String e1000g2012apr_all;  //与数据库中字段不一致
 	private String dbSNP_rs;
 	private String cosmic65;
+	private String Interpro_domain;
 	private String variant;
 	private String ori_variant;
 	private String report;
@@ -27,7 +28,7 @@ public class FilterIlluminaSnpIndel {
 	private Integer record_id;
 	private Integer mapped_variant_id;
 	private String mapped_variant;
-	
+
 	public String getOri_variant() {
 		return ori_variant;
 	}
@@ -142,6 +143,15 @@ public class FilterIlluminaSnpIndel {
 	public void setCosmic65(String cosmic65) {
 		this.cosmic65 = cosmic65;
 	}
+
+	public String getInterpro_domain() {
+		return Interpro_domain;
+	}
+
+	public void setInterpro_domain(String interpro_domain) {
+		Interpro_domain = interpro_domain;
+	}
+
 	public String getVariant() {
 		return variant;
 	}
@@ -184,6 +194,4 @@ public class FilterIlluminaSnpIndel {
 	public void setMapped_variant(String mapped_variant) {
 		this.mapped_variant = mapped_variant;
 	}
-	
-	
 }

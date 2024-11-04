@@ -1,5 +1,6 @@
 package com.novo.report.service.impl;
 
+import com.novo.report.dao.two.DriverDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,8 @@ public class LifeServiceImpl implements LifeService {
 	private LifeDao lifeDao;
 	@Autowired
 	private AnalysisReportDao analysisReportDao;
+	@Autowired
+	private DriverDao driverDao;
 	
 	@Override
 	public PaginationVO<DataFileStatus> getDataFileStatusByPage(DataFileStatusPageBean dataFileStatusPageBean) {
@@ -113,6 +116,12 @@ public class LifeServiceImpl implements LifeService {
 	}
 	@Override
 	public void updateProductByProductId(AnalysisReport pr) {
+		// 更换的产品名称
+		String product_name = lifeDao.getProductByProductId(pr.getProduct_id());
+		if (!"pd".equals(product_name)) {
+			driverDao.updateParseFile(pr.getSubbarcode(),pr.getAnalysis_date(),product_name);
+		}
+		pr.setProduct_name(product_name);
 		AnalysisReport analysisReportById = analysisReportDao.getAnalysisReportById(pr.getReport_id());
 		if(analysisReportById.getReport_filename() != null && !analysisReportById.getReport_filename().equals("")) {
 			pr.setCreated_by(pr.getAnalyzer());
@@ -128,9 +137,33 @@ public class LifeServiceImpl implements LifeService {
 			}
 			analysisReportDao.insertAnalysisReport(pr);
 		}else {
-			analysisReportDao.updateAnalysisReportByReport(pr.getProduct_id(),pr.getPrimary_cancer_id(), pr.getReport_id());
+			analysisReportDao.updateAnalysisReportByReport(pr.getProduct_id(),pr.getPrimary_cancer_id(), pr.getReport_id(), pr.getProduct_name());
 		}
 	}
-	
+	@Override
+	public DiseaseClass getDiseaseClassFromSampleCancertype(Integer report_id) {
+		// TODO Auto-generated method stub
+		return lifeDao.getDiseaseClassFromSampleCancertype(report_id);
+	}
+	@Override
+	public String getGender(Integer report_id) {
+		return lifeDao.getGender(report_id);
+	}
+	@Override
+	public String getAnalysis_date(Integer report_id) {
+		return lifeDao.getAnalysis_date(report_id);
+	}
+	@Override
+	public String getAnalyzer(Integer report_id) {
+		return lifeDao.getAnalyzer(report_id);
+	}
+	@Override
+	public String getFilePath(String subbarcode,String analysis_date) {
+		return lifeDao.getFilePath(subbarcode, analysis_date);
+	}
 
+	@Override
+	public Integer getPendingAndErrorCount(String subbarcode,String analysis_date) {
+		return lifeDao.getPendingAndErrorCount(subbarcode, analysis_date);
+	}
 }

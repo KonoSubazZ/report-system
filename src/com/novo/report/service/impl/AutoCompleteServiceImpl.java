@@ -1,7 +1,9 @@
 package com.novo.report.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.novo.report.service.ComplexMutationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +18,10 @@ public class AutoCompleteServiceImpl implements AutoCompleteService {
 	
 	@Autowired
 	private AutoCompleteDao autoCompleteDao;
-	
-	
+
+	@Autowired
+	private ComplexMutationService complexMutationService;
+
 	@Override
 	public List<AutoComplete> getCategory() {
 		return autoCompleteDao.getCategory();
@@ -103,8 +107,8 @@ public class AutoCompleteServiceImpl implements AutoCompleteService {
 	}
 	
 	@Override
-	public List<AutoComplete> getProductNameChineseAndId(String path_name) {
-		return autoCompleteDao.getProductNameChineseAndId(path_name);
+	public List<AutoComplete> getProductNameChineseAndId() {
+		return autoCompleteDao.getProductNameChineseAndId();
 	}
 	
 	@Override
@@ -157,5 +161,46 @@ public class AutoCompleteServiceImpl implements AutoCompleteService {
 		return autoCompleteDao.getCustomer();
 	}
 
-	
+	@Override
+	public List<AutoComplete> getDiseaseNameAndDiseaseId(Integer primary_cancer_id) {
+		List<Integer> diseaseIdList = new ArrayList<>();
+		List<Integer> parentdiseaseIdList = new ArrayList<>();
+		complexMutationService.getDiseaseList(primary_cancer_id, diseaseIdList, parentdiseaseIdList);
+		return autoCompleteDao.getDiseaseNameAndDiseaseId(diseaseIdList);
+	}
+
+	@Override
+    public List<AutoComplete> getEvidencePhaseNameAndEvidencePhaseId() {
+        return autoCompleteDao.getEvidencePhaseNameAndEvidencePhaseId();
+    }
+
+	@Override
+	public String getRecordercodeBySubbarcode(String subbarcode) {
+		return autoCompleteDao.getRecordercodeBySubbarcode(subbarcode);
+	}
+
+	@Override
+	public String getTemplateCorrespondenceByRecordercode(String recordercode) {
+		return autoCompleteDao.getTemplateCorrespondenceByRecordercode(recordercode);
+	}
+
+	@Override
+	public String getCustomerBySubbarcode(String subbarcode) {
+		return autoCompleteDao.getCustomerBySubbarcode(subbarcode);
+	}
+
+	@Override
+	public String getTemplateCorrespondenceByCustomer(String customer) {
+		return autoCompleteDao.getTemplateCorrespondenceByCustomer(customer);
+	}
+
+	@Override
+	public String getTemplateUniversal(String universal) {
+		return autoCompleteDao.getTemplateUniversal(universal);
+	}
+
+	@Override
+	public String getCustomertypeBySubbarcode(String subbarcode) {
+		return autoCompleteDao.getCustomertypeBySubbarcode(subbarcode);
+	}
 }

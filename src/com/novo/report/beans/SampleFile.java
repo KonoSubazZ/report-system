@@ -61,8 +61,143 @@ public class SampleFile {
 	private String pmemail;   //运营群邮箱
 	private String patient_phone;
 	private String customer;
-	
-	
+	private String tumorcellcontent;
+	private String DNA_total;
+	private String DNA_degradation;
+	private String outbound_quantity;
+	private String plane_data;
+	private String sequencing_depth;
+	private String coverage;
+	private String coverage_uniformity;
+	private String genome_alignment;
+	private String base_quality;
+	private String run_name;
+	private String dna_index;
+	private String run_code;
+	private String rna_index;
+	private String DNAQubit;
+	private String RNAQubit;
+	private String template_subbarcode;
+	private String qubit;
+	private String test_program;
+	private String pool_quantity;
+	private String report_type;
+	private String dna_panel;
+	private String rna_panel;
+	private String run_id;
+	private String I5;
+	private String I7;
+	private String test_product;
+	private String ward;
+	private String consultation;
+	private String DNANucleic;
+	private String RNANucleic;
+	private String DNALibrary;
+	private String RNALibrary;
+	private String DNAPlaneData;
+	private String meanSequencingDepth;
+	private String targetAreaCoverage;
+	private String RNAPlaneData;
+	private String ReadsNumber;
+	private String review_doctor;
+	private String test_number;
+	private String carcinoma;
+	private String clinicaldiagnosis;
+	private String sampleremark;
+	private String firsttreatment;	//治疗史1
+	private String secondtreatment;	//治疗史2
+	private String thirdtreatment;	//治疗史3
+	private String specimenno;	//病理编号 或者 银丰样本编号（银丰基因科技有限公司）
+	private String serial_number;	//样本编号(流水号)
+	private String registration_number;	//登记号
+	private String recordercode;	//创建人编码
+	private String mailingaddress;	//报告邮寄地址 / 病理诊断
+	private String sample_barcode; // 样本条码
+	private String tnm_periodization; // TNM分期
+	private String inspection_number;	//送检次数
+	private String receiv_ertele_phone;	//送检电话
+	private String customertype;	//客户类别
+
+	public String getTumorcellcontent() {
+		return tumorcellcontent;
+	}
+
+	public void setTumorcellcontent(String tumorcellcontent) {
+		this.tumorcellcontent = tumorcellcontent;
+	}
+
+	public String getDNA_total() {
+		return DNA_total;
+	}
+
+	public void setDNA_total(String DNA_total) {
+		this.DNA_total = DNA_total;
+	}
+
+	public String getDNA_degradation() {
+		return DNA_degradation;
+	}
+
+	public void setDNA_degradation(String DNA_degradation) {
+		this.DNA_degradation = DNA_degradation;
+	}
+
+	public String getOutbound_quantity() {
+		return outbound_quantity;
+	}
+
+	public void setOutbound_quantity(String outbound_quantity) {
+		this.outbound_quantity = outbound_quantity;
+	}
+
+	public String getPlane_data() {
+		return plane_data;
+	}
+
+	public void setPlane_data(String plane_data) {
+		this.plane_data = plane_data;
+	}
+
+	public String getSequencing_depth() {
+		return sequencing_depth;
+	}
+
+	public void setSequencing_depth(String sequencing_depth) {
+		this.sequencing_depth = sequencing_depth;
+	}
+
+	public String getCoverage() {
+		return coverage;
+	}
+
+	public void setCoverage(String coverage) {
+		this.coverage = coverage;
+	}
+
+	public String getCoverage_uniformity() {
+		return coverage_uniformity;
+	}
+
+	public void setCoverage_uniformity(String coverage_uniformity) {
+		this.coverage_uniformity = coverage_uniformity;
+	}
+
+	public String getGenome_alignment() {
+		return genome_alignment;
+	}
+
+	public void setGenome_alignment(String genome_alignment) {
+		this.genome_alignment = genome_alignment;
+	}
+
+	public String getBase_quality() {
+		return base_quality;
+	}
+
+	public void setBase_quality(String base_quality) {
+		this.base_quality = base_quality;
+	}
+
 	public String getCustomer() {
 		return customer;
 	}
@@ -417,27 +552,492 @@ public class SampleFile {
 	public void setPatient_phone(String patient_phone) {
 		this.patient_phone = patient_phone;
 	}
+
+	public String getRun_name() {
+		return run_name;
+	}
+
+	public void setRun_name(String run_name) {
+		this.run_name = run_name;
+	}
+
+	public String getDna_index() {
+		return dna_index;
+	}
+
+	public void setDna_index(String dna_index) {
+		this.dna_index = dna_index;
+	}
+
+	public String getRun_code() {
+		return run_code;
+	}
+
+	public void setRun_code(String run_code) {
+		this.run_code = run_code;
+	}
+
+	public String getRna_index() {
+		return rna_index;
+	}
+
+	public void setRna_index(String rna_index) {
+		this.rna_index = rna_index;
+	}
+
+	public String getDNAQubit() {
+		return DNAQubit;
+	}
+
+	public void setDNAQubit(String DNAQubit) {
+		this.DNAQubit = DNAQubit;
+	}
+
+	public String getRNAQubit() {
+		return RNAQubit;
+	}
+
+	public void setRNAQubit(String RNAQubit) {
+		this.RNAQubit = RNAQubit;
+	}
+
+	public String getTemplate_subbarcode() {
+		return template_subbarcode;
+	}
+
+	public void setTemplate_subbarcode(String template_subbarcode) {
+		this.template_subbarcode = template_subbarcode;
+	}
+
+	public String getQubit() {
+		return qubit;
+	}
+
+	public void setQubit(String qubit) {
+		this.qubit = qubit;
+	}
+
+	public String getTest_program() {
+		return test_program;
+	}
+
+	public void setTest_program(String test_program) {
+		this.test_program = test_program;
+	}
+
+	public String getPool_quantity() {
+		return pool_quantity;
+	}
+
+	public void setPool_quantity(String pool_quantity) {
+		this.pool_quantity = pool_quantity;
+	}
+
+	public String getReport_type() {
+		return report_type;
+	}
+
+	public void setReport_type(String report_type) {
+		this.report_type = report_type;
+	}
+
+	public String getDna_panel() {
+		return dna_panel;
+	}
+
+	public void setDna_panel(String dna_panel) {
+		this.dna_panel = dna_panel;
+	}
+
+	public String getRna_panel() {
+		return rna_panel;
+	}
+
+	public void setRna_panel(String rna_panel) {
+		this.rna_panel = rna_panel;
+	}
+
+	public String getRun_id() {
+		return run_id;
+	}
+
+	public void setRun_id(String run_id) {
+		this.run_id = run_id;
+	}
+
+	public String getI5() {
+		return I5;
+	}
+
+	public void setI5(String i5) {
+		I5 = i5;
+	}
+
+	public String getI7() {
+		return I7;
+	}
+
+	public void setI7(String i7) {
+		I7 = i7;
+	}
+
+	public String getTest_product() {
+		return test_product;
+	}
+
+	public void setTest_product(String test_product) {
+		this.test_product = test_product;
+	}
+
+	public String getWard() {
+		return ward;
+	}
+
+	public void setWard(String ward) {
+		this.ward = ward;
+	}
+
+	public String getConsultation() {
+		return consultation;
+	}
+
+	public void setConsultation(String consultation) {
+		this.consultation = consultation;
+	}
+
+	public String getDNANucleic() {
+		return DNANucleic;
+	}
+
+	public void setDNANucleic(String DNANucleic) {
+		this.DNANucleic = DNANucleic;
+	}
+
+	public String getRNANucleic() {
+		return RNANucleic;
+	}
+
+	public void setRNANucleic(String RNANucleic) {
+		this.RNANucleic = RNANucleic;
+	}
+
+	public String getDNALibrary() {
+		return DNALibrary;
+	}
+
+	public void setDNALibrary(String DNALibrary) {
+		this.DNALibrary = DNALibrary;
+	}
+
+	public String getRNALibrary() {
+		return RNALibrary;
+	}
+
+	public void setRNALibrary(String RNALibrary) {
+		this.RNALibrary = RNALibrary;
+	}
+
+	public String getDNAPlaneData() {
+		return DNAPlaneData;
+	}
+
+	public void setDNAPlaneData(String DNAPlaneData) {
+		this.DNAPlaneData = DNAPlaneData;
+	}
+
+	public String getMeanSequencingDepth() {
+		return meanSequencingDepth;
+	}
+
+	public void setMeanSequencingDepth(String meanSequencingDepth) {
+		this.meanSequencingDepth = meanSequencingDepth;
+	}
+
+	public String getTargetAreaCoverage() {
+		return targetAreaCoverage;
+	}
+
+	public void setTargetAreaCoverage(String targetAreaCoverage) {
+		this.targetAreaCoverage = targetAreaCoverage;
+	}
+
+	public String getRNAPlaneData() {
+		return RNAPlaneData;
+	}
+
+	public void setRNAPlaneData(String RNAPlaneData) {
+		this.RNAPlaneData = RNAPlaneData;
+	}
+
+	public String getReadsNumber() {
+		return ReadsNumber;
+	}
+
+	public void setReadsNumber(String readsNumber) {
+		ReadsNumber = readsNumber;
+	}
+
+	public String getReview_doctor() {
+		return review_doctor;
+	}
+
+	public void setReview_doctor(String review_doctor) {
+		this.review_doctor = review_doctor;
+	}
+
+	public String getTest_number() {
+		return test_number;
+	}
+
+	public void setTest_number(String test_number) {
+		this.test_number = test_number;
+	}
+
+	public String getCarcinoma() {
+		return carcinoma;
+	}
+
+	public void setCarcinoma(String carcinoma) {
+		this.carcinoma = carcinoma;
+	}
+
+	public String getClinicaldiagnosis() {
+		return clinicaldiagnosis;
+	}
+
+	public String getSampleremark() {
+		return sampleremark;
+	}
+
+	public void setSampleremark(String sampleremark) {
+		this.sampleremark = sampleremark;
+	}
+
+	public void setClinicaldiagnosis(String clinicaldiagnosis) {
+		this.clinicaldiagnosis = clinicaldiagnosis;
+	}
+
+	public String getFirsttreatment() {
+		return firsttreatment;
+	}
+
+	public void setFirsttreatment(String firsttreatment) {
+		this.firsttreatment = firsttreatment;
+	}
+
+	public String getSecondtreatment() {
+		return secondtreatment;
+	}
+
+	public void setSecondtreatment(String secondtreatment) {
+		this.secondtreatment = secondtreatment;
+	}
+
+	public String getThirdtreatment() {
+		return thirdtreatment;
+	}
+
+	public void setThirdtreatment(String thirdtreatment) {
+		this.thirdtreatment = thirdtreatment;
+	}
+
+	public String getSpecimenno() {
+		return specimenno;
+	}
+
+	public void setSpecimenno(String specimenno) {
+		this.specimenno = specimenno;
+	}
+
+	public String getSerial_number() {
+		return serial_number;
+	}
+
+	public void setSerial_number(String serial_number) {
+		this.serial_number = serial_number;
+	}
+
+	public String getRegistration_number() {
+		return registration_number;
+	}
+
+	public void setRegistration_number(String registration_number) {
+		this.registration_number = registration_number;
+	}
+
+	public String getRecordercode() {
+		return recordercode;
+	}
+
+	public void setRecordercode(String recordercode) {
+		this.recordercode = recordercode;
+	}
+
+	public String getMailingaddress() {
+		return mailingaddress;
+	}
+
+	public void setMailingaddress(String mailingaddress) {
+		this.mailingaddress = mailingaddress;
+	}
+
+	public String getSample_barcode() {
+		return sample_barcode;
+	}
+
+	public void setSample_barcode(String sample_barcode) {
+		this.sample_barcode = sample_barcode;
+	}
+
+	public String getTnm_periodization() {
+		return tnm_periodization;
+	}
+
+	public void setTnm_periodization(String tnm_periodization) {
+		this.tnm_periodization = tnm_periodization;
+	}
+
+	public String getInspection_number() {
+		return inspection_number;
+	}
+
+	public void setInspection_number(String inspection_number) {
+		this.inspection_number = inspection_number;
+	}
+
+	public String getReceiv_ertele_phone() {
+		return receiv_ertele_phone;
+	}
+
+	public void setReceiv_ertele_phone(String receiv_ertele_phone) {
+		this.receiv_ertele_phone = receiv_ertele_phone;
+	}
+
+	public String getCustomertype() {
+		return customertype;
+	}
+
+	public void setCustomertype(String customertype) {
+		this.customertype = customertype;
+	}
+
 	@Override
 	public String toString() {
-		return "SampleFile [sample_id=" + sample_id + ", person_id=" + person_id + ", person_name=" + person_name
-				+ ", gender=" + gender + ", birthday=" + birthday + ", patient_id=" + patient_id + ", subbarcode="
-				+ subbarcode + ", barcode=" + barcode + ", hospital=" + hospital + ", received_date=" + received_date
-				+ ", specimen_type=" + specimen_type + ", specimen_quantity=" + specimen_quantity + ", testing_program="
-				+ testing_program + ", disease_type=" + disease_type + ", comparison=" + comparison + ", client="
-				+ client + ", commission_date=" + commission_date + ", sales_contact=" + sales_contact
-				+ ", report_receiver=" + report_receiver + ", collect_date=" + collect_date + ", data_path=" + data_path
-				+ ", info_officer=" + info_officer + ", sample_nature=" + sample_nature + ", selected_genes="
-				+ selected_genes + ", testing_before_medicine=" + testing_before_medicine + ", other_description="
-				+ other_description + ", loaded_date=" + loaded_date + ", count=" + count + ", age=" + age
-				+ ", clinicalremark=" + clinicalremark + ", cancertype=" + cancertype + ", pathologicaltype="
-				+ pathologicaltype + ", product_name=" + product_name + ", remark=" + remark + ", clinicalstages="
-				+ clinicalstages + ", libraryname=" + libraryname + ", doctorname=" + doctorname + ", fastcode="
-				+ fastcode + ", locationname=" + locationname + ", report_upload_date=" + report_upload_date
-				+ ", sample_source=" + sample_source + ", from_organ=" + from_organ + ", turmor_cell_ratio="
-				+ turmor_cell_ratio + ", gene_type=" + gene_type + ", gene_result=" + gene_result
-				+ ", medication_history=" + medication_history + ", birthplace=" + birthplace + ", family_history="
-				+ family_history + ", sample_type=" + sample_type + ", room=" + room + ", bed=" + bed
-				+ ", emailaddress=" + emailaddress + "]";
+		return "SampleFile{" +
+				"sample_id=" + sample_id +
+				", person_id='" + person_id + '\'' +
+				", person_name='" + person_name + '\'' +
+				", gender='" + gender + '\'' +
+				", birthday='" + birthday + '\'' +
+				", patient_id='" + patient_id + '\'' +
+				", subbarcode='" + subbarcode + '\'' +
+				", barcode='" + barcode + '\'' +
+				", hospital='" + hospital + '\'' +
+				", received_date='" + received_date + '\'' +
+				", specimen_type='" + specimen_type + '\'' +
+				", specimen_quantity='" + specimen_quantity + '\'' +
+				", testing_program='" + testing_program + '\'' +
+				", disease_type='" + disease_type + '\'' +
+				", comparison='" + comparison + '\'' +
+				", client='" + client + '\'' +
+				", commission_date='" + commission_date + '\'' +
+				", sales_contact='" + sales_contact + '\'' +
+				", report_receiver='" + report_receiver + '\'' +
+				", collect_date='" + collect_date + '\'' +
+				", data_path='" + data_path + '\'' +
+				", info_officer='" + info_officer + '\'' +
+				", sample_nature='" + sample_nature + '\'' +
+				", selected_genes='" + selected_genes + '\'' +
+				", testing_before_medicine='" + testing_before_medicine + '\'' +
+				", other_description='" + other_description + '\'' +
+				", loaded_date='" + loaded_date + '\'' +
+				", count=" + count +
+				", age='" + age + '\'' +
+				", clinicalremark='" + clinicalremark + '\'' +
+				", cancertype='" + cancertype + '\'' +
+				", pathologicaltype='" + pathologicaltype + '\'' +
+				", product_name='" + product_name + '\'' +
+				", remark='" + remark + '\'' +
+				", clinicalstages='" + clinicalstages + '\'' +
+				", libraryname='" + libraryname + '\'' +
+				", doctorname='" + doctorname + '\'' +
+				", fastcode='" + fastcode + '\'' +
+				", locationname='" + locationname + '\'' +
+				", report_upload_date='" + report_upload_date + '\'' +
+				", sample_source='" + sample_source + '\'' +
+				", from_organ='" + from_organ + '\'' +
+				", turmor_cell_ratio='" + turmor_cell_ratio + '\'' +
+				", gene_type='" + gene_type + '\'' +
+				", gene_result='" + gene_result + '\'' +
+				", medication_history='" + medication_history + '\'' +
+				", birthplace='" + birthplace + '\'' +
+				", family_history='" + family_history + '\'' +
+				", sample_type='" + sample_type + '\'' +
+				", room='" + room + '\'' +
+				", bed='" + bed + '\'' +
+				", emailaddress='" + emailaddress + '\'' +
+				", saleremail='" + saleremail + '\'' +
+				", supportemail='" + supportemail + '\'' +
+				", manageremail='" + manageremail + '\'' +
+				", pmemail='" + pmemail + '\'' +
+				", patient_phone='" + patient_phone + '\'' +
+				", customer='" + customer + '\'' +
+				", tumorcellcontent='" + tumorcellcontent + '\'' +
+				", DNA_total='" + DNA_total + '\'' +
+				", DNA_degradation='" + DNA_degradation + '\'' +
+				", outbound_quantity='" + outbound_quantity + '\'' +
+				", plane_data='" + plane_data + '\'' +
+				", sequencing_depth='" + sequencing_depth + '\'' +
+				", coverage='" + coverage + '\'' +
+				", coverage_uniformity='" + coverage_uniformity + '\'' +
+				", genome_alignment='" + genome_alignment + '\'' +
+				", base_quality='" + base_quality + '\'' +
+				", run_name='" + run_name + '\'' +
+				", dna_index='" + dna_index + '\'' +
+				", run_code='" + run_code + '\'' +
+				", rna_index='" + rna_index + '\'' +
+				", DNAQubit='" + DNAQubit + '\'' +
+				", RNAQubit='" + RNAQubit + '\'' +
+				", template_subbarcode='" + template_subbarcode + '\'' +
+				", qubit='" + qubit + '\'' +
+				", test_program='" + test_program + '\'' +
+				", pool_quantity='" + pool_quantity + '\'' +
+				", report_type='" + report_type + '\'' +
+				", dna_panel='" + dna_panel + '\'' +
+				", rna_panel='" + rna_panel + '\'' +
+				", run_id='" + run_id + '\'' +
+				", I5='" + I5 + '\'' +
+				", I7='" + I7 + '\'' +
+				", test_product='" + test_product + '\'' +
+				", ward='" + ward + '\'' +
+				", consultation='" + consultation + '\'' +
+				", DNANucleic='" + DNANucleic + '\'' +
+				", RNANucleic='" + RNANucleic + '\'' +
+				", DNALibrary='" + DNALibrary + '\'' +
+				", RNALibrary='" + RNALibrary + '\'' +
+				", DNAPlaneData='" + DNAPlaneData + '\'' +
+				", meanSequencingDepth='" + meanSequencingDepth + '\'' +
+				", targetAreaCoverage='" + targetAreaCoverage + '\'' +
+				", RNAPlaneData='" + RNAPlaneData + '\'' +
+				", ReadsNumber='" + ReadsNumber + '\'' +
+				", review_doctor='" + review_doctor + '\'' +
+				", test_number='" + test_number + '\'' +
+				", carcinoma='" + carcinoma + '\'' +
+				", clinicaldiagnosis='" + clinicaldiagnosis + '\'' +
+				", sampleremark='" + sampleremark + '\'' +
+				", firsttreatment='" + firsttreatment + '\'' +
+				", secondtreatment='" + secondtreatment + '\'' +
+				", thirdtreatment='" + thirdtreatment + '\'' +
+				", specimenno='" + specimenno + '\'' +
+				", serial_number='" + serial_number + '\'' +
+				", registration_number='" + registration_number + '\'' +
+				", recordercode='" + recordercode + '\'' +
+				", mailingaddress='" + mailingaddress + '\'' +
+				", sample_barcode='" + sample_barcode + '\'' +
+				", tnm_periodization='" + tnm_periodization + '\'' +
+				", inspection_number='" + mailingaddress + '\'' +
+				", receiv_ertele_phone='" + receiv_ertele_phone + '\'' +
+				", customertype='" + customertype + '\'' +
+				'}';
 	}
-		
 }

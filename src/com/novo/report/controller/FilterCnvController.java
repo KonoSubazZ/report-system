@@ -20,7 +20,11 @@ public class FilterCnvController {
 	@RequestMapping("illuminaCnvlList")
 	public String cnvlList(CurrentNgsAvailableData currentNgsAvailable, Model model) {
 		model.addAttribute("currentNgsAvailable", currentNgsAvailable);
-		return "ngs/illuminaCnvlList";
+		if (currentNgsAvailable.getFlag() != null && currentNgsAvailable.getFlag() == 1) {
+			return "ngs/illuminaCnvlList1";
+		} else {
+			return "ngs/illuminaCnvlList";
+		}
 	}
 	
 	// 分页查询

@@ -48,7 +48,7 @@ public class ResolveDataServiceImpl implements ResolveDataService {
 	@Override
 	public PaginationVO<Map> getData(String dataGrid, String condition,String before_date,String after_date, Integer pageNo, Integer pageSize) {
 		PaginationVO<Map> paginationVO = new PaginationVO<Map>();
-		if ("rp_var_drug".equals(dataGrid)) {
+		if ("rp_var_drug_en7".equals(dataGrid)) {
 			paginationVO.setTotal(reportVarDrugDao.getTotal(condition,before_date,after_date));
 			List<Map> dataList = reportVarDrugDao.selectRecordByPage(condition,before_date,after_date, pageNo, pageSize);
 			paginationVO.setDataList(dataList);
@@ -59,7 +59,8 @@ public class ResolveDataServiceImpl implements ResolveDataService {
 				String ori_variant = map.get("ori_variant") == null ? "":map.get("ori_variant").toString();
 				Integer disease_id = map.get("disease_id") == null ? 0:Integer.parseInt(map.get("disease_id").toString());
 				Integer lang = map.get("lang") == null ? 0:(int) Integer.parseInt(map.get("lang").toString());
-				Map<String, String> matchNKB_readonly = complexMutationService.matchNKB_readonly(gene, variant, ori_variant, disease_id, lang);
+				String gender = map.get("gender") == null ? "":map.get("gender").toString();
+				Map<String, String> matchNKB_readonly = complexMutationService.matchNKB_readonly(gene, variant, ori_variant, disease_id, lang, gender);
 				String var_drug_desc = map.get("var_drug_desc") == null ? "":map.get("var_drug_desc").toString();
 				String varDrugNote = matchNKB_readonly.get("varDrugNote") == null ? "":matchNKB_readonly.get("varDrugNote").toString();
 				map.put("var_drug_desc", dmp.getHtmlDiffString(varDrugNote,var_drug_desc));
@@ -73,9 +74,21 @@ public class ResolveDataServiceImpl implements ResolveDataService {
 			    String drugsC = map.get("drugsC") == null ? "":map.get("drugsC").toString();
 			    String drugsC1 = matchNKB_readonly.get("drugsC") == null ? "":matchNKB_readonly.get("drugsC").toString();
 			    map.put("drugsC", dmp.getHtmlDiffString2(drugsC1,drugsC));
-			    String resistant_drugs = map.get("resistant_drugs") == null ? "":map.get("resistant_drugs").toString();
-			    String resistant_drugs1 = matchNKB_readonly.get("resistant_drugs") == null ? "":matchNKB_readonly.get("resistant_drugs").toString();
-			    map.put("resistant_drugs", dmp.getHtmlDiffString2(resistant_drugs1,resistant_drugs));
+				String drugsD = map.get("drugsD") == null ? "":map.get("drugsD").toString();
+				String drugsD1 = matchNKB_readonly.get("drugsD") == null ? "":matchNKB_readonly.get("drugsD").toString();
+				map.put("drugsD", dmp.getHtmlDiffString2(drugsD1,drugsD));
+			    String resistant_drugsA = map.get("resistant_drugsA") == null ? "":map.get("resistant_drugsA").toString();
+			    String resistant_drugsA1 = matchNKB_readonly.get("resistant_drugsA") == null ? "":matchNKB_readonly.get("resistant_drugsA").toString();
+			    map.put("resistant_drugsA", dmp.getHtmlDiffString2(resistant_drugsA1,resistant_drugsA));
+				String resistant_drugsB = map.get("resistant_drugsB") == null ? "":map.get("resistant_drugsB").toString();
+				String resistant_drugsB1 = matchNKB_readonly.get("resistant_drugsB") == null ? "":matchNKB_readonly.get("resistant_drugsB").toString();
+				map.put("resistant_drugsB", dmp.getHtmlDiffString2(resistant_drugsB1,resistant_drugsB));
+				String resistant_drugsC = map.get("resistant_drugsC") == null ? "":map.get("resistant_drugsC").toString();
+				String resistant_drugsC1 = matchNKB_readonly.get("resistant_drugsC") == null ? "":matchNKB_readonly.get("resistant_drugsC").toString();
+				map.put("resistant_drugsC", dmp.getHtmlDiffString2(resistant_drugsC1,resistant_drugsC));
+				String resistant_drugsD = map.get("resistant_drugsD") == null ? "":map.get("resistant_drugsD").toString();
+				String resistant_drugsD1 = matchNKB_readonly.get("resistant_drugsD") == null ? "":matchNKB_readonly.get("resistant_drugsD").toString();
+				map.put("resistant_drugsD", dmp.getHtmlDiffString2(resistant_drugsD1,resistant_drugsD));
 			    String clinical_trial = map.get("clinical_trial") == null ? "":map.get("clinical_trial").toString();
 			    String clinical_trial1 = matchNKB_readonly.get("clinical_trial") == null ? "":matchNKB_readonly.get("clinical_trial").toString();
 			    map.put("clinical_trial", dmp.getHtmlDiffString2(clinical_trial1,clinical_trial));
@@ -91,7 +104,7 @@ public class ResolveDataServiceImpl implements ResolveDataService {
 				String ori_variant = map.get("ori_variant") == null ? "":map.get("ori_variant").toString();
 				Integer disease_id = map.get("disease_id") == null ? 0:Integer.parseInt(map.get("disease_id").toString());
 				Integer lang = map.get("lang") == null ? 0:(int) Integer.parseInt(map.get("lang").toString());
-				Map<String, String> matchNKB_readonly = complexMutationService.matchNKB_readonly(gene, variant, ori_variant, disease_id, lang);
+				Map<String, String> matchNKB_readonly = complexMutationService.matchNKB_readonly(gene, variant, ori_variant, disease_id, lang, "");
 				String gene_description = map.get("gene_description") == null ? "":map.get("gene_description").toString();
 				String gene_description1 = matchNKB_readonly.get("gene_description") == null ? "":matchNKB_readonly.get("gene_description").toString();
 				map.put("gene_description", dmp.getHtmlDiffString(gene_description1,gene_description));
@@ -156,7 +169,7 @@ public class ResolveDataServiceImpl implements ResolveDataService {
         String cr_keystr[] = "lang,Gene,Mutation,ori_mutation,Zygosity,DiseaseID,disease_name_chinese,Clinical_significance,GeneDesc,VarClianno,has_drug,updated_by,update_time,check_date".split(","); 
 
 		String[] keyStr = null;
-		if ("rp_var_drug".equals(dataGrid)) {
+		if ("rp_var_drug_en7".equals(dataGrid)) {
 			exportFile = reportVarDrugDao.exportFile(condition,before_date,after_date);
 			StartCompare dmp = new StartCompare();
 			for (Map map : exportFile) {
@@ -165,7 +178,8 @@ public class ResolveDataServiceImpl implements ResolveDataService {
 				String ori_variant = map.get("ori_variant") == null ? "":map.get("ori_variant").toString();
 				Integer disease_id = map.get("disease_id") == null ? 0:Integer.parseInt(map.get("disease_id").toString());
 				Integer lang = map.get("lang") == null ? 0:(int) Integer.parseInt(map.get("lang").toString());
-				Map<String, String> matchNKB_readonly = complexMutationService.matchNKB_readonly(gene, variant, ori_variant, disease_id, lang);
+				String gender = map.get("gender") == null ? "":map.get("gender").toString();
+				Map<String, String> matchNKB_readonly = complexMutationService.matchNKB_readonly(gene, variant, ori_variant, disease_id, lang, gender);
 				String var_drug_desc = map.get("var_drug_desc") == null ? "":map.get("var_drug_desc").toString();
 				String varDrugNote = matchNKB_readonly.get("varDrugNote") == null ? "":matchNKB_readonly.get("varDrugNote").toString();
 				map.put("var_drug_desc", dmp.getHtmlDiffString(varDrugNote,var_drug_desc));
@@ -197,7 +211,7 @@ public class ResolveDataServiceImpl implements ResolveDataService {
 				String ori_variant = map.get("ori_variant") == null ? "":map.get("ori_variant").toString();
 				Integer disease_id = map.get("disease_id") == null ? 0:Integer.parseInt(map.get("disease_id").toString());
 				Integer lang = map.get("lang") == null ? 0:(int) Integer.parseInt(map.get("lang").toString());
-				Map<String, String> matchNKB_readonly = complexMutationService.matchNKB_readonly(gene, variant, ori_variant, disease_id, lang);
+				Map<String, String> matchNKB_readonly = complexMutationService.matchNKB_readonly(gene, variant, ori_variant, disease_id, lang, "");
 				String gene_description = map.get("gene_description") == null ? "":map.get("gene_description").toString();
 				String gene_description1 = matchNKB_readonly.get("gene_description") == null ? "":matchNKB_readonly.get("gene_description").toString();
 				map.put("gene_description", dmp.getHtmlDiffString(gene_description1,gene_description));
@@ -253,7 +267,7 @@ public class ResolveDataServiceImpl implements ResolveDataService {
 	@Override
 	public void deleteRecord(String dataGrid, List<Map> deleteList) {
 		for (Map map : deleteList) {
-			if ("rp_var_drug".equals(dataGrid)) {
+			if ("rp_var_drug_en7".equals(dataGrid)) {
 				Integer record_id = Integer.valueOf(map.get("record_id").toString());
 				reportVarDrugDao.deleteRpVarDrugById(record_id);
 			} else if ("rp_unknown_var".equals(dataGrid)) {
@@ -274,7 +288,7 @@ public class ResolveDataServiceImpl implements ResolveDataService {
 
 	@Override
 	public void deleteAllRecord(String dataGrid) {
-		if ("rp_var_drug".equals(dataGrid)) {
+		if ("rp_var_drug_en7".equals(dataGrid)) {
 			reportVarDrugDao.deleteAllRecord();
 		} else if ("rp_unknown_var".equals(dataGrid)) {
 			reportUnknownVarDao.deleteAllRecord();

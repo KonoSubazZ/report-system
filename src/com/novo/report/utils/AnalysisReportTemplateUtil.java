@@ -43,7 +43,7 @@ public class AnalysisReportTemplateUtil {
 		data.put("targetDrugTipLineStr", rt.getTargetDrugTipLineStr());
 		data.put("chemoEffectivenessStr", rt.getChemoEffectivenessStr());
 		data.put("chemoSideeffectsStr", rt.getChemoSideeffectsStr());
-		data.put("drugAnalysisIndex",rt.getDrugAnalysisIndex());
+//		data.put("drugAnalysisIndex",rt.getDrugAnalysisIndex());
 		data.put("summaryOfRresults", rt.getSummaryOfRresults());
 		data.put("dMMRinfo", rt.getdMMRinfo());
 		data.put("TargetedDrugDetectionStr", rt.getTargetedDrugDetectionStr());

@@ -43,13 +43,13 @@
 	  <form id="reportFileForm" method="post" enctype="multipart/form-data">
 	    <table style="width:100%">
 	     <tr>
-	    	<td>
+	    	<td style="width:708px">
 		      <div class="form-group">
 		        <div class="label" style="width:75px;float: left;margin-top: 10px">
 		          <label >文件名称：</label>
 		        </div>
 		        <div class="field">
-		          <input type="text" id="report_filename" name="report_filename" readonly="readonly" class="input w50" style="width:350px;float: left;" value="${analysis_report.report_filename }"  />
+		          <input type="text" id="report_filename" name="report_filename" readonly="readonly" class="input w50" style="width:600px;float: left;" value="${analysis_report.report_filename }"  />
 		          <div class="tips"></div>
 		          <input type="hidden" id="report_file_path" name="report_file_path" value="${analysis_report.report_file_path }"  />
 		        </div>
@@ -69,10 +69,12 @@
         	$(function(){
         		$("#updateReportFile").click(function(){
         			if(confirm("确定更换报告文件？")){
-	        			var filename = $("#reportFile").val().split(".")[0];
-	        			var report_filename = $("#report_filename").val().split(".")[0];
+	        			// var filename = $("#reportFile").val().split(".")[0];
+	        			var file = $("#reportFile").val();
+						var filename = file.substring(file.lastIndexOf("\\") + 1).substring(0,file.substring(file.lastIndexOf("\\") + 1).lastIndexOf("."));
+	        			var report_filename = $("#report_filename").val().substring(0,$("#report_filename").val().lastIndexOf("."));
 	        			if(report_filename!=""){
-		        			if( filename.indexOf(report_filename)!=-1){
+		        			if(filename==report_filename){
 		        				var from =document.getElementById("reportFileForm");
 		        				var formData = new FormData(from);  
 		        				$.ajax({
@@ -93,7 +95,28 @@
 									} 
 								});
 		        			}else{
-								alert("文件名不匹配，请重新进行确认！");
+								// alert("文件名不匹配，请重新进行确认！");
+								if(confirm("报告文件名称不一致，确定更换？")){
+									var from =document.getElementById("reportFileForm");
+									var formData = new FormData(from);
+									$.ajax({
+										async: false,
+										cache: false,
+										type: "POST",
+										url:"${pageContext.request.contextPath}/ngs/updateReportFileByReportId",
+										data:formData,
+										contentType: false,
+										processData: false,
+										dataType:"json",
+										success:function(data){
+											if(data){
+												alert("文件更换成功！");
+											}else{
+												alert("文件更换失败！");
+											}
+										}
+									});
+								}
 		        			}
 	        			}else{
 							alert("尚未产生报告！");
@@ -260,20 +283,22 @@
 				        			}
 				        		});
 				        		$("#sendEmail").click(function(){
-				        			$.myConfirm({title:'邮件发送确认',message:'确认发送邮件？',callback:function(){
-				        				$("#sendEmail").prop("disabled","disabled");
-					        			$("#sendTip").text("正在发送邮件，请稍后...");
-				        				$.post("${pageContext.request.contextPath}/ngs/sendEmail",
-				        						{"report_id":"${currentNgsAvailableData.report_id}","subbarcode":"${currentNgsAvailableData.subbarcode}",
-				        						"report_filename":"${analysis_report.report_filename }","report_file_path":"${analysis_report.report_file_path }"},
-					        					function(data){
-				        							$.myAlert(data.errorMessage);
-				        							$("#sendEmail").prop("disabled",false);
-				        							$("#sendTip").text("");
-					        		    		},"json"
-					        		    	);
-			        					}
-				        			})
+				        			fn(function () {
+										$.myConfirm({title:'邮件发送确认',message:'确认发送邮件？',callback:function(){
+												$("#sendEmail").prop("disabled","disabled");
+												$("#sendTip").text("正在发送邮件，请稍后...");
+												$.post("${pageContext.request.contextPath}/ngs/sendEmail",
+														{"report_id":"${currentNgsAvailableData.report_id}","subbarcode":"${currentNgsAvailableData.subbarcode}",
+															"report_filename":"${analysis_report.report_filename }","report_file_path":"${analysis_report.report_file_path }"},
+														function(data){
+															$.myAlert(data.errorMessage);
+															$("#sendEmail").prop("disabled",false);
+															$("#sendTip").text("");
+														},"json"
+												);
+											}
+										})
+									})
 				        		});
 				        	});
 					        function isDisabled(){
@@ -285,7 +310,25 @@
 					        		$("#send_way").css({"background":"red","color":"#fff"});
 					        	}
 					        }
-					        </script>
+
+							function fn(callback){
+								fn.prototype.init(callback);
+							}
+							fn.prototype = {
+								canclick: true,
+								init: function(callback){
+									if(this.canclick){
+										this.canclick = false
+										callback();
+										setTimeout(function(){
+											this.canclick = true
+										}.bind(this),1000)
+									}else{
+										console.log('1s中之内不允许重复点击')
+									}
+								}
+							}
+							</script>
 				          <div class="tips"></div>
 				        </div>
 				      </div>  

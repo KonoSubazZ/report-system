@@ -11,12 +11,9 @@ import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.mail.Address;
 import javax.mail.BodyPart;
-import javax.mail.Flags.Flag;
 import javax.mail.Folder;
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.mail.NoSuchProviderException;
 import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Store;
@@ -26,8 +23,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
-import javax.mail.search.SearchTerm;
-import javax.mail.search.SubjectTerm;
 
 import com.sun.mail.imap.IMAPMessage;
 import com.sun.mail.util.MailSSLSocketFactory;
@@ -40,23 +35,21 @@ import com.sun.mail.util.MailSSLSocketFactory;
  */
 public class EmailUtil {
 
-	public static String username; // 服务邮箱(from邮箱)
-	public static String password; // 邮箱密码
-	public static String senderNick; // 发件人昵称
-	public static String auth;
-	public static String host; // 发件服务器
-	public static String port; // 发件端口号
+	public String username; // 服务邮箱(from邮箱)
+	public String password; // 邮箱密码
+	public String senderNick; // 发件人昵称
+	public String auth;
+	public String host; // 发件服务器
+	public String port; // 发件端口号
 
 	private Properties props; // 系统属性
 	private Session session; // 邮件会话对象
 	private MimeMessage mimeMsg; // MIME邮件对象
 	private Multipart mp; // Multipart对象,邮件内容,标题,附件等内容均添加到其中后再生成MimeMessage对象
 
-	private static EmailUtil instance = null;
-
-	static {
+	public EmailUtil(String mail) {
 		Properties properties = System.getProperties();
-		InputStream is = EmailUtil.class.getClassLoader().getResourceAsStream("mail.properties");
+		InputStream is = EmailUtil.class.getClassLoader().getResourceAsStream(mail);
 		try {
 			properties.load(is);
 		} catch (Exception e) {
@@ -68,9 +61,7 @@ public class EmailUtil {
 		auth = properties.getProperty("auth");
 		host = properties.getProperty("host");
 		port = properties.getProperty("port");
-	}
 
-	public EmailUtil() {
 		try {
 			props = System.getProperties();
 			props.put("mail.smtp.auth", auth);
@@ -86,14 +77,13 @@ public class EmailUtil {
 			e.printStackTrace();
 		}
 		// 建立会话
-		session = Session.getDefaultInstance(props);
+//		session = Session.getDefaultInstance(props); // 在同一个进程中Session.getDefaultInstance得到的是一个单例的Session对象，就是第一次getDefaultInstance得到的Session对象
+		session = Session.getInstance(props);	// 每次切换账户得到的都是一个新的Session对象
 		session.setDebug(false);
 	}
 
-	public static EmailUtil getInstance() {
-		if (instance == null) {
-			instance = new EmailUtil();
-		}
+	public synchronized static EmailUtil getInstance(String mail) {
+		EmailUtil instance = new EmailUtil(mail);
 		return instance;
 	}
 
@@ -114,7 +104,7 @@ public class EmailUtil {
 	 *            附件列表
 	 * @return
 	 */
-	public Map sendMail(String from, String[] to, String[] copyto, String subject, String content,
+	public synchronized Map sendMail(String from, String[] to, String[] copyto, String subject, String content,
 			String[] fileList) {
 		Map map = new HashMap();
 		boolean success = true;
@@ -180,6 +170,9 @@ public class EmailUtil {
 					errorMessage +="检查发件箱时网络连接失败，请确认！";
 				}
 			} catch (SendFailedException e) {
+				e.printStackTrace();
+				errorMessage = "邮件发送异常，请联系管理员查看！";
+				success = false;
 				Address[] invalid = e.getInvalidAddresses();
 				if (invalid != null) {
 					errorMessage = "邮件发送失败。";
@@ -187,7 +180,7 @@ public class EmailUtil {
 						errorMessage += address + ",";
 					}
 					errorMessage = errorMessage.substring(0,errorMessage.lastIndexOf(","));
-					errorMessage += "邮箱存在错误";
+					errorMessage += "邮箱存在错误，请即时反馈给运营组";
 					success = false;
 				}
 			}
@@ -261,7 +254,7 @@ public class EmailUtil {
 		fileList[0] = "C:/Users/DELL/Desktop/自动化报告改进意见1.15.docx";
 		String fileName = "张三-123456.docx";
 		EmailUtil.getInstance().sendMail(from, to, copyto, subject, content, fileList);*/
-		boolean imapReceiveMail = EmailUtil.getInstance().IMAPReceiveMail("请查收诺禾致源的检测报告，姓名：韩喜文-MKHS190074601-1A");
+		boolean imapReceiveMail = EmailUtil.getInstance("mail.properties").IMAPReceiveMail("请查收诺禾致源的检测报告，姓名：韩喜文-MKHS190074601-1A");
 		System.err.println(imapReceiveMail);
 	}
 }

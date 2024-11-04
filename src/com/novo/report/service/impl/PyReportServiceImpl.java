@@ -1,692 +1,1786 @@
 package com.novo.report.service.impl;
 
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.text.DecimalFormat;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.novo.report.beans.*;
+import com.novo.report.dao.two.*;
+import com.novo.report.service.*;
+import com.novo.report.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.google.gson.Gson;
-import com.novo.report.beans.AnalysisReport;
-import com.novo.report.beans.CurrentNgsAvailableData;
-import com.novo.report.beans.Json;
-import com.novo.report.beans.ReportTemplate;
-import com.novo.report.beans.RpVatiantOrder;
-import com.novo.report.beans.SampleFile;
-import com.novo.report.beans.User;
-import com.novo.report.dao.two.AnalysisReportDao;
-import com.novo.report.dao.two.LifeDao;
-import com.novo.report.dao.two.ReportClinicalTrialDao;
-import com.novo.report.dao.two.ReportUnknownVarDao;
-import com.novo.report.dao.two.ReportVarDrugDao;
-import com.novo.report.service.ComplexMutationService;
-import com.novo.report.service.ReportCrService;
-import com.novo.report.service.SampleFileService;
-import com.novo.report.service.PyReportService;
-import com.novo.report.utils.PyAnalysisReportTemplateUtil;
-import com.novo.report.utils.TextConversionUtil;
-import com.novo.report.utils.TranslateUtil;
 
-import javafx.util.Pair;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
 @Service
 public class PyReportServiceImpl implements PyReportService {
 
-	@Autowired
-	private AnalysisReportDao analysisReportDao;
-	
-	@Autowired
-	private LifeDao lifeDao;
-	
-	@Autowired
-	private ReportCrService reportCrService;
-	
-	@Autowired
-	private ReportVarDrugDao reportVarDrugDao;
-	
-	@Autowired
-	private ReportUnknownVarDao reportUnknownVarDao;
-	
-	@Autowired
-	private ReportClinicalTrialDao reportClinicalTrialDao;
-	
-	@Autowired
-	private SampleFileService sampleFileService;
-	
-	@Autowired
-	private ComplexMutationService complexMutationService;
-	
-	@Override
-	public Integer createReport2(HttpServletResponse response, HttpServletRequest request,ReportTemplate rt, AnalysisReport pr, HttpSession session,
-			CurrentNgsAvailableData currentNgsAvailable, User user) throws Exception {
-		Integer lang = 1;
-		Gson gson = new Gson();
-		//根据report_id获取原发癌种信息
-		TranslateUtil translateUtil = new TranslateUtil();
-		int crGeneCount = 0;
-		int hasPathogenicityCount = 0;
-		HashSet<Object> crGeneSet = new HashSet<>();
-		HashSet<Object> allGeneSet = new HashSet<>();
-		//循环设置临床意义
-		Map result_map = new HashMap();
-		List<Map> list = complexMutationService.matchComplexMutation(user.getUser_account(),currentNgsAvailable.getReport_id(), result_map, lang);
-		List<Map> crAllList = (List<Map>) result_map.get("crAllList");
-		List<Integer> parentdiseaseIdList = (List<Integer>) result_map.get("parentdiseaseIdList");
-		List<Map> thisGeneticmarkerVwList = (List<Map>) result_map.get("thisGeneticmarkerVwList");
-		List<Integer> diseaseIdList = (List<Integer>) result_map.get("diseaseIdList");
-		Integer diseaseId = (Integer) result_map.get("diseaseId");
-		int crDrugListSize = (int) result_map.get("crDrugListSize");
-		int crAllListSize = (int) result_map.get("crAllListSize");
-		int totalDrugMutNum = (int) result_map.get("totalDrugMutNum");
-		int totalMutNum = (int) result_map.get("totalMutNum");
-		int totalUnknownNum = (int) result_map.get("totalUnknownNum");
-		int geneCount = (int) result_map.get("geneCount");
-		int somaticMutCount = (int) result_map.get("somaticMutCount");
-		int somaticDrugCount = (int) result_map.get("somaticDrugCount");
-		int somaticUnknownCount = (int) result_map.get("somaticUnknownCount");
-		int germlineUnknownCount = (int) result_map.get("germlineUnknownCount");
-		int allDrugMutNum = (int) result_map.get("allDrugMutNum");
-		for (Map a : crAllList) {
-			String Gene = a.get("Gene").toString();
-			if (!crGeneSet.contains(Gene)) {
-				crGeneCount++;
-				crGeneSet.add(Gene);
-			}
-			allGeneSet.add(Gene);
-			String Clinical_significance = a.get("Clinical_significance") == null ? "" : a.get("Clinical_significance").toString();
-			if ("1".equals(Clinical_significance) || "2".equals(Clinical_significance)) {
-				hasPathogenicityCount++;
-			}
-		}
-		//获取TMB
-		List<Map> TMBList = analysisReportDao.getTMB(currentNgsAvailable.getSubbarcode(),currentNgsAvailable.getAnalysis_date(),currentNgsAvailable.getProduct_name());
-		String tmb = CollectionUtils.isEmpty(TMBList) ? "" : TMBList.get(0).getOrDefault("TMB", "").toString();
-		String tmb_status = CollectionUtils.isEmpty(TMBList) ? "" : TMBList.get(0).getOrDefault("Status", "").toString();
-		if(tmb_status.equals("NA")) {
-			throw new RuntimeException("tmb_status值为NA");
-		}
-		//获取MSI
-		List<Map> MSIList = analysisReportDao.getMSI(currentNgsAvailable.getSubbarcode(),currentNgsAvailable.getAnalysis_date(),currentNgsAvailable.getProduct_name());
-		String msi = CollectionUtils.isEmpty(MSIList) ? "" : MSIList.get(0).getOrDefault("Score", "").toString();
-		String msi_status = CollectionUtils.isEmpty(MSIList) ? "" : MSIList.get(0).getOrDefault("Status", "").toString();
-		if ("Stable".equalsIgnoreCase(msi_status) || "NEG".equalsIgnoreCase(msi_status)) {
-			msi_status = "MSS";
-		} else if ("Unstable".equalsIgnoreCase(msi_status) || "POS".equalsIgnoreCase(msi_status)) {
-			msi_status = "MSI-H";
-		}
-		//获取质控结果
-		String qualityStat = analysisReportDao.getQualityStat(currentNgsAvailable.getSubbarcode(),currentNgsAvailable.getAnalysis_date(),currentNgsAvailable.getProduct_name());
-		List<String> chemoJsonList = analysisReportDao.getChemoJson(currentNgsAvailable.getSubbarcode());
-		//获取免疫正负相关内容
-		List<Map> immnueall = analysisReportDao.getIMMNUEALL(currentNgsAvailable.getSubbarcode());
-		int positiveImmnueNum = 0;
-		int negativeImmnueNum = 0;
-		if(immnueall!= null && immnueall.size()>0) {
-			List<Map> positiveImmnue = immnueall.stream().filter(immnue-> immnue.get("flag").toString().equals("1")).collect(Collectors.toList());
-			List<Map> negativeImmnue = immnueall.stream().filter(immnue-> immnue.get("flag").toString().equals("2")).collect(Collectors.toList());
-			positiveImmnueNum = positiveImmnue.stream().filter(immnue-> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
-			negativeImmnueNum = negativeImmnue.stream().filter(immnue-> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
-			rt.setPositiveImmnue(positiveImmnue);
-			rt.setNegativeImmnue(negativeImmnue);
-		}
-		boolean isblood = false;
-		//获取样本信息
-		SampleFile sf = sampleFileService.getSampleFileBySubbarcode(currentNgsAvailable.getSubbarcode());
-		if ("blood".equals(sf.getSample_type())) {
-			isblood = true;
-		}
-		rt.setTestedby(pr.getTested_by());
-		rt.setCheckedby(pr.getChecked_by());
-		rt.setClient(sf.getClient());
-		rt.setAge(sf.getAge());
-		rt.setContact(sf.getSales_contact());
-		String hospital = "-";
-		if(rt.getTemplate_name().indexOf("检测") != -1) {
-			if(sf.getHospital() != null && (sf.getHospital().indexOf("院")!=-1 || sf.getHospital().indexOf("医院")!=-1 || sf.getHospital().indexOf("医")!=-1)) {
-				hospital = sf.getHospital();
-			}
-		}else {
-			hospital = sf.getHospital()== null ? "-" : sf.getHospital();
-		}
-		rt.setHospital(hospital);
-		rt.setRoom(sf.getRoom());
-		rt.setCommission_date(sf.getCommission_date());
-		rt.setTesteddate(pr.getTested_date());
-		rt.setCheckeddate(pr.getChecked_date());
-		rt.setBarcode(currentNgsAvailable.getSubbarcode());
-		rt.setSubbarcode(sf.getBarcode());
-		rt.setReceiveddate(sf.getReceived_date());
-		rt.setReportdate(pr.getReport_date());
-		rt.setReportreceiver(sf.getClient());
-		rt.setPatientname(sf.getPerson_name());
-		rt.setSex(sf.getGender());
-		rt.setBirthday(sf.getBirthday());
-		rt.setDiseasetype(sf.getDisease_type());
-		rt.setSpecimentype(sf.getSpecimen_type());
-		rt.setSpecimenquantity(sf.getSpecimen_quantity());
-		rt.setCollectdate(sf.getCollect_date());
-		rt.setPlatforms("NGS");
-		rt.setLocationname(sf.getLocationname());
-		rt.setDoctorname(sf.getDoctorname());
-		rt.setPatient_phone(sf.getPatient_phone());
-		rt.setSample_source(sf.getSample_source());
-		rt.setSample_type(tranlateSampleType(sf.getSample_type()));
-		rt.setCommission_date(sf.getCommission_date());
-		rt.setDiseaseName(sf.getDisease_type());
-		StringBuilder sb = new StringBuilder();
-		
-		
-		Set<String> geneSet = new HashSet<>();
-		List siteNotReported = new ArrayList();
-		//移除不报告的位点
-		Iterator<Map> iterator = list.iterator();
-		while (iterator.hasNext()) {
-			Map map = iterator.next();
-			String gene = map.get("gene") == null ? "" : map.get("gene").toString();
-			String ori_variant = map.get("ori_variant") == null ? "" : map.get("ori_variant").toString();
-			if (map.get("rpUnknownVar") != null) {
-				Map rpUnknownVar = (Map)map.get("rpUnknownVar");
-				String result_type = rpUnknownVar.get("result_type") == null ? "未知临床意义" : rpUnknownVar.get("result_type").toString();
-				if ("不报告".equals(result_type)) {
-					siteNotReported.add(gene+" "+ori_variant);
-					//iterator.remove();
-					//continue;
-				}
-			}
-			List<Map> drugList = map.get("drugList") == null ? null : (List<Map>)map.get("drugList");
-			List<Map> clinicalList = map.get("clinicalList") == null ? null : (List<Map>)map.get("clinicalList");
-			if(gene.equals("Complex")) {
-				continue;
-			}
-			allGeneSet.add(gene);
-			if (!geneSet.contains(gene)) {
-				geneSet.add(gene);
-			}
-		}
-		
-		list.sort((Map map1, Map map2)-> Float.valueOf(map2.get("orderNum").toString()).compareTo(Float.valueOf(map1.get("orderNum").toString())));
-		List<RpVatiantOrder> selectOrderByAnalysisReportId = reportClinicalTrialDao.selectOrderByAnalysisReportId(currentNgsAvailable.getReport_id());
-		if(selectOrderByAnalysisReportId.isEmpty()) {
-			int i = 0;
-			for (Map map : list) {
-				reportClinicalTrialDao.insertRpVariantOrder(currentNgsAvailable.getReport_id(),map.get("gene").toString(), map.get("ori_variant").toString(), i);
-				i++;
-			}
-			i = 0;
-		}else {
-			for (Map map : list) {
-				Integer indexid = reportClinicalTrialDao.selectIndexOf(currentNgsAvailable.getReport_id(), map.get("gene").toString(), map.get("ori_variant").toString());
-				map.put("index_id", indexid);
-			}
-			list.sort((Map map1, Map map2)-> Integer.valueOf(map1.get("index_id").toString()) - (Integer.valueOf(map2.get("index_id").toString())));
-		}
-		
-		rt.setGeneCount(String.valueOf(geneCount));
-		rt.setDrugCount(String.valueOf(allDrugMutNum));
-		
-		
-		
-		//**************当不存在靶向药物的时候，显示这个表格****************
-		List<Map> targetDrugTipLineStr = new ArrayList<Map>();
-		boolean redFlag = false;
-		if (allDrugMutNum != 0) {
-			// *****************靶向药物提示表格***************
-			for (Map map : list) {
-				Map targetDrugTipLine = new HashMap();
-				List<Map> drugList = map.get("drugList") == null ? null : (List<Map>)map.get("drugList");
-				List<Map> clinicalList = map.get("clinicalList") == null ? null : (List<Map>)map.get("clinicalList");
-				if (!CollectionUtils.isEmpty(drugList)) {
-					String gene = map.get("gene").toString();
-					String ori_variant = map.get("ori_variant").toString();
-					String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
-					if(mutFreq.equals(".")) {
-						mutFreq = "/";
-					}
-					if (ori_variant.indexOf("Amplification") < 0 && !"/".equals(mutFreq) && mutFreq.indexOf("合") < 0) {
-						mutFreq += "%";
-					}
-					if(gene.equals("Complex")) {
-						gene = "多靶点循证";
-					}
-					targetDrugTipLine.put("gene", gene);
-					targetDrugTipLine.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
-					targetDrugTipLine.put("mutFreq", mutFreq);
-					// drugsA药物列
-					List<Map> DrugAStr = getDrugName("1",drugList,clinicalList);
-					boolean drugAStrFlag = getFlagDrugName(DrugAStr);
-					if(drugAStrFlag) redFlag = drugAStrFlag;
-					targetDrugTipLine.put("DrugAStr", DrugAStr);
-					if(gene.equals("多靶点循证") && DrugAStr.isEmpty()) {
-						continue;
-					}
-					
-					// drugsB药物列
-					List<Map> DrugBStr = getDrugName("2",drugList,clinicalList);
-					boolean drugBStrFlag = getFlagDrugName(DrugBStr);
-					if(drugBStrFlag) redFlag = drugBStrFlag;
-					targetDrugTipLine.put("DrugBStr", DrugBStr);
-					
-					// drugsC药物列
-					List<Map> DrugCStr = getDrugName("3",drugList,clinicalList);
-					boolean drugCStrFlag = getFlagDrugName(DrugCStr);
-					if(drugCStrFlag) redFlag = drugCStrFlag;
-					targetDrugTipLine.put("DrugCStr", DrugCStr);
-					
-					// 耐药药物列
-					List<Map> ResistantDrug = getDrugName("5",drugList,clinicalList);
-					boolean resistantDrugFlag = getFlagDrugName(ResistantDrug);
-					if(resistantDrugFlag) redFlag = resistantDrugFlag;
-					targetDrugTipLine.put("ResistantDrug", ResistantDrug);
-				}
-				if(!targetDrugTipLine.isEmpty()) {
-					targetDrugTipLineStr.add(targetDrugTipLine);
-				}
-			}
-		}
-		rt.setTargetDrugTipLineStr(targetDrugTipLineStr);
-		rt.setRedFlag(redFlag);
-		
-		// ************未知临床意义的基因突变***********
-		List<Map> unknownTipLineStr = new ArrayList<Map>();
-		if (totalUnknownNum != 0) {
-			for (Map map : list) {
-				Map<String,String> unknownTipLine = new HashMap<String,String>();
-				List<Map> drugList = map.get("drugList") == null ? null : (List<Map>) map.get("drugList");
-				List<Map> clinicalList = map.get("clinicalList") == null ? null : (List<Map>) map.get("clinicalList");
-				Map rpUnknownVar = map.get("rpUnknownVar") == null ? null : (Map) map.get("rpUnknownVar");
-				if (CollectionUtils.isEmpty(drugList) && CollectionUtils.isEmpty(clinicalList)  && !CollectionUtils.isEmpty(rpUnknownVar)) {
-					String gene = map.get("gene").toString();
-					String ori_variant = map.get("ori_variant").toString();
-					String ExonicFunc = map.get("ExonicFunc") == null ? "." : map.get("ExonicFunc").toString();
-					String mutFreq = map.get("mutFreq") == null ? "." : map.get("mutFreq").toString();
-					if (ori_variant.indexOf("Amplification") < 0 && !".".equals(mutFreq) && mutFreq.indexOf("合") < 0) {
-						mutFreq += "%";
-					}
-					if(gene.equals("Complex")) {
-						continue;
-					}
-					unknownTipLine.put("gene", gene);
-					unknownTipLine.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
-					unknownTipLine.put("ExonicFunc", translateMutType(ExonicFunc));
-					unknownTipLine.put("mutFreq", mutFreq);
-					unknownTipLine.put("result_type", rpUnknownVar.getOrDefault("result_type", "").toString());
-					unknownTipLineStr.add(unknownTipLine);
-				}
-			}
-		}
-		rt.setUnknownTipLineStr(unknownTipLineStr);
-		
-		// ************NCCN肺癌指南推荐临床常规靶向药物相关检测结果***********
-		List<Map> nccnRecommend = analysisReportDao.getNccnRecommend(diseaseIdList);
-		if (!CollectionUtils.isEmpty(nccnRecommend)) {
-			List<Map> nccnInfoStr = new ArrayList<Map>();
-			for (Map map : nccnRecommend) {
-				Map nccnInfo = new HashMap();
-				String drug = map.get("drug").toString();
-				String nccnGene = map.get("gene").toString();
-				String content = map.get("content").toString();
-				String result = translateUtil.translateNCCN(map, list);
-				nccnInfo.put("drug", drug);
-				nccnInfo.put("nccnGene", nccnGene);
-				nccnInfo.put("content", content);
-				nccnInfo.put("result", result);
-				nccnInfoStr.add(nccnInfo);
-			}
-			rt.setNccnInfoStr(nccnInfoStr);
-		}
-		
-		// *************组织样本显示肿瘤突变负荷（TMB）检测结果和微卫星不稳定(MSI)检测结果***********
-		Map<String,Object> summaryOfRresults = new HashMap<String,Object>();
-		summaryOfRresults.put("crAllListSize", crAllListSize);
-		summaryOfRresults.put("crDrugListSize", crDrugListSize);
-		summaryOfRresults.put("thisGeneticmarkerVwListSize", somaticMutCount);
-		summaryOfRresults.put("somaticCellMedicationNum", somaticDrugCount);
-		summaryOfRresults.put("totalMutNum", totalMutNum);
-		summaryOfRresults.put("somaticDrugCount", somaticDrugCount);
-		summaryOfRresults.put("crDrugList", crDrugListSize);
-		summaryOfRresults.put("somaticMutCount", somaticMutCount);
-		summaryOfRresults.put("somaticGeneCount", geneCount);
-		summaryOfRresults.put("totalUnkownNum", totalUnknownNum);
-		summaryOfRresults.put("somaticUnknownCount", somaticUnknownCount);
-		summaryOfRresults.put("germlineUnknownNum", germlineUnknownCount);
-		summaryOfRresults.put("hasPathogenicityCount", hasPathogenicityCount);
-		summaryOfRresults.put("qualityStat", qualityStat);
-		summaryOfRresults.put("positiveImmnueNum", positiveImmnueNum);
-		summaryOfRresults.put("negativeImmnueNum", negativeImmnueNum);
-		// 获取tmb图片
-		String tmb_PIC = analysisReportDao.getTMB_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
-		if (tmb_PIC != null) {
-			summaryOfRresults.put("tmb_PIC_status", true);
-			summaryOfRresults.put("tmb_PIC", tmb_PIC);
-		} else {
-			summaryOfRresults.put("tmb_PIC_status", false);
-		}
-		// 45基因报告模板是否存在MSI
-		boolean isExistMSI = false;
-		String product_name = pr.getProduct_name();
-		if(product_name.indexOf("msi") != -1) {
-			isExistMSI = true;
-		}
-		summaryOfRresults.put("isExistMSI", isExistMSI);
-		if (!isblood) {
-			summaryOfRresults.put("type", "tissue");
-		} else {
-			summaryOfRresults.put("type", "blood");
-		}
-		summaryOfRresults.put("tmb", tmb);
-		summaryOfRresults.put("tmb_status", tmb_status);
-		summaryOfRresults.put("msi", msi);
-		summaryOfRresults.put("msi_status", msi_status);
-		rt.setSummaryOfRresults(summaryOfRresults);
+    @Autowired
+    private AnalysisReportDao analysisReportDao;
 
-		//*************化疗药物用药提示************
-		List<List<String>> thisChemo = new ArrayList<>();
-		List<List<String>> unknownChemo = new ArrayList<>();
-		List<List<String>> effectivenessChemo = new ArrayList<>();
-		List<List<String>> sideEffectsChemo = new ArrayList<>();
-		List<List<String>> referenceRecommendation = new ArrayList<>();
-		List<Map> chemoSideeffectsEffectivenessStr = new ArrayList<Map>();
-		if (chemoJsonList.size() > 0) {
-			String chemoJson = chemoJsonList.get(0);
-			Map chemo = gson.fromJson(chemoJson, Map.class);
-			if (!CollectionUtils.isEmpty(chemo)) {
-				thisChemo = chemo.get("化疗药物毒副作用风险及有效性预测") == null ? null
-						: (List<List<String>>) ((Map) chemo.get("化疗药物毒副作用风险及有效性预测")).get("本癌种");
-				unknownChemo = chemo.get("化疗药物毒副作用风险及有效性预测") == null ? null
-						: (List<List<String>>) ((Map) chemo.get("化疗药物毒副作用风险及有效性预测")).get("未区分癌种");
-				effectivenessChemo = chemo.get("化疗药物检测解析") == null ? null
-						: (List<List<String>>) ((Map) chemo.get("化疗药物检测解析")).get("Effectiveness");
-				sideEffectsChemo = chemo.get("化疗药物检测解析") == null ? null
-						: (List<List<String>>) ((Map) chemo.get("化疗药物检测解析")).get("SideEffects");
-				referenceRecommendation = chemo.get("伊立替康用药剂量参考") == null ? null
-						: (List<List<String>>) ((Map) chemo.get("伊立替康用药剂量参考")).get("Dosage");
-			}
-			// *********本癌种*********
-			if (thisChemo != null) {
-				for (int i = 0; i < thisChemo.size(); i++) {
-					Map chemoSideeffectsEffectiveness = new HashMap();
-					List<String> list2 = thisChemo.get(i);
-					if (i == 0) {
-						chemoSideeffectsEffectiveness.put("isTitle", true);
-					} else {
-						chemoSideeffectsEffectiveness.put("isTitle", false);
-					}
-					chemoSideeffectsEffectiveness.put("content1", list2.get(0));
-					chemoSideeffectsEffectiveness.put("content2", list2.get(1));
-					chemoSideeffectsEffectiveness.put("content3", list2.get(2));
-					chemoSideeffectsEffectivenessStr.add(chemoSideeffectsEffectiveness);
-				}
-			}
+    @Autowired
+    private LifeDao lifeDao;
 
-			// *********未区分癌种*********
-			if (unknownChemo != null) {
-				for (int i = 0; i < unknownChemo.size(); i++) {
-					Map chemoSideeffectsEffectiveness = new HashMap();
-					List<String> list2 = unknownChemo.get(i);
-					if (i == 0) {
-						chemoSideeffectsEffectiveness.put("isTitle", true);
-					} else {
-						chemoSideeffectsEffectiveness.put("isTitle", false);
-					}
-					chemoSideeffectsEffectiveness.put("content1", list2.get(0));
-					chemoSideeffectsEffectiveness.put("content2", list2.get(1));
-					chemoSideeffectsEffectiveness.put("content3", list2.get(2));
-					chemoSideeffectsEffectivenessStr.add(chemoSideeffectsEffectiveness);
-				}
-			}
-		}
-		rt.setChemoSideeffectsEffectivenessStr(chemoSideeffectsEffectivenessStr);
-		rt.setCrGeneCount(String.valueOf(crGeneCount));
-		
-		//伊立替康用药剂量
-		List<Map> referenceRecommendationStr = new ArrayList<Map>();
-		if (referenceRecommendation != null) {
-			for (int i = 0; i < referenceRecommendation.size(); i++) {
-				Map referenceRecommendations = new HashMap();
-				List<String> list2 = referenceRecommendation.get(i);
-				if (i == 0) {
-					referenceRecommendations.put("isTitle", true);
-				} else {
-					referenceRecommendations.put("isTitle", false);
-				}
-				referenceRecommendations.put("content1", list2.get(0));
-				referenceRecommendations.put("content2", list2.get(1));
-				referenceRecommendationStr.add(referenceRecommendations);
-			}
-		}
-		rt.setReferenceRecommendationStr(referenceRecommendationStr);
-		
-		// *************靶向药物检测解析************
-		rt.setDrugAnalysisIndex("false");
+    @Autowired
+    private ReportCrService reportCrService;
+
+    @Autowired
+    private ReportVarDrugDao reportVarDrugDao;
+
+    @Autowired
+    private ReportUnknownVarDao reportUnknownVarDao;
+
+    @Autowired
+    private ReportClinicalTrialDao reportClinicalTrialDao;
+
+    @Autowired
+    private SampleFileService sampleFileService;
+
+    @Autowired
+    private ComplexMutationService complexMutationService;
+
+    @Autowired
+    private GeneticMarkerVwService geneticMarkerVwService;
+
+    @Autowired
+    private NgsQrcodeService ngsQrcodeService;
+
+    @Autowired
+    private ChemJsonDao chemJsonDao;
+
+    @Autowired
+    private AnalysisReportStoreDao analysisReportStoreDao;
+
+    @Autowired
+    private ModuleModificationAllDao moduleModificationAllDao;
+
+    public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
+        List<String> drugNameChineseAll = new ArrayList<String>();
+        boolean flag = false;
+        for (Map clinical : clinicalList) {
+            String drugNameChinese = clinical.get("drug_name") == null ? "" : clinical.get("drug_name").toString();
+            drugNameChineseAll.add(drugNameChinese);
+        }
+        if (drugNameChineseAll.contains(drug_name_chinese)) {
+            flag = true;
+        }
+        if ("1".equals(cfda)) {
+            drug_name_chinese += "*";
+        }
+        if (flag) {
+            drug_name_chinese += "#";
+        }
+        return drug_name_chinese;
+    }
+
+    /**
+     * 创建报告
+     * @param response
+     * @param request
+     * @param rt 模板 实体类 ——> 最后转化为json
+     * @param pr 报告 analysisReport 实体类
+     * @param session
+     * @param currentNgsAvailable  回显页面数据
+     */
+    @Override
+    public Integer createReport2(HttpServletResponse response,
+                                 HttpServletRequest request,
+                                 ReportTemplate rt,
+                                 AnalysisReport pr,
+                                 HttpSession session,
+                                 CurrentNgsAvailableData currentNgsAvailable,
+                                 User user) throws Exception {
+        // 设置当前语言-此时代表中文
+        Integer lang = 1;
+        Gson gson = new Gson();
+
+        // 获取产品名称
+        String productName = lifeDao.getProductByProductId(currentNgsAvailable.getProduct_id());
+        currentNgsAvailable.setProduct_name(productName);
+        pr.setProduct_name(productName);
+
+        // 获取所有位点信息 包括体系和胚系 （ this_genetic_marker_en7_vw2、 cr_evw rp_cr）
+        List<Map> thisGeneticmarkerList = analysisReportDao.getHotByReportIdAndGene(pr.getReport_id());
+        List<Map> crList = analysisReportDao.getHotCRByReportIdAndGene(pr.getReport_id());
+        List<Map> allMutation = new ArrayList<>();
+        allMutation.addAll(thisGeneticmarkerList);
+        allMutation.addAll(crList);
+
+        //根据report_id获取原发癌种信息
+        TranslateUtil translateUtil = new TranslateUtil();
+
+        // 胚系基因数量
+        int crGeneCount = 0;
+        //  somatic+cr的基因数量（体系+胚系）
+        int somaticAndCrGeneCount = 0;
+        // somatic的基因数量
+        int somaticGene = 0;
+        // 用于记录具有致病性（pathogenicity）的基因数量
+        int hasPathogenicityCount = 0;
+        // 用于记录与 "CR" 基因相关的药物列表数量。
+        int crDrugList = 0;
+
+
+        HashSet<Object> allGeneSet = new HashSet<>();
+
+        // 胚系
+        HashSet<Object> crGeneSet = new HashSet<>();
+        // 胚系（1、2、3 不包括vus）
+        HashSet<Object> embryonalGeneSet = new HashSet<>();
+        // 体系
+        HashSet<Object> bodyGeneSet = new HashSet<>();
+        // 汇总
+        HashSet<Object> GeneSet = new HashSet<>();
+
+        //循环设置临床意义
+        Map result_map = new HashMap();
+        String user_account = user == null ? "" : user.getUser_account();
+
+        // 获取所有位点信息（体系 胚系）& 暂时理解 胚系有用药
+        List<Map> list = complexMutationService.matchComplexMutation(user_account, currentNgsAvailable.getReport_id(), result_map, lang, rt.getTemplate_name());
+
+        List<Map> crAllList = (List<Map>) result_map.get("crAllList");
+        List<Integer> parentdiseaseIdList = (List<Integer>) result_map.get("parentdiseaseIdList");
+        List<Map> thisGeneticmarkerVwList = (List<Map>) result_map.get("thisGeneticmarkerVwList");
+        List<Integer> diseaseIdList = (List<Integer>) result_map.get("diseaseIdList");
+        Integer diseaseId = (Integer) result_map.get("diseaseId");
+        String diseaseName = result_map.get("diseaseName").toString();
+        int crDrugListSize = (int) result_map.get("crDrugListSize");
+        int crAllListSize = (int) result_map.get("crAllListSize");
+        int totalDrugMutNum = (int) result_map.get("totalDrugMutNum");
+        int totalMutNum = (int) result_map.get("totalMutNum");
+        int totalUnknownNum = (int) result_map.get("totalUnknownNum");
+        int geneCount = (int) result_map.get("geneCount");
+        int somaticMutCount = (int) result_map.get("somaticMutCount");
+        int somaticDrugCount = (int) result_map.get("somaticDrugCount");
+        int somaticUnknownCount = (int) result_map.get("somaticUnknownCount");
+        int germlineUnknownCount = (int) result_map.get("germlineUnknownCount");
+        int allDrugMutNum = (int) result_map.get("allDrugMutNum");
+        int somaticAndCrAllMutCount = somaticMutCount + crAllListSize;
+        int somaticAndCrAllDrugCount = somaticDrugCount + crDrugListSize;
+        int noSomaticAndCrAllDrugCount = somaticAndCrAllMutCount - somaticAndCrAllDrugCount;
+
+        // 遍历体系突变基因
+        for (Map a : thisGeneticmarkerVwList) {
+            String Gene = a.get("gene").toString();
+
+            // 这里加了一层判断主要为了计数
+            if (!GeneSet.contains(Gene)) {
+                somaticAndCrGeneCount++;
+                somaticGene++;
+                GeneSet.add(Gene);
+            }
+            bodyGeneSet.add(Gene);
+        }
+        rt.setBodyGeneSet(bodyGeneSet);
+
+        // 遍历胚系突变基因
+        for (Map a : crAllList) {
+            String Gene = a.get("Gene").toString();
+            if (!crGeneSet.contains(Gene)) {
+                crGeneCount++;
+                crGeneSet.add(Gene);
+            }
+            if (!GeneSet.contains(Gene)) {
+                somaticAndCrGeneCount++;
+                GeneSet.add(Gene);
+            }
+            String Clinical_significance = a.get("Clinical_significance") == null ? "" : a.get("Clinical_significance").toString();
+            /*if ("肿瘤精准治疗全面检测-1280基因-银丰".equals(rt.getTemplate_name()) || rt.getTemplate_name().contains("银丰-华西")) {
+                if (!(Clinical_significance.equals("4") || Clinical_significance.equals("5"))) {
+                    allGeneSet.add(Gene);
+                    embryonalGeneSet.add(Gene);
+                }
+            } else {
+                allGeneSet.add(Gene);
+                embryonalGeneSet.add(Gene);
+            }*/
+
+            // 暂时理解为 I II unkown
+            if (!(Clinical_significance.equals("4") || Clinical_significance.equals("5"))) {
+                allGeneSet.add(Gene);
+                embryonalGeneSet.add(Gene);
+            }
+            //
+            if ("1".equals(Clinical_significance) || "2".equals(Clinical_significance)) {
+                hasPathogenicityCount++;
+            }
+        }
+        rt.setEmbryonalGeneSet(embryonalGeneSet);
+
+        // 获取snpIndel、cnv、fision 位点知识库+报告系统优化对接
+        List<Map> snpIndelFileAll = analysisReportDao.getSnpIndelFileAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        List<Map> cNVAll = analysisReportDao.getCNVAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        List<Map> fusionAll = analysisReportDao.getFusionAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        // 获取化疗癌种
+        String chem_cancer = StringUtils.isEmpty(pr.getChem_cancer()) ? "" : pr.getChem_cancer();
+        //获取TMB
+        List<Map> TMBList = analysisReportDao.getTMB(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        String tmb = CollectionUtils.isEmpty(TMBList) ? "" : TMBList.get(0).getOrDefault("TMB", "").toString();
+        String tmb_status = CollectionUtils.isEmpty(TMBList) ? "" : TMBList.get(0).getOrDefault("Status", "").toString().replaceFirst("b","");
+        if (tmb_status.equals("NA")) {
+            throw new RuntimeException("tmb_status值为NA");
+        }
+        // 299、1249tmb使用1238产品逻辑
+        String tmbProductName = "";
+        if (productName.contains("tis_299") || productName.contains("tis_1249") || productName.contains("tis_462")) {
+            tmbProductName = "novopm2_tis_1238";
+        } else if (productName.contains("blo_299") || productName.contains("blo_1249") || productName.contains("blo_462")) {
+            tmbProductName = "novopm2_blo_1238";
+        } else {
+            tmbProductName = productName;
+        }
+        if (StringUtils.isEmpty(tmb)) {
+            Map<String, String> map = getTmb(snpIndelFileAll, tmbProductName, chem_cancer);
+            tmb = map.get("tmb");
+            tmb_status = map.get("tmb_status");
+        }
+        // 获取tmb图片
+        String tmb_PIC = analysisReportDao.getTMB_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        String tmb_Percent = "";
+        if (StringUtils.isEmpty(tmb_PIC)) {
+            if (!StringUtils.isEmpty(tmb) && (tmbProductName.contains("tis_550") || tmbProductName.contains("blo_550") || tmbProductName.contains("tis_1238") || tmbProductName.contains("blo_1238"))) {
+                String tmbPIC = getTmbPIC(tmb, chem_cancer, currentNgsAvailable.getSubbarcode(), tmbProductName);
+                if (!StringUtils.isEmpty(tmbPIC) && !("None".equals(tmbPIC) || "None\n".equals(tmbPIC))) {
+                    List<String> tmbList = Arrays.asList(gson.fromJson(tmbPIC, String[].class));
+                    tmb_PIC = tmbList.get(0);
+                    tmb_Percent = tmbList.get(1);
+                }
+            }
+        }
+        //获取Clonal_TMB
+        String clonal_tmb = analysisReportDao.getClonal_TMB(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        //获取MSI
+        List<Map> MSIList = analysisReportDao.getMSI(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        String msi = CollectionUtils.isEmpty(MSIList) ? "" : MSIList.get(0).getOrDefault("Score", "").toString();
+        String msi_status = CollectionUtils.isEmpty(MSIList) ? "" : MSIList.get(0).getOrDefault("Status", "").toString();
+        if ("Stable".equalsIgnoreCase(msi_status) || "NEG".equalsIgnoreCase(msi_status)) {
+            msi_status = "MSS";
+        } else if ("Unstable".equalsIgnoreCase(msi_status) || "POS".equalsIgnoreCase(msi_status)) {
+            msi_status = "MSI-H";
+        }
+        //获取质控结果
+        String qualityStat = analysisReportDao.getQualityStat(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        //获取免疫正负相关内容
+//        List<Map> immnueall = analysisReportDao.getIMMNUEALL(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        /*List<Map> medicalEvidence = analysisReportDao.getMedicalEvidence();
+        List<Map> immnueall = ImmuneAllUtil.immuneAll(allMutation, medicalEvidence);*/
+        List<MmImmnueAll> mmImmnueAlls = moduleModificationAllDao.selectMmImmnueAllByReportId(currentNgsAvailable.getReport_id());
+        List<Map> immnueall = mmImmnueAlls.stream().map(it -> {
+            Map<String, Object> apiMap = new HashMap<>();
+            apiMap.put("flag",it.getFlag());
+            apiMap.put("gene",it.getGene());
+            apiMap.put("variant",it.getVariant());
+            apiMap.put("mutFreq",it.getMutFreq());
+            apiMap.put("varDesc",it.getVarDesc());
+            return apiMap;
+        }).collect(Collectors.toList());
+        int positiveImmnueNum = 0;
+        int negativeImmnueNum = 0;
+        int hpdImmnueNum = 0;
+        List<Map> positiveImmnue = new ArrayList<>();
+        List<Map> negativeImmnue = new ArrayList<>();
+        List<Map> hpdImmnue = new ArrayList<>();
+        if (immnueall != null && immnueall.size() > 0) {
+            // 区分mutFreq类型
+            immnueallDistinguishMutFreqType(immnueall);
+            positiveImmnue = immnueall.stream().filter(immnue -> immnue.get("flag").toString().equals("1")).collect(Collectors.toList());
+            negativeImmnue = immnueall.stream().filter(immnue -> immnue.get("flag").toString().equals("2")).collect(Collectors.toList());
+            hpdImmnue = immnueall.stream().filter(immnue -> immnue.get("flag").toString().equals("3")).collect(Collectors.toList());
+            positiveImmnueNum = positiveImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
+            negativeImmnueNum = negativeImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
+            hpdImmnueNum = hpdImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
+            rt.setPositiveImmnue(positiveImmnue);
+            rt.setNegativeImmnue(negativeImmnue);
+            rt.setHpdImmnue(hpdImmnue);
+        }
+        boolean isblood = false;
+        //获取样本信息
+        SampleFile sf = sampleFileService.getSampleFileBySubbarcode(currentNgsAvailable.getSubbarcode());
+        if ("blood".equals(sf.getSample_type())) {
+            isblood = true;
+        }
+        rt.setTestedby(pr.getTested_by());
+        rt.setCheckedby(pr.getChecked_by());
+        rt.setClient(sf.getClient());
+        rt.setAge(sf.getAge());
+        rt.setContact(sf.getSales_contact());
+        String hospital = "-";
+        if (rt.getTemplate_name().indexOf("检测") != -1 && rt.getTemplate_name().indexOf("沈阳胸科") < 0) {
+            if (sf.getHospital() != null && (sf.getHospital().indexOf("院") != -1 || sf.getHospital().indexOf("医院") != -1 || sf.getHospital().indexOf("医") != -1)) {
+                hospital = sf.getHospital();
+            }
+        } else {
+            hospital = sf.getHospital() == null ? "-" : sf.getHospital();
+        }
+        rt.setHospital(hospital);
+        rt.setRoom(sf.getRoom());
+        rt.setCommission_date(sf.getCommission_date());
+        rt.setTesteddate(pr.getTested_date());
+        rt.setCheckeddate(pr.getChecked_date());
+        rt.setSubbarcode(currentNgsAvailable.getSubbarcode());
+        rt.setBarcode(StringUtils.isEmpty(sf.getBarcode()) ? sf.getSubbarcode() : sf.getBarcode());
+        rt.setReceiveddate(sf.getReceived_date());
+        rt.setReportdate(pr.getReport_date());
+        String[] split1 = pr.getReport_date().split("-");
+        String reportdate2 = split1[0] + "年 " + split1[1] + " 月 " + split1[2] + " 日";
+        rt.setReportdate2(reportdate2);
+        rt.setReportreceiver(sf.getClient());
+        rt.setPatientname(sf.getPerson_name());
+        rt.setSex(sf.getGender());
+        rt.setBirthday(sf.getBirthday());
+        rt.setDiseasetype(sf.getDisease_type());
+        // 合并后的样本类型
+        String specimen_type = analysisReportDao.getSpecimen_type(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
+        if (StringUtils.isNotEmpty(specimen_type)) {
+            sf.setSpecimen_type(specimen_type);
+        }
+        rt.setSpecimentype(sf.getSpecimen_type());
+        rt.setSpecimenquantity(sf.getSpecimen_quantity());
+        rt.setCollectdate(sf.getCollect_date());
+        rt.setPlatforms("NGS");
+        rt.setLocationname(sf.getLocationname());
+        rt.setDoctorname(sf.getDoctorname());
+        rt.setPatient_phone(sf.getPatient_phone());
+        rt.setSample_source(sf.getSample_source());
+        if (rt.getTemplate_name().indexOf("银丰") != -1 && rt.getTemplate_name().indexOf("华西") < 0 && "银丰基因科技有限公司".equals(sf.getCustomer()) && "tissue".equals(sf.getSample_type())) {
+            if (sf.getSpecimen_type().contains("石蜡包埋") || sf.getSpecimen_type().contains("卷片") || sf.getSpecimen_type().contains("贴片")) {
+                rt.setSample_type("石蜡包埋组织");
+            } else if (sf.getSpecimen_type().contains("甲醛固定")) {
+                rt.setSample_type("新鲜组织");
+            } else if ("胸腹水".equals(sf.getSpecimen_type())) {
+                rt.setSample_type("胸腹水");
+            } else {
+                rt.setSample_type("/");
+            }
+        } else {
+            rt.setSample_type("胸腹水".equals(sf.getSpecimen_type()) ? "胸腹水" : tranlateSampleType(sf.getSample_type()));
+        }
+        rt.setCommission_date(sf.getCommission_date());
+        rt.setDiseaseName(sf.getDisease_type());
+        rt.setPatientid(sf.getPatient_id());
+        rt.setSample_barcode(sf.getSample_barcode());
+        rt.setTnm_periodization(sf.getTnm_periodization());
+        rt.setInspection_number(sf.getInspection_number());
+        rt.setBed(sf.getBed());
+        rt.setConsultation(sf.getConsultation());
+        rt.setDNANucleic(sf.getDNANucleic());
+        rt.setRNANucleic(sf.getRNANucleic());
+        rt.setDNALibrary(sf.getDNALibrary());
+        rt.setRNALibrary(sf.getRNALibrary());
+        rt.setDNAPlaneData(sf.getDNAPlaneData());
+        rt.setMeanSequencingDepth(sf.getMeanSequencingDepth());
+        rt.setTargetAreaCoverage(sf.getTargetAreaCoverage());
+        rt.setRNAPlaneData(sf.getRNAPlaneData());
+        rt.setReadsNumber(sf.getReadsNumber());
+        rt.setClinicaldiagnosis(sf.getClinicaldiagnosis());
+        rt.setRun_name(sf.getRun_name());
+        rt.setRun_code(sf.getRun_code());
+        rt.setDna_index(sf.getDna_index());
+        rt.setRna_index(sf.getRna_index());
+        rt.setTemplate_subbarcode(sf.getTemplate_subbarcode());
+        rt.setDNAQubit(sf.getDNAQubit());
+        rt.setRNAQubit(sf.getRNAQubit());
+        rt.setWard(sf.getWard());
+        rt.setReview_doctor(sf.getReview_doctor());
+        rt.setTest_number(sf.getTest_number());
+        rt.setCollectdate(sf.getCollect_date());
+        rt.setCustomer(sf.getCustomer());
+        String pageHeaderPic = "";
+        boolean sealFlag = false;
+        /*if ("苏州市第九人民医院（苏州市吴江区第一人民医院）".equals(sf.getCustomer())) {
+            pageHeaderPic = session.getServletContext().getRealPath("/") + "images/苏州九院.png";
+            sealFlag = true;
+        }*/
+        rt.setPageHeaderPic(pageHeaderPic);
+        rt.setSealFlag(sealFlag);
+        rt.setFirsttreatment(sf.getFirsttreatment());
+        rt.setSecondtreatment(sf.getSecondtreatment());
+        rt.setThirdtreatment(sf.getThirdtreatment());
+        String treatment = "";
+        if (sf.getFirsttreatment() != null && !",,,,".equals(sf.getFirsttreatment())) {
+            treatment += sf.getFirsttreatment();
+        }
+        if (sf.getSecondtreatment() != null && !",,,,".equals(sf.getSecondtreatment())) {
+            treatment += sf.getSecondtreatment();
+        }
+        if (sf.getThirdtreatment() != null && !",,,,".equals(sf.getThirdtreatment())) {
+            treatment += sf.getThirdtreatment();
+        }
+        rt.setTreatment(treatment);
+        rt.setPathologicaltype(sf.getPathologicaltype());
+        rt.setSpecimenno(sf.getSpecimenno());
+        rt.setSerial_number(sf.getSerial_number());
+        rt.setRegistration_number(sf.getRegistration_number());
+        rt.setProduct_name(sf.getProduct_name());
+        rt.setSampleremark(sf.getSampleremark());
+        rt.setMailingaddress(sf.getMailingaddress());
+        if ("男".equals(sf.getGender())) {
+            rt.setAppellation("先生");
+        } else if ("女".equals(sf.getGender())) {
+            rt.setAppellation("女士");
+        } else {
+            rt.setAppellation("先生/女士");
+        }
+
+        //生信QC以qc.txt文件为主
+        rt.setPlane_data(sf.getPlane_data());
+        rt.setSequencing_depth(sf.getSequencing_depth());
+        rt.setCoverage(sf.getCoverage());
+        rt.setCoverage_uniformity(sf.getCoverage_uniformity());
+        rt.setGenome_alignment(sf.getGenome_alignment());
+        rt.setBase_quality(sf.getBase_quality());
+        //QC质控信息
+        Map qc = analysisReportDao.getQC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
+        if (qc != null && qc.size() > 0) {
+            rt.setTumorcellcontent(qc.get("tumorcellcontent").toString());
+            rt.setDNA_total(qc.get("DNA_total").toString());
+            rt.setDNA_degradation(qc.get("DNA_degradation").toString());
+            rt.setOutbound_quantity(qc.get("outbound_quantity").toString());
+            rt.setPlane_data(qc.get("plane_data").toString());
+            rt.setSequencing_depth(qc.get("sequencing_depth").toString());
+            rt.setCoverage_uniformity(qc.get("coverage_uniformity").toString());
+            rt.setCoverage(qc.get("coverage").toString());
+            rt.setGenome_alignment(qc.get("genome_alignment").toString());
+            rt.setBase_quality(qc.get("base_quality").toString());
+        }
+        // DNA-Panel 判定合格标准 平均测序深度（X）  合格：组织≥500，cfDNA≥3000;  警戒：500＞组织≥400，3000＞cfDNA≥2500;  不合格：组织<400，cfDNA<2500。
+        if (!StringUtils.isEmpty(rt.getSequencing_depth()) && !"-".equals(rt.getSequencing_depth())) {
+            String sequencing_depth1 = rt.getSequencing_depth();
+            if (sequencing_depth1.charAt(sequencing_depth1.length() - 1) == 'X') {
+                sequencing_depth1 = sequencing_depth1.substring(0, sequencing_depth1.length() - 1);
+            }
+            Double sequencing_depth = Double.valueOf(sequencing_depth1);
+            if (!isblood) {
+                if (sequencing_depth >= 500) {
+                    rt.setOverall_quality_assessment("合格");
+                } else if (sequencing_depth < 500 && sequencing_depth >= 400) {
+                    rt.setOverall_quality_assessment("警戒");
+                } else {
+                    rt.setOverall_quality_assessment("不合格");
+                }
+            } else {
+                if (sequencing_depth >= 1500) {
+                    rt.setOverall_quality_assessment("合格");
+                } else if (sequencing_depth < 1500 && sequencing_depth >= 1000) {
+                    rt.setOverall_quality_assessment("警戒");
+                } else {
+                    rt.setOverall_quality_assessment("不合格");
+                }
+            }
+        }
+        // 实验QC以样本模板上传的样本信息为主
+        if (!StringUtils.isEmpty(sf.getTumorcellcontent())) {
+            rt.setTumorcellcontent(sf.getTumorcellcontent());
+        }
+        if (!StringUtils.isEmpty(sf.getDNA_total())) {
+            rt.setDNA_total(sf.getDNA_total());
+        }
+        if (!StringUtils.isEmpty(sf.getDNA_degradation())) {
+            rt.setDNA_degradation(sf.getDNA_degradation());
+        }
+        if (!StringUtils.isEmpty(sf.getOutbound_quantity())) {
+            rt.setOutbound_quantity(sf.getOutbound_quantity());
+        }
+        //QC RNA质控信息
+        Map rna = analysisReportDao.getQCRNA(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
+        rt.setRna(rna);
+        //QC HRD质控信息
+        Map hrd = analysisReportDao.getQCHRD(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
+        rt.setHrd(hrd);
+
+        StringBuilder sb = new StringBuilder();
+        Set<String> geneSet = new HashSet<>();
+        Iterator<Map> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            Map map = iterator.next();
+            String gene = map.get("gene") == null ? "" : map.get("gene").toString();
+            if (gene.equals("Complex")) {
+                continue;
+            }
+            allGeneSet.add(gene);
+            if (!geneSet.contains(gene)) {
+                geneSet.add(gene);
+            }
+        }
+
+        /*if (pr.getProduct_name().contains("novoivd") && pr.getProduct_name().contains("Crc")) {
+            allGeneSet.add("UGT1A1");
+        }*/
+        if (rt.getTemplate_name().contains("蚌埠")) {
+            Set<String> bengbu = new HashSet();
+            for (Map map : thisGeneticmarkerList) {
+                String gene = map.get("gene").toString();
+                String ori_variant = map.get("ori_variant").toString();
+                if (Arrays.asList("ROS1","ALK","RET","MET").contains(gene) && ori_variant.contains("Fusion")) {
+                    bengbu.add(gene);
+                }
+            }
+            rt.setBengbu(bengbu);
+        }
+
+        list.sort((Map map1, Map map2) -> Float.valueOf(map2.get("orderNum").toString()).compareTo(Float.valueOf(map1.get("orderNum").toString())));
+        List<RpVatiantOrder> selectOrderByAnalysisReportId = reportClinicalTrialDao.selectOrderByAnalysisReportId(currentNgsAvailable.getReport_id());
+        if (selectOrderByAnalysisReportId.isEmpty()) {
+            int i = 0;
+            for (Map map : list) {
+                reportClinicalTrialDao.insertRpVariantOrder(currentNgsAvailable.getReport_id(), map.get("gene").toString(), map.get("ori_variant").toString(), i);
+                i++;
+            }
+            i = 0;
+        } else {
+            for (Map map : list) {
+                Integer indexid = reportClinicalTrialDao.selectIndexOf(currentNgsAvailable.getReport_id(), map.get("gene").toString(), map.get("ori_variant").toString());
+                map.put("index_id", indexid);
+            }
+            list.sort((Map map1, Map map2) -> Integer.valueOf(map1.get("index_id").toString()) - (Integer.valueOf(map2.get("index_id").toString())));
+        }
+
+        rt.setGeneCount(String.valueOf(geneCount));
+        rt.setDrugCount(String.valueOf(allDrugMutNum));
+
+        //检测基因
+        String output = "未检出";
+        if (rt.getTemplate_name().contains("安徽胸科") || rt.getTemplate_name().contains("泛实体瘤182+6基因报告")) {
+            output = "未检测到与用药相关突变";
+        }
+        List<Map> hotallgenedrugs = analysisReportDao.gethotGeneDrug("hotallgenedrug", rt.getTemplate_name());
+        if (!hotallgenedrugs.isEmpty()) {
+            List<Map> hotAllGeneDrugTipLineStr = getHotgeneData(hotallgenedrugs, thisGeneticmarkerList, crList, "allgene", output, rt.getTemplate_name());
+            rt.setHotAllGeneDrugTipLineStr(hotAllGeneDrugTipLineStr);
+        }
+        //靶向基因检测结果小结热点基因
+        List<Map> hotgenedrugs = analysisReportDao.gethotGeneDrug("hotgenedrug", rt.getTemplate_name());
+        if (!hotgenedrugs.isEmpty()) {
+            List<Map> hotGeneDrugTipLineStr = getHotgeneData(hotgenedrugs, thisGeneticmarkerList, crList, "snp_indel", output, rt.getTemplate_name());
+            rt.setHotGeneDrugTipLineStr(hotGeneDrugTipLineStr);
+            // 实体瘤20+6基因报告-安徽胸科(模板需求)
+            Set<String> hotGeneDrugSet = new HashSet();
+            for (Map map : hotGeneDrugTipLineStr) {
+                String gene = map.get("gene").toString();
+                String ori_variant = map.get("ori_variant").toString();
+                if (!ori_variant.equals(output)) {
+                    if (!ori_variant.equals("Amplification") && !ori_variant.contains("Fusion")) {
+                        if (ori_variant.split(" ")[1].contains("exon")) {
+                            hotGeneDrugSet.add(gene + " " + ori_variant.split(" ")[1].replace("exon", "") + "号外显子突变");
+                        } else if (ori_variant.split(" ")[1].contains("intron")) {
+                            hotGeneDrugSet.add(gene + " " + ori_variant.split(" ")[1].replace("intron", "") + "号基因内区突变");
+                        } else {
+                            hotGeneDrugSet.add(gene + " 突变");
+                        }
+                    } else {
+                        hotGeneDrugSet.add(gene + ori_variant + " 突变");
+                    }
+                }
+            }
+            rt.setHotGeneDrugSet(hotGeneDrugSet);
+        }
+
+        //肿瘤遗传风险检测结果小结
+        List<Map> hotcrgenedrugs = analysisReportDao.gethotGeneDrug("hotcrgenedrug", rt.getTemplate_name());
+        if (!hotcrgenedrugs.isEmpty()) {
+            List<Map> hotCrGeneDrugTipLineStr = getHotgeneData(hotcrgenedrugs, thisGeneticmarkerList, crList, "CR", output, rt.getTemplate_name());
+            rt.setHotCrGeneDrugTipLineStr(hotCrGeneDrugTipLineStr);
+        }
+        //(银丰-华西)
+        HashSet<Object> promoteGeneSet = new HashSet<>(); //可能促进药物效果标志物
+        HashSet<Object> reducedGeneSet = new HashSet<>(); //可能导致药物效果降低标志物
+        HashSet<Object> progressionGeneSet = new HashSet<>(); //可能导致疾病发生超进展标志物
+        HashSet<Object> parpinhibitorGeneSet = new HashSet<>(); //PARP抑制剂相关基因检测结果
+        if (rt.getTemplate_name().contains("银丰-华西")) {
+            List<Map> promotedrugeffect = analysisReportDao.gethotGeneDrug("promotedrugeffect", "银丰-华西");
+            List<Map> promoteGeneDrugTipLineStr = getYfhxgeneData(promotedrugeffect, thisGeneticmarkerList, crList, "snp_indel", promoteGeneSet);
+            rt.setPromoteGeneDrugTipLineStr(promoteGeneDrugTipLineStr);
+            List<Map> reduceddrugeffect = analysisReportDao.gethotGeneDrug("reduceddrugeffect", "银丰-华西");
+            List<Map> reducedGeneDrugTipLineStr = getYfhxgeneData(reduceddrugeffect, thisGeneticmarkerList, crList, "snp_indel", reducedGeneSet);
+            rt.setReducedGeneDrugTipLineStr(reducedGeneDrugTipLineStr);
+            List<Map> progressionofdisease = analysisReportDao.gethotGeneDrug("progressionofdisease", "银丰-华西");
+            List<Map> progressionGeneDrugTipLineStr = getYfhxgeneData(progressionofdisease, thisGeneticmarkerList, crList, "snp_indel", progressionGeneSet);
+            rt.setProgressionGeneDrugTipLineStr(progressionGeneDrugTipLineStr);
+            List<Map> parpinhibitorgene = analysisReportDao.gethotGeneDrug("PARPinhibitorgene", "银丰-华西");
+            List<Map> parpinhibitGeneDrugTipLineStr = getYfhxgeneData(parpinhibitorgene, thisGeneticmarkerList, crList, "snp_indel", parpinhibitorGeneSet);
+            rt.setParpinhibitGeneDrugTipLineStr(parpinhibitGeneDrugTipLineStr);
+        }
+        rt.setPromoteGeneSet(promoteGeneSet);
+        rt.setReducedGeneSet(reducedGeneSet);
+        rt.setProgressionGeneSet(progressionGeneSet);
+        rt.setParpinhibitorGeneSet(parpinhibitorGeneSet);
+        //WES报告模板-赛福
+        HashSet<Object> predictorGeneSet = new HashSet<>(); //疗效预测指标
+        HashSet<Object> immunopositiveGeneSet = new HashSet<>(); //疗效影响因素-免疫治疗正相关指标
+        HashSet<Object> immunonegativeGeneSet = new HashSet<>(); //疗效影响因素-免疫治疗负相关指标
+        int immunopositiveSFSize = 0;
+        int immunonegativeSFSize = 0;
+        if (rt.getTemplate_name().contains("赛福")) {
+            List<Map> predictorofcurativeeffect = analysisReportDao.gethotGeneDrug("predictorofcurativeeffect", "赛福");
+            List<Map> predictorofcurativeTipLineStr = getSFgeneData(predictorofcurativeeffect, thisGeneticmarkerList, crList, "snp_indel", predictorGeneSet);
+            List<Map> immunopositivecorrelation = analysisReportDao.gethotGeneDrug("immunopositivecorrelation", "赛福");
+            List<Map> immunopositiveTipLineStr = getSFgeneData(immunopositivecorrelation, thisGeneticmarkerList, crList, "allgene", immunopositiveGeneSet);
+            immunopositiveSFSize = immunopositiveTipLineStr.size();
+            List<Map> immunonegativecorrelation = analysisReportDao.gethotGeneDrug("Immunonegativecorrelation", "赛福");
+            List<Map> immunonegativeTipLineStr = getSFgeneData(immunonegativecorrelation, thisGeneticmarkerList, crList, "snp_indel", immunonegativeGeneSet);
+            immunonegativeSFSize = immunonegativeTipLineStr.size();
+        }
+        rt.setPredictorGeneSet(predictorGeneSet);
+        rt.setImmunopositiveGeneSet(immunopositiveGeneSet);
+        rt.setImmunonegativeGeneSet(immunonegativeGeneSet);
+
+        // 获取基因列表
+        List<String> geneSymbols = analysisReportDao.getGeneSymbols(currentNgsAvailable.getProduct_id());
+        Map<String, Object> geneClassification = new HashMap<String, Object>();
+        Map<String, Object> geneMap = getGeneClassification(geneSymbols, geneClassification);
+        rt.setGene(geneMap);
+
+        // 变异分级(60基因重肿)
+        Map variationGrading = new HashMap<>();
+        List<Map> variationGrading1 = new ArrayList<Map>();
+        List<Map> variationGrading2 = new ArrayList<Map>();
+        List<Map> variationGrading3 = new ArrayList<Map>();
+        for (Map map : list) {
+            String gene = map.get("gene").toString();
+            String has_drug = map.get("has_drug") == null ? "" : map.get("has_drug").toString();
+            if (has_drug.equals("") && !(has_drug.equals("true") || has_drug.equals("1"))) {
+                if (!gene.equals("Complex")) {
+                    Map variation = new HashMap();
+                    List<Map> drugList = map.get("drugList") == null ? null : (List<Map>) map.get("drugList");
+                    List<Map> clinicalList = map.get("clinicalList") == null ? null : (List<Map>) map.get("clinicalList");
+                    Map rpUnknownVar = map.get("rpUnknownVar") == null ? null : (Map) map.get("rpUnknownVar");
+
+                    String ori_variant = map.get("ori_variant").toString();
+                    String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
+                    List<String> templates = lifeNoNDFTemplate(); //life报告模板融合不输出突变丰度和NDF值
+                    if (templates.contains(rt.getTemplate_name())) {
+                        if (ori_variant.indexOf("Fusion") != -1) {
+                            mutFreq = "/";
+                        }
+                    }
+                    if (mutFreq.equals(".")) {
+                        mutFreq = "/";
+                    }
+                    mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
+                    variation.put("gene", gene);
+                    variation.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
+                    variation.put("mutFreq", mutFreq);
+                    String ori_varian_split = removeMutations(transferOriVariant(ori_variant));
+                    if (!ori_varian_split.equals("Amplification") && !ori_varian_split.contains("Fusion")) {
+                        String[] splits = ori_varian_split.split(" ");
+                        variation.put("Transcript", splits[0]);
+                        variation.put("Exon", splits[1]);
+                        variation.put("cHGVS", splits[2]);
+                        if (splits.length >= 4) {
+                            String pHGVS = ori_varian_split.substring(ori_varian_split.indexOf("p."));
+                            variation.put("pHGVS", pHGVS);
+                        } else {
+                            variation.put("pHGVS", "-");
+                        }
+                        variation.put("flag", false);
+                    } else {
+                        variation.put("flag", true);
+                    }
+                    if (!CollectionUtils.isEmpty(drugList)) {
+                        Set drugNameGroup = new HashSet();
+                        // drugsA药物列
+                        List<Map> DrugAStr = getDrugName("1", drugList, clinicalList, drugNameGroup);
+                        // drugsB药物列
+                        List<Map> DrugBStr = getDrugName("2", drugList, clinicalList, drugNameGroup);
+                        // drugsC药物列
+//                        List<Map> DrugCStr = getDrugName("3", drugList, clinicalList, drugNameGroup);
+                        // 耐药药物列
+                        List<Map> ResistantDrug = getDrugName("5", drugList, clinicalList, drugNameGroup);
+                        List<Map> mapList = ResistantDrug.stream().filter(s -> Arrays.asList("1", "2").contains(s.get("level"))).collect(Collectors.toList());
+                        if (!DrugAStr.isEmpty() || !DrugBStr.isEmpty() || !mapList.isEmpty()) {
+                            variationGrading1.add(variation);
+                        } else {
+                            variationGrading2.add(variation);
+                        }
+                    } else if (CollectionUtils.isEmpty(drugList) && CollectionUtils.isEmpty(clinicalList) && !CollectionUtils.isEmpty(rpUnknownVar)) {
+                        variationGrading3.add(variation);
+                    }
+                }
+            }
+        }
+        variationGrading.put("variationGrading1", variationGrading1);
+        variationGrading.put("variationGrading2", variationGrading2);
+        variationGrading.put("variationGrading3", variationGrading3);
+        rt.setVariationGrading(variationGrading);
+
+        // PARP抑制剂用药提示--(1238基因报告模版-奕检)
+        List<String> geneListHRR1 = Arrays.asList("ATM", "BARD1", "BRCA1", "BRCA2", "BRIP1", "CDK12", "CHEK1", "CHEK2", "FANCA", "FANCL", "PALB2", "RAD51B", "RAD51C", "RAD51D", "RAD54L"); // HRR 通路相关基因 (I 级证据)
+        List<String> geneListHRR2 = Arrays.asList("ATRX", "FANCF", "FANCG", "FANCI", "PPP2R2A", "PTEN", "RAD50"); // HRR 通路相关基因 (II 级证据)
+        List<String> geneListHRR3 = Arrays.asList("ABRAXAS1", "ARID1A", "BABAM1", "BLM", "MRE11", "NBN", "POLD1", "RAD51", "RAD52", "XRCC2"); // HRR 通路相关基因 (III 级证据)
+        List<String> geneListDDR = Arrays.asList("ATR", "BAP1", "EPCAM", "ERCC3", "ERCC4", "FANCB", "FANCC", "FANCD2", "FANCE", "MLH1", "MSH2", "MSH3", "MSH6", "MUTYH", "PARP1", "PMS1", "PMS2", "POLE", "PRKDC", "RECQL4", "SLX4", "STAG2", "TP53", "TP53BP1"); // DDR 通路其它核心基因
+        Map parp = new HashMap();
+        int geneHRR1Size = 0;
+        int geneHRR2Size = 0;
+        int geneHRR3Size = 0;
+        int geneDDRSize = 0;
+        HashSet<String> geneHRR1 = new HashSet<>();
+        HashSet<String> geneHRR2 = new HashSet<>();
+        HashSet<String> geneHRR3 = new HashSet<>();
+        HashSet<String> geneDDR = new HashSet<>();
+
+        //**************当不存在靶向药物的时候，显示这个表格****************
+        List<Map> targetDrugTipLineStr = new ArrayList<Map>();
+        List<Map> embryonalDrugTipLineStr = new ArrayList<Map>();
+        List<Map> unknownDrugTipLineStr = new ArrayList<Map>();
+        List<Map> bodyDrugTipLineStr = new ArrayList<Map>();
+        List<Map> complexDrugTipLineStr = new ArrayList<Map>();
+        List<Map> bodyAndComplexDrugTipLineStr = new ArrayList<Map>();
+        List<Map> targetDrugTipLineGene6Str = new ArrayList<Map>();
+        List<Map> targetDrugTipLineExceptGene6Str = new ArrayList<Map>();
+        List<Map> bodyDrugTipLineGene6Str = new ArrayList<Map>();
+        List<Map> bodyDrugTipLineExceptGene6Str = new ArrayList<Map>();
+        //检测基因：EGFR、KRAS、ALK、PIK3CA、BRAF、ROS1
+        List<String> gene6 = Arrays.asList("EGFR", "KRAS", "ALK", "PIK3CA", "BRAF", "ROS1");
+        boolean redFlag = false;
+        boolean complex = false;
+        String bodyDrugStr = "";
+        String bodyDrugExceptGene6Str = ""; // 除6基因位点
+        String embryonalDrugStr = "";
+        String somaticMutationStr = "";
+        rt.setBengbuComplex("未见变异"); // 蚌埠肠癌共突变逻辑
+        if (allDrugMutNum != 0) {
+            // *****************靶向药物提示表格***************
+            for (Map map : list) {
+                Map targetDrugTipLine = new HashMap();
+                List<Map> drugList = map.get("drugList") == null ? null : (List<Map>) map.get("drugList");
+                List<Map> clinicalList = map.get("clinicalList") == null ? null : (List<Map>) map.get("clinicalList");
+                if (!CollectionUtils.isEmpty(drugList)) {
+                    String gene = map.get("gene").toString();
+                    String ori_variant = map.get("ori_variant").toString();
+                    String ExonicFunc = map.get("ExonicFunc") == null ? "-" : map.get("ExonicFunc").toString();
+                    String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
+                    if (mutFreq.equals(".")) {
+                        mutFreq = "-";
+                    }
+                    //判断是否是融合突变
+                    List<String> templates = lifeNoNDFTemplate(); //life报告模板融合不输出突变丰度和NDF值
+                    if (templates.contains(rt.getTemplate_name())) {
+                        if (ori_variant.indexOf("Fusion") != -1) {
+                            mutFreq = "/";
+                        }
+                    }
+                    mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
+                    if (gene.equals("Complex")) {
+                        gene = "多靶点循证";
+                        if (rt.getTemplate_name().contains("银丰")) {
+                            if ("KRAS + NRAS + BRAF WildType".equals(ori_variant)) {
+                                ori_variant = "KRAS NRAS BRAF WildType";
+                            }
+                        }
+                    }
+                    targetDrugTipLine.put("gene", gene);
+                    targetDrugTipLine.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
+                    targetDrugTipLine.put("ExonicFunc", translateMutType(ExonicFunc));
+                    targetDrugTipLine.put("mutFreq", mutFreq);
+
+                    Set drugNameGroup = new HashSet();
+                    Set resistantDrugNameGroup = new HashSet();
+                    // drugsA药物列
+                    List<Map> DrugAStr = getDrugName("1", drugList, clinicalList, drugNameGroup);
+                    getBrcaOrHrdPinned(DrugAStr); // A级奥拉帕利前置到首位
+                    boolean drugAStrFlag = getFlagDrugName(DrugAStr);
+                    if (drugAStrFlag) redFlag = drugAStrFlag;
+                    targetDrugTipLine.put("DrugAStr", DrugAStr);
+                    if (gene.equals("多靶点循证") && DrugAStr.isEmpty()) {
+                        continue;
+                    }
+                    if (gene.equals("多靶点循证") && !DrugAStr.isEmpty()) {
+                        complex = true;
+                    }
+                    // drugsB药物列
+                    List<Map> DrugBStr = getDrugName("2", drugList, clinicalList, drugNameGroup);
+                    boolean drugBStrFlag = getFlagDrugName(DrugBStr);
+                    if (drugBStrFlag) redFlag = drugBStrFlag;
+                    targetDrugTipLine.put("DrugBStr", DrugBStr);
+                    // drugsC药物列
+                    List<Map> DrugCStr = getDrugName("3", drugList, clinicalList, drugNameGroup);
+                    boolean drugCStrFlag = getFlagDrugName(DrugCStr);
+                    if (drugCStrFlag) redFlag = drugCStrFlag;
+                    targetDrugTipLine.put("DrugCStr", DrugCStr);
+                    // drugsD药物列
+                    List<Map> DrugDStr = getDrugName("4", drugList, clinicalList, drugNameGroup);
+                    boolean drugDStrFlag = getFlagDrugName(DrugDStr);
+                    if (drugDStrFlag) redFlag = drugDStrFlag;
+                    targetDrugTipLine.put("DrugDStr", DrugDStr);
+                    // 耐药A药物列
+                    List<Map> ResistantADrug = getDrugName("5", drugList, clinicalList, resistantDrugNameGroup);
+                    boolean resistantADrugFlag = getFlagDrugName(ResistantADrug);
+                    if (resistantADrugFlag) redFlag = resistantADrugFlag;
+                    targetDrugTipLine.put("ResistantADrug", ResistantADrug);
+                    // 耐药B药物列
+                    List<Map> ResistantBDrug = getDrugName("6", drugList, clinicalList, resistantDrugNameGroup);
+                    boolean resistantBDrugFlag = getFlagDrugName(ResistantBDrug);
+                    if (resistantBDrugFlag) redFlag = resistantBDrugFlag;
+                    targetDrugTipLine.put("ResistantBDrug", ResistantBDrug);
+                    // 耐药C药物列
+                    List<Map> ResistantCDrug = getDrugName("7", drugList, clinicalList, resistantDrugNameGroup);
+                    boolean resistantCDrugFlag = getFlagDrugName(ResistantCDrug);
+                    if (resistantCDrugFlag) redFlag = resistantCDrugFlag;
+                    targetDrugTipLine.put("ResistantCDrug", ResistantCDrug);
+                    // 耐药D药物列
+                    List<Map> ResistantDDrug = getDrugName("8", drugList, clinicalList, resistantDrugNameGroup);
+                    boolean resistantDDrugFlag = getFlagDrugName(ResistantDDrug);
+                    if (resistantDDrugFlag) redFlag = resistantDDrugFlag;
+                    targetDrugTipLine.put("ResistantDDrug", ResistantDDrug);
+                    //合并获益ABCD级药物
+                    List<Map> drugNameList = new ArrayList<Map>();
+                    drugNameList.addAll(DrugAStr);
+                    drugNameList.addAll(DrugBStr);
+                    drugNameList.addAll(DrugCStr);
+                    drugNameList.addAll(DrugDStr);
+                    for (Map map1 : drugNameList) {
+                        map1.put("nameLevel", StringUtils.remove(map1.get("name").toString(), '#'));
+
+                    }
+                    targetDrugTipLine.put("drugNameList", drugNameList);
+                    //合并耐药ABCD级药物
+                    List<Map> ResistantDrug = new ArrayList<Map>();
+                    ResistantDrug.addAll(ResistantADrug);
+                    ResistantDrug.addAll(ResistantBDrug);
+                    ResistantDrug.addAll(ResistantCDrug);
+                    ResistantDrug.addAll(ResistantDDrug);
+                    for (Map map1 : ResistantDrug) {
+                        map1.put("nameLevel", StringUtils.remove(map1.get("name").toString(), '#'));
+
+                    }
+                    targetDrugTipLine.put("ResistantDrug", ResistantDrug);
+                    // 个性化模板 获益C级输出（合并C/D且去掉临床前研究）
+                    List<Map> DrugCStr1 = new ArrayList<Map>();
+                    DrugCStr1.addAll(DrugCStr);
+                    DrugCStr1.addAll(DrugDStr.stream().filter(s -> !"临床前研究".equals(s.get("evidence_phase"))).collect(Collectors.toList()));
+                    targetDrugTipLine.put("DrugCStr1", DrugCStr1);
+                    // 个性化模板 耐药输出（合并A/B/C/D且去掉临床前研究）
+                    List<Map> ResistantDrug1 = new ArrayList<Map>();
+                    ResistantDrug1.addAll(ResistantDrug.stream().filter(s -> !"临床前研究".equals(s.get("evidence_phase"))).collect(Collectors.toList()));
+                    targetDrugTipLine.put("ResistantDrug1", ResistantDrug1);
+                    // 有A、B药物为I类，C、D为II类
+                    if (gene.equals("多靶点循证")) {
+                        targetDrugTipLine.put("variationClass", "-");
+                    } else if (!DrugAStr.isEmpty() || !DrugBStr.isEmpty() || !ResistantADrug.isEmpty() || !ResistantBDrug.isEmpty()) {
+                        targetDrugTipLine.put("variationClass", "I类");
+                    } else {
+                        targetDrugTipLine.put("variationClass", "II类");
+                    }
+
+                    //胚系靶向药物提示和体系靶向药物提示
+                    String has_drug = map.get("has_drug") == null ? "" : map.get("has_drug").toString();
+                    if (!has_drug.equals("") && (has_drug.equals("true") || has_drug.equals("1"))) {
+                        if (!targetDrugTipLine.isEmpty()) {
+                            targetDrugTipLine.put("mutation", gene + ori_variant.substring(ori_variant.indexOf(" ")));
+                            targetDrugTipLine.put("transcript", ori_variant.split(" ")[0]);
+                            targetDrugTipLine.put("Exon", ori_variant.split(" ")[1]);
+                            String cHGVS = map.get("cHGVS") == null ? "" : map.get("cHGVS").toString();
+                            String pHGVS = map.get("pHGVS") == null ? "" : map.get("pHGVS").toString();
+                            if (".".equals(pHGVS) || StringUtils.isEmpty(pHGVS)) {
+                                embryonalDrugStr = embryonalDrugStr + (gene + " " + cHGVS + "; ");
+                                targetDrugTipLine.put("sf", cHGVS);
+                            } else {
+                                embryonalDrugStr = embryonalDrugStr + (gene + " " + pHGVS + "; ");
+                                targetDrugTipLine.put("sf", pHGVS);
+                            }
+                            String Clinical_significance = map.get("Clinical_significance") == null ? "-" : map.get("Clinical_significance").toString();
+                            targetDrugTipLine.put("Clinical_significance", translateClinicalSignificance(Clinical_significance));
+                            crDrugList++;
+                            embryonalDrugTipLineStr.add(targetDrugTipLine);
+                        }
+                    } else {
+                        if (!gene.equals("多靶点循证")) {
+                            String ori_variant_split = removeMutations(transferOriVariant(ori_variant));
+                            // 体系包点突变
+                            if (!ori_variant_split.equals("Amplification") && ori_variant_split != null && !ori_variant_split.contains("Fusion")) {
+                                String[] splits = ori_variant_split.split(" ");
+                                targetDrugTipLine.put("Transcript", splits[0]);
+                                targetDrugTipLine.put("Exon", splits[1]);
+                                targetDrugTipLine.put("cHGVS", splits[2]);
+                                if (splits.length >= 4) {
+                                    String pHGVS = ori_variant_split.substring(ori_variant_split.indexOf("p."));
+                                    targetDrugTipLine.put("pHGVS", pHGVS);
+                                    targetDrugTipLine.put("sf", pHGVS);
+                                    bodyDrugStr = bodyDrugStr + (gene + " " + pHGVS + "; ");
+                                    if (!gene6.contains(gene)) {
+                                        bodyDrugExceptGene6Str = bodyDrugExceptGene6Str + (gene + " " + pHGVS + "; ");
+                                    }
+                                } else {
+                                    targetDrugTipLine.put("pHGVS", "/");
+                                    targetDrugTipLine.put("sf", splits[2]);
+                                    bodyDrugStr = bodyDrugStr + (gene + " " + splits[2] + "; ");
+                                    if (!gene6.contains(gene)) {
+                                        bodyDrugExceptGene6Str = bodyDrugExceptGene6Str + (gene + " " + splits[2] + "; ");
+                                    }
+                                }
+                                for (Map map2 : snpIndelFileAll) {
+                                    String my_ori_variant = map2.get("my_ori_variant").toString();
+                                    if (ori_variant_split.equals(my_ori_variant)) {
+                                        String chr = map2.get("chr").toString().replace("chr", "");
+                                        targetDrugTipLine.put("chr", chr);
+                                    }
+                                }
+                                targetDrugTipLine.put("mutation", gene + ori_variant.substring(ori_variant.indexOf(" ")));
+                                targetDrugTipLine.put("transcript", splits[0]);
+                            }
+                            else {
+                                targetDrugTipLine.put("Transcript", "/");
+                                targetDrugTipLine.put("Exon", "/");
+                                targetDrugTipLine.put("cHGVS", ori_variant_split);
+                                targetDrugTipLine.put("pHGVS", "/");
+                                targetDrugTipLine.put("sf", ori_variant);
+                                bodyDrugStr = bodyDrugStr + (gene + " " + ori_variant_split + "; ");
+                                if (!gene6.contains(gene)) {
+                                    bodyDrugExceptGene6Str = bodyDrugExceptGene6Str + (gene + " " + ori_variant_split + "; ");
+                                }
+                                if (ori_variant_split.equals("Amplification")) {
+                                    for (Map map2 : cNVAll) {
+                                        String gene_symbol = map2.get("gene_symbol").toString();
+                                        if (gene.equals(gene_symbol)) {
+                                            String chr = map2.get("chr").toString().replace("chr", "");
+                                            targetDrugTipLine.put("chr", chr);
+                                        }
+                                    }
+                                    targetDrugTipLine.put("mutation", gene + " " + ori_variant);
+                                    targetDrugTipLine.put("transcript", ".");
+                                } else {
+                                    targetDrugTipLine.put("mutation", ori_variant);
+                                    for (Map map1 : fusionAll) {
+                                        String my_ori_variant = map1.get("my_ori_variant").toString();
+                                        if (ori_variant_split.equals(my_ori_variant)) {
+                                            String sclip1_info = map1.get("sclip1_info").toString();
+                                            String sclip2_info = map1.get("sclip2_info").toString();
+                                            String chromosome1 = map1.get("chromosome1").toString().replace("chr", "");
+                                            String chromosome2 = map1.get("chromosome2").toString().replace("chr", "");
+                                            String gene2 = sclip2_info.split(":")[1];
+                                            if (ori_variant_split.indexOf(gene2) == 0) {
+                                                targetDrugTipLine.put("transcript", sclip2_info.substring(0, sclip2_info.indexOf(":")) + "/" + sclip1_info.substring(0, sclip1_info.indexOf(":")));
+                                                targetDrugTipLine.put("chr", chromosome2 + "-" + chromosome1);
+                                            } else {
+                                                targetDrugTipLine.put("transcript", sclip1_info.substring(0, sclip1_info.indexOf(":")) + "/" + sclip2_info.substring(0, sclip2_info.indexOf(":")));
+                                                targetDrugTipLine.put("chr", chromosome1 + "-" + chromosome2);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if ("KRAS".equals(gene) || "NRAS".equals(gene) || "BRAF".equals(gene)) {
+                                rt.setBengbuComplex("");
+                            }
+                            somaticMutationStr = somaticMutationStr + gene + "、";
+                            // PARP抑制剂用药
+                            if (geneListHRR1.contains(gene)) {
+                                geneHRR1Size++;
+                                geneHRR1.add(gene);
+                            } else if (geneListHRR2.contains(gene)) {
+                                geneHRR2Size++;
+                                geneHRR2.add(gene);
+                            } else if (geneListHRR3.contains(gene)) {
+                                geneHRR3Size++;
+                                geneHRR3.add(gene);
+                            } else if (geneListDDR.contains(gene)) {
+                                geneDDRSize++;
+                                geneDDR.add(gene);
+                            }
+                            if (!targetDrugTipLine.isEmpty()) {
+                                bodyDrugTipLineStr.add(targetDrugTipLine);
+                                if (gene6.contains(gene)) {
+                                    bodyDrugTipLineGene6Str.add(targetDrugTipLine);
+                                } else {
+                                    bodyDrugTipLineExceptGene6Str.add(targetDrugTipLine);
+                                }
+                            }
+                        } else {
+                            targetDrugTipLine.put("Exon", "/");
+                            targetDrugTipLine.put("sf", ori_variant);
+                            targetDrugTipLine.put("mutation", ori_variant);
+                            targetDrugTipLine.put("transcript", ".");
+                            String comutation = "";
+                            if (ori_variant.equals("KRAS + NRAS + BRAF WildType")) {
+                                comutation = "KRAS&NRAS&BRAF野生型";
+                            } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType + BRAF WildType")) {
+                                comutation = "ERBB2 Amplification + KRAS&NRAS&BRAF野生型";
+                            } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType")) {
+                                comutation = "ERBB2 Amplification + KRAS&NRAS野生型";
+                            }
+                            targetDrugTipLine.put("comutation", comutation);
+                            complexDrugTipLineStr.add(targetDrugTipLine);
+                        }
+                        bodyAndComplexDrugTipLineStr.add(targetDrugTipLine);
+                    }
+                    if (!targetDrugTipLine.isEmpty()) {
+                        targetDrugTipLineStr.add(targetDrugTipLine);
+                        if (gene6.contains(gene)) {
+                            targetDrugTipLineGene6Str.add(targetDrugTipLine);
+                        } else {
+                            targetDrugTipLineExceptGene6Str.add(targetDrugTipLine);
+                        }
+                    }
+                }
+            }
+        }
+        if (!"".equals(bodyDrugStr)) {
+            rt.setBodyDrugStr("（" + bodyDrugStr.substring(0, bodyDrugStr.length() - 2) + "）");
+        }
+        if (!"".equals(bodyDrugExceptGene6Str)) {
+            rt.setBodyDrugExceptGene6Str("（" + bodyDrugExceptGene6Str.substring(0, bodyDrugExceptGene6Str.length() - 2) + "）");
+        }
+        if (!"".equals(embryonalDrugStr)) {
+            rt.setEmbryonalDrugStr("（" + embryonalDrugStr.substring(0, embryonalDrugStr.length() - 2) + "）");
+        }
+        rt.setTargetDrugTipLineStr(targetDrugTipLineStr);
+        rt.setEmbryonalDrugTipLineStr(embryonalDrugTipLineStr);
+        rt.setUnknownDrugTipLineStr(unknownDrugTipLineStr);
+        /*if (rt.getTemplate_name().contains("同济")) {
+            rt.setBodyDrugTipLineStr(listSort2(bodyDrugTipLineStr));
+        } else {
+            rt.setBodyDrugTipLineStr(listSort(bodyDrugTipLineStr));
+        }*/
+        rt.setBodyDrugTipLineStr(listSort2(bodyDrugTipLineStr));
+        rt.setComplexDrugTipLineStr(listSort(complexDrugTipLineStr));
+        rt.setBodyAndComplexDrugTipLineStr(listSort(bodyAndComplexDrugTipLineStr));
+        rt.setTargetDrugTipLineGene6Str(targetDrugTipLineGene6Str);
+        rt.setTargetDrugTipLineExceptGene6Str(targetDrugTipLineExceptGene6Str);
+        rt.setBodyDrugTipLineGene6Str(listSort(bodyDrugTipLineGene6Str));
+        rt.setBodyDrugTipLineExceptGene6Str(listSort(bodyDrugTipLineExceptGene6Str));
+        rt.setRedFlag(redFlag);
+        rt.setComplex(complex);
+
+        // ************未知临床意义的基因突变***********
+        List<Map> unknownTipLineStr = new ArrayList<Map>();
+        List<Map> unknownTipLineGene6Str = new ArrayList<Map>();
+        List<Map> unknownTipLineExceptGene6Str = new ArrayList<Map>();
+        if (totalUnknownNum != 0) {
+            for (Map map : list) {
+                Map<String, String> unknownTipLine = new HashMap<String, String>();
+                List<Map> drugList = map.get("drugList") == null ? null : (List<Map>) map.get("drugList");
+                List<Map> clinicalList = map.get("clinicalList") == null ? null : (List<Map>) map.get("clinicalList");
+                Map rpUnknownVar = map.get("rpUnknownVar") == null ? null : (Map) map.get("rpUnknownVar");
+                if (CollectionUtils.isEmpty(drugList) && CollectionUtils.isEmpty(clinicalList) && !CollectionUtils.isEmpty(rpUnknownVar)) {
+                    String gene = map.get("gene").toString();
+                    String ori_variant = map.get("ori_variant").toString();
+                    String ExonicFunc = map.get("ExonicFunc") == null ? "." : map.get("ExonicFunc").toString();
+                    String mutFreq = map.get("mutFreq") == null ? "." : map.get("mutFreq").toString();
+                    //判断是否是融合突变
+                    List<String> templates = lifeNoNDFTemplate(); //life报告模板融合不输出突变丰度和NDF值
+                    if (templates.contains(rt.getTemplate_name())) {
+                        if (ori_variant.indexOf("Fusion") != -1) {
+                            ExonicFunc = "/";
+                            mutFreq = "/";
+                        }
+                    }
+                    mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
+                    if (gene.equals("Complex")) {
+                        continue;
+                    }
+                    if ("KPAS".equals(gene) || "NRAS".equals(gene) || "BRAF".equals(gene)) {
+                        rt.setBengbuComplex("");
+                    }
+                    String ori_varian_split = removeMutations(transferOriVariant(ori_variant));
+                    if (!ori_varian_split.equals("Amplification") && ori_varian_split != null && !ori_varian_split.contains("Fusion")) {
+                        String[] splits = ori_varian_split.split(" ");
+                        unknownTipLine.put("Transcript", splits[0]);
+                        unknownTipLine.put("Exon", splits[1]);
+                        unknownTipLine.put("cHGVS", splits[2]);
+                        if (splits.length >= 4) {
+                            unknownTipLine.put("pHGVS", ori_varian_split.substring(ori_varian_split.indexOf("p.")));
+                            unknownTipLine.put("sf", ori_varian_split.substring(ori_varian_split.indexOf("p.")));
+                        } else {
+                            unknownTipLine.put("pHGVS", "/");
+                            unknownTipLine.put("sf", splits[2]);
+                        }
+                        unknownTipLine.put("mutation", gene + ori_varian_split.substring(ori_varian_split.indexOf(" ")));
+                        unknownTipLine.put("transcript", splits[0]);
+                        for (Map map2 : snpIndelFileAll) {
+                            String my_ori_variant = map2.get("my_ori_variant").toString();
+                            if (ori_varian_split.equals(my_ori_variant)) {
+                                String chr = map2.get("chr").toString().replace("chr", "");
+                                unknownTipLine.put("chr", chr);
+                            }
+                        }
+                    } else {
+                        unknownTipLine.put("Transcript", "/");
+                        unknownTipLine.put("Exon", "/");
+                        unknownTipLine.put("cHGVS", ori_varian_split);
+                        unknownTipLine.put("pHGVS", "/");
+                        unknownTipLine.put("sf", ori_varian_split);
+                        if (ori_varian_split.equals("Amplification")) {
+                            unknownTipLine.put("mutation", gene + " " + ori_variant);
+                            unknownTipLine.put("transcript", ".");
+                            for (Map map2 : cNVAll) {
+                                String gene_symbol = map2.get("gene_symbol").toString();
+                                if (gene.equals(gene_symbol)) {
+                                    String chr = map2.get("chr").toString().replace("chr", "");
+                                    unknownTipLine.put("chr", chr);
+                                }
+                            }
+                        } else {
+                            unknownTipLine.put("mutation", ori_variant);
+                            for (Map map1 : fusionAll) {
+                                String my_ori_variant = map1.get("my_ori_variant").toString();
+                                if (ori_varian_split.equals(my_ori_variant)) {
+                                    String sclip1_info = map1.get("sclip1_info").toString();
+                                    String sclip2_info = map1.get("sclip2_info").toString();
+                                    String chromosome1 = map1.get("chromosome1").toString().replace("chr", "");
+                                    String chromosome2 = map1.get("chromosome2").toString().replace("chr", "");
+                                    String gene2 = sclip2_info.split(":")[1];
+                                    if (ori_varian_split.indexOf(gene2) == 0) {
+                                        unknownTipLine.put("transcript", sclip2_info.substring(0, sclip2_info.indexOf(":")) + "/" + sclip1_info.substring(0, sclip1_info.indexOf(":")));
+                                        unknownTipLine.put("chr", chromosome2 + "-" + chromosome1);
+                                    } else {
+                                        unknownTipLine.put("transcript", sclip1_info.substring(0, sclip1_info.indexOf(":")) + "/" + sclip2_info.substring(0, sclip2_info.indexOf(":")));
+                                        unknownTipLine.put("chr", chromosome1 + "-" + chromosome2);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    unknownTipLine.put("variationClass", "III类");
+                    unknownTipLine.put("gene", gene);
+                    unknownTipLine.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
+                    unknownTipLine.put("ExonicFunc", translateMutType(ExonicFunc));
+                    unknownTipLine.put("mutFreq", mutFreq);
+                    unknownTipLine.put("result_type", rpUnknownVar.getOrDefault("result_type", "").toString());
+                    unknownTipLineStr.add(unknownTipLine);
+                    if (gene6.contains(gene)) {
+                        unknownTipLineGene6Str.add(unknownTipLine);
+                    } else {
+                        unknownTipLineExceptGene6Str.add(unknownTipLine);
+                    }
+                }
+            }
+        }
+        rt.setUnknownTipLineStr(listSort(unknownTipLineStr));
+        rt.setUnknownTipLineGene6Str(listSort(unknownTipLineGene6Str));
+        rt.setUnknownTipLineExceptGene6Str(listSort(unknownTipLineExceptGene6Str));
+
+        // ************NCCN肺癌指南推荐临床常规靶向药物相关检测结果***********
+        List<Map> nccnRecommend = analysisReportDao.getNccnRecommend(diseaseIdList);
+        if (!CollectionUtils.isEmpty(nccnRecommend)) {
+            List<Map> nccnInfoStr = new ArrayList<Map>();
+            for (Map map : nccnRecommend) {
+                Map nccnInfo = new HashMap();
+                String drug = map.get("drug").toString();
+                String nccnGene = map.get("gene").toString();
+                String content = map.get("content").toString();
+                String result = translateUtil.translateNCCN(map, list);
+                nccnInfo.put("drug", drug);
+                nccnInfo.put("nccnGene", nccnGene);
+                nccnInfo.put("content", content);
+                nccnInfo.put("result", result);
+                nccnInfoStr.add(nccnInfo);
+            }
+            rt.setNccnInfoStr(nccnInfoStr);
+        }
+
+        // *************组织样本显示肿瘤突变负荷（TMB）检测结果和微卫星不稳定(MSI)检测结果***********
+        Map<String, Object> summaryOfRresults = new HashMap<String, Object>();
+        summaryOfRresults.put("crAllListSize", crAllListSize);
+        summaryOfRresults.put("crDrugListSize", crDrugListSize);
+        summaryOfRresults.put("thisGeneticmarkerVwListSize", somaticMutCount);
+        summaryOfRresults.put("somaticCellMedicationNum", somaticDrugCount);
+        summaryOfRresults.put("totalMutNum", totalMutNum);
+        summaryOfRresults.put("somaticDrugCount", somaticDrugCount);
+        summaryOfRresults.put("crDrugList", crDrugList);
+        summaryOfRresults.put("crNoDrugList", crAllListSize - crDrugList);
+        summaryOfRresults.put("somaticMutCount", somaticMutCount);
+        summaryOfRresults.put("somaticGeneCount", geneCount);
+        summaryOfRresults.put("totalUnkownNum", totalUnknownNum);
+        summaryOfRresults.put("somaticUnknownCount", somaticUnknownCount);
+        summaryOfRresults.put("germlineUnknownNum", germlineUnknownCount);
+        summaryOfRresults.put("hasPathogenicityCount", hasPathogenicityCount);
+        summaryOfRresults.put("qualityStat", qualityStat);
+        summaryOfRresults.put("positiveImmnueNum", positiveImmnueNum);
+        summaryOfRresults.put("negativeImmnueNum", negativeImmnueNum);
+        summaryOfRresults.put("hpdImmnueNum", hpdImmnueNum);
+        summaryOfRresults.put("immunopositiveSFSize", immunopositiveSFSize); //疗效影响因素-免疫治疗正相关指标
+        summaryOfRresults.put("immunonegativeSFSize", immunonegativeSFSize); //疗效影响因素-免疫治疗负相关指标
+        summaryOfRresults.put("somaticAndCrAllMutCount", somaticAndCrAllMutCount);
+        summaryOfRresults.put("somaticAndCrAllDrugCount", somaticAndCrAllDrugCount);
+        summaryOfRresults.put("noSomaticAndCrAllDrugCount", noSomaticAndCrAllDrugCount);
+        summaryOfRresults.put("somaticAndCrGeneCount", somaticAndCrGeneCount);
+        summaryOfRresults.put("somaticGene", somaticGene);
+        summaryOfRresults.put("noDrugCount", somaticAndCrAllMutCount - somaticDrugCount - crDrugList);
+        summaryOfRresults.put("noSomaticDrugCount", somaticMutCount - somaticDrugCount);
+        summaryOfRresults.put("noCrDrugCount", crAllListSize - crDrugList);
+        summaryOfRresults.put("thisGeneticmarkerVwGene6ListSize", bodyDrugTipLineGene6Str.size() + unknownTipLineGene6Str.size());
+        summaryOfRresults.put("somaticDrugGene6Count", bodyDrugTipLineGene6Str.size());
+        summaryOfRresults.put("thisGeneticmarkerVwExceptGene6ListSize", bodyDrugTipLineExceptGene6Str.size() + unknownTipLineExceptGene6Str.size());
+        summaryOfRresults.put("somaticDrugExceptGene6Count", bodyDrugTipLineExceptGene6Str.size());
+        summaryOfRresults.put("fusionSize", fusionAll.size());
+        if (!"".equals(somaticMutationStr)) {
+            summaryOfRresults.put("somaticMutationStr", somaticMutationStr.substring(0, somaticMutationStr.length() - 1));
+        }
+        // 45基因报告模板是否存在MSI
+        boolean isExistMSI = false;
+        String product_name = pr.getProduct_name();
+        if (product_name.indexOf("msi") != -1) {
+            isExistMSI = true;
+        }
+        summaryOfRresults.put("isExistMSI", isExistMSI);
+        if (!isblood) {
+            summaryOfRresults.put("type", "tissue");
+        } else {
+            summaryOfRresults.put("type", "blood");
+        }
+        // tmb信息
+        summaryOfRresults.put("tmb", tmb);
+        summaryOfRresults.put("tmb_status", tmb_status);
+        if (tmb_PIC != null && !"".equals(tmb_PIC)) {
+            summaryOfRresults.put("tmb_PIC_status", true);
+            summaryOfRresults.put("tmb_PIC", tmb_PIC);
+        } else {
+            summaryOfRresults.put("tmb_PIC_status", false);
+        }
+        summaryOfRresults.put("tmb_Percent", tmb_Percent);
+        summaryOfRresults.put("clonal_tmb", clonal_tmb);
+        summaryOfRresults.put("msi", msi);
+        summaryOfRresults.put("msi_status", msi_status);
+        if ("MSS".equals(msi_status)) {
+            summaryOfRresults.put("msi_status_state", "微卫星稳定型（MSS）");
+        } else if ("MSI-H".equals(msi_status)) {
+            summaryOfRresults.put("msi_status_state", "微卫星高度不稳定型（MSI-H）");
+        } else if ("MSI-L".equals(msi_status)) {
+            summaryOfRresults.put("msi_status_state", "微卫星低度不稳定型（MSI-L）");
+        } else {
+            summaryOfRresults.put("msi_status_state", msi_status);
+        }
+        if (sf.getProduct_name() != null && !"".equals(sf.getProduct_name())) {
+            if (sf.getProduct_name().indexOf("300X") > -1 || sf.getProduct_name().indexOf("30G") > -1) {
+                summaryOfRresults.put("product_name", "30G");
+            } else if (sf.getProduct_name().indexOf("500X") > -1 || sf.getProduct_name().indexOf("50G") > -1) {
+                summaryOfRresults.put("product_name", "50G");
+            } else if (sf.getProduct_name().indexOf("20G") > -1) {
+                summaryOfRresults.put("product_name", "20G");
+            }
+        }
+
+        // *************靶向药物检测解析************
+		/*rt.setDrugAnalysisIndex("false");
 		if (allDrugMutNum != 0) {
-			rt.setDrugAnalysisIndex("true");
-			List<Map> targetedDrugDetectionStr = new ArrayList<Map>();
-			for (Map map : list) {
-				Map targetedDrugDetection = new HashMap();
-				List<Map> drugInformationStr = new ArrayList<Map>();
-				String gene = map.get("gene").toString();
-				String ori_variant = map.get("ori_variant").toString();
-				String check_date = map.get("check_date")==null ? "":map.get("check_date").toString();
-				String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
-				if(mutFreq.equals(".")) {
-					mutFreq = "/";
-				}
-				if (ori_variant.indexOf("Amplification") < 0 && !"/".equals(mutFreq) && mutFreq.indexOf("合") < 0) {
-					mutFreq += "%";
-				}
-				String varDrugNote = map.get("varDrugNote") == null ? "" : map.get("varDrugNote").toString();
-				List<Map> drugList = map.get("drugList") == null ? null : (List<Map>)map.get("drugList");
-				List<Map> drugaStr = new ArrayList<Map>();
-				List<Map> drugbStr = new ArrayList<Map>();
-				List<Map> drugcStr = new ArrayList<Map>();
-				List<Map> drugdStr = new ArrayList<Map>();
-				List<Map> resistantStr = new ArrayList<Map>();
-				if (!CollectionUtils.isEmpty(drugList)) {
-					List<Map> clinicalList = map.get("clinicalList") == null ? null : (List<Map>)map.get("clinicalList");
-					for (Map map2 : drugList) {
-						Map drugNameMap = new HashMap();
-						String cfda = map2.get("cfda") == null ? "" : map2.get("cfda").toString();
-						String recruiting = map2.get("recruiting") == null ? "0" : map2.get("recruiting").toString();
-						String drug_name_chinese = map2.get("drug_name").toString();
-						drug_name_chinese = isAddSymbol(drug_name_chinese, cfda, clinicalList);
-						String approve_range = map2.get("approve_range") == null ? "" : map2.get("approve_range").toString();
-						String approval_desc_chinese = map2.get("approval_desc") == null ? "" : map2.get("approval_desc").toString();
-						String[] approval_desc_list = approval_desc_chinese.split("\r\n");
-						String other_test_required = map2.get("other_test_required").toString();
-						if (!"5".equals(approve_range) && StringUtils.isNotEmpty(approval_desc_chinese)) {
-							Map drugInformation = new HashMap();
-							drugInformation.put("isbold", false);
-							drugInformation.put("name", drug_name_chinese);
-							if(other_test_required.equals("1")) {
-								drugInformation.put("isRed", true);
-							}else {
-								drugInformation.put("isRed", false);
-							}
-							drugInformation.put("drugInfo", approval_desc_list);
-							drugInformationStr.add(drugInformation);
-						}
-						if (StringUtils.isNotEmpty(approval_desc_chinese)) {
-							drugNameMap.put("name", drug_name_chinese);
-							drugNameMap.put("isbold", true);
-						} else {
-							drugNameMap.put("name", drug_name_chinese);
-							drugNameMap.put("isbold", false);
-						}
-						if(other_test_required.equals("1")) {
-							drugNameMap.put("isRed", true);
-						}else {
-							drugNameMap.put("isRed", false);
-						}
-						if ("1".equals(approve_range)) {
-							drugaStr.add(drugNameMap);
-						}
-						if ("2".equals(approve_range)) {
-							drugbStr.add(drugNameMap);
-						}
-						if ("3".equals(approve_range)) {
-							drugcStr.add(drugNameMap);
-						}
-						if ("5".equals(approve_range)) {
-							resistantStr.add(drugNameMap);
-						}
-					}
-					if(gene.equals("Complex")) {
-						gene = "多靶点循证";
-						targetedDrugDetection.put("simple_vars", map.get("simple_vars"));
-						if(drugaStr.isEmpty()) {continue;}
-					}
-					targetedDrugDetection.put("gene", gene);
-					targetedDrugDetection.put("check_date", check_date);
-					targetedDrugDetection.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
-					targetedDrugDetection.put("mutFreq", mutFreq);
-					targetedDrugDetection.put("drugaStr", drugaStr);
-					targetedDrugDetection.put("drugbStr", drugbStr);
-					targetedDrugDetection.put("drugcStr", drugcStr);
-					targetedDrugDetection.put("resistantStr", resistantStr);
-					//靶向药物检测解析 用药说明换行
-					JSONArray array = JSONArray.fromObject(varDrugNote);
-					JSONObject variantDescription =  (JSONObject) array.get(2);
-					String variantDescription1 = variantDescription.get("value") == null ? "":variantDescription.get("value").toString();
-					if(variantDescription.get("key").toString().indexOf("位点说明:") != -1) {
-						array.remove(2);
-					}
-					JSONObject nccnInfo =  (JSONObject) array.get(2);
-					String nccnInfo1 = nccnInfo.get("value") == null ? "":nccnInfo.get("value").toString();
-					if(nccnInfo.get("key").toString().indexOf("NCCN指南:") != -1) {
-						array.remove(2);
-					}
-					String mutDesc = map.get("mutDesc") == null ? "" : map.get("mutDesc").toString();
-					JSONObject json2 = new JSONObject();
-					json2.accumulate("key", "突变说明:");
-					json2.accumulate("value", mutDesc.trim());
-					array.add(2,json2);
-					JSONObject clinicalInfo =  (JSONObject) array.get(3);
-					if(clinicalInfo.get("key").toString().indexOf("预后和诊断说明:") != -1) {
-						array.remove(3);
-					}
-					JSONObject drugAnnotation =  (JSONObject) array.get(3);
-					String drugAnnotation1 = drugAnnotation.get("value") == null ? "":drugAnnotation.get("value").toString();
-					drugAnnotation.element("value", nccnInfo1+drugAnnotation1);
-					
-					List<Json> listDrugNote = (List<Json>) JSONArray.toCollection(array, Json.class);
-					for (Json json : listDrugNote) {
-						if(json.getKey().equals("recommend:")) {
-							if(!CollectionUtils.isEmpty(clinicalList)) {
-								json.setValue("推荐下表所示的临床试验。");
-							}else {
-								json.setValue("");
-							}
-						}
-						
-					}
-					targetedDrugDetection.put("medicationDescription", listDrugNote);
-					
-					// ********药物信息********
-					targetedDrugDetection.put("drugInformationStr", drugInformationStr);
-					
-					// ********临床试验信息********
-					List<Map> clinicalTrialInformationStr = new ArrayList<Map>();
-					if (!CollectionUtils.isEmpty(clinicalList)) {
-						for (Map clinical : clinicalList) {
-							List<Map> drugNameList = new ArrayList<Map>();
-							Map clinicalTrialInformation = new HashMap();
-							String cfda = clinical.get("cfda") == null ? "0" : clinical.get("cfda").toString();
-							String clinical_trial_id = clinical.get("clinical_trial_id") == null ? "" : clinical.get("clinical_trial_id").toString();
-							String condition_chinese = clinical.get("recruiting_condition") == null ? "" : clinical.get("recruiting_condition").toString();
-							String drug_name_chinese = clinical.get("drug_name") == null ? "" : clinical.get("drug_name").toString();
-							String location_chinese = clinical.get("location") == null ? "" : clinical.get("location").toString();
-							String phase = clinical.get("phase") == null ? "" : clinical.get("phase").toString();
-							String title_chinese = clinical.get("title") == null ? "" : clinical.get("title").toString();
-							Integer approvedDrugNum = reportUnknownVarDao.getApprovedDrugNum(drug_name_chinese,lang);
-							String drugOtherName = reportVarDrugDao.getDrugOtherName(drug_name_chinese);
-							String other_test_required = clinical.get("other_test_required").toString();
-							if ("1".equals(cfda)) {
-								drug_name_chinese += "*";
-							}									
-							clinicalTrialInformation.put("clinical_trial_id", clinical_trial_id);
-							clinicalTrialInformation.put("title_chinese", title_chinese);
-							clinicalTrialInformation.put("condition_chinese", condition_chinese);
-							clinicalTrialInformation.put("phase", translatePhase(phase));
-							Map drugNameMap = new HashMap();
-							Map otherDrugNameMap = new HashMap();
-							drugNameMap.put("name", drug_name_chinese);
-							if(other_test_required.equals("1")) {
-								drugNameMap.put("isRed", true);
-								otherDrugNameMap.put("isRed", true);
-							}else {
-								drugNameMap.put("isRed", false);
-								otherDrugNameMap.put("isRed", false);
-							}
-							if(approvedDrugNum == 0) {
-								drugNameMap.put("isbold", false);
-								otherDrugNameMap.put("isbold", false);
-							}else {
-								drugNameMap.put("isbold", true);
-								otherDrugNameMap.put("isbold", true);
-							}
-							drugNameList.add(drugNameMap);
-							if(drugOtherName != null && !"".endsWith(drugOtherName.trim())) {
-								otherDrugNameMap.put("name", "("+drugOtherName+")");
-								drugNameList.add(otherDrugNameMap);
-							}
-							clinicalTrialInformation.put("drug_name_chinese", drugNameList);
-							clinicalTrialInformation.put("location_chinese", location_chinese);
-							clinicalTrialInformationStr.add(clinicalTrialInformation);
-						}
-					}
-					targetedDrugDetection.put("clinicalTrialInformationStr", clinicalTrialInformationStr);
-					targetedDrugDetectionStr.add(targetedDrugDetection);
-				}
-			}
-			rt.setTargetedDrugDetectionStr(targetedDrugDetectionStr);
-		}
-		
-		// ************未知临床意义基因突变解析************
-		List<Map> unknownVarAnalysisStr = new ArrayList<Map>();
-		if(totalUnknownNum != 0) {
-			for (Map map : list) {
-				Map unknownVarAnalysis = new HashMap();
-				List<Map> drugList = map.get("drugList") == null ? null : (List<Map>) map.get("drugList");
-				List<Map> clinicalList = map.get("clinicalList") == null ? null : (List<Map>) map.get("clinicalList");
-				Map rpUnknownVar = map.get("rpUnknownVar") == null ? null : (Map) map.get("rpUnknownVar");
-				if (CollectionUtils.isEmpty(drugList) && CollectionUtils.isEmpty(clinicalList) && !CollectionUtils.isEmpty(rpUnknownVar)) {
-					String gene = map.get("gene").toString();
-					String check_date = map.get("check_date")==null ? "":map.get("check_date").toString();
-					String ori_variant = map.get("ori_variant").toString();
-					String mutDesc = map.get("mutDesc") == null ? "" : map.get("mutDesc").toString();
-					String gene_description_chinese = rpUnknownVar.get("gene_description") == null ? "" : rpUnknownVar.get("gene_description").toString();
-					String var_drug_desc = rpUnknownVar.get("var_drug_desc") == null ? "" : rpUnknownVar.get("var_drug_desc").toString();
-					if(gene.equals("Complex") || "不报告".equals(rpUnknownVar.getOrDefault("result_type", ""))) {
-						continue;
-					}
-					unknownVarAnalysis.put("gene", gene);
-					unknownVarAnalysis.put("check_date", check_date);
-					unknownVarAnalysis.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
-					unknownVarAnalysis.put("mutDesc", mutDesc);
-					unknownVarAnalysis.put("gene_description_chinese", gene_description_chinese);
-					//未知临床意义用药说明换行
+			rt.setDrugAnalysisIndex("true");*/
+        int geneRearrangementNum = 0; //基因重排
+        List<Map> targetedDrugDetectionStr = new ArrayList<Map>();
+        List<Map> embryonalDrugDetectionStr = new ArrayList<Map>();
+        List<Map> bodyDrugDrugDetectionStr = new ArrayList<Map>();
+        List<Map> bodyDrugNoComplexStr = new ArrayList<Map>();
+        List<Map> complexDrugStr = new ArrayList<Map>();
+        List<Map> targetedDrugDetectionGene6Str = new ArrayList<Map>();
+        List<Map> targetedDrugDetectionExceptGene6Str = new ArrayList<Map>();
+        List<Map> bodyDrugNoComplexGene6Str = new ArrayList<Map>();
+        List<Map> bodyDrugNoComplexExceptGene6Str = new ArrayList<Map>();
+        for (Map map : list) {
+            Map targetedDrugDetection = new HashMap();
+            List<Map> drugInformationStr = new ArrayList<Map>(); // 药物信息,旧逻辑暂不使用
+            String gene = map.get("gene").toString();
+            String ori_variant = map.get("ori_variant").toString();
+            String check_date = map.get("check_date") == null ? "" : map.get("check_date").toString();
+            String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
+            //判断是否是融合突变
+            List<String> templates = lifeNoNDFTemplate(); //life报告模板融合不输出突变丰度和NDF值
+            if (templates.contains(rt.getTemplate_name())) {
+                if (ori_variant.indexOf("Fusion") != -1) {
+                    mutFreq = "/";
+                }
+            }
+            if (mutFreq.equals(".")) {
+                mutFreq = "-";
+            }
+            mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
+            String varDrugNote = map.get("varDrugNote") == null ? "" : map.get("varDrugNote").toString();
+            List<DrugResearch> drugResearchList = map.get("drugResearchList") == null ? null : (List<DrugResearch>) map.get("drugResearchList");
+            List<PotentialDrug> potentialDrugList = map.get("potentialDrugList") == null ? null : (List<PotentialDrug>) map.get("potentialDrugList");
+            // 三峡、重医附二模板删除非A级药物（获批上市、指南推荐）的潜在受益药物研究信息、潜在耐药研究信息
+            if (rt.getTemplate_name().contains("三峡") || rt.getTemplate_name().contains("重医附二")) {
+                if (drugResearchList != null) {
+                    Iterator<DrugResearch> iterator1 = drugResearchList.iterator();
+                    while (iterator1.hasNext()) {
+                        String evidence_phase_chinese = iterator1.next().getEvidence_phase_chinese();
+                        if (!"获批上市".equals(evidence_phase_chinese) && !"指南推荐".equals(evidence_phase_chinese)) {
+                            iterator1.remove();
+                        }
+                    }
+                }
+                if (potentialDrugList != null) {
+                    Iterator<PotentialDrug> iterator2 = potentialDrugList.iterator();
+                    while (iterator2.hasNext()) {
+                        String evidence_phase_chinese = iterator2.next().getEvidence_phase_chinese();
+                        if (!"获批上市".equals(evidence_phase_chinese) && !"指南推荐".equals(evidence_phase_chinese)) {
+                            iterator2.remove();
+                        }
+                    }
+                }
+            }
+            List<Map> drugaStr = new ArrayList<Map>();
+            List<Map> drugbStr = new ArrayList<Map>();
+            List<Map> drugcStr = new ArrayList<Map>();
+            List<Map> drugcStr1 = new ArrayList<Map>();
+            List<Map> drugdStr = new ArrayList<Map>();
+            List<Map> resistantaStr = new ArrayList<Map>();
+            List<Map> resistantbStr = new ArrayList<Map>();
+            List<Map> resistantcStr = new ArrayList<Map>();
+            List<Map> resistantdStr = new ArrayList<Map>();
+            List<Map> resistantStr1 = new ArrayList<Map>();
+            Set drugNameGroup = new HashSet();
+            Set resistantDrugNameGroup = new HashSet();
+            List<Map> drugList = map.get("drugList") == null ? null : (List<Map>) map.get("drugList");
+            if (!CollectionUtils.isEmpty(drugList)) {
+                List<Map> clinicalList = map.get("clinicalList") == null ? null : (List<Map>) map.get("clinicalList");
+                for (Map map2 : drugList) {
+                    Map drugNameMap = new HashMap();
+//                    String cfda = map2.get("cfda") == null ? "" : map2.get("cfda").toString();
+                    String drug_name_chinese = map2.get("drug_name").toString();
+                    String drug_name = map2.get("drug_name").toString();
+                    Integer approvedDrugNum = reportUnknownVarDao.getApprovedDrugNum(drug_name, lang);
+                    String cfda = reportUnknownVarDao.getApprovedCFDANum(drug_name, lang) == null ? "0" : reportUnknownVarDao.getApprovedCFDANum(drug_name, lang);
+                    drug_name_chinese = isAddSymbol(drug_name_chinese, cfda, clinicalList);
+                    // 2023年10月升级 去掉#
+                    drugNameMap.put("nameLevel", StringUtils.remove(drug_name_chinese, '#'));
+                    String approve_range = map2.get("approve_range") == null ? "" : map2.get("approve_range").toString();
+                    drugNameMap.put("level", approve_range);
+                    String evidence_phase = map2.get("evidence_phase") == null ? "" : map2.get("evidence_phase").toString();
+                    String approval_desc_chinese = map2.get("approval_desc") == null ? "" : map2.get("approval_desc").toString();
+                    String[] approval_desc_list = approval_desc_chinese.split("\r\n");
+                    String other_test_required = map2.get("other_test_required").toString();
+                    if (Integer.valueOf(approve_range) < 5 && (StringUtils.isNotEmpty(approval_desc_chinese) || approvedDrugNum != 0)) {
+                        Map drugInformation = new HashMap();
+                        drugInformation.put("isbold", false);
+                        drugInformation.put("name", drug_name_chinese);
+                        if (other_test_required.equals("1")) {
+                            drugInformation.put("isRed", true);
+                        } else {
+                            drugInformation.put("isRed", false);
+                        }
+                        drugInformation.put("drugInfo", approval_desc_list);
+                        drugInformationStr.add(drugInformation);
+                    }
+                    if ((StringUtils.isNotEmpty(approval_desc_chinese) || approvedDrugNum != 0)) {
+                        drugNameMap.put("name", drug_name_chinese);
+                        drugNameMap.put("isbold", true);
+                    } else {
+                        drugNameMap.put("name", drug_name_chinese);
+                        drugNameMap.put("isbold", false);
+                    }
+                    if (other_test_required.equals("1")) {
+                        drugNameMap.put("isRed", true);
+                    } else {
+                        drugNameMap.put("isRed", false);
+                    }
+                    if ("1".equals(approve_range) && !drugNameGroup.contains(drug_name)) {
+                        drugaStr.add(drugNameMap);
+                    } else if ("2".equals(approve_range) && !drugNameGroup.contains(drug_name)) {
+                        drugbStr.add(drugNameMap);
+                    } else if ("3".equals(approve_range) && !drugNameGroup.contains(drug_name)) {
+                        drugcStr.add(drugNameMap);
+                        drugcStr1.add(drugNameMap);
+                    } else if ("4".equals(approve_range) && !drugNameGroup.contains(drug_name)) {
+                        drugdStr.add(drugNameMap);
+                        if (!"临床前研究".equals(evidence_phase)) {
+                            drugcStr1.add(drugNameMap);
+                        }
+                    } else if ("5".equals(approve_range) && !resistantDrugNameGroup.contains(drug_name)) {
+                        resistantaStr.add(drugNameMap);
+                        resistantStr1.add(drugNameMap);
+                    } else if ("6".equals(approve_range) && !resistantDrugNameGroup.contains(drug_name)) {
+                        resistantbStr.add(drugNameMap);
+                        resistantStr1.add(drugNameMap);
+                    } else if ("7".equals(approve_range) && !resistantDrugNameGroup.contains(drug_name)) {
+                        resistantcStr.add(drugNameMap);
+                        resistantStr1.add(drugNameMap);
+                    } else if ("8".equals(approve_range) && !resistantDrugNameGroup.contains(drug_name)) {
+                        resistantdStr.add(drugNameMap);
+                        if (!"临床前研究".equals(evidence_phase)) {
+                            resistantStr1.add(drugNameMap);
+                        }
+                    }
+                    if (Integer.valueOf(approve_range) < 5) {
+                        drugNameGroup.add(drug_name);
+                    } else {
+                        resistantDrugNameGroup.add(drug_name);
+                    }
+                    if (drugResearchList != null) {
+                        for (DrugResearch drugResearch : drugResearchList) {
+                            if (drugResearch.getDrug_name_chinese().equals(drug_name)) {
+                                if (StringUtils.isNotEmpty(approval_desc_chinese) || approvedDrugNum != 0) {
+                                    drugResearch.setIsbold(true);
+                                } else {
+                                    drugResearch.setIsbold(false);
+                                }
+                                drugResearch.setDrug_name_chinese(drug_name_chinese);
+                                drugResearch.setDrug_name_chinese2(drug_name);
+                                drugResearch.setDrug_name_chinese3(StringUtils.remove(drug_name_chinese, '#'));
+                                if (other_test_required.equals("1")) {
+                                    drugResearch.setIsRed(true);
+                                } else {
+                                    drugResearch.setIsRed(false);
+                                }
+                            }
+                        }
+                    }
+                    if (potentialDrugList != null) {
+                        for (PotentialDrug potentialDrug : potentialDrugList) {
+                            if (potentialDrug.getDrug_name_chinese().equals(drug_name)) {
+                                if (StringUtils.isNotEmpty(approval_desc_chinese) || approvedDrugNum != 0) {
+                                    potentialDrug.setIsbold(true);
+                                } else {
+                                    potentialDrug.setIsbold(false);
+                                }
+                                potentialDrug.setDrug_name_chinese(drug_name_chinese);
+                                potentialDrug.setDrug_name_chinese2(drug_name);
+                                potentialDrug.setDrug_name_chinese3(StringUtils.remove(drug_name_chinese, '#'));
+                                if (other_test_required.equals("1")) {
+                                    potentialDrug.setIsRed(true);
+                                } else {
+                                    potentialDrug.setIsRed(false);
+                                }
+                            }
+                        }
+                    }
+                }
+                if (gene.equals("Complex")) {
+                    gene = "多靶点循证";
+                    targetedDrugDetection.put("simple_vars", map.get("simple_vars"));
+                    if (drugaStr.isEmpty()) {
+                        continue;
+                    }
+                    if (rt.getTemplate_name().contains("银丰")) {
+                        if ("KRAS + NRAS + BRAF WildType".equals(ori_variant)) {
+                            ori_variant = "KRAS NRAS BRAF WildType";
+                        }
+                    }
+                }
+                // 有A、B药物为I类，C、D为II类
+                if (gene.equals("多靶点循证")) {
+                    targetedDrugDetection.put("variationClass", "-");
+                } else if (!drugaStr.isEmpty() || !drugbStr.isEmpty() || !resistantaStr.isEmpty() || !resistantbStr.isEmpty()) {
+                    targetedDrugDetection.put("variationClass", "I类");
+                } else {
+                    targetedDrugDetection.put("variationClass", "II类");
+                }
+                targetedDrugDetection.put("gene", gene);
+                targetedDrugDetection.put("check_date", check_date);
+                targetedDrugDetection.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
+                targetedDrugDetection.put("mutFreq", mutFreq);
+                String mutFreqType = distinguishMutFreqType(ori_variant, mutFreq);
+                if ("reads数".equals(mutFreqType)) {
+                    geneRearrangementNum++;
+                }
+                targetedDrugDetection.put("mutFreqType", mutFreqType);
+                getBrcaOrHrdPinned(drugaStr); // A级奥拉帕利前置到首位
+                targetedDrugDetection.put("drugaStr", drugaStr);
+                targetedDrugDetection.put("drugbStr", drugbStr);
+                targetedDrugDetection.put("drugcStr", drugcStr);
+                targetedDrugDetection.put("drugcStr1", drugcStr1);
+                targetedDrugDetection.put("drugdStr", drugdStr);
+                targetedDrugDetection.put("resistantaStr", resistantaStr);
+                targetedDrugDetection.put("resistantbStr", resistantbStr);
+                targetedDrugDetection.put("resistantcStr", resistantcStr);
+                targetedDrugDetection.put("resistantdStr", resistantdStr);
+                targetedDrugDetection.put("resistantStr1", resistantStr1);
+                if (rt.getTemplate_name().contains("广附一")) {
+                    List<Map> gfyDrugStr = new ArrayList<Map>();
+                    List<Map> gfyResistantStr = new ArrayList<Map>();
+                    gfyDrugStr.addAll(drugaStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
+                    gfyDrugStr.addAll(drugbStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
+                    gfyDrugStr.addAll(drugcStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
+//                    gfyDrugStr.addAll(drugdStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
+                    gfyResistantStr.addAll(resistantaStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
+                    gfyResistantStr.addAll(resistantbStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
+                    gfyResistantStr.addAll(resistantcStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
+//                    gfyResistantStr.addAll(resistantdStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
+                    targetedDrugDetection.put("gfyDrugStr", gfyDrugStr);
+                    targetedDrugDetection.put("gfyResistantStr", gfyResistantStr);
+                }
+
+                //靶向药物检测解析 用药说明换行
+                JSONArray array = JSONArray.fromObject(varDrugNote);
+                Object a = array.get(2);
+                if (a.toString().indexOf("突变说明:") != -1) {
+                    array.remove(2);
+                }
+                JSONObject variantDescription = (JSONObject) array.get(2);
+                String variantDescription1 = variantDescription.get("value") == null ? "" : variantDescription.get("value").toString();
+                if (variantDescription.get("key").toString().indexOf("位点说明:") != -1) {
+                    array.remove(2);
+                }
+                if (array.size() > 2) {
+                    JSONObject nccnInfo = (JSONObject) array.get(2);
+                    String nccnInfo1 = nccnInfo.get("value") == null ? "" : nccnInfo.get("value").toString();
+                    if (nccnInfo.get("key").toString().indexOf("NCCN指南:") != -1) {
+                        array.remove(2);
+                    }
+                }
+                if (array.size() > 2) {
+                    JSONObject clinicalInfo = (JSONObject) array.get(2);
+                    if (clinicalInfo.get("key").toString().indexOf("预后和诊断说明:") != -1) {
+                        array.remove(2);
+                    }
+                }
+                if (array.size() > 2) {
+                    JSONObject drugAnnotation = (JSONObject) array.get(2);
+                    if (drugAnnotation.get("key").toString().indexOf("用药说明:") != -1) {
+                        array.remove(2);
+                    }
+                }
+                if (array.size() > 2) {
+                    JSONObject resistance = (JSONObject) array.get(2);
+                    if (resistance.get("key").toString().indexOf("耐药说明:") != -1) {
+                        array.remove(2);
+                    }
+                }
+                if (array.size() > 2) {
+                    JSONObject recommend = (JSONObject) array.get(2);
+                    if (recommend.get("key").toString().indexOf("recommend:") != -1) {
+                        array.remove(2);
+                    }
+                }
+
+                String mutDesc = map.get("mutDesc") == null ? "" : map.get("mutDesc").toString();
+                JSONObject json2 = new JSONObject();
+                json2.accumulate("key", "突变说明:");
+                json2.accumulate("value", mutDesc.trim());
+                array.add(2, json2);
+
+                /*JSONObject drugAnnotation = (JSONObject) array.get(3);
+                String drugAnnotation1 = drugAnnotation.get("value") == null ? "" : drugAnnotation.get("value").toString();
+                drugAnnotation.element("value", nccnInfo1 + drugAnnotation1);*/
+
+                List<Json> listDrugNote = (List<Json>) JSONArray.toCollection(array, Json.class);
+                /*for (Json json : listDrugNote) {
+                    if (json.getKey().equals("recommend:")) {
+                        if (!CollectionUtils.isEmpty(clinicalList)) {
+                            json.setValue("推荐下表所示的临床试验。");
+                        } else {
+                            json.setValue("");
+                        }
+                    }
+                }*/
+                targetedDrugDetection.put("medicationDescription", listDrugNote);
+
+                // ********潜在耐药研究信息********
+                targetedDrugDetection.put("potentialDrugList", potentialDrugList);
+                targetedDrugDetection.put("potentialDrugList1", potentialDrugList.stream().filter(s -> !"临床前研究".equals(s.getEvidence_phase_chinese())).collect(Collectors.toList()));
+
+                // ********药物信息********
+//                targetedDrugDetection.put("drugInformationStr", drugInformationStr);
+
+                // ********潜在受益药物研究信息********
+                targetedDrugDetection.put("drugResearchList", drugResearchList);
+                targetedDrugDetection.put("drugResearchList1", drugResearchList.stream().filter(s -> !"临床前研究".equals(s.getEvidence_phase_chinese())).collect(Collectors.toList()));
+
+                //肺癌60检测结果分析
+                if ("肺癌60基因重肿".equals(rt.getTemplate_name())) {
+                    List<PotentialDrug> potentialDrugGourp = new ArrayList<>();
+                    Set<String> potentialDrugSet = new HashSet<String>();
+                    for (PotentialDrug potentialDrug : potentialDrugList) {
+                        String drug_name_chinese = potentialDrug.getDrug_name_chinese();
+                        if (!potentialDrugSet.contains(drug_name_chinese)) {
+                            potentialDrugGourp.add(potentialDrug);
+                            potentialDrugSet.add(drug_name_chinese);
+                        }
+                    }
+                    List<DrugResearch> drugResearchGourp = new ArrayList<>();
+                    Set<String> drugResearchSet = new HashSet<String>();
+                    for (DrugResearch drugResearch : drugResearchList) {
+                        String drug_name_chinese = drugResearch.getDrug_name_chinese();
+                        if (!drugResearchSet.contains(drug_name_chinese)) {
+                            drugResearchGourp.add(drugResearch);
+                            drugResearchSet.add(drug_name_chinese);
+                        }
+                    }
+                    targetedDrugDetection.put("potentialDrugGourp", potentialDrugGourp);
+                    targetedDrugDetection.put("drugResearchGourp", drugResearchGourp);
+                }
+
+                // ********临床试验信息********
+                List<Map> clinicalTrialInformationStr = new ArrayList<Map>();
+                if (!CollectionUtils.isEmpty(clinicalList)) {
+                    for (Map clinical : clinicalList) {
+                        List<Map> drugNameList = new ArrayList<Map>();
+                        Map clinicalTrialInformation = new HashMap();
+//                        String cfda = clinical.get("cfda") == null ? "0" : clinical.get("cfda").toString();
+                        String clinical_trial_id = clinical.get("clinical_trial_id") == null ? "" : clinical.get("clinical_trial_id").toString();
+                        String condition_chinese = clinical.get("recruiting_condition") == null ? "" : clinical.get("recruiting_condition").toString();
+                        String drug_name_chinese = clinical.get("drug_name") == null ? "" : clinical.get("drug_name").toString();
+                        String location_chinese = clinical.get("location") == null ? "" : clinical.get("location").toString();
+                        String phase = clinical.get("phase") == null ? "" : clinical.get("phase").toString();
+                        String title_chinese = clinical.get("title") == null ? "" : clinical.get("title").toString();
+                        Integer approvedDrugNum = reportUnknownVarDao.getApprovedDrugNum(drug_name_chinese, lang);
+                        String cfda = reportUnknownVarDao.getApprovedCFDANum(drug_name_chinese, lang) == null ? "0" : reportUnknownVarDao.getApprovedCFDANum(drug_name_chinese, lang);
+                        String drugOtherName = reportVarDrugDao.getDrugOtherName(drug_name_chinese);
+                        String other_test_required = clinical.get("other_test_required").toString();
+                        if ("1".equals(cfda)) {
+                            drug_name_chinese += "*";
+                        }
+                        clinicalTrialInformation.put("clinical_trial_id", clinical_trial_id);
+                        clinicalTrialInformation.put("title_chinese", title_chinese);
+                        clinicalTrialInformation.put("condition_chinese", condition_chinese);
+                        clinicalTrialInformation.put("phase", translatePhase(phase));
+                        Map drugNameMap = new HashMap();
+                        Map otherDrugNameMap = new HashMap();
+                        drugNameMap.put("name", drug_name_chinese);
+                        drugNameMap.put("nameLevel", clinical.get("drug_name") == null ? "" : clinical.get("drug_name").toString());
+                        if (other_test_required.equals("1")) {
+                            drugNameMap.put("isRed", true);
+                            otherDrugNameMap.put("isRed", true);
+                        } else {
+                            drugNameMap.put("isRed", false);
+                            otherDrugNameMap.put("isRed", false);
+                        }
+                        if (approvedDrugNum == 0) {
+                            drugNameMap.put("isbold", false);
+                            otherDrugNameMap.put("isbold", false);
+                        } else {
+                            drugNameMap.put("isbold", true);
+                            otherDrugNameMap.put("isbold", true);
+                        }
+                        drugNameList.add(drugNameMap);
+                        if (!rt.getTemplate_name().contains("银丰-华西")) {
+                            if (drugOtherName != null && !"".endsWith(drugOtherName.trim())) {
+                                otherDrugNameMap.put("name", "(" + drugOtherName + ")");
+                                drugNameList.add(otherDrugNameMap);
+                            }
+                        }
+                        clinicalTrialInformation.put("drug_name_chinese", drugNameList);
+                        clinicalTrialInformation.put("location_chinese", location_chinese);
+                        clinicalTrialInformationStr.add(clinicalTrialInformation);
+                    }
+                }
+
+                targetedDrugDetection.put("clinicalTrialInformationStr", clinicalTrialInformationStr);
+                //胚系靶向药物提示和体系靶向药物提示
+                boolean has_drug = map.get("has_drug") == null ? false : (boolean) map.get("has_drug");
+                if (has_drug) {
+                    embryonalDrugDetectionStr.add(targetedDrugDetection);
+                } else {
+                    if (!gene.equals("多靶点循证")) {
+                        targetedDrugDetection.put("mutDesc", mutDesc);
+                        if (ori_variant.indexOf("p.") != -1) {
+                            targetedDrugDetection.put("mutation", gene + " " + ori_variant.substring(ori_variant.indexOf("p.") + 2));
+                        } else if (ori_variant.equals("Amplification") && ori_variant.indexOf("Fusion") != -1) {
+                            targetedDrugDetection.put("mutation", gene + ori_variant);
+                        } else if (ori_variant.indexOf("c.") != -1) {
+                            targetedDrugDetection.put("mutation", gene + " " + ori_variant.substring(ori_variant.indexOf("c.") + 2));
+                        }
+                        MmLymphomaTyping mmLymphomaTyping = moduleModificationAllDao.selectLymphomaSubtype(currentNgsAvailable.getReport_id(), gene, ori_variant, mutFreq);
+                        targetedDrugDetection.put("lymphoma_subtype", mmLymphomaTyping==null ? "无" : StringUtils.isEmpty(mmLymphomaTyping.getLymphoma_subtype()) ? "无" : mmLymphomaTyping.getLymphoma_subtype());
+                        targetedDrugDetection.put("lymphoma_subtype2", mmLymphomaTyping==null ? "无" : StringUtils.isEmpty(mmLymphomaTyping.getLymphoma_subtype2()) ? "无" : mmLymphomaTyping.getLymphoma_subtype2());
+                        bodyDrugNoComplexStr.add(targetedDrugDetection);
+                        if (gene6.contains(gene)) {
+                            bodyDrugNoComplexGene6Str.add(targetedDrugDetection);
+                        } else {
+                            bodyDrugNoComplexExceptGene6Str.add(targetedDrugDetection);
+                        }
+                    } else {
+                        String comutation = "";
+                        if (ori_variant.equals("KRAS + NRAS + BRAF WildType")) {
+                            comutation = "KRAS&NRAS&BRAF野生型";
+                        } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType + BRAF WildType")) {
+                            comutation = "ERBB2 Amplification + KRAS&NRAS&BRAF野生型";
+                        } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType")) {
+                            comutation = "ERBB2 Amplification + KRAS&NRAS野生型";
+                        }
+                        targetedDrugDetection.put("comutation", comutation);
+                        complexDrugStr.add(targetedDrugDetection);
+                    }
+                    bodyDrugDrugDetectionStr.add(targetedDrugDetection);
+                }
+                targetedDrugDetectionStr.add(targetedDrugDetection);
+                if (gene6.contains(gene)) {
+                    targetedDrugDetectionGene6Str.add(targetedDrugDetection);
+                } else {
+                    targetedDrugDetectionExceptGene6Str.add(targetedDrugDetection);
+                }
+            }
+        }
+        rt.setTargetedDrugDetectionStr(targetedDrugDetectionStr);
+        rt.setEmbryonalDrugDetectionStr(embryonalDrugDetectionStr);
+        rt.setBodyDrugDrugDetectionStr(listSort(bodyDrugDrugDetectionStr));
+        /*if (rt.getTemplate_name().contains("同济")) {
+            rt.setBodyDrugNoComplexStr(listSort2(bodyDrugNoComplexStr));
+        } else {
+            rt.setBodyDrugNoComplexStr(listSort(bodyDrugNoComplexStr));
+        }*/
+        rt.setBodyDrugNoComplexStr(listSort2(bodyDrugNoComplexStr));
+        rt.setComplexDrugStr(listSort(complexDrugStr));
+        rt.setTargetedDrugDetectionGene6Str(targetedDrugDetectionGene6Str);
+        rt.setTargetedDrugDetectionExceptGene6Str(targetedDrugDetectionExceptGene6Str);
+        rt.setBodyDrugNoComplexGene6Str(listSort(bodyDrugNoComplexGene6Str));
+        rt.setBodyDrugNoComplexExceptGene6Str(listSort(bodyDrugNoComplexExceptGene6Str));
+
+        // ************未知临床意义基因突变解析************
+        List<Map> unknownVarAnalysisStr = new ArrayList<Map>();
+        List<Map> unknownVarAnalysisGene6Str = new ArrayList<Map>();
+        List<Map> unknownVarAnalysisExceptGene6Str = new ArrayList<Map>();
+        if (totalUnknownNum != 0) {
+            for (Map map : list) {
+                Map unknownVarAnalysis = new HashMap();
+                List<Map> drugList = map.get("drugList") == null ? null : (List<Map>) map.get("drugList");
+                List<Map> clinicalList = map.get("clinicalList") == null ? null : (List<Map>) map.get("clinicalList");
+                Map rpUnknownVar = map.get("rpUnknownVar") == null ? null : (Map) map.get("rpUnknownVar");
+                if (CollectionUtils.isEmpty(drugList) && CollectionUtils.isEmpty(clinicalList) && !CollectionUtils.isEmpty(rpUnknownVar)) {
+                    String gene = map.get("gene").toString();
+                    String check_date = map.get("check_date") == null ? "" : map.get("check_date").toString();
+                    String ori_variant = map.get("ori_variant").toString();
+                    String mutDesc2 = map.get("mutDesc2") == null ? "" : map.get("mutDesc2").toString();
+                    String gene_description_chinese = rpUnknownVar.get("gene_description") == null ? "" : rpUnknownVar.get("gene_description").toString();
+                    String var_drug_desc = rpUnknownVar.get("var_drug_desc") == null ? "" : rpUnknownVar.get("var_drug_desc").toString();
+                    String mutFreq = map.get("mutFreq") == null ? "." : map.get("mutFreq").toString();
+                    String variantDescription = map.get("variantDescription") == null ? "." : map.get("variantDescription").toString();
+                    //判断是否是融合突变
+                    List<String> templates = lifeNoNDFTemplate(); //life报告模板融合不输出突变丰度和NDF值
+                    if (templates.contains(rt.getTemplate_name())) {
+                        if (ori_variant.indexOf("Fusion") != -1) {
+                            mutFreq = "/";
+                        }
+                    }
+                    mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
+                    if (gene.equals("Complex") || "不报告".equals(rpUnknownVar.getOrDefault("result_type", ""))) {
+                        continue;
+                    }
+                    if (rt.getTemplate_name().contains("银丰-华西")) {
+                        String mutDesc = map.get("mutDesc") == null ? "" : map.get("mutDesc").toString();
+                        if (ori_variant.indexOf("Fusion") != -1) {
+                            String replace = mutDesc.replace(mutDesc2, "");
+                            if (mutFreq.indexOf(".") != -1) {
+                                mutDesc2 += "此突变在样本中的突变丰度为" + mutFreq + "。" + replace;
+                            } else {
+                                mutDesc2 += "此突变在样本中的突变reads为" + mutFreq + "。" + replace;
+                            }
+                        } else {
+                            mutDesc2 = mutDesc;
+                        }
+                    }
+                    unknownVarAnalysis.put("variationClass", "III类");
+                    unknownVarAnalysis.put("gene", gene);
+                    unknownVarAnalysis.put("check_date", check_date);
+                    unknownVarAnalysis.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
+                    unknownVarAnalysis.put("mutDesc", mutDesc2);
+                    unknownVarAnalysis.put("gene_description_chinese", gene_description_chinese);
+                    unknownVarAnalysis.put("mutFreq", mutFreq);
+                    String mutFreqType = distinguishMutFreqType(ori_variant, mutFreq);
+                    if ("reads数".equals(mutFreqType)) {
+                        geneRearrangementNum++;
+                    }
+                    unknownVarAnalysis.put("mutFreqType", mutFreqType);
+                    unknownVarAnalysis.put("variantDescription", variantDescription);
+                    //未知临床意义用药说明换行
 					/*JSONArray array = JSONArray.fromObject(var_drug_desc);
 					List<Json> listDrugNote = (List<Json>) JSONArray.toCollection(array, Json.class);
 					String str_drug_desc = "";
@@ -694,193 +1788,551 @@ public class PyReportServiceImpl implements PyReportService {
 						str_drug_desc += json.getValue();
 					}
 					unknownVarAnalysis.put("str_drug_desc", str_drug_desc);*/
-				}
-				if(!unknownVarAnalysis.isEmpty()) {
-					unknownVarAnalysisStr.add(unknownVarAnalysis);
-				}
-			}
-		}
-		rt.setUnknownVarAnalysisStr(unknownVarAnalysisStr);
-		
-		Integer reportId = pr.getReport_id();
-		//PM2.0错配修复基因缺陷 (dMMR) 检测结果
-		List<Map> dMMRGene = analysisReportDao.getImmuneRelatedGene("MMR");
-		List<String> dMMRGeneList = new ArrayList<String>();
-		for (Map map : dMMRGene) {
-			dMMRGeneList.add(map.get("gene").toString());
-		}
-		List<Map> dMMRinfo = getImmunityData(dMMRGene,reportId,siteNotReported);
-		rt.setdMMRinfo(dMMRinfo);
+                    if (ori_variant.indexOf("p.") != -1) {
+                        unknownVarAnalysis.put("mutation", gene + " " + ori_variant.substring(ori_variant.indexOf("p.") + 2));
+                    } else if (ori_variant.equals("Amplification") && ori_variant.indexOf("Fusion") != -1) {
+                        unknownVarAnalysis.put("mutation", gene + ori_variant);
+                    } else if (ori_variant.indexOf("c.") != -1) {
+                        unknownVarAnalysis.put("mutation", gene + " " + ori_variant.substring(ori_variant.indexOf("c.") + 2));
+                    }
+                    unknownVarAnalysisStr.add(unknownVarAnalysis);
+                    if (gene6.contains(gene)) {
+                        unknownVarAnalysisGene6Str.add(unknownVarAnalysis);
+                    } else {
+                        unknownVarAnalysisExceptGene6Str.add(unknownVarAnalysis);
+                    }
+                }
+            }
+        }
+        summaryOfRresults.put("geneRearrangementNum", geneRearrangementNum);
+        rt.setUnknownVarAnalysisStr(listSort(unknownVarAnalysisStr));
+        rt.setUnknownVarAnalysisGene6Str(listSort(unknownVarAnalysisGene6Str));
+        rt.setUnknownVarAnalysisExceptGene6Str(listSort(unknownVarAnalysisExceptGene6Str));
+
+        Integer reportId = pr.getReport_id();
+        //PM2.0错配修复基因缺陷 (dMMR) 检测结果
+        List<Map> dMMRGene = analysisReportDao.getImmuneRelatedGene("MMR");
+        List<String> dMMRGeneList = new ArrayList<String>();
+        for (Map map : dMMRGene) {
+            dMMRGeneList.add(map.get("gene").toString());
+        }
+       /* List<Map> dMMRinfo = getHotgeneData(dMMRGene, thisGeneticmarkerList, crList, "allgene", "未检测到相关基因突变");
+        rt.setdMMRinfo(dMMRinfo);*/
 		/*List<Map> dmmrDrugDetectionStr = new ArrayList<Map>();
 		if (allDrugMutNum != 0) {
 			List<Map> targetedDrugDetectionStr = rt.getTargetedDrugDetectionStr();
 			getDrugDetectionData(targetedDrugDetectionStr,dmmrDrugDetectionStr,dMMRGene);
 		}
 		rt.setDmmrDrugDetectionStr(dmmrDrugDetectionStr);*/
-		int mmrNum = 0;
-		
-		if (hasPathogenicityCount == 0) {
-			rt.setCrCheckInfoStr("均未检出致病/可能致病突变");
-		} else {
-			rt.setCrCheckInfoStr("检出 "+hasPathogenicityCount+" 个致病/可能致病性突变");
-		}
-		// ************肿瘤遗传风险表格************
-		List<Map> crCheckLineStr = new ArrayList<Map>();
-		for (Map map : crAllList) {
-			Map crCheckLine = new HashMap();
-			String Gene = map.get("Gene").toString();
-			String Chr = map.get("Chr").toString();
-			String Exon = map.get("Exon").toString();
-			String cHGVS = map.get("cHGVS").toString();
-			String pHGVS = map.get("pHGVS").toString();
-			String Zygosity = map.get("Zygosity").toString();
-			String ExonicFunc = map.get("ExonicFunc").toString();
-			String c1000g2015aug_all = map.get("c1000g2015aug_all").toString();
-			String Clinical_significance = map.get("rpCr") == null ? "-" : ((Map)map.get("rpCr")).get("Clinical_significance") == null ? "" : ((Map)map.get("rpCr")).get("Clinical_significance").toString();
-			if(dMMRGeneList.contains(Gene) && (Clinical_significance.equals("1") || Clinical_significance.equals("2"))) {
-				mmrNum = mmrNum+1;
-			}
-			crCheckLine.put("Gene", Gene);
-			crCheckLine.put("Chr", Chr);
-			crCheckLine.put("Exon", Exon);
-			crCheckLine.put("cHGVS", cHGVS);
-			crCheckLine.put("pHGVS", pHGVS);
-			crCheckLine.put("Zygosity", Zygosity);
-			crCheckLine.put("ExonicFunc", ExonicFunc);
-			crCheckLine.put("c1000g2015aug_all", c1000g2015aug_all);
-			crCheckLine.put("Clinical_significance", translateClinicalSignificance(Clinical_significance));
-			crCheckLineStr.add(crCheckLine);
-		}
-		rt.setCrCheckLineStr(crCheckLineStr);
-		
-		summaryOfRresults.put("mmrNum", mmrNum);
-		
-		// ***********化疗药物检测解析***********
-		// ***********化疗药物毒副作用风险解析*************
-		if (sideEffectsChemo != null) {
-			List<Map> chemoSideeffectsStr = new ArrayList<Map>();
-			for (int i = 0 ; i<sideEffectsChemo.size(); i++) {
-				List<String> list2 = sideEffectsChemo.get(i);
-				Map chemoSideeffects = new HashMap();
-				if (i == 0) {
-					chemoSideeffects.put("isFirstLine", true);
-					chemoSideeffects.put("isMerge", false);
-					chemoSideeffects.put("category", list2.get(0));
-					chemoSideeffects.put("chemotherapyDrugs", list2.get(1));
-					chemoSideeffects.put("detectionGene", list2.get(2));
-					chemoSideeffects.put("detectionSite", list2.get(3));
-					chemoSideeffects.put("detectionResult", list2.get(4));
-					chemoSideeffects.put("medicationTips", list2.get(5));
-					chemoSideeffects.put("grade", list2.get(6));
-				} else {
-					chemoSideeffects.put("isFirstLine", false);
-					if("-".equals(list2.get(0))) {
-						chemoSideeffects.put("isMerge", true);
-						chemoSideeffects.put("category", list2.get(1));
-					}else {
-						chemoSideeffects.put("isMerge", false);
-						chemoSideeffects.put("category", list2.get(0));
-						chemoSideeffects.put("chemotherapyDrugs", list2.get(1));
-					}
-					chemoSideeffects.put("detectionGene", list2.get(2));
-					chemoSideeffects.put("detectionSite", list2.get(3));
-					chemoSideeffects.put("detectionResult", list2.get(4));
-					chemoSideeffects.put("medicationTips", list2.get(5));
-					chemoSideeffects.put("grade", list2.get(6));
-				}
-				chemoSideeffectsStr.add(chemoSideeffects);
-			}
-			rt.setChemoSideeffectsStr(chemoSideeffectsStr);
-		}
-		
-		// ***********化疗药物有效性解析*************
-		if (effectivenessChemo != null) {
-			List<Map> chemoEffectivenessStr = new ArrayList<Map>();
-			for (int i = 0 ; i<effectivenessChemo.size(); i++) {
-				Map chemoEffectiveness = new HashMap();
-				List<String> list2 = effectivenessChemo.get(i);
-				if (i == 0) {
-					chemoEffectiveness.put("isFirstLine", true);
-					chemoEffectiveness.put("isMerge", false);
-					chemoEffectiveness.put("category", list2.get(0));
-					chemoEffectiveness.put("chemotherapyDrugs", list2.get(1));
-					chemoEffectiveness.put("detectionGene", list2.get(2));
-					chemoEffectiveness.put("detectionSite", list2.get(3));
-					chemoEffectiveness.put("detectionResult", list2.get(4));
-					chemoEffectiveness.put("medicationTips", list2.get(5));
-					chemoEffectiveness.put("grade", list2.get(6));
-				} else {
-					chemoEffectiveness.put("isFirstLine", false);
-					if("-".equals(list2.get(0))) {
-						chemoEffectiveness.put("isMerge", true);
-						chemoEffectiveness.put("category", list2.get(1));
-					}else {
-						chemoEffectiveness.put("isMerge", false);
-						chemoEffectiveness.put("category", list2.get(0));
-						chemoEffectiveness.put("chemotherapyDrugs", list2.get(1));
-					}
-					chemoEffectiveness.put("detectionGene", list2.get(2));
-					chemoEffectiveness.put("detectionSite", list2.get(3));
-					chemoEffectiveness.put("detectionResult", list2.get(4));
-					chemoEffectiveness.put("medicationTips", list2.get(5));
-					chemoEffectiveness.put("grade", list2.get(6));
-				}
-				chemoEffectivenessStr.add(chemoEffectiveness);
-			}
-			rt.setChemoEffectivenessStr(chemoEffectivenessStr);
-		}
-		
-		// ***********遗传风险相关基因检测结果解析*********
-		rt.setCrAnalysisIndex("false");
-		if (hasPathogenicityCount != 0) {
-			rt.setCrAnalysisIndex("true");
-			List<Map> geneticCancerRiskInfo = new ArrayList<Map>();
-			for (Map a : crAllList) {
-				Map geneticCancerRisk = new HashMap();
-				String Gene = a.get("Gene").toString();
-				String check_date = a.get("check_date")==null ? "":a.get("check_date").toString();
-				String Exon = a.get("Exon").toString();
-				String cHGVS = a.get("cHGVS").toString();
-				String pHGVS = a.get("pHGVS").toString();
-				String ori_variant = a.getOrDefault("ori_variant", "").toString();
-				String Zygosity = a.get("Zygosity").toString();
-				String mutDesc = a.get("mutDesc") == null ? "" : a.get("mutDesc").toString();
-				Map rpCr = a.get("rpCr") == null ? null : (Map)a.get("rpCr");
-				if (!CollectionUtils.isEmpty(rpCr)) {
-					String Clinical_significance = rpCr.get("Clinical_significance") == null ? "" : rpCr.get("Clinical_significance").toString();
-					String GeneDesc = rpCr.get("GeneDesc") == null ? "" : rpCr.get("GeneDesc").toString();
-					String VarClianno = rpCr.get("VarClianno") == null ? "" : rpCr.get("VarClianno").toString();
-					if ("1".equals(Clinical_significance) || "2".equals(Clinical_significance)) {
-						geneticCancerRisk.put("Gene", Gene);
-						geneticCancerRisk.put("check_date", check_date);
-						geneticCancerRisk.put("FreDesc", removeMutations(transferOriVariant(ori_variant)));
-						geneticCancerRisk.put("mutDesc", mutDesc);
-						geneticCancerRisk.put("GeneDesc", GeneDesc);
-						geneticCancerRisk.put("VarClianno", VarClianno);
-					}
-				}
-				if(!geneticCancerRisk.isEmpty()) {
-					geneticCancerRiskInfo.add(geneticCancerRisk);
-				}
-			}
-			rt.setGeneticCancerRiskInfo(geneticCancerRiskInfo);
-			sb.delete(0, sb.length());
-		}
-		
-		
-		//******************附录中的样本质控情况********************
-		Map sampleQualityControl =new HashMap();
-		if(isblood) {
-			sampleQualityControl.put("type", "isblood");
-		}else {
-			sampleQualityControl.put("type", "tissue");
-		}
-		rt.setSampleQualityControl(sampleQualityControl);
-		sb.delete(0, sb.length());
-		rt.setParentDiseaseIDList(parentdiseaseIdList);
-		rt.setAllGeneSet(allGeneSet);
-		
-		//免疫正负相关基因检测结果解析
+        int mmrNum = 0;
+
+        if (hasPathogenicityCount == 0) {
+            rt.setCrCheckInfoStr("均未检出致病/可能致病突变");
+        } else {
+            rt.setCrCheckInfoStr("检出 " + hasPathogenicityCount + " 个致病/可能致病性突变");
+        }
+        // ************肿瘤遗传风险表格************
+        List<Map> crCheckLineStr = new ArrayList<Map>();
+        List<Map> crCheckLineStrPathopoiesia = new ArrayList<Map>();
+        List<Map> crCheckLineStrYF1280 = new ArrayList<Map>();
+        List<Map> crCheckLineStrLess = new ArrayList<Map>();
+        List<Map> crCheckLineStrGreater = new ArrayList<Map>();
+        String crCheckDrugStr = "";
+        HashSet<String> cancerRiskGene = new HashSet<>(); //检测癌种风险提示
+        boolean geneNTHL1AndIsozygoty = false; // NTHL1 基因   只有纯合的致病或可能致病突变输出附件中的风险和管理，杂合的不输出
+        boolean geneMBD4AndIsozygoty = false; // MBD4 基因   纯合的致病或可能致病突变输出附件中MBD4双等位基因致病变异表格,杂合输出MBD4杂合致病变异表格
+        boolean geneMUTYHAndIsozygoty = false; // MUTYH 基因   纯合的致病或可能致病突变输出附件中MUTYH双等位基因致病变异表格,杂合输出MBD4杂合致病变异表格
+        int crCount1 = 0;
+        for (Map map : crAllList) {
+            Map crCheckLine = new HashMap();
+            String Gene = map.get("Gene").toString();
+            String Chr = map.get("Chr").toString();
+            String Exon = map.get("Exon").toString();
+            String cHGVS = map.get("cHGVS").toString();
+            String pHGVS = map.get("pHGVS").toString();
+            String Zygosity = map.get("Zygosity").toString();
+            String ExonicFunc = map.get("ExonicFunc").toString();
+            String c1000g2015aug_all = map.get("c1000g2015aug_all").toString();
+            String Clinical_significance = map.get("rpCr") == null ? "-" : ((Map) map.get("rpCr")).get("Clinical_significance") == null ? "" : ((Map) map.get("rpCr")).get("Clinical_significance").toString();
+            String depth = map.get("depth") == null ? "" : map.get("depth").toString();
+            String Pos = map.get("Pos").toString();
+            String Transcript = map.get("Transcript").toString();
+            String avsnp150 = map.get("avsnp150").toString();
+            String ori_variant = map.get("ori_variant").toString();
+            if (dMMRGeneList.contains(Gene) && (Clinical_significance.equals("1") || Clinical_significance.equals("2"))) {
+                mmrNum = mmrNum + 1;
+            }
+            crCount1++;
+            crCheckLine.put("crCount", crCount1);
+            crCheckLine.put("Gene", Gene);
+            crCheckLine.put("gene", Gene);
+            crCheckLine.put("Chr", Chr);
+            crCheckLine.put("exon", StringUtils.isNumeric(Exon) ? "exon" + Exon : Exon);
+            crCheckLine.put("Exon", StringUtils.isNumeric(Exon) ? "exon" + Exon : Exon);
+            crCheckLine.put("cHGVS", cHGVS);
+            crCheckLine.put("pHGVS", pHGVS);
+            crCheckLine.put("Zygosity", Zygosity);
+            crCheckLine.put("mutFreq", Zygosity);
+            crCheckLine.put("ExonicFunc", ExonicFunc);
+            crCheckLine.put("c1000g2015aug_all", c1000g2015aug_all);
+            crCheckLine.put("Clinical_significance", translateClinicalSignificance(Clinical_significance));
+            crCheckLine.put("depth", depth);
+            crCheckLine.put("Pos", Pos);
+            crCheckLine.put("Transcript", Transcript);
+            crCheckLine.put("avsnp150", avsnp150);
+            crCheckLine.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
+            crCheckLineStr.add(crCheckLine);
+
+            if (Clinical_significance.equals("1") || Clinical_significance.equals("2")) {
+                cancerRiskGene.add(Gene);
+                if ("NTHL1".equals(Gene) && "纯合".equals(Zygosity)) {
+                    geneNTHL1AndIsozygoty = true;
+                } else if ("MBD4".equals(Gene) && "纯合".equals(Zygosity)) {
+                    geneMBD4AndIsozygoty = true;
+                } else if ("MUTYH".equals(Gene) && "纯合".equals(Zygosity)) {
+                    geneMUTYHAndIsozygoty = true;
+                }
+                crCheckLineStrPathopoiesia.add(crCheckLine);
+                if (".".equals(pHGVS) || StringUtils.isEmpty(pHGVS)) {
+                    crCheckDrugStr = crCheckDrugStr + (Gene + " " + cHGVS + "; ");
+                } else {
+                    crCheckDrugStr = crCheckDrugStr + (Gene + " " + pHGVS + "; ");
+                }
+                // PARP抑制剂用药
+                if (geneListHRR1.contains(Gene)) {
+                    geneHRR1Size++;
+                    geneHRR1.add(Gene);
+                } else if (geneListHRR2.contains(Gene)) {
+                    geneHRR2Size++;
+                    geneHRR2.add(Gene);
+                } else if (geneListHRR3.contains(Gene)) {
+                    geneHRR3Size++;
+                    geneHRR3.add(Gene);
+                } else if (geneListDDR.contains(Gene)) {
+                    geneDDRSize++;
+                    geneDDR.add(Gene);
+                }
+            }
+            if (!(Clinical_significance.equals("4") || Clinical_significance.equals("5"))) {
+                crCheckLineStrYF1280.add(crCheckLine);
+            }
+            if (c1000g2015aug_all.equals(".") || Double.valueOf(c1000g2015aug_all.substring(0, c1000g2015aug_all.length() - 1)) < 5) {
+                crCheckLineStrLess.add(crCheckLine);
+            } else {
+                crCheckLineStrGreater.add(crCheckLine);
+            }
+        }
+        rt.setCrCheckLineStr(crCheckLineStr);
+        rt.setCrCheckLineStrPathopoiesia(crCheckLineStrPathopoiesia);
+        rt.setCrCheckLineStrYF1280(crCheckLineStrYF1280);
+        summaryOfRresults.put("crCheckLineStrYF1280Size", crCheckLineStrYF1280.size());
+        rt.setCrCheckLineStrLess(crCheckLineStrLess);
+        rt.setCrCheckLineStrGreater(crCheckLineStrGreater);
+        rt.setCancerRiskGene(cancerRiskGene);
+        rt.setGeneNTHL1AndIsozygoty(geneNTHL1AndIsozygoty);
+        rt.setGeneMBD4AndIsozygoty(geneMBD4AndIsozygoty);
+        rt.setGeneMUTYHAndIsozygoty(geneMUTYHAndIsozygoty);
+        //风险管理(癌症风险列表)
+        HashSet<String> cancerRiskFilterGene = cancerRiskFilterGene(cancerRiskGene, sf.getGender());
+        rt.setCancerRiskFilterGene(cancerRiskFilterGene);
+        if (!"".equals(crCheckDrugStr)) {
+            rt.setCrCheckDrugStr("（" + crCheckDrugStr.substring(0, crCheckDrugStr.length() - 2) + "）");
+        }
+        //PARP抑制剂用药
+        parp.put("geneHRR1Size", geneHRR1Size);
+        parp.put("geneHRR2Size", geneHRR2Size);
+        parp.put("geneHRR3Size", geneHRR3Size);
+        parp.put("geneDDRSize", geneDDRSize);
+        parp.put("geneHRR1", geneHRR1);
+        parp.put("geneHRR2", geneHRR2);
+        parp.put("geneHRR3", geneHRR3);
+        parp.put("geneDDR", geneDDR);
+        rt.setParp(parp);
+
+        summaryOfRresults.put("mmrNum", mmrNum);
+
+        // ***********遗传风险相关基因检测结果解析*********
+        rt.setCrAnalysisIndex("false");
+        if (hasPathogenicityCount != 0) {
+            rt.setCrAnalysisIndex("true");
+            List<Map> geneticCancerRiskInfo  = new ArrayList<Map>();
+            int crCount2 = 0;
+            for (Map a : crAllList) {
+                Map geneticCancerRisk = new HashMap();
+                String Gene = a.get("Gene").toString();
+                String check_date = a.get("check_date") == null ? "" : a.get("check_date").toString();
+                String Exon = a.get("Exon").toString();
+                String cHGVS = a.get("cHGVS").toString();
+                String pHGVS = a.get("pHGVS").toString();
+                String ori_variant = removeMutations(transferOriVariant(a.getOrDefault("ori_variant", "").toString()));
+                String Zygosity = a.get("Zygosity").toString();
+                String mutDesc = "";
+                if (a.containsKey("mutDesc2")) {
+                    mutDesc = a.get("mutDesc2").toString();
+                } else if (a.containsKey("mutDesc")) {
+                    mutDesc = a.get("mutDesc").toString();
+                }
+                Map rpCr = a.get("rpCr") == null ? null : (Map) a.get("rpCr");
+                if (!CollectionUtils.isEmpty(rpCr)) {
+                    String Clinical_significance = rpCr.get("Clinical_significance") == null ? "" : rpCr.get("Clinical_significance").toString();
+                    String GeneDesc = rpCr.get("GeneDesc") == null ? "" : rpCr.get("GeneDesc").toString();
+                    String VarClianno = rpCr.get("VarClianno") == null ? "" : rpCr.get("VarClianno").toString();
+                    if ("1".equals(Clinical_significance) || "2".equals(Clinical_significance)) {
+                        // 10月升级修改内容
+                        crCount2++;
+                        geneticCancerRisk.put("crCount", crCount2);
+                        geneticCancerRisk.put("Gene", Gene);
+                        geneticCancerRisk.put("check_date", check_date);
+                        geneticCancerRisk.put("FreDesc", ori_variant);
+                        geneticCancerRisk.put("gene", Gene);
+                        geneticCancerRisk.put("ori_variant", ori_variant);
+                        geneticCancerRisk.put("mutFreq", Zygosity);
+                        geneticCancerRisk.put("mutFreqType",  distinguishMutFreqType(ori_variant, Zygosity));
+                        geneticCancerRisk.put("mutDesc", mutDesc);
+                        geneticCancerRisk.put("GeneDesc", GeneDesc);
+                        geneticCancerRisk.put("VarClianno", VarClianno);
+                        geneticCancerRisk.put("drugaStr", new ArrayList<>());
+                        geneticCancerRisk.put("drugbStr", new ArrayList<>());
+                        geneticCancerRisk.put("drugcStr", new ArrayList<>());
+                        geneticCancerRisk.put("drugdStr", new ArrayList<>());
+                        geneticCancerRisk.put("resistantaStr", new ArrayList<>());
+                        geneticCancerRisk.put("resistantbStr", new ArrayList<>());
+                        geneticCancerRisk.put("resistantcStr", new ArrayList<>());
+                        geneticCancerRisk.put("resistantdStr", new ArrayList<>());
+                        String varDrugNote = "[{\"key\":\"基因说明:\",\"value\":\""+GeneDesc+"\"},{\"key\":\"突变说明:\",\"value\":\""+mutDesc+"\"},{\"key\":\"变异解析:\",\"value\":\""+VarClianno+"\"}]";
+                        JSONArray array = JSONArray.fromObject(varDrugNote);
+                        geneticCancerRisk.put("medicationDescription", array);
+                        geneticCancerRisk.put("drugResearchList", new ArrayList<>());
+                        geneticCancerRisk.put("potentialDrugList", new ArrayList<>());
+                        geneticCancerRisk.put("Clinical_significance", translateClinicalSignificance(Clinical_significance));
+                        geneticCancerRisk.put("clinicalTrialInformationStr", new ArrayList<>());
+                        if (!embryonalDrugDetectionStr.isEmpty()) {
+                            for (Map map : embryonalDrugDetectionStr) {
+                                String gene = map.get("gene").toString();
+                                String oriVariant = map.get("ori_variant").toString();
+                                if (Gene.equals(gene) && ori_variant.equals(oriVariant)) {
+                                    geneticCancerRisk.put("drugaStr", map.get("drugaStr"));
+                                    geneticCancerRisk.put("drugbStr", map.get("drugbStr"));
+                                    geneticCancerRisk.put("drugcStr", map.get("drugcStr"));
+                                    geneticCancerRisk.put("drugdStr", map.get("drugdStr"));
+                                    geneticCancerRisk.put("resistantaStr", map.get("resistantaStr"));
+                                    geneticCancerRisk.put("resistantbStr", map.get("resistantbStr"));
+                                    geneticCancerRisk.put("resistantcStr", map.get("resistantcStr"));
+                                    geneticCancerRisk.put("resistantdStr", map.get("resistantdStr"));
+                                    geneticCancerRisk.put("drugResearchList", map.get("drugResearchList"));
+                                    geneticCancerRisk.put("potentialDrugList", map.get("potentialDrugList"));
+                                    geneticCancerRisk.put("clinicalTrialInformationStr", map.get("clinicalTrialInformationStr"));
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!geneticCancerRisk.isEmpty()) {
+                    geneticCancerRiskInfo.add(geneticCancerRisk);
+                }
+            }
+            rt.setGeneticCancerRiskInfo(geneticCancerRiskInfo);
+            sb.delete(0, sb.length());
+        }
+
+        //*************化疗药物用药提示************
+        List<List<String>> thisChemo = new ArrayList<>();
+        List<List<String>> unknownChemo = new ArrayList<>();
+        List<List<String>> effectivenessChemo = new ArrayList<>();
+        List<List<String>> sideEffectsChemo = new ArrayList<>();
+        List<List<String>> referenceRecommendation = new ArrayList<>();
+        List<Map> chemoSideeffectsEffectivenessStr = new ArrayList<Map>();
+        List<Map> irinotecanDrugAnnotationStr = new ArrayList<Map>();
+        List<Map> irinotecanDrugAnnotationLDTStr = new ArrayList<Map>(); // 伊立替康药物注释LDT
+        HashSet<Object> chemoGeneSet = new HashSet<>();
+        HashSet<String> chemoSingleDrugset = new HashSet(); // （银丰-华西）不需要多药物展示
+
+        Map<String, Object> chemoSummary = new HashMap<>(); // 新版化疗小结输出结果
+        Map<String, Object> chemoSummaryCY = new HashMap<>(); // 重医附二化疗小结输出结果
+        List<List<Map<String, Object>>> chemoAnalysis = new ArrayList<>(); // 新版化疗解析输出结果
+        List<Map<String, Object>> chem = analysisReportDao.getChem(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        // 新版化疗逻辑输出
+        if (!chem.isEmpty()) {
+            // 重写化疗调取逻辑，方便癌种更换调取
+            List<Map<String, Object>> chemicalData = analysisReportDao.getChemicalData2(); // 使用新版化疗数据
+            if ("脑胶质瘤200基因报告-三峡".equals(rt.getTemplate_name())) {
+                chemicalData = analysisReportDao.getChemicalData2ByCancerType("实体瘤"); // 脑胶质瘤200基因报告-三峡（特殊情况）
+            }
+            summaryOfRresults.put("chem_cancer", chem_cancer);
+//            chemoJson = ChemoJsonUtil.getChemoResult(chemicalData, chem, chem_cancer);
+            List<Map<String, Object>> chemoResult = ChemoJsonUtil2.getChemoResult(chemicalData, chem);
+            // 化疗小结
+            chemoSummary = ChemoJsonUtil2.getChemoSummary(chemoResult, chem_cancer, rt.getTemplate_name());
+            // 重医附二化疗输出结果逻辑 || 泛癌种50基因检测检测报告-完整版-病理科
+            if (rt.getTemplate_name().contains("重医附二") || "泛癌种50基因检测检测报告-完整版-病理科".equals(rt.getTemplate_name())) {
+                // 去掉证据 3、4的药物
+                chemoResult = chemoResult.stream().filter(s -> !Arrays.asList("3", "4").contains(s.get("evidence"))).collect(Collectors.toList());
+                chemoSummaryCY = CYChemo(chemoResult, chemoResult, chemoSummary);
+            } else if (rt.getTemplate_name().contains("湖南肿瘤")) {
+                // 湖南肿瘤化疗删除3级的联药 3级单药要保留
+                chemoResult = chemoResult.stream().filter(s -> !(Arrays.asList("3", "4").contains(s.get("evidence")) && s.get("drug_name_chinese").toString().contains("+"))).collect(Collectors.toList());
+                chemoSummary = ChemoJsonUtil2.getChemoSummary(chemoResult, chem_cancer, rt.getTemplate_name());
+            }/* else if (rt.getTemplate_name().contains("基智远")) {
+                chemoResult = chemoResult.stream().filter(s -> Arrays.asList("铂类","氟尿嘧啶类","环磷酰胺","伊立替康").contains(s.get("drug_class").toString()) && !s.get("drug_name_chinese").toString().contains("+")).collect(Collectors.toList());
+                chemoSummary = ChemoJsonUtil2.getChemoSummary(chemoResult, chem_cancer, rt.getTemplate_name());
+            }*/
+            // 化疗解析
+            chemoAnalysis = ChemoJsonUtil2.getChemoAnalysis(chemoResult);
+        }
+        rt.setChemoSummary(chemoSummary);
+        rt.setChemoSummaryCY(chemoSummaryCY);
+        rt.setChemoAnalysis(chemoAnalysis);
+
+        // 旧版化疗逻辑输出
+        String chemoJson = "";
+        if (chem.isEmpty()) {
+            List<String> chemoJsonList = analysisReportDao.getChemoJson(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            if (!chemoJsonList.isEmpty() && !"".equals(chemoJsonList.get(0))) {
+                chemoJson = chemoJsonList.get(0);
+            }
+        } else {
+            // 重写化疗调取逻辑，方便癌种更换调取
+            List<Map<String, Object>> chemicalData = analysisReportDao.getChemicalData2(); // 使用新版化疗数据
+            chemoJson = ChemoJsonUtil.getChemoResult(chemicalData, chem, chem_cancer);
+            ChemJson chemJson = new ChemJson();
+            chemJson.setReport_id(reportId);
+            chemJson.setSubbarcode(sf.getSubbarcode());
+            chemJson.setDisease_name(chem_cancer);
+            chemJson.setChe_json(chemoJson);
+            chemJson.setChecked_by(pr.getAnalyzer());
+            chemJson.setChecked_date(DateUtil.getSystemTime());
+            chemJsonDao.insertChemJson(chemJson);
+        }
+        if (!"".equals(chemoJson)) {
+            boolean json = isJson(chemoJson);
+            if (json) {
+                Map chemo = gson.fromJson(chemoJson, Map.class);
+                if (!CollectionUtils.isEmpty(chemo)) {
+                    thisChemo = chemo.get("化疗药物毒副作用风险及有效性预测") == null ? null
+                            : (List<List<String>>) ((Map) chemo.get("化疗药物毒副作用风险及有效性预测")).get("本癌种");
+                    unknownChemo = chemo.get("化疗药物毒副作用风险及有效性预测") == null ? null
+                            : (List<List<String>>) ((Map) chemo.get("化疗药物毒副作用风险及有效性预测")).get("未区分癌种");
+                    effectivenessChemo = chemo.get("化疗药物检测解析") == null ? null
+                            : (List<List<String>>) ((Map) chemo.get("化疗药物检测解析")).get("Effectiveness");
+                    sideEffectsChemo = chemo.get("化疗药物检测解析") == null ? null
+                            : (List<List<String>>) ((Map) chemo.get("化疗药物检测解析")).get("SideEffects");
+                    referenceRecommendation = chemo.get("伊立替康用药剂量参考") == null ? null
+                            : (List<List<String>>) ((Map) chemo.get("伊立替康用药剂量参考")).get("Dosage");
+                }
+                // *********本癌种*********
+                if (thisChemo != null) {
+                    for (int i = 0; i < thisChemo.size(); i++) {
+                        Map chemoSideeffectsEffectiveness = new HashMap();
+                        List<String> list2 = thisChemo.get(i);
+                        if (i == 0) {
+                            chemoSideeffectsEffectiveness.put("isTitle", true);
+                        } else {
+                            chemoSideeffectsEffectiveness.put("isTitle", false);
+                        }
+                        chemoSideeffectsEffectiveness.put("content1", list2.get(0));
+                        chemoSideeffectsEffectiveness.put("content2", list2.get(1));
+                        chemoSideeffectsEffectiveness.put("content3", list2.get(2));
+                        chemoSideeffectsEffectivenessStr.add(chemoSideeffectsEffectiveness);
+                    }
+                }
+
+                // *********未区分癌种*********
+                if (unknownChemo != null) {
+                    for (int i = 0; i < unknownChemo.size(); i++) {
+                        Map chemoSideeffectsEffectiveness = new HashMap();
+                        List<String> list2 = unknownChemo.get(i);
+                        if (i == 0) {
+                            chemoSideeffectsEffectiveness.put("isTitle", true);
+                        } else {
+                            chemoSideeffectsEffectiveness.put("isTitle", false);
+                        }
+                        chemoSideeffectsEffectiveness.put("content1", list2.get(0));
+                        chemoSideeffectsEffectiveness.put("content2", list2.get(1));
+                        chemoSideeffectsEffectiveness.put("content3", list2.get(2));
+                        chemoSideeffectsEffectivenessStr.add(chemoSideeffectsEffectiveness);
+                    }
+                }
+                // （银丰-华西）不需要多药物展示
+                if (rt.getTemplate_name().contains("银丰-华西")) {
+                    Iterator<Map> it = chemoSideeffectsEffectivenessStr.iterator();
+                    while (it.hasNext()) {
+                        Map b = it.next();
+                        String content1 = b.get("content1").toString();
+                        if (content1.contains("+") || content1.contains("/")) {
+                            it.remove();
+                        } else {
+                            chemoSingleDrugset.add(content1);
+                        }
+                    }
+                }
+                rt.setChemoSideeffectsEffectivenessStr(chemoSideeffectsEffectivenessStr);
+                rt.setCrGeneCount(String.valueOf(crGeneCount));
+            } else {
+                List<String> chemoArray = Arrays.asList(chemoJson.split("\",\""));
+                Map irinotecanDrugAnnotation = new HashMap();
+                irinotecanDrugAnnotation.put("content1", chemoArray.get(1));
+                irinotecanDrugAnnotation.put("content2", chemoArray.get(2));
+                irinotecanDrugAnnotation.put("content3", chemoArray.get(3));
+                irinotecanDrugAnnotation.put("content4", chemoArray.get(4));
+                irinotecanDrugAnnotation.put("content5", chemoArray.get(5));
+                irinotecanDrugAnnotationStr.add(irinotecanDrugAnnotation);
+            }
+            rt.setIrinotecanDrugAnnotationStr(irinotecanDrugAnnotationStr);
+        }
+
+        //伊立替康用药剂量
+        List<Map> referenceRecommendationStr = new ArrayList<Map>();
+        if (referenceRecommendation != null) {
+            for (int i = 0; i < referenceRecommendation.size(); i++) {
+                Map referenceRecommendations = new HashMap();
+                List<String> list2 = referenceRecommendation.get(i);
+                if (i == 0) {
+                    referenceRecommendations.put("isTitle", true);
+                } else {
+                    referenceRecommendations.put("isTitle", false);
+                }
+                referenceRecommendations.put("content1", list2.get(0));
+                referenceRecommendations.put("content2", list2.get(1));
+                referenceRecommendationStr.add(referenceRecommendations);
+            }
+        }
+        rt.setReferenceRecommendationStr(referenceRecommendationStr);
+
+        // ***********化疗药物检测解析***********
+        // ***********化疗药物毒副作用风险解析*************
+        if (sideEffectsChemo != null) {
+            List<Map> chemoSideeffectsStr = new ArrayList<Map>();
+            for (int i = 0; i < sideEffectsChemo.size(); i++) {
+                List<String> list2 = sideEffectsChemo.get(i);
+                Map chemoSideeffects = new HashMap();
+                Map irinotecanDrugAnnotationLDT = new HashMap();
+                if (i == 0) {
+                    chemoSideeffects.put("isFirstLine", true);
+                    chemoSideeffects.put("isMerge", false);
+                    chemoSideeffects.put("category", list2.get(0));
+                    chemoSideeffects.put("chemotherapyDrugs", list2.get(1));
+                    chemoSideeffects.put("detectionGene", list2.get(2));
+                    chemoSideeffects.put("detectionSite", list2.get(3));
+                    chemoSideeffects.put("detectionResult", list2.get(4));
+                    chemoSideeffects.put("medicationTips", list2.get(5));
+                    chemoSideeffects.put("grade", list2.get(6));
+                } else {
+                    chemoSideeffects.put("isFirstLine", false);
+                    if ("-".equals(list2.get(0))) {
+                        chemoSideeffects.put("isMerge", true);
+                        chemoSideeffects.put("category", list2.get(1));
+                    } else {
+                        chemoSideeffects.put("isMerge", false);
+                        chemoSideeffects.put("category", list2.get(0));
+                        chemoSideeffects.put("chemotherapyDrugs", list2.get(1));
+                    }
+                    chemoSideeffects.put("detectionGene", list2.get(2));
+                    chemoSideeffects.put("detectionSite", list2.get(3));
+                    chemoSideeffects.put("detectionResult", list2.get(4));
+                    chemoSideeffects.put("medicationTips", list2.get(5));
+                    chemoSideeffects.put("grade", list2.get(6));
+                    if ("UGT1A1".equals(list2.get(2))) {
+                        irinotecanDrugAnnotationLDT.put("category", list2.get(1));
+                        irinotecanDrugAnnotationLDT.put("detectionGene", list2.get(2));
+                        irinotecanDrugAnnotationLDT.put("detectionSite", list2.get(3));
+                        irinotecanDrugAnnotationLDT.put("detectionResult", list2.get(4));
+                        irinotecanDrugAnnotationLDT.put("medicationTips", list2.get(5));
+                        irinotecanDrugAnnotationLDT.put("grade", list2.get(6));
+                        irinotecanDrugAnnotationLDTStr.add(irinotecanDrugAnnotationLDT);
+                    }
+                    //（银丰-华西）化疗解析包含化疗小结单药物标色
+                    chemoSideeffects.put("color", false);
+                    if (!chemoSingleDrugset.isEmpty()) {
+                        for (String chemoSingle : chemoSingleDrugset) {
+                            if (list2.get(1).contains(chemoSingle)) {
+                                chemoSideeffects.put("color", true);
+                                break;
+                            }
+                        }
+                    }
+                }
+                chemoSideeffectsStr.add(chemoSideeffects);
+                chemoGeneSet.add(list2.get(2));
+            }
+            rt.setChemoSideeffectsStr(chemoSideeffectsStr);
+        }
+
+        // ***********化疗药物有效性解析*************
+        if (effectivenessChemo != null) {
+            List<Map> chemoEffectivenessStr = new ArrayList<Map>();
+            for (int i = 0; i < effectivenessChemo.size(); i++) {
+                Map chemoEffectiveness = new HashMap();
+                Map irinotecanDrugAnnotationLDT = new HashMap();
+                List<String> list2 = effectivenessChemo.get(i);
+                if (effectivenessChemo.size() > 1) {
+                    chemoEffectiveness.put("isElement", true);
+                }
+                if (i == 0) {
+                    chemoEffectiveness.put("isFirstLine", true);
+                    chemoEffectiveness.put("isMerge", false);
+                    chemoEffectiveness.put("category", list2.get(0));
+                    chemoEffectiveness.put("chemotherapyDrugs", list2.get(1));
+                    chemoEffectiveness.put("detectionGene", list2.get(2));
+                    chemoEffectiveness.put("detectionSite", list2.get(3));
+                    chemoEffectiveness.put("detectionResult", list2.get(4));
+                    chemoEffectiveness.put("medicationTips", list2.get(5));
+                    chemoEffectiveness.put("grade", list2.get(6));
+                } else {
+                    chemoEffectiveness.put("isFirstLine", false);
+                    if ("-".equals(list2.get(0))) {
+                        chemoEffectiveness.put("isMerge", true);
+                        chemoEffectiveness.put("category", list2.get(1));
+                    } else {
+                        chemoEffectiveness.put("isMerge", false);
+                        chemoEffectiveness.put("category", list2.get(0));
+                        chemoEffectiveness.put("chemotherapyDrugs", list2.get(1));
+                    }
+                    chemoEffectiveness.put("detectionGene", list2.get(2));
+                    chemoEffectiveness.put("detectionSite", list2.get(3));
+                    chemoEffectiveness.put("detectionResult", list2.get(4));
+                    chemoEffectiveness.put("medicationTips", list2.get(5));
+                    chemoEffectiveness.put("grade", list2.get(6));
+                    if ("UGT1A1".equals(list2.get(2))) {
+                        irinotecanDrugAnnotationLDT.put("category", list2.get(1));
+                        irinotecanDrugAnnotationLDT.put("detectionGene", list2.get(2));
+                        irinotecanDrugAnnotationLDT.put("detectionSite", list2.get(3));
+                        irinotecanDrugAnnotationLDT.put("detectionResult", list2.get(4));
+                        irinotecanDrugAnnotationLDT.put("medicationTips", list2.get(5));
+                        irinotecanDrugAnnotationLDTStr.add(irinotecanDrugAnnotationLDT);
+                    }
+                    //（银丰-华西）化疗解析包含化疗小结单药物标色
+                    chemoEffectiveness.put("color", false);
+                    if (!chemoSingleDrugset.isEmpty()) {
+                        for (String chemoSingle : chemoSingleDrugset) {
+                            if (list2.get(1).contains(chemoSingle)) {
+                                chemoEffectiveness.put("color", true);
+                                break;
+                            }
+                        }
+                    }
+                }
+                chemoEffectivenessStr.add(chemoEffectiveness);
+                chemoGeneSet.add(list2.get(2));
+            }
+            rt.setChemoEffectivenessStr(chemoEffectivenessStr);
+        }
+        rt.setIrinotecanDrugAnnotationLDTStr(irinotecanDrugAnnotationLDTStr);
+        rt.setChemoGeneSet(chemoGeneSet);
+
+        //******************附录中的样本质控情况********************
+        Map sampleQualityControl = new HashMap();
+        if (isblood) {
+            sampleQualityControl.put("type", "isblood");
+        } else {
+            sampleQualityControl.put("type", "tissue");
+        }
+        rt.setSampleQualityControl(sampleQualityControl);
+        sb.delete(0, sb.length());
+        rt.setParentDiseaseIDList(parentdiseaseIdList);
+        rt.setDiseaseIDList(diseaseIdList);
+        rt.setAllGeneSet(allGeneSet);
+
+        //免疫正负相关基因检测结果解析
 //		List<Map> immunoregulation = analysisReportDao.getImmuneRelatedGene("immunoregulation");
 //		List<Map> immunoregulationInfo = getImmunityData(immunoregulation,reportId,siteNotReported);
 //		rt.setImmunoregulationInfo(immunoregulationInfo);
@@ -890,400 +2342,3117 @@ public class PyReportServiceImpl implements PyReportService {
 //			getDrugDetectionData(targetedDrugDetectionStr,immDrugDetectionStr,immunoregulation);
 //		}
 //		rt.setImmDrugDetectionStr(immDrugDetectionStr);
-		
-		String[] split = currentNgsAvailable.getProduct_name().split("_");
-		boolean isSingleSample = false;
-		if(split[1].indexOf("1") != -1) {
-			isSingleSample = true;
-		}
-		rt.setSingleSample(isSingleSample);
-		
-		String dataToJson = dataToJson(crAllList,list,sf,dMMRinfo,summaryOfRresults,currentNgsAvailable.getReport_id());
-		analysisReportDao.updateReportDetail(dataToJson, currentNgsAvailable.getReport_id());
-		
-		
-		Map tmbMap = new HashMap();
-		String TMBGene = isblood ? "bTMB":"TMB";
-		tmbMap.put("gene", TMBGene);
-		tmbMap.put("variant", tmb_status);
-		tmbMap.put("ori_variant", tmb_status);
-		Map tmbanalysisOfImmuneTestResults = getAnalysisOfImmuneTestResults(sb,tmbMap,user.getUser_account(), diseaseId, diseaseIdList, parentdiseaseIdList,lang);
-		rt.setTmbanalysisOfImmuneTestResults(tmbanalysisOfImmuneTestResults);
-		
-		Map msiMap = new HashMap();
-		msiMap.put("gene", "MSI");
-		String msiVariant = "";
-		if(msi_status.equals("POS") || msi_status.equals("MSI-H") || msi_status.equals("Unstable") || msi_status.equals("unstable")) {
-			msiVariant = "MSI-H";
-		}else if(msi_status.equals("MSS") || msi_status.equals("NEG") || msi_status.equals("stable") || msi_status.equals("Stable")) {
-			msiVariant = "MSS";
-		}else {
-			msiVariant = "MSI-Ambiguous";
-		}
-		msiMap.put("variant", msiVariant);
-		msiMap.put("ori_variant", msiVariant);
-		Map msianalysisOfImmuneTestResults = getAnalysisOfImmuneTestResults(sb,msiMap,user.getUser_account(), diseaseId, diseaseIdList, parentdiseaseIdList,lang);
-		rt.setMsianalysisOfImmuneTestResults(msianalysisOfImmuneTestResults);
-		
-		AnalysisReport analysisReport=null;
-		String status = null;
-		try {
-			analysisReport = PyAnalysisReportTemplateUtil.getFreeMarker(response,request,rt,session,pr);
-			if(analysisReport.getReport_filename() == null || analysisReport.getReport_file_path() == null) {
-				return -1;
-			}else {
-				status = analysisReportDao.getStatusByReportId(analysisReport.getReport_id());
-				if(status==null){
-					status = "";
-				}
-				if(!"报告审核通过".equals(status) && !status.contains("报告发送成功")){
-					status="报告生成成功";
-				}
-			}
-		} catch (Exception e) {
-			if(status!=null && !"报告审核通过".equals(status) && !status.contains("报告发送成功")){
-				status="报告生成失败";
-			}
-			e.printStackTrace();
-			return -1;
-		}
-		analysisReport.setStatus(status);
-		analysisReport.setUser(user.getUser_account());
-		analysisReportDao.updateAnalysisReport(analysisReport);
-		return reportId;
-	}
-	
-	public List<Map> getDrugDetectionData(List<Map> targetedDrugDetectionStr,List<Map> DrugDetectionStr,List<Map> geneList) {
-		if(targetedDrugDetectionStr != null) {
-			for (Map map : targetedDrugDetectionStr) {
-				String gene = map.get("gene").toString();
-				for (Map map2 : geneList) {
-					String Gene = map2.get("gene") == null ? "":map2.get("gene").toString();
-					if(Gene.equals(gene)) {
-						DrugDetectionStr.add(map);
-						continue;
-					}
-				}
-			}
-		}
-		return DrugDetectionStr;
-	}
-	
-	public List<Map> getDrugName(String DrugType,List<Map> drugList,List<Map> clinicalList) {
-		List<Map> drugNameList = new ArrayList<Map>();
-		for (Map map2 : drugList) {
-			Map map = new HashMap();
-			String cfda = map2.get("cfda").toString();
-			String drug_name = map2.get("drug_name").toString();
-			drug_name = isAddSymbol(drug_name, cfda, clinicalList);
-			String approve_range = map2.get("approve_range") == null ? "" : map2.get("approve_range").toString();
-			String approval_desc = map2.get("approval_desc") == null ? "" : map2.get("approval_desc").toString();
-			String other_test_required = map2.get("other_test_required") == null ? "" : map2.get("other_test_required").toString();
-			if (DrugType.equals(approve_range)) {
-				map.put("name", drug_name);
-				if (StringUtils.isNotEmpty(approval_desc)) {
-					map.put("isbold", true);
-				} else {
-					map.put("isbold", false);
-				}
-				if(other_test_required.equals("1")) {
-					map.put("isRed", true);
-				}else {
-					map.put("isRed", false);
-				}
-				drugNameList.add(map);
-			}
-		}
-		return drugNameList;
-	}
-	
-	public boolean getFlagDrugName(List<Map> drugNameList) {
-		boolean flag = false;
-		for (Map map : drugNameList) {
-			boolean isRed = (boolean) map.get("isRed");
-			if(isRed) {
-				flag = true;
-				break;
-			}
-		}
-		return flag;
-	}
-	
-	public static String isAddSymbol(String drug_name_chinese,String cfda,List<Map> clinicalList) {
-		List<String> drugNameChineseAll = new ArrayList<String>();
-		boolean flag = false;
-		for (Map clinical : clinicalList) {
-			String drugNameChinese = clinical.get("drug_name") == null ? "" : clinical.get("drug_name").toString();
-			drugNameChineseAll.add(drugNameChinese);
-		}
-		if(drugNameChineseAll.contains(drug_name_chinese)) {
-			flag = true;
-		}
-		if ("1".equals(cfda)) {
-			drug_name_chinese += "*";
-		}
-		if(flag) {
-			drug_name_chinese += "#";
-		}
-		return drug_name_chinese;
-	}
-	
-	// 翻译样本类型
-	private String tranlateSampleType(String sample_type) {
-		switch(sample_type) {
-			case "blood": return "血液";
-			case "tissue": return "组织";
-			default: return sample_type;
-		}
-	}
-	
-	public String transferOriVariant(String ori_variant) {
-		return ori_variant.replaceFirst(" \\.$", "");
-	}
-	
-	public String removeMutations(String str) {
+
+        boolean isSingleSample = false;
+        /*if (currentNgsAvailable.getProduct_name().indexOf("_") != -1) { // 和部分模板上代码有冲突，列如（中国人群BRCA12基因分子分型研究_胚系）中遗传变异解析模块不输出
+            String[] split = currentNgsAvailable.getProduct_name().split("_");
+            if (split[1].indexOf("1") != -1) {
+                isSingleSample = true;
+            }
+        }*/
+        rt.setSingleSample(isSingleSample);
+
+        Map tmbMap = new HashMap();
+        String TMBGene = isblood ? "bTMB" : "TMB";
+        tmbMap.put("gene", TMBGene);
+        tmbMap.put("variant", tmb_status);
+        tmbMap.put("ori_variant", tmb_status);
+        Map tmbanalysisOfImmuneTestResults = getAnalysisOfImmuneTestResults(sb, tmbMap, user_account, diseaseId, diseaseIdList, parentdiseaseIdList, lang, rt.getTemplate_name(), reportId);
+        rt.setTmbanalysisOfImmuneTestResults(tmbanalysisOfImmuneTestResults);
+
+        Map msiMap = new HashMap();
+        msiMap.put("gene", "MSI");
+        String msiVariant = "";
+        if (msi_status.equals("POS") || msi_status.equals("MSI-H") || msi_status.equals("Unstable") || msi_status.equals("unstable")) {
+            msiVariant = "MSI-H";
+        } else if (msi_status.equals("MSS") || msi_status.equals("NEG") || msi_status.equals("stable") || msi_status.equals("Stable")) {
+            msiVariant = "MSS";
+        } else {
+            msiVariant = "MSI-Ambiguous";
+        }
+        msiMap.put("variant", msiVariant);
+        msiMap.put("ori_variant", msiVariant);
+        Map msianalysisOfImmuneTestResults = getAnalysisOfImmuneTestResults(sb, msiMap, user_account, diseaseId, diseaseIdList, parentdiseaseIdList, lang, rt.getTemplate_name(), reportId);
+        rt.setMsianalysisOfImmuneTestResults(msianalysisOfImmuneTestResults);
+
+        // 同源重组缺陷状态HRD HRD-Positive
+        Map hrdMap = new HashMap();
+        hrdMap.put("gene", "HRD");
+        hrdMap.put("variant", "HRD-Positive");
+        hrdMap.put("ori_variant", "HRD-Positive");
+        Map hrdanalysisOfImmuneTestResults = getAnalysisOfImmuneTestResults(sb, hrdMap, user_account, diseaseId, diseaseIdList, parentdiseaseIdList, lang, rt.getTemplate_name(), reportId);
+        rt.setHrdanalysisOfImmuneTestResults(hrdanalysisOfImmuneTestResults);
+
+        // 同源重组缺陷状态提示
+        List<Map> brcaCheckLineStr = new ArrayList<Map>();
+        boolean brca = false;
+        for (Map map : crCheckLineStr) {
+            String gene = map.get("Gene").toString();
+            String clinical_significance = map.get("Clinical_significance").toString();
+            if ("BRCA1".equals(gene) || "BRCA2".equals(gene)) {
+                if ("致病性变异".equals(clinical_significance) || "可能致病性变异".equals(clinical_significance)) {
+                    brca = true;
+                    String Exon = map.get("Exon") == null ? "" : map.get("Exon").toString();
+                    if (StringUtils.isNumeric(Exon)) {
+                        map.put("Exon", "exon" + Exon);
+                    }
+                    String pHGVS = map.get("pHGVS") == null ? "" : map.get("pHGVS").toString();
+                    if (StringUtils.isEmpty(pHGVS) || "NA".equals(pHGVS)) {
+                        map.put("pHGVS",".");
+                    }
+                    brcaCheckLineStr.add(map);
+                }
+            }
+        }
+        for (Map map : list) {
+            List<Map> drugList = map.get("drugList") == null ? null : (List<Map>) map.get("drugList");
+            if (!CollectionUtils.isEmpty(drugList)) {
+                String gene = map.get("gene").toString();
+                String has_drug = map.get("has_drug") == null ? "" : map.get("has_drug").toString();
+                if (("BRCA1".equals(gene) || "BRCA2".equals(gene)) && has_drug.equals("")) {
+                    Map map1 = new HashMap();
+                    map1.put("Gene", gene);
+                    String ori_variant = map.get("ori_variant").toString();
+                    String ori_variant_split = removeMutations(transferOriVariant(ori_variant));
+                    map1.put("ori_variant", ori_variant_split);
+                    if (!ori_variant_split.equals("Amplification") && ori_variant_split != null && !ori_variant_split.contains("Fusion")) {
+                        String[] splits = ori_variant_split.split(" ");
+                        map1.put("Transcript", splits[0]);
+                        map1.put("Exon", splits[1]);
+                        map1.put("cHGVS", splits[2]);
+                        if (splits.length >= 4) {
+                            String pHGVS = ori_variant_split.substring(ori_variant_split.indexOf("p."));
+                            map1.put("pHGVS", pHGVS);
+                        } else {
+                            map1.put("pHGVS", ".");
+                        }
+                    } else {
+                        map1.put("Transcript", ".");
+                        map1.put("Exon", ".");
+                        map1.put("cHGVS", ori_variant_split);
+                        map1.put("pHGVS", ".");
+                    }
+                    String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
+                    mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
+                    map1.put("Zygosity", mutFreq);
+                    map1.put("Clinical_significance", "有害变异");
+                    brca = true;
+                    brcaCheckLineStr.add(map1);
+                }
+            }
+        }
+        rt.setBrcaCheckLineStr(brcaCheckLineStr);
+        Map mmHrd = moduleModificationAllDao.selectMmHrdByReportId(currentNgsAvailable.getReport_id());
+        if (!CollectionUtils.isEmpty(mmHrd)) {
+            summaryOfRresults.put("hrdBRCAState", mmHrd.get("hrd_brca_state") == null ? "" : mmHrd.get("hrd_brca_state").toString());
+            summaryOfRresults.put("hrdScore", mmHrd.get("hrd_score").toString());
+            summaryOfRresults.put("hrdState", mmHrd.get("hrd_state").toString());
+        } else {
+            String HRDScore = analysisReportDao.getHRD_sum(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            if (StringUtils.isNotEmpty(HRDScore)) {
+                if (brca) {
+                    summaryOfRresults.put("hrdBRCAState", "检测到该肿瘤患者存在BRCA基因致病或可能致病性变异");
+                } else {
+                    summaryOfRresults.put("hrdBRCAState", "未检测到该肿瘤患者存在BRCA基因致病或可能致病性变异");
+                }
+                summaryOfRresults.put("hrdScore", HRDScore);
+                if (Integer.valueOf(HRDScore) >= 43 || brca) {
+                    summaryOfRresults.put("hrdState", "阳性");
+                } else {
+                    summaryOfRresults.put("hrdState", "阴性");
+                }
+            }
+        }
+
+        // 免疫新抗原检测结果
+        List<Map> neoantigen = analysisReportDao.getNeoantigen(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        rt.setNeoantigen(neoantigen);
+        summaryOfRresults.put("neoantigenSize", neoantigen.size());
+
+        // HLA-I杂合性缺失检测
+        List<Map> lohhla = analysisReportDao.getLohhla(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        rt.setLohhla(lohhla);
+        summaryOfRresults.put("lohhlaSize", lohhla.size());
+        String HLA = "-";
+        for (Map map : lohhla) {
+            String deletion_state = map.get("deletion_state").toString();
+            if ("阳性".equals(deletion_state)) {
+                HLA = "检出HLA杂合性缺失";
+                break;
+            }
+        }
+        if (!"检出HLA杂合性缺失".equals(HLA)) {
+            for (Map map : lohhla) {
+                String deletion_state = map.get("deletion_state").toString();
+                if ("阴性".equals(deletion_state)) {
+                    HLA = "未检出HLA杂合性缺失";
+                    break;
+                }
+            }
+        }
+        summaryOfRresults.put("HLA", HLA);
+        // I类相关的新抗原检测结果详情
+        List<Map> neoantigen1 = analysisReportDao.getNeoantigen_I(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        // HLA-II类相关的新抗原检测结果详情
+        List<Map> neoantigen2 = analysisReportDao.getNeoantigen_II(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        rt.setNeoantigen1(neoantigen1);
+        rt.setNeoantigen2(neoantigen2);
+        List<Map> clonalNeoantigen1 = neoantigen1.stream().filter(map -> "Clonal".equals(map.get("clonality"))).collect(Collectors.toList());//克隆性肿瘤新抗原
+        List<Map> clonalNeoantigen2 = neoantigen2.stream().filter(map -> "Clonal".equals(map.get("clonality"))).collect(Collectors.toList());//克隆性肿瘤新抗原
+        summaryOfRresults.put("neoantigen1Size", neoantigen1.size());
+        summaryOfRresults.put("neoantigen2Size", neoantigen2.size());
+        summaryOfRresults.put("neoantigenAllSize", neoantigen1.size() + neoantigen2.size());
+        summaryOfRresults.put("clonalNeoantigen", clonalNeoantigen1.size() + clonalNeoantigen2.size());
+
+        // CNV_BE模块
+        List<Map> cnvBe = analysisReportDao.getCnvBe(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        rt.setCnvBe(cnvBe);
+
+        // 全外显子基因突变结果
+        List<Map> wesMutation = analysisReportDao.getWesMutation(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        if (rt.getTemplate_name().contains("迪安"))
+        for (Map map : wesMutation) {
+            String impact = map.get("impact").toString();
+            map.put("impact", translateMutType(impact));
+        }
+        rt.setWesMutation(wesMutation);
+        summaryOfRresults.put("wesMutationSize", wesMutation.size());
+
+        // PD-L1检测结果
+        Map pd = analysisReportDao.getPDInfo(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        if (pd != null && pd.size() > 0) {
+            String detect_antibody = pd.get("Detect_antibody").toString();
+            String[] detect_antibodys = detect_antibody.split(" ");
+            if (detect_antibodys.length == 2) {
+                pd.put("antibody", detect_antibodys[1]);
+            }
+            // 获取图片
+            String he_PIC = analysisReportDao.getHE_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            String yangkong_PIC = analysisReportDao.getYangkong_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            String yinkong_PIC = analysisReportDao.getYinkong_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            String pd_PIC = analysisReportDao.getPD_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            if (he_PIC != null && !"".equals(he_PIC)) {
+                pd.put("he_PIC_status", true);
+                pd.put("he_PIC", he_PIC);
+            } else {
+                pd.put("he_PIC_status", false);
+            }
+            if (yangkong_PIC != null && !"".equals(yangkong_PIC)) {
+                pd.put("yangkong_PIC_status", true);
+                pd.put("yangkong_PIC", yangkong_PIC);
+            } else {
+                pd.put("yangkong_status", false);
+            }
+            if (yinkong_PIC != null && !"".equals(yinkong_PIC)) {
+                pd.put("yinkong_PIC_status", true);
+                pd.put("yinkong_PIC", yinkong_PIC);
+            } else {
+                pd.put("yinkong_PIC_status", false);
+            }
+            if (pd_PIC != null && !"".equals(pd_PIC)) {
+                pd.put("pd_PIC_status", true);
+                pd.put("pd_PIC", pd_PIC);
+            } else {
+                pd.put("pd_PIC_status", false);
+            }
+            // 获取PD-L1表达阳性阈值（表格）
+            List<Map> pdInfoTable = analysisReportDao.getPDInfoTable();
+            pd.put("pdInfoTable", pdInfoTable);
+            List<Map> pdInfoTable2 = analysisReportDao.getPDInfoTable2();
+            List<List<Map>> groupList = new ArrayList<>();
+            pdInfoTable2.stream().collect(Collectors.groupingBy(map->map.get("disease_name"), Collectors.toList())).
+                    forEach((map, fooListByDiseaseName) -> {
+                        groupList.add(fooListByDiseaseName);});
+            pd.put("pdInfoTable2", groupList);
+            /*if (pd.containsKey("antibody")) {
+                String antibody = pd.get("antibody").toString();
+                List<Map> pdInfoTable = analysisReportDao.getPDInfoTable(antibody);
+                pd.put("pdInfoTable", pdInfoTable);
+                for (Map map : pdInfoTable) {
+                    if (map.get("superscript") != null) {
+                        pd.put("superscript_remark", true);
+                        break;
+                    }
+                }
+            }*/
+        }
+        rt.setPDInfo(pd);
+
+        // her2
+        Map her2 = analysisReportDao.getHer2(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        if (her2 != null && her2.size() > 0) {
+            // 获取图片
+            String her2_PIC = analysisReportDao.getHer2_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            String ihc_PIC = analysisReportDao.getIhc_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            if (her2_PIC != null && !"".equals(her2_PIC)) {
+                her2.put("her2_PIC_status", true);
+                her2.put("her2_PIC", her2_PIC);
+            } else {
+                her2.put("her2_PIC_status", false);
+            }
+            if (ihc_PIC != null && !"".equals(ihc_PIC)) {
+                her2.put("ihc_PIC_status", true);
+                her2.put("ihc_PIC", ihc_PIC);
+            } else {
+                her2.put("ihc_PIC_status", false);
+            }
+        }
+        rt.setHer2(her2);
+        // met
+        Map met = analysisReportDao.getMet(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        if (met != null && met.size() > 0) {
+            // 获取图片
+            String met_PIC = analysisReportDao.getMet_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            if (met_PIC != null && !"".equals(met_PIC)) {
+                met.put("met_PIC_status", true);
+                met.put("met_PIC", met_PIC);
+            } else {
+                met.put("met_PIC_status", false);
+            }
+        }
+        rt.setMet(met);
+
+        // 阅微乳腺癌21
+        if ("breastcancer_21".equals(product_name)) {
+            Map bc = new HashMap();
+            List<Map> ctValue = analysisReportDao.getCtValue(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            List<Map> nnm = analysisReportDao.getNNM(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            for (Map map : ctValue) {
+                bc.put(map.get("Gene").toString().replace("-", "_"), map.get("Ct_value"));
+            }
+            for (Map map : nnm) {
+                String status = map.get("status").toString();
+                if ("A型".equals(status)) {
+                    bc.put("aStatus", status);
+                    bc.put("aScore", map.get("score").toString());
+                    bc.put("aRisk", map.get("risk").toString());
+                } else { // B型
+                    bc.put("bStatus", status);
+                    bc.put("bScore", map.get("score").toString());
+                    bc.put("bRisk", map.get("risk").toString());
+                }
+            }
+            String nnmAPic = analysisReportDao.getNNM_A_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            String nnmBPic = analysisReportDao.getNNM_B_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            String image1Pic = analysisReportDao.getImage1_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            String image4Pic = analysisReportDao.getImage4_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            if (!StringUtils.isEmpty(nnmAPic)) {
+                bc.put("nnmAPic_status", true);
+                bc.put("nnmAPic", nnmAPic);
+            } else {
+                bc.put("nnmAPic_status", false);
+            }
+            if (!StringUtils.isEmpty(nnmBPic)) {
+                bc.put("nnmBPic_status", true);
+                bc.put("nnmBPic", nnmBPic);
+            } else {
+                bc.put("nnmBPic_status", false);
+            }
+            if (!StringUtils.isEmpty(image1Pic)) {
+                bc.put("image1Pic_status", true);
+                bc.put("image1Pic", image1Pic);
+            } else {
+                bc.put("image1Pic_status", false);
+            }
+            if (!StringUtils.isEmpty(image4Pic)) {
+                bc.put("image4Pic_status", true);
+                bc.put("image4Pic", image4Pic);
+            } else {
+                bc.put("image4Pic_status", false);
+            }
+            rt.setBc(bc);
+        }
+        // 阅微MSI
+        if ("msi".equals(product_name)) {
+            List<Map> microsatelliteInstability = analysisReportDao.getMicrosatelliteInstability(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            if (microsatelliteInstability.size() > 0) {
+                Map yw = microsatelliteInstability.get(0);
+                String normal_tissue_STR = yw.get("normal_tissue_STR").toString();
+                if (!StringUtils.isEmpty(normal_tissue_STR)) {
+                    List<Map> normal_tissue_str = new ArrayList<>();
+                    String[] split = normal_tissue_STR.split(";");
+                    for (String s : split) {
+                        String[] split2 = s.split(",");
+                        Map str = new HashMap();
+                        str.put("Marker", split2[0]);
+                        str.put("Size1", split2.length >= 2 ? split2[1] : "");
+                        str.put("Size2", split2.length >= 3 ? split2[2] : "");
+                        str.put("Size3", split2.length >= 4 ? split2[3] : "");
+                        str.put("Size4", split2.length >= 5 ? split2[4] : "");
+                        str.put("Size5", split2.length >= 6 ? split2[5] : "");
+                        str.put("Size6", split2.length >= 7 ? split2[6] : "");
+                        normal_tissue_str.add(str);
+                    }
+                    yw.put("normal_tissue_str", normal_tissue_str);
+                }
+                String tumour_tissue_STR = yw.get("tumour_tissue_STR").toString();
+                if (!StringUtils.isEmpty(tumour_tissue_STR)) {
+                    List<Map> tumour_tissue_str = new ArrayList<>();
+                    String[] split = tumour_tissue_STR.split(";");
+                    for (String s : split) {
+                        String[] split2 = s.split(",");
+                        Map str = new HashMap();
+                        str.put("Marker", split2[0]);
+                        str.put("Size1", split2.length >= 2 ? split2[1] : "");
+                        str.put("Size2", split2.length >= 3 ? split2[2] : "");
+                        str.put("Size3", split2.length >= 4 ? split2[3] : "");
+                        str.put("Size4", split2.length >= 5 ? split2[4] : "");
+                        str.put("Size5", split2.length >= 6 ? split2[5] : "");
+                        str.put("Size6", split2.length >= 7 ? split2[6] : "");
+                        tumour_tissue_str.add(str);
+                    }
+                    yw.put("tumour_tissue_str", tumour_tissue_str);
+                }
+                String normalPic = analysisReportDao.getNormal_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+                String tumorPic = analysisReportDao.getTumor_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+                if (!StringUtils.isEmpty(normalPic)) {
+                    yw.put("normalPic_status", true);
+                    yw.put("normalPic", normalPic);
+                } else {
+                    yw.put("normalPic_status", false);
+                }
+                if (!StringUtils.isEmpty(tumorPic)) {
+                    yw.put("tumorPic_status", true);
+                    yw.put("tumorPic", tumorPic);
+                } else {
+                    yw.put("tumorPic_status", false);
+                }
+                rt.setYw(yw);
+            }
+        }
+
+        //消化道肿瘤个体化用药基因检测-50基因-银丰模板个性化需求
+        if (rt.getTemplate_name().contains("消化道肿瘤个体化用药基因检测-50基因-银丰")) {
+            String ERBB2 = "";
+            List<Map> ERBB2List = getHotInfo("ERBB2", thisGeneticmarkerList, crList, "allgene");
+            if (!ERBB2List.isEmpty()) {
+                for (Map map : ERBB2List) {
+                    String ori_variant = map.get("ori_variant") == null ? "" : map.get("ori_variant").toString();
+                    if (!ori_variant.contains("Fusion")) {
+                        if (ori_variant.indexOf("p.") != -1) {
+                            String pHGVS = ori_variant.substring(ori_variant.indexOf("p."));
+                            ERBB2 = ERBB2 + ("HER2" + " " + pHGVS + "; ");
+                        } else if (ori_variant.indexOf("c.") != -1) {
+                            String cHGVS = ori_variant.substring(ori_variant.indexOf("c."));
+                            ERBB2 = ERBB2 + ("HER2" + " " + cHGVS + "; ");
+                        } else if (ori_variant.equals("Amplification")) {
+                            ERBB2 = ERBB2 + ("HER2扩增; ");
+                        }
+                    }
+                }
+            }
+            if (!"".equals(ERBB2)) {
+                summaryOfRresults.put("ERBB2", ERBB2.substring(0, ERBB2.length() - 2));
+            } else {
+                summaryOfRresults.put("ERBB2", "未检出");
+            }
+        }
+
+        // 变异检测总表
+        List<Map> crTotol = analysisReportDao.getCrTotol(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        if (!crTotol.isEmpty()) {
+            List<String> panelGenes = analysisReportDao.getPanelGenesByReportID(pr.getReport_id());
+            Iterator<Map> it = crTotol.iterator();
+            while (it.hasNext()) {
+                String gene = it.next().get("Gene").toString();
+                if (!panelGenes.contains(gene)) {
+                    it.remove();
+                }
+            }
+        }
+        rt.setCrTotol(crTotol);
+
+        boolean readsFlag = false;
+        if (pr.getProduct_name_chinese().contains("RNA") || rt.getTemplate_name().contains("河南肿瘤")) {
+            readsFlag = true;
+        }
+        rt.setReadsFlag(readsFlag);
+
+        // associatedBowelCancer判断癌种是不是肠癌子父级
+        boolean associatedBowelCancer = (boolean) result_map.get("associatedBowelCancer");
+        rt.setAssociatedBowelCancer(associatedBowelCancer);
+
+        // 胃肠道间质瘤（化疗模块展示判断逻辑）
+        boolean gastrointestinalStromalTumor = true;
+        if (diseaseName.contains("胃肠道间质瘤")) {
+            gastrointestinalStromalTumor = false;
+        }
+        rt.setGastrointestinalStromalTumor(gastrointestinalStromalTumor);
+
+        // TCGA分子分型检测结果
+        String tcga = moduleModificationAllDao.selectMmTcgaByReportId(currentNgsAvailable.getReport_id());
+        summaryOfRresults.put("tcga", tcga);
+        // 子宫内膜癌 && 组织双样本（子宫内膜癌TCGA分子分型模块展示判断逻辑）
+        boolean endometrialCarcinoma = false;
+        if (currentNgsAvailable.getProduct_name().indexOf("_") != -1 && !"12k_tis_single".equals(currentNgsAvailable.getProduct_name()) && !currentNgsAvailable.getProduct_name().contains("novoivd")  || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
+            String[] split = currentNgsAvailable.getProduct_name().split("_");
+            if (diseaseName.contains("子宫内膜癌") && "tis".equals(split[1]) || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
+                endometrialCarcinoma = true;
+            }
+        }
+        rt.setEndometrialCarcinoma(endometrialCarcinoma);
+
+        // 辅助肉瘤诊断
+        boolean sarcomaFlag = false;
+        int geneRearrangementSize = 0;
+        int geneRearrangementVariationSize2 = 0;
+        List<Map> sarcomaTyping = new ArrayList<>();
+        if (diseaseName.contains("肉瘤") && !isblood || currentNgsAvailable.getModuleFlag().contains("肉瘤分子分型")) {
+            sarcomaFlag = true;
+            List<MmSarcomaTyping> mmSarcomaTypings = moduleModificationAllDao.selectMmSarcomaTypingByReportId(currentNgsAvailable.getReport_id());
+            if (!mmSarcomaTypings.isEmpty()) {
+                for (MmSarcomaTyping mmSarcomaTyping : mmSarcomaTypings) {
+                    Map sarcomaTypingMap = new HashMap();
+                    sarcomaTypingMap.put("mutation", mmSarcomaTyping.getMutation());
+                    sarcomaTypingMap.put("transcript", mmSarcomaTyping.getTranscript());
+                    sarcomaTypingMap.put("mutFreq", mmSarcomaTyping.getMutFreq());
+                    List<Map> sarcomaAndEvidence = new ArrayList<>();
+                    String sarcoma_subtype = mmSarcomaTyping.getSarcoma_subtype();
+                    String evidence = mmSarcomaTyping.getEvidence();
+                    if (StringUtils.isNotEmpty(sarcoma_subtype) && StringUtils.isNotEmpty(evidence)) {
+                        String[] sarcoma_subtypes = sarcoma_subtype.split("\n");
+                        for (int i = 0; i < sarcoma_subtypes.length; i++) {
+                            Map sarcomaAndEvidenceMap = new HashMap();
+                            sarcomaAndEvidenceMap.put("sarcoma_subtype", sarcoma_subtypes[i]);
+                            if (i == 0) {
+                                sarcomaAndEvidenceMap.put("evidence",evidence);
+                            }
+                            sarcomaAndEvidence.add(sarcomaAndEvidenceMap);
+                        }
+                        geneRearrangementVariationSize2++;
+                    }
+                    sarcomaTypingMap.put("sarcomaAndEvidence", sarcomaAndEvidence);
+                    sarcomaTypingMap.put("ori_variant", mmSarcomaTyping.getOri_variant());
+                    sarcomaTypingMap.put("mutDesc2", mmSarcomaTyping.getMutDesc2());
+                    sarcomaTypingMap.put("mutationAnalysis", mmSarcomaTyping.getMutationAnalysis());
+                    sarcomaTyping.add(sarcomaTypingMap);
+                    geneRearrangementSize++;
+                }
+            }
+        }
+        summaryOfRresults.put("geneRearrangementSize", geneRearrangementSize);
+        summaryOfRresults.put("geneRearrangementVariationSize2", geneRearrangementVariationSize2);
+        rt.setSarcomaFlag(sarcomaFlag);
+        rt.setSarcomaTyping(sarcomaTyping);
+
+        // 湘雅附二1238+1166
+        if ("1238+1166基因报告-湘雅附二".equals(rt.getTemplate_name())) {
+            List<Map> sarcomaTypingNo = new ArrayList<>();
+            for (Map map : fusionAll) {
+                String gene = map.get("gene").toString();
+                String ori_variant = map.get("my_ori_variant").toString();
+                String mutFreq = map.get("mutFreq").toString();
+                mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
+                boolean match = sarcomaTyping.stream().anyMatch(map1 -> ori_variant.equals(map1.get("mutation").toString()));
+                if (!match) {
+                    Map map1 = new HashMap();
+                    map1.put("gene", gene);
+                    map1.put("ori_variant", ori_variant);
+                    map1.put("ExonicFunc", "基因融合");
+                    map1.put("mutFreq", mutFreq);
+                    sarcomaTypingNo.add(map1);
+                }
+            }
+            rt.setSarcomaTypingNo(sarcomaTypingNo);
+        }
+
+        // 淋巴瘤辅助分型及预后相关提示
+        boolean lymphomaFlag = false;
+        if (diseaseName.contains("淋巴瘤")) {
+            lymphomaFlag = true;
+            List<MmLymphomaTyping> mmLymphomaTypings = moduleModificationAllDao.selectMmLymphomaTypingByReportId(currentNgsAvailable.getReport_id());
+            List<MmLymphomaTyping> lymphomaTyping = new ArrayList<>();  // 辅助分型提示
+            List<MmLymphomaTyping> lymphomaTyping2 = new ArrayList<>(); // 疾病预后提示
+            if (!mmLymphomaTypings.isEmpty()) {
+                for (MmLymphomaTyping mmLymphomaTyping : mmLymphomaTypings) {
+                    if (StringUtils.isNotEmpty(mmLymphomaTyping.getLymphoma_subtype())) {
+                        lymphomaTyping.add(mmLymphomaTyping);
+                    }
+                    if (StringUtils.isNotEmpty(mmLymphomaTyping.getLymphoma_subtype2())) {
+                        lymphomaTyping2.add(mmLymphomaTyping);
+                    }
+                }
+            }
+            rt.setLymphomaTyping(lymphomaTyping);
+            rt.setLymphomaTyping2(lymphomaTyping2);
+            summaryOfRresults.put("lymphomaTypingSize", lymphomaTyping.size());
+            summaryOfRresults.put("lymphomaTyping2Size", lymphomaTyping2.size());
+        }
+        rt.setLymphomaFlag(lymphomaFlag);
+
+        // 甲状腺癌热点基因检测结果(甲状腺癌)
+        String peDrugStr = "";
+        if (rt.getTemplate_name().contains("甲状腺")) {
+            List<MmThyroidHotspot> thyroidCancerHotAllGeneDrugTipLineStr = moduleModificationAllDao.selectMmThyroidHotspotByReportId(currentNgsAvailable.getReport_id());
+            if (thyroidCancerHotAllGeneDrugTipLineStr.isEmpty()) {
+                thyroidCancerHotAllGeneDrugTipLineStr = getThyroidCancerHotgeneData(thisGeneticmarkerList, crList);
+            }
+            rt.setThyroidCancerHotAllGeneDrugTipLineStr(thyroidCancerHotAllGeneDrugTipLineStr);
+            // 预后评估
+            List<MmThyroidPrognosis> mmThyroidPrognoses = moduleModificationAllDao.selectMmThyroidPrognosisByReportId(currentNgsAvailable.getReport_id());
+            List<Map> prognosticEvaluation = mmThyroidPrognoses.stream().map(it -> {
+                Map<String, Object> apiMap = new HashMap<>();
+                apiMap.put("gene",it.getGene());
+                apiMap.put("ori_variant",it.getOri_variant());
+                apiMap.put("mutFreq",it.getMutFreq());
+                apiMap.put("prognosis_evaluation",it.getPrognosis_evaluation());
+                apiMap.put("prognosis_assessment",it.getPrognosis_assessment());
+                return apiMap;
+            }).collect(Collectors.toList());
+            for (Map map : prognosticEvaluation) {
+                String gene = map.get("gene").toString();
+                String ori_variant = map.get("ori_variant").toString();
+                if (!ori_variant.equals("Amplification") && ori_variant != null && !ori_variant.contains("Fusion")) {
+                    String[] splits = ori_variant.split(" ");
+                    if (splits.length >= 4) {
+                        if ("promoter".equals(splits[1])) {
+                            peDrugStr = peDrugStr + (gene + " " + splits[1] + " " + splits[3] + "; ");
+                        } else {
+                            peDrugStr = peDrugStr + (gene + " " + splits[3] + "; ");
+                        }
+                    } else {
+                        if ("promoter".equals(splits[1])) {
+                            peDrugStr = peDrugStr + (gene + " " + splits[1] + " " + splits[2] + "; ");
+                        } else {
+                            peDrugStr = peDrugStr + (gene + " " + splits[2] + "; ");
+                        }
+                    }
+                } else {
+                    peDrugStr = peDrugStr + (gene + " " + ori_variant + "; ");
+                }
+            }
+            immnueallDistinguishMutFreqType(prognosticEvaluation);
+            rt.setPrognosticEvaluation(prognosticEvaluation);
+            summaryOfRresults.put("prognosticEvaluationSize", prognosticEvaluation.size());
+        }
+        if (!"".equals(peDrugStr)) {
+            rt.setPeDrugStr("（" + peDrugStr.substring(0, peDrugStr.length() - 2) + "）");
+        }
+
+        // 脑胶质瘤相关分子标记物检测结果
+        boolean brainGliomaFlag = false;
+        if (product_name.equals("novopm2_tis_200")) {
+            brainGliomaFlag = true;
+            List<MmBrainGlioma> mmBrainGliomas = moduleModificationAllDao.selectMmBrainGliomaByReportId(currentNgsAvailable.getReport_id());
+            if (!CollectionUtils.isEmpty(mmBrainGliomas)) {
+                Map<String, Object> bg = new HashMap<String, Object>();
+                int brainGliomaSize = 0;
+                for (MmBrainGlioma mmBrainGlioma : mmBrainGliomas) {
+                    bg.put(mmBrainGlioma.getGene(), mmBrainGlioma.getOutput());
+                    if ("阳性".equals(mmBrainGlioma.getOutput()) || "检出".equals(mmBrainGlioma.getOutput())) {
+                        brainGliomaSize++;
+                    }
+                }
+                rt.setBg(bg);
+                summaryOfRresults.put("brainGliomaSize", brainGliomaSize);
+            }
+        }
+        rt.setBrainGliomaFlag(brainGliomaFlag);
+
+        // 内分泌相关(泌尿系统肿瘤99基因报告)
+        boolean prostateCancerFlag = false;
+        List<MmEndocrineTherapy> mmEndocrineTherapys = moduleModificationAllDao.selectMmEndocrineTherapyByReportId(currentNgsAvailable.getReport_id());
+        List<MmEndocrineDifferentiation> mmEndocrineDifferentiations = moduleModificationAllDao.selectMmEndocrineDifferentiationByReportId(currentNgsAvailable.getReport_id());
+        if (!CollectionUtils.isEmpty(mmEndocrineTherapys) || !CollectionUtils.isEmpty(mmEndocrineDifferentiations)) {
+            prostateCancerFlag = true;
+            // 内分泌治疗相关基因检测结果
+            Map<String, Object> et = new HashMap<String, Object>();
+            int endocrineTherapySize = 0;
+            for (MmEndocrineTherapy mmEndocrineTherapy : mmEndocrineTherapys) {
+                et.put(mmEndocrineTherapy.getGene(), mmEndocrineTherapy.getOutput());
+                if ("检出".equals(mmEndocrineTherapy.getOutput())) {
+                    endocrineTherapySize++;
+                }
+            }
+            rt.setEt(et);
+            summaryOfRresults.put("endocrineTherapySize", endocrineTherapySize);
+            // 神经内分泌分化相关基因检测结果
+            Map<String, Object> ed = new HashMap<String, Object>();
+            int endocrineDifferentiationSize = 0;
+            for (MmEndocrineDifferentiation mmEndocrineDifferentiation : mmEndocrineDifferentiations) {
+                ed.put(mmEndocrineDifferentiation.getGene(), mmEndocrineDifferentiation.getOutput());
+                if ("检出".equals(mmEndocrineDifferentiation.getOutput())) {
+                    endocrineDifferentiationSize++;
+                }
+            }
+            rt.setEd(ed);
+            summaryOfRresults.put("endocrineDifferentiationSize", endocrineDifferentiationSize);
+        }
+        rt.setProstateCancerFlag(prostateCancerFlag);
+        // 泌尿预后相关基因检测结果
+        String urinaryProstateDisease = "";
+        List<MmUrinaryProstate> mmUrinaryProstates = moduleModificationAllDao.selectMmUrinaryProstateByReportId(currentNgsAvailable.getReport_id());
+        if (!CollectionUtils.isEmpty(mmUrinaryProstates)) {
+            urinaryProstateDisease = mmUrinaryProstates.get(0).getDisease_class();
+            Map<String, Object> up = new HashMap<String, Object>();
+            int urinaryProstateSize = 0;
+            for (MmUrinaryProstate mmUrinaryProstate : mmUrinaryProstates) {
+                up.put(mmUrinaryProstate.getGene(), mmUrinaryProstate.getOutput());
+                if ("检出".equals(mmUrinaryProstate.getOutput())) {
+                    urinaryProstateSize++;
+                }
+            }
+            rt.setUp(up);
+            summaryOfRresults.put("urinaryProstateSize", urinaryProstateSize);
+        }
+        rt.setUrinaryProstateDisease(urinaryProstateDisease);
+
+        // 肺癌10基因报告模板患者版
+        if ("肺癌10基因报告模板患者版".equals(rt.getTemplate_name())) {
+            List<DetectionResult> detectionResultList = geneticMarkerVwService.getDetectionResultList(currentNgsAvailable.getReport_id(), currentNgsAvailable.getProduct_id());
+            rt.setDetectionResultList(detectionResultList);
+        }
+
+        // ************单基因多基因模板***********
+        List<Map> singleMoreTipLineStr = new ArrayList<Map>();
+        HashSet<String> detectionMutationSet = new HashSet<>();
+        String detectionMutationStr = "";
+        if (rt.getTemplate_name().contains("EGFR_ALK_ROS1基因检测报告模板") || rt.getTemplate_name().contains("EGFR_T790M基因检测报告模板") || rt.getTemplate_name().contains("EGFR_18-21外显子基因检测报告模板") || rt.getTemplate_name().contains("BRAF_V600E基因检测报告模板") || rt.getTemplate_name().contains("KRAS基因报告模板") || rt.getTemplate_name().contains("KRAS_NRAS_BRAF基因报告模板") || rt.getTemplate_name().contains("KIT_PDGFRA基因报告模板")) {
+            if (list.size() != 0) {
+                for (Map map : list) {
+                    Map singleMoreTipLine = new HashMap();
+                    String gene = map.get("gene").toString();
+                    String ori_variant = map.get("ori_variant").toString();
+                    String variant = map.get("variant") == null ? "" : map.get("variant").toString();
+                    String ExonicFunc = map.get("ExonicFunc") == null ? "" : map.get("ExonicFunc").toString();
+                    String exon = "";
+                    String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
+                    if (mutFreq.equals(".")) {
+                        mutFreq = "/";
+                    }
+                    mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
+                    singleMoreTipLine.put("gene", gene);
+                    singleMoreTipLine.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
+                    singleMoreTipLine.put("mutFreq", mutFreq);
+                    String ori_varian_split = removeMutations(transferOriVariant(ori_variant));
+                    if (!ori_varian_split.equals("Amplification") && ori_varian_split != null && !ori_varian_split.contains("Fusion")) {
+                        String[] splits = ori_varian_split.split(" ");
+                        if (splits.length >= 1) {
+                            singleMoreTipLine.put("Transcript", splits[0]);
+                        }
+                        if (splits.length >= 2) {
+                            singleMoreTipLine.put("Exon", splits[1]);
+                            exon = splits[1].replace("exon", "");
+                        }
+                        if (splits.length >= 3) {
+                            singleMoreTipLine.put("cHGVS", splits[2]);
+                        }
+                        if (splits.length >= 4) {
+                            singleMoreTipLine.put("pHGVS", splits[3]);
+                        } else {
+                            singleMoreTipLine.put("pHGVS", "/");
+                        }
+                    } else {
+                        singleMoreTipLine.put("Transcript", "/");
+                        singleMoreTipLine.put("Exon", "/");
+                        singleMoreTipLine.put("cHGVS", ori_varian_split);
+                        singleMoreTipLine.put("pHGVS", "/");
+                    }
+                    if (!singleMoreTipLine.isEmpty()) {
+                        if (rt.getTemplate_name().contains("EGFR_ALK_ROS1基因检测报告模板")) {
+                            templateEGFR_ALK_ROS1(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
+                        } else if (rt.getTemplate_name().contains("EGFR_T790M基因检测报告模板")) {
+                            templateEGFR_T790M(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
+                        } else if (rt.getTemplate_name().contains("EGFR_18-21外显子基因检测报告模板")) {
+                            templateEGFR(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
+                        } else if (rt.getTemplate_name().contains("BRAF_V600E基因检测报告模板")) {
+                            templateBRAF_V600E(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
+                        } else if (rt.getTemplate_name().contains("KRAS基因报告模板")) {
+                            templateKRAS(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
+                        } else if (rt.getTemplate_name().contains("KRAS_NRAS_BRAF基因报告模板")) {
+                            templateKRAS_NRAS_BRAF(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
+                        } else if (rt.getTemplate_name().contains("KIT_PDGFRA基因报告模板")) {
+                            List<String> exonKIT = Arrays.asList("9", "11", "13", "14", "17", "18");
+                            List<String> exonPDGFRA = Arrays.asList("12", "14", "18");
+                            if ("KIT".equals(gene) && exonKIT.contains(exon) || "PDGFRA".equals(gene) && exonPDGFRA.contains(exon)) {
+                                singleMoreTipLineStr.add(singleMoreTipLine);
+                            }
+                        }
+                    }
+                }
+                if (!detectionMutationSet.isEmpty() && detectionMutationSet.size() > 0) {
+                    for (String detectionMutation : detectionMutationSet) {
+                        if (detectionMutation.contains("基因融合")) {
+                            detectionMutationStr += detectionMutation + " 阳性，";
+                        } else {
+                            detectionMutationStr += detectionMutation + "阳性，";
+                        }
+                    }
+                }
+            }
+        }
+        if (!"".equals(detectionMutationStr)) {
+            rt.setDetectionMutationStr(detectionMutationStr.substring(0, detectionMutationStr.length() - 1));
+        } else {
+            rt.setDetectionMutationStr("未检测到下列突变");
+        }
+        rt.setSingleMoreTipLineStr(singleMoreTipLineStr);
+        rt.setDetectionMutationSet(detectionMutationSet);
+
+        List<Map> immuneAll = new ArrayList<>();    // 通用免疫表格
+        // 获取目前各癌种已批准的免疫治疗药物
+        List<Map> immuneTable = analysisReportDao.getImmuneTable();
+        // 获取表格第一列内容
+        Map immuneTable1 = immuneTable.get(0);
+        int column = 10; // 获取每个免疫表格数据,10代表表格有10列,后续根据解读人员展示需要修改（规则清楚可实现自动化给取动态数字）
+        for (int i = 1; i < immuneTable.size(); i++) {
+            if (i % column == 0) {
+                immuneTable.add(i, immuneTable1);
+            }
+        }
+        List<List<Map>> immuneLists = splistList(immuneTable, column);
+        for (int i = 0; i < immuneLists.size(); i++) {
+            Map map = new HashMap();
+            List<String> immuneTableKey = new ArrayList<>();
+            List<Map> immuneList = immuneLists.get(i);
+            // 遍历每行内容
+            for (int j = 1; j <= immuneTable1.size(); j++) {
+                // 除第一列癌种，其它都是“/”，不输出这一列
+                /*boolean flag = false;
+                for (int k = 1; k < immuneList.size(); k++) {
+                    String desc = immuneList.get(k).get("desc" + j).toString();
+                    if (!"/".equals(desc)) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (flag) {
+                    immuneTableKey.add("desc"+ j);
+                }*/
+                immuneTableKey.add("desc" + j);
+            }
+            map.put("immuneList", immuneList);
+            map.put("immuneTableKey", immuneTableKey);
+            immuneAll.add(map);
+        }
+        rt.setImmuneAll(immuneAll);
+        // 肺癌通用免疫表格
+        List<Map> immuneLung = analysisReportDao.getImmuneTableByLung();
+        Iterator<Map> immuneLungIterator = immuneLung.iterator();
+        while (immuneLungIterator.hasNext()) {
+            Map map = immuneLungIterator.next();
+            String desc7 = map.get("desc7").toString();
+            String desc8 = map.get("desc8").toString();
+            String desc24 = map.get("desc24").toString();
+            if ("/".equals(desc7) && "/".equals(desc8) && "/".equals(desc24)) {
+                immuneLungIterator.remove();
+            }
+        }
+        rt.setImmuneLung(immuneLung);
+
+        // 自动化备注输出
+        Map<String, Object> rk = new HashMap<String, Object>();
+        List<Map> remarks = analysisReportDao.getRemarks();
+        for (Map remark : remarks) {
+            String variable_name = remark.get("variable_name").toString();
+            String annotation_information = remark.get("annotation_information").toString();
+            rk.put(variable_name, annotation_information);
+        }
+        rt.setRk(rk);
+
+        //检测结果小结(安为康个性化模块)
+        List<Map> siteResult = new ArrayList<>();
+        SiteResult(siteResult, snpIndelFileAll, cNVAll, fusionAll, crCheckLineStrYF1280);
+        rt.setSiteResult(siteResult);
+
+        // 常见靶向药物相关基因检测列表
+        List<Map> commonTargetedDrug = analysisReportDao.getCommonTargetedDrug("泛癌种");
+        // 根据产品基因过滤
+        List<Map> commonTargetedDrugFilter = commonTargetedDrug.stream().filter(s -> geneSymbols.contains(s.get("gene").toString().split("\\\\r\\\\n")[0])).collect(Collectors.toList());
+        importantTargetedGene(commonTargetedDrugFilter, list, crCheckLineStrYF1280, readsFlag, false);
+        rt.setCommonTargetedDrug(commonTargetedDrugFilter);
+
+        // 重要靶向用药相关基因结果汇总（表格）
+        // 获取靶向癌种
+        String target_cancer = StringUtils.isEmpty(pr.getTarget_cancer()) ? "" : pr.getTarget_cancer();
+        // 泌尿系统肿瘤99产品输出泌尿系统癌症 || 188/462/550/1238/WES/WES plus的通用版
+        List<String> templates = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告");
+        if (("novopm2_tis_99".equals(product_name) || "novopm2_blo_99".equals(product_name)) || (templates.contains(rt.getTemplate_name()) && (prostateCancerFlag || StringUtils.isNotEmpty(urinaryProstateDisease)))) {
+            target_cancer = "泌尿系统癌症";
+        } else if (rt.getTemplate_name().contains("湘雅")) {
+            target_cancer = "泛癌种";
+        }
+        /*if ("novopm2_tis_99".equals(product_name) || "novopm2_blo_99".equals(product_name)) {
+            target_cancer = "泌尿系统癌症";
+        } else if (rt.getTemplate_name().contains("湘雅")) {
+            target_cancer = "泛癌种";
+        }*/
+        rt.setImportantTargetedDiseaseName(target_cancer);
+        List<Map> commonTargetedDrug1 = analysisReportDao.getCommonTargetedDrug2(target_cancer);
+        // 根据产品基因过滤
+        List<Map> importantTargetedGeneFilter = commonTargetedDrug1.stream().filter(s -> geneSymbols.contains(s.get("gene").toString().split("\\\\r\\\\n")[0])).collect(Collectors.toList());
+        importantTargetedGene(importantTargetedGeneFilter, list, crCheckLineStrYF1280, readsFlag, true);
+        // 实体瘤76基因报告-安为康-黄山人民肺癌23 ”删除FGFR3、IDH1、NTRK2/3，四个基因
+        if ("实体瘤76基因报告-安为康-黄山人民肺癌23".equals(rt.getTemplate_name())) {
+            importantTargetedGeneFilter = importantTargetedGeneFilter.stream().filter(s -> !Arrays.asList("FGFR3", "IDH1", "NTRK2", "NTRK3").contains(s.get("gene").toString())).collect(Collectors.toList());
+        }
+        rt.setImportantTargetedGeneFilter(importantTargetedGeneFilter);
+
+        // 本癌种FDA/NMPA获批的其他可选靶向药物（10月份升级内容）
+        if (!diseaseIdList.contains(2531)) {
+            List<MmApprovedDrug> approvedDrugData = moduleModificationAllDao.selectMmApprovedDrugByReportId(currentNgsAvailable.getReport_id());
+            approvedDrugData.sort(Comparator.comparing(MmApprovedDrug::getApproved_id)); // 根据approved_id升序
+            if (approvedDrugData.isEmpty()) {
+                // 抓取肉瘤逻辑
+                String approvedGrabLogicByDisease = analysisReportDao.getApprovedGrabLogicByDisease(diseaseName);
+                if (StringUtils.isNotEmpty(approvedGrabLogicByDisease)) {
+                    List<String> diseases = Arrays.asList(approvedGrabLogicByDisease.split("\\+"));
+                    List<String> diseaseList = new ArrayList<>();
+                    for (String disease : diseases) {
+                        if (!"包含肉瘤两字".equals(disease) && !"子父级".equals(disease)) {
+                            diseaseList.add(disease);
+                        }
+                    }
+                    if (diseases.contains("包含肉瘤两字") && diseases.contains("子父级")) {
+                        approvedDrugData = analysisReportDao.getApprovedDrugDataByLikeSarcoma(diseaseList, diseaseIdList);
+                    } else if (!diseases.contains("包含肉瘤两字") && diseases.contains("子父级")) {
+                        approvedDrugData = analysisReportDao.getApprovedDrugDataBySarcoma(diseaseList, diseaseIdList);
+                    } else if (!diseases.contains("包含肉瘤两字") && !diseases.contains("子父级")) {
+                        approvedDrugData = analysisReportDao.getApprovedDrugDataByDiseaseList(diseaseList);
+                    }
+                }
+                /*List<String> diseases = Arrays.asList("骨肉瘤", "胶质肉瘤", "淋巴管肉瘤", "骨巨细胞瘤肉瘤", "肉瘤样癌", "膀胱肉瘤", "神经纤维肉瘤");
+                if (diseaseName.contains("肉瘤")) {
+                    boolean flag = true;
+                    for (String disease : diseases) {
+                        if (diseaseName.contains(disease)) {
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if (flag) {
+                        if ("肉瘤".equals(diseaseName) || "软组织肉瘤".equals(diseaseName)) {
+                            approvedDrugData = analysisReportDao.getApprovedDrugDataByLikeSarcoma(diseaseIdList);
+                        } else {
+                            approvedDrugData = analysisReportDao.getApprovedDrugDataBySarcoma(diseaseIdList);
+                        }
+                    }
+                }*/
+                if (approvedDrugData.isEmpty()) {
+                    approvedDrugData = analysisReportDao.getApprovedDrugDataByDiseaseIdList(diseaseIdList);
+                }
+            }
+            rt.setApprovedDrugData(approvedDrugData);
+        }
+
+        //错配修复（MMR）相关基因检测结果(通用版模板10月份升级模块)
+//        crCheckLineStrPathopoiesia
+//        List<Map> thisGeneticmarkerListCollect = thisGeneticmarkerList.stream().filter(s -> s.get("ori_variant").toString().indexOf("fs") > -1 || s.get("ori_variant").toString().indexOf("*") > -1 || s.get("ori_variant").toString().indexOf("+") > -1 || (s.get("ori_variant").toString().indexOf("-") > -1 && !(s.get("ori_variant").toString().indexOf("Fusion") > -1)) || s.get("ori_variant").toString().indexOf("del") > -1).collect(Collectors.toList());
+        List<MmDmmr> mmDmmrs = moduleModificationAllDao.selectMmDmmrByReportId(currentNgsAvailable.getReport_id());
+        List<Map> dMMRinfo = mmDmmrs.stream().map(it -> {
+            Map<String, Object> apiMap = new HashMap<>();
+            apiMap.put("gene",it.getGene());
+            apiMap.put("ori_variant",it.getOri_variant());
+            apiMap.put("mutFreq",it.getMutFreq());
+            apiMap.put("mut_type",it.getMut_type());
+            return apiMap;
+        }).collect(Collectors.toList());
+        List<String> valuesForKey = dMMRinfo.stream().map(map -> map.get("gene").toString()).collect(Collectors.toList());
+        for (Map map : dMMRGene) {
+            String gene = map.get("gene") == null ? "" : map.get("gene").toString();
+            if (!valuesForKey.contains(gene)) {
+                Map<String, String> dmmr = new HashMap<>();
+                dmmr.put("gene", gene);
+                dmmr.put("ori_variant", "未检测到相关基因失活突变");
+                dmmr.put("mutFreq", "-");
+                dmmr.put("mut_type", "-");
+                dMMRinfo.add(dmmr);
+            }
+        }
+        dMMRinfo.sort((o1,o2)->(o1.get("gene").toString()).compareTo(o2.get("gene").toString()));
+//        List<Map> dMMRinfo = getHotgeneData(dMMRGene, bodyDrugTipLineStr, crCheckLineStrPathopoiesia, "allgene", "未检测到相关基因失活突变", rt.getTemplate_name());
+        rt.setdMMRinfo(dMMRinfo);
+        summaryOfRresults.put("dMMRinfoSize", dMMRinfo.stream().filter(s -> !"未检测到相关基因失活突变".equals(s.get("ori_variant").toString())).collect(Collectors.toList()).size());
+
+        //免疫药物用药提示 -> 免疫用药检测结果（10月份升级内容）
+        Map<String, Object> dmmr = new HashMap<String, Object>();
+        Map<String, Object> positiveDDR = new HashMap<String, Object>();
+        Map<String, Object> positiveOther = new HashMap<String, Object>();
+        Map<String, Object> negative = new HashMap<String, Object>();
+        Map<String, Object> hpd = new HashMap<String, Object>();
+        //错配修复（MMR）基因
+        immnue(dMMRinfo, dmmr, "dmmr", "MMR基因突变可能导致错配修复缺陷（dMMR），dMMR的患者接受免疫检查点抑制剂药物治疗的获益率较高。");
+        //免疫正相关基因 ---DNA损伤修复（DDR）通路基因---
+        List<String> positiveDDRGene = Arrays.asList("ATM", "ATR", "BAP1", "BLM", "BRCA1", "BRCA2", "BRIP1", "CHEK1", "CHEK2", "ERCC2", "ERCC3", "ERCC4", "ERCC5", "FANCA", "FANCC", "MRE11", "NBN", "RAD50", "RAD51", "RAD51B", "RAD51D", "RAD54L");
+        List<Map> positiveDDRImmnue = immnueFilter(positiveImmnue, positiveDDRGene, 1);
+        immnue(positiveDDRImmnue, positiveDDR, "positiveDDR", "免疫正相关基因突变可能导致PD-1/PD-L1抑制剂获益率高。");
+        //免疫正相关基因 ---其他基因---
+        List<String> positiveOtherGene = Arrays.asList("CD274", "KRAS", "PBRM1", "PDCD1LG2", "POLD1", "POLE", "TP53");
+        List<Map> positiveOtherImmnue = immnueFilter(positiveImmnue, positiveOtherGene, 1);
+        immnue(positiveOtherImmnue, positiveOther, "positiveOther", "免疫正相关基因突变可能导致PD-1/PD-L1抑制剂获益率高。");
+        // 免疫负相关基因
+        List<String> negativeGene = Arrays.asList("ALK", "B2M", "CTNNB1", "EGFR", "JAK1", "JAK2", "KEAP1", "PTEN", "STK11");
+        List<Map> negativeImmnueFilter = immnueFilter(negativeImmnue, negativeGene, 2);
+        immnue(negativeImmnueFilter, negative, "negative", "免疫负相关基因突变可能导致PD-1/PD-L1抑制剂获益率低。");
+        // 免疫超进展相关基因(HPD)
+        List<String> hpdGene = Arrays.asList("CCND1", "FGF3", "FGF4", "FGF19", "DNMT3A", "EGFR", "MDM2", "MDM4");
+        List<Map> hpdImmnueFilter = immnueFilter(hpdImmnue, hpdGene, 3);
+        immnue(hpdImmnueFilter, hpd, "hpd", "免疫超进展相关基因突变提示PD-1/PD-L1抑制剂治疗的超进展风险升高。");
+        rt.setDmmr(dmmr);
+        rt.setPositiveDDR(positiveDDR);
+        rt.setPositiveOther(positiveOther);
+        rt.setNegative(negative);
+        rt.setHpd(hpd);
+
+        // 检测方法与局限性
+        List<Map> productModularizations = analysisReportDao.getProductModularization();
+        for (Map productModularization : productModularizations) {
+            String panel = productModularization.get("panel").toString();
+            // 判断产品名称或者模板名称是否在panel中
+            if (product_name.equals(panel) || rt.getTemplate_name().contains(panel)) {
+                summaryOfRresults.put("productModularization", productModularization);
+                break;
+            }
+        }
+        // 产品名称或者模板名称不在panel中，则根据规则归类样本
+        if (!summaryOfRresults.containsKey("productModularization")) {
+            String productPanel = "";
+            if (product_name.indexOf("_") != -1) {
+                String s = product_name.split("_")[1];
+                if ("tis1".equals(s) || "12k_tis_single".equals(product_name)) {
+                    productPanel = "DNA panel 组织单样本";
+                } else if ("tis".equals(s)) {
+                    productPanel = "DNA panel 组织双样本";
+                } else if ("blo".equals(s)) {
+                    productPanel = "DNA panel 血液双样本";
+                } else if ("blo1".equals(s)) {
+                    productPanel = "DNA panel 血浆单样本";
+                }
+            }
+            for (Map productModularization : productModularizations) {
+                String panel = productModularization.get("panel").toString();
+                if (productPanel.equals(panel)) {
+                    summaryOfRresults.put("productModularization", productModularization);
+                    break;
+                }
+            }
+        }
+
+        // BRCA1&BRCA2基因说明及用药提示（表格）
+        List<Map> brcaGeneSpecification = analysisReportDao.getBrcaGeneSpecification();
+        Map brca1GeneSpecification = new HashMap();
+        Map brca2GeneSpecification = new HashMap();
+        List<Map> brca1DrugAndsuperscript = new ArrayList<>();
+        List<Map> brca2DrugAndsuperscript = new ArrayList<>();
+        for (Map map : brcaGeneSpecification) {
+            Map map1 = new HashMap();
+            String brcaGene = map.get("gene") == null ? "" : map.get("gene").toString();
+            String gene_specification = map.get("gene_specification") == null ? "" : map.get("gene_specification").toString();
+            String targeted_drug = map.get("targeted_drug") == null ? "" : map.get("targeted_drug").toString();
+            String superscript = map.get("superscript") == null ? "" : map.get("superscript").toString();
+            String medication_suggestion = map.get("medication_suggestion") == null ? "" : map.get("medication_suggestion").toString();
+            // 存放药物名称和上角标
+            map1.put("targeted_drug", targeted_drug);
+            map1.put("superscript", superscript);
+            // 根据BRCA1和BRCA2存放
+            if ("BRCA1".equals(brcaGene)) {
+                brca1GeneSpecification.put("gene", brcaGene);
+                if (!StringUtils.isEmpty(gene_specification)) {
+                    brca1GeneSpecification.put("gene_specification", gene_specification);
+                }
+                brca1DrugAndsuperscript.add(map1);
+                if (!StringUtils.isEmpty(medication_suggestion)) {
+                    brca1GeneSpecification.put("medication_suggestion", medication_suggestion);
+                }
+            } else if ("BRCA2".equals(brcaGene)) {
+                brca2GeneSpecification.put("gene", brcaGene);
+                if (!StringUtils.isEmpty(gene_specification)) {
+                    brca2GeneSpecification.put("gene_specification", gene_specification);
+                }
+                brca2DrugAndsuperscript.add(map1);
+                if (!StringUtils.isEmpty(medication_suggestion)) {
+                    brca2GeneSpecification.put("medication_suggestion", medication_suggestion);
+                }
+            }
+        }
+        brca1GeneSpecification.put("drugAndsuperscript", brca1DrugAndsuperscript);
+        brca2GeneSpecification.put("drugAndsuperscript", brca2DrugAndsuperscript);
+        brcaGeneSpecification.clear();
+        brcaGeneSpecification.add(brca1GeneSpecification);
+        brcaGeneSpecification.add(brca2GeneSpecification);
+        rt.setBrcaGeneSpecification(brcaGeneSpecification);
+        // BRCA1&BRCA2靶向药物研究信息（表格）
+        List<Map> brcaTargetedDrug = analysisReportDao.getBrcaTargetedDrug();
+        rt.setBrcaTargetedDrug(brcaTargetedDrug);
+
+        // 林奇综合征和相关基因说明
+        if ("novopm2_cr_lynch".equals(product_name)) {
+            Map lynchMap = new HashMap();
+            for (Map map : crList) {
+                String gene = map.get("gene").toString();
+                String ori_variant = map.get("ori_variant").toString();
+                sameKeyCombinationSet(lynchMap, gene, ori_variant);
+            }
+            rt.setLynchMap(lynchMap);
+        }
+
+        // 湖南肿瘤HRR45检测结果
+        if (rt.getTemplate_name().contains("湖南肿瘤BRCA45模板")) {
+            List<Map> hrr45List = analysisReportDao.getImmuneRelatedGene("HRR45");
+            for (Map map : hrr45List) {
+                List<String> ori_variantList = new ArrayList<>();
+                List<String> mutFreqList = new ArrayList<>();
+                String gene = map.get("gene") == null ? "" : map.get("gene").toString();
+                for (Map map1 : list) {
+                    List<Map> drugList = map1.get("drugList") == null ? null : (List<Map>) map1.get("drugList");
+                    if (!CollectionUtils.isEmpty(drugList)) {
+                        String gene1 = map1.get("gene").toString();
+                        String ori_variant = removeMutations(transferOriVariant(map1.getOrDefault("ori_variant", "").toString()));
+                        String mutFreq = map1.get("mutFreq") == null ? "/" : map1.get("mutFreq").toString();
+                        mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
+                        if (gene1.equals(gene)) {
+                            ori_variantList.add(ori_variant);
+                            mutFreqList.add(mutFreq);
+                        }
+                    }
+                }
+                map.put("ori_variantList", ori_variantList);
+                map.put("mutFreqList", mutFreqList);
+            }
+            rt.setHrr45List(hrr45List);
+            String hrrBrcaStr = "未检出";
+            Map<String, Object> hrr45map = new HashMap<String, Object>();
+            List<String> list1 = Arrays.asList("BRCA1","BRCA2","ATM", "ATR", "BARD1", "BRIP1", "CDK12", "CHEK1", "CHEK2", "ERCC3", "FANCA", "FANCL", "FANCM", "GEN1", "HDAC2", "MRE11", "EPCAM", "MLH1", "MLH3", "MSH2", "MSH6", "NBN", "PALB2", "PMS2", "PPM1D", "PPP2R2A", "PTEN", "RAD50", "RAD51B", "RAD51C", "RAD51D", "RAD54L", "TP53", "CDH1", "NF1", "STK11", "APC", "MUTYH", "AR", "ESR1", "ERBB2", "PIK3CA");
+            for (String gene : list1) {
+                List<String> ori_variantList = new ArrayList<>();
+                List<Map> getHotInfo = getHotInfo(gene, thisGeneticmarkerList, crList, "allgene");
+                if ("BRCA1".equals(gene) && !getHotInfo.isEmpty() || "BRCA2".equals(gene) && !getHotInfo.isEmpty()) {
+                    hrrBrcaStr = "检出";
+                }
+                for (Map map1 : getHotInfo) {
+                    String ori_variant = removeMutations(transferOriVariant(map1.get("ori_variant").toString()));
+                    ori_variantList.add(ori_variant);
+                }
+                hrr45map.put(gene, ori_variantList);
+            }
+            rt.setHrrBrcaStr(hrrBrcaStr);
+            rt.setHrr45map(hrr45map);
+        }
+
+        // 基因检测结果汇总(广附一个性化模板)
+        if (rt.getTemplate_name().contains("广附一")) {
+            List<Map> gfyhotgenedrugs = analysisReportDao.gethotGeneDrug("gfy", "广附一");
+            List<Map> gfyHgeneData = getHotgeneData(gfyhotgenedrugs, thisGeneticmarkerList, crList, "snp_indel", "/", rt.getTemplate_name());
+            Map<String, Object> gfy_ori_variant = new HashMap<String, Object>();
+            Map<String, Object> gfy_mutFreq = new HashMap<String, Object>();
+            for (Map gfyHgeneDatum : gfyHgeneData) {
+                String gene = gfyHgeneDatum.get("gene").toString();
+                String ori_variant = gfyHgeneDatum.get("ori_variant").toString();
+                String mutFreq = gfyHgeneDatum.get("mutFreq").toString();
+                if (!"/".equals(ori_variant) && !"/".equals(mutFreq)) {
+                    sameKeyCombinationList(gfy_ori_variant, "gfy"+gene, ori_variant);
+                    sameKeyCombinationList(gfy_mutFreq, "gfy"+gene, mutFreq);
+                }
+            }
+            rt.setGfy_ori_variant(gfy_ori_variant);
+            rt.setGfy_mutFreq(gfy_mutFreq);
+        }
+
+        // 小报告需要的参数
+        summaryOfRresults.put("pd", pd);
+        summaryOfRresults.put("template_name", rt.getTemplate_name());
+
+        // 获取二维码{{ summaryOfRresults.binary | ci(200,200) }}
+        String report_id = pr.getReport_id().toString();
+        String methodUrl = "http://qrcode.novogene.com/index.php/Api/Code/qrcode/uncodeid/";
+        String qrcode = RandomUtils.getStringRandom(4) + report_id.substring(0, 2) + RandomUtils.getStringRandom(6) + report_id.substring(2) + RandomUtils.getStringRandom(2);
+        /*// 特殊情况：出现长时间连接不上数据库，引起生成报告卡顿原因
+        NgsQrcode ngsQrcode = new NgsQrcode();
+        ngsQrcode.setClient(sf.getClient());
+        ngsQrcode.setSubbarcode(sf.getSubbarcode());
+        ngsQrcode.setProduct_name(sf.getProduct_name());
+        ngsQrcode.setQrcode(qrcode);
+        ngsQrcode.setReport_date(pr.getReport_date());
+        ngsQrcodeService.insertNgsQrcode(ngsQrcode);*/
+        // 调取接口，上传二维码信息
+        String ngsQrcode = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/"+sf.getClient()+"/subbarcode/"+sf.getSubbarcode()+"/product_name/"+sf.getProduct_name()+"/username/3/qrcode/"+qrcode+"/report_date/"+pr.getReport_date();
+        String httpURLGETCase = WebserviceProxyUtils.httpURLGETCase(ngsQrcode);
+        System.out.println(httpURLGETCase);
+//        String binary = QrCodeUtils.creatRrCode(qrcode, 200, 200);
+        String binary = CreateQRCode.createQRCode(methodUrl + qrcode, session.getServletContext().getRealPath("/") + "images/tumour-logo.png");
+        summaryOfRresults.put("binary", binary);
+
+        rt.setSummaryOfRresults(summaryOfRresults);
+        String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
+        analysisReportDao.updateReportDetail(dataToJson, currentNgsAvailable.getReport_id());
+
+        // NOTE: 从这里新增个性化模板逻辑
+
+        // 晶赛188 550 个性化模板相关逻辑
+        if (rt.getTemplate_name().contains("晶赛")){
+            Map<String, Object> JingsaiCustomInfo = generateJingsaiData(bodyDrugTipLineStr,
+                                                                        unknownTipLineStr,
+                                                                        complexDrugTipLineStr,
+                                                                        targetedDrugDetectionStr,
+                                                                        dMMRGene,
+                                                                        crAllList,
+                                                                        thisGeneticmarkerVwList);
+
+            rt.setJingsaiCustomInfo(JingsaiCustomInfo);
+        }
+
+        AnalysisReport analysisReport = null;
+        String status = null;
+        try {
+            analysisReport = PyAnalysisReportTemplateUtil.getFreeMarker(response, request, rt, session, pr);
+            if (analysisReport.getReport_filename() == null || analysisReport.getReport_file_path() == null) {
+                return -1;
+            } else {
+                status = analysisReportDao.getStatusByReportId(analysisReport.getReport_id());
+                if (status == null) {
+                    status = "";
+                }
+                if (!"报告审核通过".equals(status) && !status.contains("报告发送成功")) {
+                    status = "报告生成成功";
+                }
+            }
+        } catch (Exception e) {
+            if (status != null && !"报告审核通过".equals(status) && !status.contains("报告发送成功")) {
+                status = "报告生成失败";
+            }
+            e.printStackTrace();
+            return -1;
+        }
+        analysisReport.setStatus(status);
+        analysisReport.setUser(user_account);
+        analysisReportDao.updateAnalysisReport(analysisReport);
+        // 存储报告数据内容
+        String rtToJson = gson.toJson(rt);
+        AnalysisReportStore analysisReportStore = new AnalysisReportStore();
+        analysisReportStore.setReport_id(pr.getReport_id());
+        analysisReportStore.setReport_filename(pr.getReport_filename());
+        analysisReportStore.setReport_detail(rtToJson);
+        analysisReportStoreDao.insertAnalysisReportStore(analysisReportStore);
+        // 发送状态到一体机
+        if (pr.getFlag() != null && pr.getFlag() == 1) {
+            WebserviceProxyUtils.status(analysisReport.getSubbarcode(), "report_name", String.valueOf(reportId));
+            WebserviceProxyUtils.status(analysisReport.getSubbarcode(), "report_status", "报告未审核");
+        }
+        // 上传报告和sql文件（院内-河南肿瘤）
+        if ("院内-河南肿瘤".equals(rt.getCustomer())) {
+            // 实现异步操作
+            ExecutorService executor = Executors.newCachedThreadPool();
+            AnalysisReport finalAnalysisReport = analysisReport;
+            executor.submit(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        List<Object> ips = Arrays.asList(IpUtil.getLocalIp4Address().toArray());
+                        if (ips.contains(ServerConfig.getServerFormalIP())) {
+                            // 报告上传到远程服务器
+                            SFTPUploader.hnzlUploaded(finalAnalysisReport.getReport_file_path() + finalAnalysisReport.getReport_filename());
+                            Properties prop = new Properties();
+                            InputStream inStream = PyReportServiceImpl.class.getClassLoader().getResourceAsStream("jdbc.properties");
+                            prop.load(inStream);
+                            Connection conn  = DriverManager.getConnection(prop.getProperty("dbTwo.jdbc.url"),prop.getProperty("dbTwo.jdbc.username"),prop.getProperty("dbTwo.jdbc.password"));
+                            Statement stmt = conn.createStatement();
+                            ResultSet rs = stmt.executeQuery("select * from analysis_report where report_id = " + reportId);
+                            while (rs.next()) {
+                                // 写入sql文件
+                                String insertStatement = "INSERT INTO analysis_report VALUES (";
+                                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                                    if (rs.getString(i) == null) {
+                                        insertStatement += rs.getString(i) + ",";
+                                    } else {
+                                        insertStatement += "'" + rs.getString(i).replace("\\", "\\\\").replace("\"", "\\\"") + "',";
+                                    }
+                                }
+                                insertStatement = insertStatement.substring(0, insertStatement.length() - 1) + ");";
+                                String sqlFilePath = new File(session.getServletContext().getRealPath("/")).getParent() + "/TESTREPORT/SQL/" + reportId + ".sql"; // SQL文件保存路径
+                                FileWriter writer = new FileWriter(sqlFilePath);
+                                writer.write(insertStatement);
+                                writer.flush();
+                                writer.close();
+
+                                System.out.println(reportId + ".sql file generated successfully.");
+                                // sql文件上传到远程服务器
+                                SFTPUploader.hnzlUploaded(sqlFilePath);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            executor.shutdown(); // 回收线程池
+        }
+        return reportId;
+    }
+
+
+
+    /**
+     * 生成晶赛自定义数据
+     *
+     * @param bodyDrugTipList         体细胞变异分级提示
+     * @param unknownTipList          vus分级提示（III类 没有用药）
+     * @param complexDrugTipList      共突变分级提示
+     * @param targetedDrugTipList     全部靶向用药解析
+     * @param dMMRGeneList            MMR基因list
+     * @param crAllList               所有胚系突变信息
+     * @param thisGeneticmarkerVwList 所有体系信息
+     * @return
+     */
+    private Map<String, Object> generateJingsaiData(List<Map> bodyDrugTipList,
+                                                    List<Map> unknownTipList,
+                                                    List<Map> complexDrugTipList,
+                                                    List<Map> targetedDrugTipList,
+                                                    List<Map> dMMRGeneList,
+                                                    List<Map> crAllList,
+                                                    List<Map> allGeneticmarkerVwList) {
+        // 晶赛个性化结果汇总
+        Map<String, Object> JingsaiCustomInfo = new HashMap<>();
+
+        // 体细胞突变形式分为 点突变 扩增 融合
+        List<Map> snpGeneList = new ArrayList<>();
+        List<Map> cnvGeneList = new ArrayList<>();
+        List<Map> fusionGeneList = new ArrayList<>();
+
+        // 变异分级提示（基因 位点 用药）
+        
+        // 体细胞变异分级提示（基因 位点 用药）
+        HashMap<String, List> bodyDrugTipInfo = new HashMap<>();
+        for (Map bodyDrugTip : bodyDrugTipList) {
+
+            String variationClass = (String) bodyDrugTip.get("variationClass");
+
+            // 如果该分类组还不存在，则创建一个空列表
+            bodyDrugTipInfo.putIfAbsent(variationClass, new ArrayList<>());
+
+            // 将当前突变数据放入对应的分类组
+            bodyDrugTipInfo.get(variationClass).add(bodyDrugTip);
+            
+            // 判断体系突变类型 snp cnv fusion
+            String oriVariant = (String) bodyDrugTip.get("ori_variant");
+           if (oriVariant != null){
+               if (oriVariant.contains("Fusion")){
+                   fusionGeneList.add(bodyDrugTip);
+               } else if (oriVariant.contains("Amplification")) {
+                   cnvGeneList.add(bodyDrugTip);
+               }else {
+                   snpGeneList.add(bodyDrugTip);
+               }
+           }
+        }
+
+        // vus分级提示
+        HashMap<String, List> unknownTipInfo = new HashMap<>();
+        for (Map unknownTip : unknownTipList) {
+
+            String variationClass = (String) unknownTip.get("variationClass");
+            unknownTipInfo.putIfAbsent(variationClass, new ArrayList<>());
+            unknownTipInfo.get(variationClass).add(unknownTip);
+            // 判断体系突变类型 snp cnv fusion
+            String oriVariant = (String) unknownTip.get("ori_variant");
+            if (oriVariant != null){
+                if (oriVariant.contains("Fusion")){
+                    fusionGeneList.add(unknownTip);
+                } else if (oriVariant.contains("Amplification")) {
+                    cnvGeneList.add(unknownTip);
+                }else {
+                    snpGeneList.add(unknownTip);
+                }
+            }
+        }
+
+        // 共突变分级提示
+        HashMap<String, List> complexDrugTipInfo = new HashMap<>();
+        for (Map complexDrugTip : complexDrugTipList) {
+
+            String variationClass = (String) complexDrugTip.get("variationClass");
+            complexDrugTipInfo.putIfAbsent(variationClass, new ArrayList<>());
+            complexDrugTipInfo.get(variationClass).add(complexDrugTip);
+        }
+
+        // 可获益的临床实验信息（汇总 去重）
+        List<Map> allClinicalTrialInformationList = new  ArrayList<>();
+        for (Map targetedDrugTip : targetedDrugTipList) {
+
+             List<Map> clinicalTrialInformationList = (List<Map>) targetedDrugTip.get("clinicalTrialInformationStr");
+
+            if (clinicalTrialInformationList != null) {
+                for (Map clinicalTrialInformation : clinicalTrialInformationList) {
+
+                    String drugNameChinese3Val = (String)clinicalTrialInformation.get("clinical_trial_id");
+                    // 根据 clinical_trial_id 去重
+                    addIfAbsent(allClinicalTrialInformationList,"clinical_trial_id", drugNameChinese3Val, clinicalTrialInformation);
+                }
+            }
+        }
+
+        // MMR基因（只包含胚系）
+        List<Map> JingsaiDMMRGeneList = new ArrayList<>();
+        for (Map dMMRGene : dMMRGeneList) {
+
+            HashMap<String, Object> dMMRGeneInfo = new HashMap<>();
+            String dmmrGene = (String) dMMRGene.get("gene");
+            dMMRGeneInfo.put("gene", dmmrGene);
+            dMMRGeneInfo.put("ori_variant", "-");
+
+            dMMRGeneInfo.put("Zygosity", "-");
+            dMMRGeneInfo.put("Exon", "-");
+            dMMRGeneInfo.put("cHGVS", "-");
+            dMMRGeneInfo.put("pHGVS", "-");
+            dMMRGeneInfo.put("Clinical_significance", "-");
+
+            // 遍历所有cr突变数据 这里需要确定的是 通过gene是否能找到一个唯一的 关系到后面的break
+            for (Map CR : crAllList) {
+                if (dmmrGene.equals(CR.get("gene"))) {
+                    dMMRGeneInfo.put("gene", dmmrGene);
+                    dMMRGeneInfo.put("ori_variant", CR.get("ori_variant"));
+                    dMMRGeneInfo.put("Zygosity", CR.get("Zygosity"));
+                    dMMRGeneInfo.put("Exon", CR.get("Exon"));
+                    dMMRGeneInfo.put("cHGVS", CR.get("cHGVS"));
+                    dMMRGeneInfo.put("pHGVS", CR.get("PHGVS"));
+                    dMMRGeneInfo.put("Clinical_significance", translateClinicalSignificance(CR.get("Clinical_significance").toString()));
+
+                    break; // 如果只需要找到第一个匹配项，可以在这里 break
+                }
+            }
+
+            JingsaiDMMRGeneList.add(dMMRGeneInfo);
+        }
+
+        
+//        for (Map geneInfo : allGeneticmarkerVwList) {
+//            if ("突变".equals(geneInfo.get("mut_type"))){
+//                snpGeneList.add(geneInfo);
+//            }else if ("拷贝数变异".equals(geneInfo.get("mut_type"))){
+//                cnvGeneList.add(geneInfo);
+//            }else if ("融合".equals(geneInfo.get("mut_type"))){
+//                fusionGeneList.add(geneInfo);
+//            }
+//        }
+
+        // 输出结果
+        JingsaiCustomInfo.put("bodyDrugTipInfo", bodyDrugTipInfo);
+        JingsaiCustomInfo.put("unknownTipInfo", unknownTipInfo);
+        JingsaiCustomInfo.put("complexDrugTipInfo", complexDrugTipInfo);
+        JingsaiCustomInfo.put("allClinicalTrialInformationList", allClinicalTrialInformationList);
+        JingsaiCustomInfo.put("JingsaiDMMRGeneList", JingsaiDMMRGeneList);
+        JingsaiCustomInfo.put("snpGeneList", snpGeneList);
+        JingsaiCustomInfo.put("cnvGeneList", cnvGeneList);
+        JingsaiCustomInfo.put("fusionGeneList", cnvGeneList);
+
+        return JingsaiCustomInfo;
+    }
+
+    /**
+     * 如果列表中不存在具有相同字段值的 Map，则将新的 Map 添加到列表中。
+     *
+     * @param list 列表
+     * @param fieldName 要检查的字段名称
+     * @param fieldValue 要检查的字段值
+     * @param map 要添加的 Map
+     */
+    public static void addIfAbsent(List<Map> list, String fieldName, Object fieldValue, Map map) {
+        // 判断是否存在具有相同字段值的 Map
+        boolean exists = list.stream()
+                .anyMatch(m -> fieldValue.equals(m.get("clinical_trial_id")));
+
+        // 如果不存在，则添加
+        if (!exists) {
+            list.add(map);
+        } else {
+            System.out.println("具有相同 " + fieldName + "=" + fieldValue + " 的记录已存在，未添加。");
+        }
+    }
+
+    public List<Map> getDrugDetectionData(List<Map> targetedDrugDetectionStr, List<Map> DrugDetectionStr, List<Map> geneList) {
+        if (targetedDrugDetectionStr != null) {
+            for (Map map : targetedDrugDetectionStr) {
+                String gene = map.get("gene").toString();
+                for (Map map2 : geneList) {
+                    String Gene = map2.get("gene") == null ? "" : map2.get("gene").toString();
+                    if (Gene.equals(gene)) {
+                        DrugDetectionStr.add(map);
+                        continue;
+                    }
+                }
+            }
+        }
+        return DrugDetectionStr;
+    }
+
+    public List<Map> getDrugName(String DrugType, List<Map> drugList, List<Map> clinicalList, Set drugNameGroup) {
+        List<Map> drugNameList = new ArrayList<Map>();
+        for (Map map2 : drugList) {
+            Map map = new HashMap();
+//            String cfda = map2.get("cfda").toString();
+            String drug_name = map2.get("drug_name").toString();
+            String drugName = map2.get("drug_name").toString();
+            String evidence_phase = map2.get("evidence_phase") == null ? "" : map2.get("evidence_phase").toString();
+            map.put("evidence_phase", evidence_phase);
+            Integer approvedDrugNum = reportUnknownVarDao.getApprovedDrugNum(drugName, 1);
+            String cfda = reportUnknownVarDao.getApprovedCFDANum(drugName, 1) == null ? "0" : reportUnknownVarDao.getApprovedCFDANum(drugName, 1);
+            drug_name = isAddSymbol(drug_name, cfda, clinicalList);
+            String approve_range = map2.get("approve_range") == null ? "" : map2.get("approve_range").toString();
+            String approval_desc = map2.get("approval_desc") == null ? "" : map2.get("approval_desc").toString();
+            String other_test_required = map2.get("other_test_required") == null ? "" : map2.get("other_test_required").toString();
+            if (DrugType.equals(approve_range)) {
+                map.put("name", drug_name);
+                map.put("level", DrugType);
+                if ((StringUtils.isNotEmpty(approval_desc) || approvedDrugNum != 0)) {
+                    map.put("isbold", true);
+                } else {
+                    map.put("isbold", false);
+                }
+                if (other_test_required.equals("1")) {
+                    map.put("isRed", true);
+                } else {
+                    map.put("isRed", false);
+                }
+                if (!drugNameGroup.contains(drugName)) {
+                    drugNameList.add(map);
+                    drugNameGroup.add(drugName);
+                }
+            }
+        }
+        return drugNameList;
+    }
+
+    public boolean getFlagDrugName(List<Map> drugNameList) {
+        boolean flag = false;
+        for (Map map : drugNameList) {
+            boolean isRed = (boolean) map.get("isRed");
+            if (isRed) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+
+    // 翻译样本类型
+    private String tranlateSampleType(String sample_type) {
+        switch (sample_type) {
+            case "blood":
+                return "血液";
+            case "tissue":
+                return "组织";
+            default:
+                return sample_type;
+        }
+    }
+
+    public String transferOriVariant(String ori_variant) {
+        return ori_variant.replaceFirst(" \\.$", "");
+    }
+
+    public String removeMutations(String str) {
 		/*if(str.indexOf(" [") != -1) {
 			str = str.substring(0, str.indexOf(" ["));
 		}*/
-		return str;
-	}
-	
-	// 翻译突变类型
-	private String translateMutType(String ExonicFunc) {
-		switch (ExonicFunc) {
-		case "nonsynonymous SNV":return "错义突变";
-		case "synonymous SNV":return "同义突变";
-		case "nonframeshift insertion":return "非移码突变";
-		case "nonframeshift deletion":return "非移码突变";
-		case "frameshift deletion":return "移码突变";
-		case "frameshift insertion":return "移码突变";
-		case "frameshift indel":return "移码突变";
-		case "nonframeshift indel":return "非移码突变";
-		case "stopgain":return "无义突变";
-		case "stoploss":return "stoploss";
-		case "splicing":return "剪接突变";
-		case "promoter":return "启动子区变异";
-		case "unknown":return "未知";
-		default:return ExonicFunc;
-		}
-	}
-	// 翻译临床意义
-	private String translateClinicalSignificance(String Clinical_significance) {
-		switch(Clinical_significance) {
-			case "1": return "致病性变异";
-			case "2": return "可能致病性变异";
-			case "3": return "不确定性变异";
-			case "4": return "可能良性变异";
-			case "5": return "良性变异";
-			default: return "-";
-		}
-	}
-	// 临床阶段
-	private String translatePhase(String phase) {
-		switch(phase) {
-			case "Phase IV": return "IV期";
-			case "Phase III": return "III期";
-			case "Phase II/III": return "II/III期";
-			case "Phase II": return "II期";
-			case "Phase I/II": return "I/II期";
-			case "Phase I": return "I期";
-			default: return "未知";
-		}
-	}
-	
-	public List<Map> getImmunityData(List<Map> dMMRGene,Integer report_id,List siteNotReported){
-		List<Map> ImmunityData = new ArrayList<Map>();
-		for (Map map2 : dMMRGene) {
-			String gene = map2.get("gene") == null ? "":map2.get("gene").toString();
-			String info = map2.get("info") == null ? "":map2.get("info").toString();
-			List<Map> getdMMRInfo = getdMMRInfo(report_id,gene);
-			for (Iterator iterator = getdMMRInfo.iterator(); iterator.hasNext();) {
-				Map map = (Map) iterator.next();
-				String ori_variant = map.get("ori_variant") == null ? "":map.get("ori_variant").toString();
-				if(siteNotReported.contains(gene+" "+ori_variant)) {
-					iterator.remove();
-				}
-			}
-			String variant = "";
-			String ori_variant = "";
-			String mutFreq = "";
-			String mut_type = "";
-			if(!getdMMRInfo.isEmpty()) {
-				for (Map map : getdMMRInfo) {
-					Map dMMRData = new HashMap();
-					variant = map.get("variant") == null ? "未检测到相关基因突变":map.get("variant").toString();//检测结果
-					ori_variant = map.get("ori_variant") == null ? "未检测到相关基因突变":map.get("ori_variant").toString();//检测结果
-					mutFreq = map.get("mutFreq") == null ? "/":map.get("mutFreq").toString();//突变丰度
-					if(Pattern.matches("\\d*\\.?\\d*", mutFreq)) {
-						mutFreq += "%";
-					}
-					mut_type = map.get("ExonicFunc") == null ? "/":translateMutType(map.get("ExonicFunc").toString());//突变类型
-					dMMRData.put("gene", gene);
-					dMMRData.put("info", info);
-					dMMRData.put("variant", variant);
-					dMMRData.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
-					dMMRData.put("mutFreq", mutFreq);
-					dMMRData.put("mut_type", mut_type);
-					ImmunityData.add(dMMRData);
-				}
-			}else {
-				Map dMMRData = new HashMap();
-				variant = "未检测到相关基因突变";
-				ori_variant = "未检测到相关基因突变";
-				mutFreq = "/";
-				mut_type = "/";
-				dMMRData.put("gene", gene);
-				dMMRData.put("info", info);
-				dMMRData.put("variant", variant);
-				dMMRData.put("ori_variant", ori_variant);
-				dMMRData.put("mutFreq", mutFreq);
-				dMMRData.put("mut_type", mut_type);
-				ImmunityData.add(dMMRData);
-			}
-		}
-		return ImmunityData;
-	}
-	
-	public List<Map> getdMMRInfo(Integer report_id,String gene){
-		return analysisReportDao.getdMMRByReportIdAndGene(report_id, gene);
-	}
-	
-	//将数据转换为json
-	public String dataToJson(List<Map> CancerRisk,List<Map> VarDrug,SampleFile sf,List<Map> dMMRinfo,Map<String,Object> summaryOfRresults,Integer report_id) {
-		AnalysisReport analysisReport= analysisReportDao.getReportById(report_id);
-		String primary_cancer = lifeDao.getDiseaseClassChineseById(analysisReport.getPrimary_cancer_id());
-		analysisReport.setPrimary_cancer(primary_cancer);
-		Map data = new HashMap();
-		data.put("SampleInfo", sf);
-		data.put("CancerRisk", CancerRisk);
-		data.put("VarDrug", VarDrug);
-		data.put("Analysis", analysisReport);
-		data.put("DMMRinfo", dMMRinfo);
-		data.put("SummaryOfRresults", summaryOfRresults);
-		Gson gson = new Gson();
-		return gson.toJson(data);
-	}
-	
-	public Map getAnalysisOfImmuneTestResults(StringBuilder sb,Map tmbMap,String user,Integer diseaseId,List<Integer> diseaseIdList,List<Integer> parentdiseaseIdList,Integer lang) {
-		Map map = new HashMap();
-		try {
-			reportCrService.handleDrugList(user, diseaseId, tmbMap, diseaseIdList, parentdiseaseIdList,1,lang);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		}
-		Map<String, String> drugInfoMap = new HashMap<>();
-		String varDrugNote = tmbMap.get("varDrugNote") == null ? "" : tmbMap.get("varDrugNote").toString();
-		List<Map> clinicalList = tmbMap.get("clinicalList") == null ? null : (List<Map>) tmbMap.get("clinicalList");
-		List<Map> drugList = tmbMap.get("drugList") == null ? null : (List<Map>)tmbMap.get("drugList");
-		if(!varDrugNote.equals("")) {
-			JSONArray array = JSONArray.fromObject(varDrugNote);
-			List<Json> listDrugNote = (List<Json>) JSONArray.toCollection(array, Json.class);
-			map.put("varDrugNote", listDrugNote);
-		}else {
-			map.put("varDrugNote", "");
-		}
-		sb.delete(0, sb.length());
-		List<Map> resistantStr = new ArrayList<Map>();
-		List<Map> drugInformationStr = new ArrayList<Map>();
-		List<Map> clinicalTrialInformationStr = new ArrayList<Map>();
-		if (!CollectionUtils.isEmpty(drugList)) {
-			for (Map map2 : drugList) {
-				String cfda = map2.get("cfda") == null ? "" : map2.get("cfda").toString();
-				String recruiting = map2.get("recruiting") == null ? "0" : map2.get("recruiting").toString();
-				String drug_name_chinese = map2.get("drug_name").toString();
-				drug_name_chinese = isAddSymbol(drug_name_chinese, cfda, clinicalList);
-				String approve_range = map2.get("approve_range") == null ? "" : map2.get("approve_range").toString();
-				String approval_desc_chinese = map2.get("approval_desc") == null ? "" : map2.get("approval_desc").toString();
-				String[] approval_desc_list = approval_desc_chinese.split("\r\n");
-				String other_test_required = map2.get("other_test_required").toString();
-				if (!"5".equals(approve_range) && StringUtils.isNotEmpty(approval_desc_chinese)) {
-					// ********药物信息********
-					Map drugInformation = new HashMap();
-					drugInformation.put("isbold", false);
-					drugInformation.put("name", drug_name_chinese);
-					if(other_test_required.equals("1")) {
-						drugInformation.put("isRed", true);
-					}else {
-						drugInformation.put("isRed", false);
-					}
-					drugInformation.put("drugInfo", approval_desc_list);
-					drugInformationStr.add(drugInformation);
-				}
-				Map drugNameMap = new HashMap();
-				drugNameMap.put("name", drug_name_chinese);
-				if (StringUtils.isNotEmpty(approval_desc_chinese)) {
-					drugNameMap.put("isbold", true);
-				} else {
-					drugNameMap.put("isbold", false);
-				}
-				if(other_test_required.equals("1")) {
-					map.put("isRed", true);
-				}else {
-					map.put("isRed", false);
-				}
-				if ("5".equals(approve_range)) {
-					resistantStr.add(drugNameMap);
-				}
-			}
-			
-			// ********临床试验信息********
-			
-			if (!CollectionUtils.isEmpty(clinicalList)) {
-				for (Map clinical : clinicalList) {
-					List<Map> drugNameList = new ArrayList<Map>();
-					Map clinicalTrialInformation = new HashMap();
-					String cfda = clinical.get("cfda") == null ? "0" : clinical.get("cfda").toString();
-					String clinical_trial_id = clinical.get("clinical_trial_id") == null ? "" : clinical.get("clinical_trial_id").toString();
-					String condition_chinese = clinical.get("recruiting_condition") == null ? "" : clinical.get("recruiting_condition").toString();
-					String drug_name_chinese = clinical.get("drug_name") == null ? "" : clinical.get("drug_name").toString();
-					String location_chinese = clinical.get("location") == null ? "" : clinical.get("location").toString();
-					String phase = clinical.get("phase") == null ? "" : clinical.get("phase").toString();
-					String title_chinese = clinical.get("title") == null ? "" : clinical.get("title").toString();
-					String other_test_required = clinical.get("other_test_required").toString();
-					Integer approvedDrugNum = reportUnknownVarDao.getApprovedDrugNum(drug_name_chinese,lang);
-					String drugOtherName = reportVarDrugDao.getDrugOtherName(drug_name_chinese);
-					if ("1".equals(cfda)) {
-						drug_name_chinese += "*";
-					}									
-					clinicalTrialInformation.put("clinical_trial_id", clinical_trial_id);
-					clinicalTrialInformation.put("title_chinese", title_chinese);
-					clinicalTrialInformation.put("condition_chinese", condition_chinese);
-					clinicalTrialInformation.put("phase", translatePhase(phase));
-					Map drugNameMap = new HashMap();
-					Map otherDrugNameMap = new HashMap();
-					drugNameMap.put("name", drug_name_chinese);
-					if(other_test_required.equals("1")) {
-						drugNameMap.put("isRed", true);
-						otherDrugNameMap.put("isRed", true);
-					}else {
-						drugNameMap.put("isRed", false);
-						otherDrugNameMap.put("isRed", false);
-					}
-					if(approvedDrugNum == 0) {
-						drugNameMap.put("isbold", false);
-						otherDrugNameMap.put("isbold", false);
-					}else {
-						drugNameMap.put("isbold", true);
-						otherDrugNameMap.put("isbold", true);
-					}
-					drugNameList.add(drugNameMap);
-					if(drugOtherName != null && !"".endsWith(drugOtherName.trim())) {
-						otherDrugNameMap.put("name", "("+drugOtherName+")");
-						drugNameList.add(otherDrugNameMap);
-					}
-					clinicalTrialInformation.put("drug_name_chinese", drugNameList);
-					clinicalTrialInformation.put("location_chinese", location_chinese);
-					clinicalTrialInformationStr.add(clinicalTrialInformation);
-				}
-			}
-		}
-		map.put("drugInformationStr", drugInformationStr);
-		map.put("resistantStr", resistantStr);
-		map.put("clinicalTrialInformationStr", clinicalTrialInformationStr);
-		return map;
-	}
+        return str;
+    }
+
+    // 翻译突变类型
+    @Override
+    public String translateMutType(String ExonicFunc) {
+        switch (ExonicFunc) {
+            case "nonsynonymous SNV":
+                return "错义突变";
+            case "synonymous SNV":
+                return "同义突变";
+            case "nonframeshift insertion":
+                return "非移码突变";
+            case "nonframeshift deletion":
+                return "非移码突变";
+            case "frameshift deletion":
+                return "移码突变";
+            case "frameshift insertion":
+                return "移码突变";
+            case "frameshift indel":
+                return "移码突变";
+            case "nonframeshift indel":
+                return "非移码突变";
+            case "stopgain":
+                return "无义突变";
+            case "stoploss":
+                return "终止子缺失";
+            case "splicing":
+                return "剪接突变";
+            case "promoter":
+                return "启动子区变异";
+            case "unknown":
+                return "未知";
+            default:
+                return ExonicFunc;
+        }
+    }
+
+    // 翻译临床意义
+    @Override
+    public String translateClinicalSignificance(String Clinical_significance) {
+        switch (Clinical_significance) {
+            case "1":
+                return "致病性变异";
+            case "2":
+                return "可能致病性变异";
+            case "3":
+                return "不确定性变异";
+            case "4":
+                return "可能良性变异";
+            case "5":
+                return "良性变异";
+            default:
+                return "-";
+        }
+    }
+
+    // 临床阶段
+    private String translatePhase(String phase) {
+        switch (phase) {
+            case "Phase IV":
+                return "IV期";
+            case "Phase III":
+                return "III期";
+            case "Phase II/III":
+                return "II/III期";
+            case "Phase II":
+                return "II期";
+            case "Phase I/II":
+                return "I/II期";
+            case "Phase I":
+                return "I期";
+            default:
+                return "未知";
+        }
+    }
+
+    @Override
+    public List<Map> getHotgeneData(List<Map> hotGene, List<Map> thisGeneticmarkerList, List<Map> crList, String type, String output, String template_name) {
+        List<Map> HotgeneData = new ArrayList<Map>();
+        String symbol = "/";
+        if ("未检测到相关基因失活突变".equals(output)) {
+            symbol = "-";
+        }
+        for (Map map2 : hotGene) {
+            String gene = map2.get("gene") == null ? "" : map2.get("gene").toString();
+            String info = map2.get("info") == null ? "" : map2.get("info").toString();
+            List<Map> getHotInfo = getHotInfo(gene, thisGeneticmarkerList, crList, type);
+//            String variant = "";
+            String ori_variant = "";
+            String mutFreq = "";
+            String mut_type = "";
+            if (!getHotInfo.isEmpty()) {
+                for (Map map : getHotInfo) {
+                    Map hotData = new HashMap();
+//                    variant = map.get("variant") == null ? output : map.get("variant").toString();//检测结果
+                    ori_variant = map.get("ori_variant") == null ? output : map.get("ori_variant").toString();//检测结果
+                    mutFreq = map.get("mutFreq") == null ? symbol : map.get("mutFreq").toString();//突变丰度
+                    /*if (Pattern.matches("\\d*\\.?\\d*", mutFreq)) {
+                        mutFreq += "%";
+                    }*/
+                    mutFreq = getMutFreq(ori_variant, mutFreq, template_name);
+                    mut_type = map.get("ExonicFunc") == null ? symbol : translateMutType(map.get("ExonicFunc").toString());//突变类型
+                    hotData.put("gene", gene);
+                    hotData.put("info", info);
+                    hotData.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
+                    hotData.put("mutFreq", mutFreq);
+                    hotData.put("mut_type", mut_type);
+                    HotgeneData.add(hotData);
+                }
+            } else {
+                Map hotData = new HashMap();
+//                variant = output;
+                ori_variant = output;
+                mutFreq = symbol;
+                mut_type = symbol;
+                hotData.put("gene", gene);
+                hotData.put("info", info);
+                hotData.put("ori_variant", ori_variant);
+                hotData.put("mutFreq", mutFreq);
+                hotData.put("mut_type", mut_type);
+                HotgeneData.add(hotData);
+            }
+        }
+        return HotgeneData;
+    }
+
+    public List<Map> getYfhxgeneData(List<Map> hotGene, List<Map> thisGeneticmarkerList, List<Map> crList, String type, HashSet<Object> geneSet) {
+        List<Map> HotgeneData = new ArrayList<Map>();
+        if (hotGene.isEmpty()) {
+            return HotgeneData;
+        }
+        List<String> list = Arrays.asList("MDM2", "MDM4", "CCND1", "FGF3", "FGF4", "FGF19"); //可能导致疾病发生超进展标志物中这些需要扩增基因
+        for (Map map2 : hotGene) {
+            String gene = map2.get("gene") == null ? "" : map2.get("gene").toString();
+            List<Map> getHotInfo = getHotInfo(gene, thisGeneticmarkerList, crList, type);
+            String ori_variant = "";
+            if (!getHotInfo.isEmpty()) {
+                for (Map map : getHotInfo) {
+                    Map hotData = new HashMap();
+                    ori_variant = map.get("ori_variant") == null ? "未检出" : map.get("ori_variant").toString();//检测结果
+                    hotData.put("gene", gene);
+                    hotData.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
+                    if (list.contains(gene)) { //"MDM2", "MDM4", "CCND1", "FGF3", "FGF4", "FGF19"
+                        if ("Amplification".equals(ori_variant)) {
+                            HotgeneData.add(hotData);
+                            geneSet.add(gene);
+                        }
+                    } else {
+                        if (!("Amplification".equals(ori_variant) || ori_variant.indexOf("Fusion") != -1)) {
+                            HotgeneData.add(hotData);
+                            geneSet.add(gene);
+                        }
+                    }
+                }
+            }
+        }
+        return HotgeneData;
+    }
+
+    public List<Map> getSFgeneData(List<Map> hotGene, List<Map> thisGeneticmarkerList, List<Map> crList, String type, HashSet<Object> geneSet) {
+        List<Map> HotgeneData = new ArrayList<Map>();
+        if (hotGene.isEmpty()) {
+            return HotgeneData;
+        }
+        List<String> list = Arrays.asList("CD274", "CCND1", "FGF3", "FGF4", "FGF19", "MDM2", "MDM4"); //扩增基因
+        List<String> list2 = Arrays.asList("MLH1", "MSH2", "MSH6", "PMS2"); //胚系基因
+        for (Map map2 : hotGene) {
+            String gene = map2.get("gene") == null ? "" : map2.get("gene").toString();
+            List<Map> getHotInfo = getHotInfo(gene, thisGeneticmarkerList, crList, type);
+            String ori_variant = "";
+            if (!getHotInfo.isEmpty()) {
+                for (Map map : getHotInfo) {
+                    Map hotData = new HashMap();
+                    ori_variant = map.get("ori_variant") == null ? "未检出" : map.get("ori_variant").toString();//检测结果
+                    String type1 = map.get("type").toString();//区分是胚系基因还是体系基因
+                    hotData.put("gene", gene);
+                    hotData.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
+                    if ("胚系".equals(type1)) {
+                        if (list2.contains(gene)) {
+                            HotgeneData.add(hotData);
+                            geneSet.add(gene);
+                        }
+                    } else {
+                        if (!list2.contains(gene)) {
+                            if (list.contains(gene)) { //"CD274", "CCND1", "FGF3", "FGF4", "FGF19"
+                                if ("Amplification".equals(ori_variant)) {
+                                    HotgeneData.add(hotData);
+                                    // 11q13区域的基因包括CCND1，FGF3, FGF4, FGF19
+                                    List<String> list3 = Arrays.asList("CCND1", "FGF3", "FGF4", "FGF19");
+                                    if (list3.contains(gene)) {
+                                        geneSet.add("11q13");
+                                    } else {
+                                        geneSet.add(gene);
+                                    }
+                                }
+                            } else if ("EGFR".contains(gene)) { //EGFR突变（L858R/EX19del）
+                                if (ori_variant.indexOf("p.L858R") != -1 || (ori_variant.indexOf("exon19") != -1 && ori_variant.indexOf("del") != -1)) {
+                                    HotgeneData.add(hotData);
+                                    geneSet.add(gene);
+                                }
+                            } else if ("ALK".equals(gene)) {
+                                if (ori_variant.indexOf("Fusion") != -1) {
+                                    HotgeneData.add(hotData);
+                                    geneSet.add(gene);
+                                }
+                            } else {
+                                if (!("Amplification".equals(ori_variant) || ori_variant.indexOf("Fusion") != -1)) {
+                                    HotgeneData.add(hotData);
+                                    geneSet.add(gene);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return HotgeneData;
+    }
+
+    @Override
+    public List<MmThyroidHotspot> getThyroidCancerHotgeneData(List<Map> thisGeneticmarkerList, List<Map> crList) {
+        List<String> hotGene = Arrays.asList("ALK", "BRAF", "NTRK1/2/3", "RET", "HRAS", "KRAS", "NRAS", "PAX8", "TERT");
+        List<MmThyroidHotspot> HotgeneData = new ArrayList<>();
+        for (String gene : hotGene) {
+            List<Map> getHotInfo = getdMMRInfo2(thisGeneticmarkerList, crList, gene);
+            MmThyroidHotspot hotData = new MmThyroidHotspot();
+            hotData.setGene(gene);
+            if ("ALK".equals(gene) || "PAX8".equals(gene)) {
+                hotData.setType("基因融合");
+                hotData.setMeaning("分型");
+                if (!getHotInfo.isEmpty()) {
+                    for (Map map : getHotInfo) {
+                        String ori_variant = map.get("ori_variant") == null ? "未检出" : map.get("ori_variant").toString();//检测结果
+                        if (ori_variant.contains("Fusion")) {
+                            hotData.setSituation("检出");
+                            break;
+                        } else {
+                            hotData.setSituation("未检出");
+                        }
+                    }
+                } else {
+                    hotData.setSituation("未检出");
+                }
+            } else if ("BRAF".equals(gene)) {
+                hotData.setType("V600E");
+                hotData.setMeaning("分型、靶向用药、预后");
+                if (!getHotInfo.isEmpty()) {
+                    for (Map map : getHotInfo) {
+                        String ori_variant = map.get("ori_variant") == null ? "未检出" : map.get("ori_variant").toString();//检测结果
+                        if (ori_variant.contains("V600E")) {
+                            hotData.setSituation("检出");
+                            break;
+                        } else {
+                            hotData.setSituation("未检出");
+                        }
+                    }
+                } else {
+                    hotData.setSituation("未检出");
+                }
+            } else if ("NTRK1/2/3".equals(gene)) {
+                hotData.setType("基因融合");
+                hotData.setMeaning("分型、靶向用药");
+                if (!getHotInfo.isEmpty()) {
+                    for (Map map : getHotInfo) {
+                        String ori_variant = map.get("ori_variant") == null ? "未检出" : map.get("ori_variant").toString();//检测结果
+                        if (ori_variant.contains("Fusion")) {
+                            hotData.setSituation("检出");
+                            break;
+                        } else {
+                            hotData.setSituation("未检出");
+                        }
+                    }
+                } else {
+                    hotData.setSituation("未检出");
+                }
+            } else if ("RET".equals(gene)) {
+                hotData.setType("基因融合、基因突变");
+                hotData.setMeaning("分型、靶向用药、遗传筛查");
+                if (!getHotInfo.isEmpty()) {
+                    for (Map map : getHotInfo) {
+                        String ori_variant = map.get("ori_variant") == null ? "未检出" : map.get("ori_variant").toString();//检测结果
+                        if (ori_variant.contains("Fusion") || ori_variant.contains("p.") || ori_variant.contains("c.")) {
+                            hotData.setSituation("检出");
+                            break;
+                        } else {
+                            hotData.setSituation("未检出");
+                        }
+                    }
+                } else {
+                    hotData.setSituation("未检出");
+                }
+            } else if ("HRAS".equals(gene) || "KRAS".equals(gene) || "NRAS".equals(gene)) {
+                hotData.setType("基因突变");
+                hotData.setMeaning("分型、预后");
+                if (!getHotInfo.isEmpty()) {
+                    for (Map map : getHotInfo) {
+                        String ori_variant = map.get("ori_variant") == null ? "未检出" : map.get("ori_variant").toString();//检测结果
+                        if (ori_variant.contains("p.") || ori_variant.contains("c.")) {
+                            hotData.setSituation("检出");
+                            break;
+                        } else {
+                            hotData.setSituation("未检出");
+                        }
+                    }
+                } else {
+                    hotData.setSituation("未检出");
+                }
+            } else if ("TERT".equals(gene)) {
+                hotData.setType("启动子基因突变");
+                hotData.setMeaning("分型、预后");
+                if (!getHotInfo.isEmpty()) {
+                    for (Map map : getHotInfo) {
+                        String ori_variant = map.get("ori_variant") == null ? "未检出" : map.get("ori_variant").toString();//检测结果
+                        if (ori_variant.contains("promoter")) {
+                            hotData.setSituation("检出");
+                            break;
+                        } else {
+                            hotData.setSituation("未检出");
+                        }
+                    }
+                } else {
+                    hotData.setSituation("未检出");
+                }
+            }
+            HotgeneData.add(hotData);
+        }
+        return HotgeneData;
+    }
+
+    public List<Map> getdMMRInfo2(List<Map> thisGeneticmarkerList, List<Map> crList, String gene) {
+        List<Map> maps = new ArrayList<Map>();
+        if ("NTRK1/2/3".equals(gene)) {
+            List<Map> maps1 = getHotInfo("NTRK1", thisGeneticmarkerList, crList, "allgene");
+            List<Map> maps2 = getHotInfo("NTRK2", thisGeneticmarkerList, crList, "allgene");
+            List<Map> maps3 = getHotInfo("NTRK3", thisGeneticmarkerList, crList, "allgene");
+            maps.addAll(maps1);
+            maps.addAll(maps2);
+            maps.addAll(maps3);
+        } else {
+            List<Map> mapList = getHotInfo(gene, thisGeneticmarkerList, crList, "allgene");
+            maps.addAll(mapList);
+        }
+        return maps;
+    }
+
+    public List<Map> getHotInfo(String gene, List<Map> thisGeneticmarkerList, List<Map> crList, String type) {
+        List<Map> getHotInfo = new ArrayList<>();
+        if ("allgene".equals(type)) {
+            List<Map> allMutation = new ArrayList<>();
+            allMutation.addAll(thisGeneticmarkerList);
+            allMutation.addAll(crList);
+            getHotInfo = allMutation.stream().filter(map -> gene.equals(map.get("gene"))).collect(Collectors.toList());
+        }
+        if ("snp_indel".equals(type)) {
+            getHotInfo = thisGeneticmarkerList.stream().filter(map -> gene.equals(map.get("gene"))).collect(Collectors.toList());
+        } else if ("CR".equals(type)) {
+            getHotInfo = crList.stream().filter(map -> gene.equals(map.get("gene"))).collect(Collectors.toList());
+        }
+        return getHotInfo;
+    }
+
+    //将数据转换为json
+    public String dataToJson(List<Map> CancerRisk, List<Map> VarDrug, SampleFile sf, List<Map> dMMRinfo, Map<String, Object> summaryOfRresults, List<Map> targetDrugTipLineStr, Map<String, Object> chemoSummary, List<List<Map<String, Object>>> chemoAnalysis, List<Map> sarcomaTyping, Map<String, Object> positiveDDR, Map<String, Object> positiveOther, Map<String, Object> negative, Map<String, Object> hpd, Integer report_id) {
+        AnalysisReport analysisReport = analysisReportDao.getReportById(report_id);
+        String primary_cancer = lifeDao.getDiseaseClassChineseById(analysisReport.getPrimary_cancer_id());
+        analysisReport.setPrimary_cancer(primary_cancer);
+        Map data = new HashMap();
+        data.put("SampleInfo", sf);
+        data.put("CancerRisk", CancerRisk);
+        data.put("VarDrug", VarDrug);
+        data.put("Analysis", analysisReport);
+        data.put("DMMRinfo", dMMRinfo);
+        data.put("SummaryOfRresults", summaryOfRresults);
+        data.put("targetDrugTipLineStr", targetDrugTipLineStr);
+        data.put("chemoSummary", chemoSummary);
+        data.put("chemoAnalysis", chemoAnalysis);
+        data.put("sarcomaTyping", sarcomaTyping);
+        data.put("positiveDDR", positiveDDR);
+        data.put("positiveOther", positiveOther);
+        data.put("negative", negative);
+        data.put("hpd", hpd);
+        Gson gson = new Gson();
+        return gson.toJson(data);
+    }
+
+    public String dataToJson2(ReportTemplate rt) {
+        Map data = new HashMap();
+       /* data.put("SampleInfo", rt);
+        data.put("CancerRisk", CancerRisk);
+        data.put("VarDrug", VarDrug);
+        data.put("Analysis", analysisReport);
+        data.put("DMMRinfo", dMMRinfo);
+        data.put("SummaryOfRresults", summaryOfRresults);
+        data.put("targetDrugTipLineStr", targetDrugTipLineStr);
+        data.put("chemoSummary", chemoSummary);
+        data.put("chemoAnalysis", chemoAnalysis);
+        data.put("sarcomaTyping", sarcomaTyping);*/
+        Gson gson = new Gson();
+        return gson.toJson(rt);
+    }
+
+    public Map getAnalysisOfImmuneTestResults(StringBuilder sb, Map tmbMap, String user, Integer diseaseId, List<Integer> diseaseIdList, List<Integer> parentdiseaseIdList, Integer lang, String template_name, Integer report_id) {
+        Map map = new HashMap();
+        try {
+            reportCrService.handleDrugList(user, diseaseId, tmbMap, diseaseIdList, parentdiseaseIdList, 1, lang, report_id);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        Map<String, String> drugInfoMap = new HashMap<>();
+        String varDrugNote = tmbMap.get("varDrugNote") == null ? "" : tmbMap.get("varDrugNote").toString();
+        List<Map> clinicalList = tmbMap.get("clinicalList") == null ? null : (List<Map>) tmbMap.get("clinicalList");
+        List<Map> drugList = tmbMap.get("drugList") == null ? null : (List<Map>) tmbMap.get("drugList");
+        List<DrugResearch> drugResearchList = tmbMap.get("drugResearchList") == null ? null : (List<DrugResearch>) tmbMap.get("drugResearchList");
+        List<PotentialDrug> potentialDrugList = tmbMap.get("potentialDrugList") == null ? null : (List<PotentialDrug>) tmbMap.get("potentialDrugList");
+        // 三峡、重医附二模板删除非A级药物（获批上市、指南推荐）的潜在受益药物研究信息、潜在耐药研究信息
+        if (template_name.contains("三峡")  || template_name.contains("重医附二")) {
+            if (drugResearchList != null) {
+                Iterator<DrugResearch> iterator1 = drugResearchList.iterator();
+                while (iterator1.hasNext()) {
+                    String evidence_phase_chinese = iterator1.next().getEvidence_phase_chinese();
+                    if (!"获批上市".equals(evidence_phase_chinese) && !"指南推荐".equals(evidence_phase_chinese)) {
+                        iterator1.remove();
+                    }
+                }
+            }
+            if (potentialDrugList != null) {
+                Iterator<PotentialDrug> iterator2 = potentialDrugList.iterator();
+                while (iterator2.hasNext()) {
+                    String evidence_phase_chinese = iterator2.next().getEvidence_phase_chinese();
+                    if (!"获批上市".equals(evidence_phase_chinese) && !"指南推荐".equals(evidence_phase_chinese)) {
+                        iterator2.remove();
+                    }
+                }
+            }
+        }
+        if (!varDrugNote.equals("")) {
+            JSONArray array = JSONArray.fromObject(varDrugNote);
+            if (array.size() > 3) {
+                JSONObject nccnInfo = (JSONObject) array.get(3);
+//                String nccnInfo1 = nccnInfo.get("value") == null ? "" : nccnInfo.get("value").toString();
+                if (nccnInfo.get("key").toString().indexOf("NCCN指南:") != -1) {
+                    array.remove(3);
+                }
+            }
+            if (array.size() > 3) {
+                JSONObject clinicalInfo = (JSONObject) array.get(3);
+                if (clinicalInfo.get("key").toString().indexOf("预后和诊断说明:") != -1) {
+                    array.remove(3);
+                }
+            }
+            if (array.size() > 3) {
+                JSONObject drugAnnotation = (JSONObject) array.get(3);
+                if (drugAnnotation.get("key").toString().indexOf("用药说明:") != -1) {
+                    array.remove(3);
+                }
+            }
+            if (array.size() > 3) {
+                JSONObject resistance = (JSONObject) array.get(3);
+                if (resistance.get("key").toString().indexOf("耐药说明:") != -1) {
+                    array.remove(3);
+                }
+            }
+            if (array.size() > 3) {
+                JSONObject recommend = (JSONObject) array.get(3);
+                if (recommend.get("key").toString().indexOf("recommend:") != -1) {
+                    array.remove(3);
+                }
+            }
+            List<Json> listDrugNote = (List<Json>) JSONArray.toCollection(array, Json.class);
+            map.put("varDrugNote", listDrugNote);
+        } else {
+            map.put("varDrugNote", "");
+        }
+        sb.delete(0, sb.length());
+        List<Map> drugaStr = new ArrayList<Map>();
+        List<Map> drugbStr = new ArrayList<Map>();
+        List<Map> drugcStr = new ArrayList<Map>();
+        List<Map> drugdStr = new ArrayList<Map>();
+        List<Map> resistantaStr = new ArrayList<Map>();
+        List<Map> resistantbStr = new ArrayList<Map>();
+        List<Map> resistantcStr = new ArrayList<Map>();
+        List<Map> resistantdStr = new ArrayList<Map>();
+        List<Map> drugInformationStr = new ArrayList<Map>();
+        List<Map> clinicalTrialInformationStr = new ArrayList<Map>();
+        List<Map> drugNameList = new ArrayList<Map>(); //合并获益ABCD级药物
+        List<Map> ResistantDrug = new ArrayList<Map>(); //合并耐药ABCD级药物
+        Set drugNameGroup = new HashSet();
+        Set resistantDrugNameGroup = new HashSet();
+        if (!CollectionUtils.isEmpty(drugList)) {
+            for (Map map2 : drugList) {
+//                String cfda = map2.get("cfda") == null ? "" : map2.get("cfda").toString();
+                String drug_name_chinese = map2.get("drug_name").toString();
+                String drug_name = map2.get("drug_name").toString();
+                Integer approvedDrugNum = reportUnknownVarDao.getApprovedDrugNum(drug_name, lang);
+                String cfda = reportUnknownVarDao.getApprovedCFDANum(drug_name, lang) == null ? "0" : reportUnknownVarDao.getApprovedCFDANum(drug_name, lang);
+                drug_name_chinese = isAddSymbol(drug_name_chinese, cfda, clinicalList);
+                String approve_range = map2.get("approve_range") == null ? "" : map2.get("approve_range").toString();
+                String approval_desc_chinese = map2.get("approval_desc") == null ? "" : map2.get("approval_desc").toString();
+                String[] approval_desc_list = approval_desc_chinese.split("\r\n");
+                String other_test_required = map2.get("other_test_required").toString();
+                if (Integer.valueOf(approve_range) < 5 && (StringUtils.isNotEmpty(approval_desc_chinese) || approvedDrugNum != 0)) {
+                    // ********药物信息********
+                    Map drugInformation = new HashMap();
+                    drugInformation.put("isbold", false);
+                    drugInformation.put("name", drug_name_chinese);
+                    if (other_test_required.equals("1")) {
+                        drugInformation.put("isRed", true);
+                    } else {
+                        drugInformation.put("isRed", false);
+                    }
+                    drugInformation.put("drugInfo", approval_desc_list);
+                    drugInformationStr.add(drugInformation);
+                }
+                Map drugNameMap = new HashMap();
+                drugNameMap.put("name", drug_name_chinese);
+                // 2023年10月升级 去掉#
+                drugNameMap.put("nameLevel", StringUtils.remove(drug_name_chinese, '#'));
+                drugNameMap.put("level", approve_range);
+                if ((StringUtils.isNotEmpty(approval_desc_chinese) || approvedDrugNum != 0)) {
+                    drugNameMap.put("isbold", true);
+                } else {
+                    drugNameMap.put("isbold", false);
+                }
+                if (other_test_required.equals("1")) {
+                    map.put("isRed", true);
+                } else {
+                    map.put("isRed", false);
+                }
+                if ("1".equals(approve_range) && !drugNameGroup.contains(drug_name)) {
+                    drugaStr.add(drugNameMap);
+                    drugNameList.add(drugNameMap);
+                } else if ("2".equals(approve_range) && !drugNameGroup.contains(drug_name)) {
+                    drugbStr.add(drugNameMap);
+                    drugNameList.add(drugNameMap);
+                } else if ("3".equals(approve_range) && !drugNameGroup.contains(drug_name)) {
+                    drugcStr.add(drugNameMap);
+                    drugNameList.add(drugNameMap);
+                } else if ("4".equals(approve_range) && !drugNameGroup.contains(drug_name)) {
+                    drugdStr.add(drugNameMap);
+                    drugNameList.add(drugNameMap);
+                } else if ("5".equals(approve_range) && !resistantDrugNameGroup.contains(drug_name)) {
+                    resistantaStr.add(drugNameMap);
+                    ResistantDrug.add(drugNameMap);
+                } else if ("6".equals(approve_range) && !resistantDrugNameGroup.contains(drug_name)) {
+                    resistantbStr.add(drugNameMap);
+                    ResistantDrug.add(drugNameMap);
+                } else if ("7".equals(approve_range) && !resistantDrugNameGroup.contains(drug_name)) {
+                    resistantcStr.add(drugNameMap);
+                    ResistantDrug.add(drugNameMap);
+                } else if ("8".equals(approve_range) && !resistantDrugNameGroup.contains(drug_name)) {
+                    resistantdStr.add(drugNameMap);
+                    ResistantDrug.add(drugNameMap);
+                }
+                if (Integer.valueOf(approve_range) < 5) {
+                    drugNameGroup.add(drug_name);
+                } else {
+                    resistantDrugNameGroup.add(drug_name);
+                }
+                String drug_name_chinese2 = StringUtils.remove(drug_name_chinese, '*');
+                String drug_name_chinese3 = StringUtils.remove(drug_name_chinese2, '#');
+                if (drugResearchList != null && !"".equals(drugResearchList)) {
+                    for (DrugResearch drugResearch : drugResearchList) {
+                        if (drugResearch.getDrug_name_chinese().equals(drug_name_chinese3)) {
+                            if (StringUtils.isNotEmpty(approval_desc_chinese) || approvedDrugNum != 0) {
+                                drugResearch.setIsbold(true);
+                            } else {
+                                drugResearch.setIsbold(false);
+                            }
+                            drugResearch.setDrug_name_chinese(drug_name_chinese);
+                            drugResearch.setDrug_name_chinese2(drug_name);
+                            drugResearch.setDrug_name_chinese3(StringUtils.remove(drug_name_chinese, '#'));
+                            if (other_test_required.equals("1")) {
+                                drugResearch.setIsRed(true);
+                            } else {
+                                drugResearch.setIsRed(false);
+                            }
+                        }
+                    }
+                }
+                if (potentialDrugList != null) {
+                    for (PotentialDrug potentialDrug : potentialDrugList) {
+                        if (potentialDrug.getDrug_name_chinese().equals(drug_name_chinese3)) {
+                            if (StringUtils.isNotEmpty(approval_desc_chinese) || approvedDrugNum != 0) {
+                                potentialDrug.setIsbold(true);
+                            } else {
+                                potentialDrug.setIsbold(false);
+                            }
+                            potentialDrug.setDrug_name_chinese(drug_name_chinese);
+                            potentialDrug.setDrug_name_chinese2(drug_name);
+                            potentialDrug.setDrug_name_chinese3(StringUtils.remove(drug_name_chinese, '#'));
+                            if (other_test_required.equals("1")) {
+                                potentialDrug.setIsRed(true);
+                            } else {
+                                potentialDrug.setIsRed(false);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // ********临床试验信息********
+
+            if (!CollectionUtils.isEmpty(clinicalList)) {
+                for (Map clinical : clinicalList) {
+                    List<Map> clinicalDrugNameList = new ArrayList<Map>();
+                    Map clinicalTrialInformation = new HashMap();
+//                    String cfda = clinical.get("cfda") == null ? "0" : clinical.get("cfda").toString();
+                    String clinical_trial_id = clinical.get("clinical_trial_id") == null ? "" : clinical.get("clinical_trial_id").toString();
+                    String condition_chinese = clinical.get("recruiting_condition") == null ? "" : clinical.get("recruiting_condition").toString();
+                    String drug_name_chinese = clinical.get("drug_name") == null ? "" : clinical.get("drug_name").toString();
+                    String location_chinese = clinical.get("location") == null ? "" : clinical.get("location").toString();
+                    String phase = clinical.get("phase") == null ? "" : clinical.get("phase").toString();
+                    String title_chinese = clinical.get("title") == null ? "" : clinical.get("title").toString();
+                    String other_test_required = clinical.get("other_test_required").toString();
+                    Integer approvedDrugNum = reportUnknownVarDao.getApprovedDrugNum(drug_name_chinese, lang);
+                    String cfda = reportUnknownVarDao.getApprovedCFDANum(drug_name_chinese, lang) == null ? "0" : reportUnknownVarDao.getApprovedCFDANum(drug_name_chinese, lang);
+                    String drugOtherName = reportVarDrugDao.getDrugOtherName(drug_name_chinese);
+                    if ("1".equals(cfda)) {
+                        drug_name_chinese += "*";
+                    }
+                    clinicalTrialInformation.put("clinical_trial_id", clinical_trial_id);
+                    clinicalTrialInformation.put("title_chinese", title_chinese);
+                    clinicalTrialInformation.put("condition_chinese", condition_chinese);
+                    clinicalTrialInformation.put("phase", translatePhase(phase));
+                    Map drugNameMap = new HashMap();
+                    Map otherDrugNameMap = new HashMap();
+                    drugNameMap.put("name", drug_name_chinese);
+                    if (other_test_required.equals("1")) {
+                        drugNameMap.put("isRed", true);
+                        otherDrugNameMap.put("isRed", true);
+                    } else {
+                        drugNameMap.put("isRed", false);
+                        otherDrugNameMap.put("isRed", false);
+                    }
+                    if (approvedDrugNum == 0) {
+                        drugNameMap.put("isbold", false);
+                        otherDrugNameMap.put("isbold", false);
+                    } else {
+                        drugNameMap.put("isbold", true);
+                        otherDrugNameMap.put("isbold", true);
+                    }
+                    clinicalDrugNameList.add(drugNameMap);
+                    if (drugOtherName != null && !"".endsWith(drugOtherName.trim())) {
+                        otherDrugNameMap.put("name", "(" + drugOtherName + ")");
+                        clinicalDrugNameList.add(otherDrugNameMap);
+                    }
+                    clinicalTrialInformation.put("drug_name_chinese", clinicalDrugNameList);
+                    clinicalTrialInformation.put("location_chinese", location_chinese);
+                    clinicalTrialInformationStr.add(clinicalTrialInformation);
+                }
+            }
+        }
+        map.put("drugInformationStr", drugInformationStr);
+        map.put("drugResearchList", drugResearchList);
+        map.put("potentialDrugList", potentialDrugList);
+        getBrcaOrHrdPinned(drugaStr); // A级奥拉帕利前置到首位
+        map.put("drugaStr", drugaStr);
+        map.put("drugbStr", drugbStr);
+        map.put("drugcStr", drugcStr);
+        map.put("drugdStr", drugdStr);
+        map.put("resistantaStr", resistantaStr);
+        map.put("resistantbStr", resistantbStr);
+        map.put("resistantcStr", resistantcStr);
+        map.put("resistantdStr", resistantdStr);
+        map.put("clinicalTrialInformationStr", clinicalTrialInformationStr);
+        map.put("drugNameList", drugNameList);
+        map.put("ResistantDrug", ResistantDrug);
+        return map;
+    }
+
+    // 判断字符串是否是json类型
+    public boolean isJson(String str) {
+        boolean result = false;
+        if (StringUtils.isNotBlank(str)) {
+            str = str.trim();
+            if (str.startsWith("{") && str.endsWith("}")) {
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    // life报告模板融合不输出突变丰度和NDF值
+    public List<String> lifeNoNDFTemplate() {
+        List<String> a = new ArrayList();
+        a.add("肺癌6基因报告模板");
+//        a.add("肺癌6基因安徽胸科");
+        a.add("肺癌6基因模板无logo");
+        a.add("肺癌6基因模板-河南肿瘤");
+        a.add("肺癌20基因报告模板");
+        a.add("肺癌20基因报告模板无logo");
+        a.add("肺癌12基因报告模板-技术服务");
+        a.add("肺癌12基因报告模板-技术服务盖章");
+        a.add("肺癌26基因报告模板-技术服务");
+        a.add("肺癌26基因报告模板-技术服务盖章");
+        a.add("结直肠12基因报告模板-技术服务");
+        a.add("结直肠12基因报告模板-技术服务盖章");
+        a.add("结直肠26基因报告模板-技术服务");
+        a.add("结直肠26基因报告模板-技术服务盖章");
+        a.add("肺癌26基因报告模板_蚌埠");
+        a.add("结直肠26基因报告模板_蚌埠");
+        a.add("肺癌26基因报告模板-湖南肿瘤");
+//        a.add("肺癌26基因报告模板-南昌附一");
+//        a.add("结直肠癌26基因报告-南昌附一");
+        a.add("肺癌26基因报告模板-重庆分子");
+        a.add("结直肠26基因报告模板-重庆分子");
+        a.add("肺癌54基因重肿");
+        a.add("肺癌60基因重肿");
+        a.add("实体瘤60基因重肿");
+        a.add("肺癌10基因-患者版");
+        a.add("肺癌60基因报告模板-非盖章国药版");
+        a.add("肺癌60基因报告模板-非盖章-中南");
+        a.add("60基因泛实体瘤报告-同济");
+        a.add("肺癌60基因报告-同济");
+        a.add("肺癌6+54基因报告-北京胸科");
+        return a;
+    }
+
+    // EGFR_ALK_ROS1基因检测报告模板
+    public void templateEGFR_ALK_ROS1(String gene, String variant, String ExonicFunc, String exon, String ori_variant, HashSet detectionMutationSet) {
+        String detection = "";
+        if (ori_variant.indexOf("Fusion") != -1) {
+            detection = gene + " " + ExonicFunc;
+        } else if ("EGFR".equals(gene) && variant.contains("G719")) {
+            detection = "EGFR G719X";
+        } else if ("EGFR".equals(gene) && "19".equals(exon) && variant.contains("del")) {
+            detection = "EGFR Exon19 Del";
+        } else if ("EGFR".equals(gene) && "20".equals(exon) && (variant.contains("Ins") || variant.contains("dup"))) {
+            detection = "EGFR Exon20 Ins";
+        } else {
+            detection = gene + " " + variant;
+        }
+        List<String> list = Arrays.asList("EGFR L858R", "EGFR Exon19 Del", "EGFR T790M", "EGFR G719X", "EGFR S768I", "EGFR L861Q", "EGFR Exon20 Ins", "ALK 基因融合", "ROS1 基因融合");
+        if (list.contains(detection)) {
+            detectionMutationSet.add(detection);
+        }
+    }
+
+    // EGFR_T790M基因检测报告模板
+    public void templateEGFR_T790M(String gene, String variant, String ExonicFunc, String exon, String ori_variant, HashSet detectionMutationSet) {
+        String detection = gene + " " + variant;
+        if ("EGFR T790M".equals(detection)) {
+            detectionMutationSet.add(detection);
+        }
+    }
+
+    // EGFR_18-21外显子基因检测报告模板
+    public void templateEGFR(String gene, String variant, String ExonicFunc, String exon, String ori_variant, HashSet detectionMutationSet) {
+        String detection = "";
+        if ("EGFR".equals(gene) && variant.contains("G719")) {
+            detection = "EGFR G719X";
+        } else if ("EGFR".equals(gene) && "19".equals(exon) && variant.contains("del")) {
+            detection = "EGFR Exon19 Del";
+        } else if ("EGFR".equals(gene) && "20".equals(exon) && (variant.contains("Ins") || variant.contains("dup"))) {
+            detection = "EGFR Exon20 Ins";
+        } else {
+            detection = gene + " " + variant;
+        }
+        List<String> list = Arrays.asList("EGFR L858R", "EGFR Exon19 Del", "EGFR T790M", "EGFR G719X", "EGFR S768I", "EGFR L861Q", "EGFR Exon20 Ins");
+        if (list.contains(detection)) {
+            detectionMutationSet.add(detection);
+        }
+    }
+
+    // BRAF_V600E基因检测报告模板
+    public void templateBRAF_V600E(String gene, String variant, String ExonicFunc, String exon, String ori_variant, HashSet detectionMutationSet) {
+        String detection = gene + " " + variant;
+        if ("BRAF V600E".equals(detection)) {
+            detectionMutationSet.add(detection);
+        }
+    }
+
+    // KRAS基因报告模板
+    public void templateKRAS(String gene, String variant, String ExonicFunc, String exon, String ori_variant, HashSet detectionMutationSet) {
+        String detection = gene + " " + variant;
+        List<String> list = Arrays.asList("KRAS G12C", "KRAS G12S", "KRAS G12R", "KRAS G12V", "KRAS G12D", "KRAS G12A", "KRAS G13D");
+        if (list.contains(detection)) {
+            detectionMutationSet.add(detection);
+        }
+    }
+
+    // KRAS_NRAS_BRAF基因报告模板
+    public void templateKRAS_NRAS_BRAF(String gene, String variant, String ExonicFunc, String exon, String ori_variant, HashSet detectionMutationSet) {
+        String detection = "";
+        if ("NRAS".equals(gene) && ("G13R".equals(variant) || "G13D".equals(variant) || "G13V".equals(variant))) {
+            detection = "NRAS G13R/D/V";
+        } else {
+            detection = gene + " " + variant;
+        }
+        List<String> list = Arrays.asList("KRAS G12C", "KRAS G12S", "KRAS G12R", "KRAS G12V", "KRAS G12D", "KRAS G12A", "KRAS G13D", "NRAS G12D", "NRAS G13R/D/V", "NRAS A59D", "NRAS Q61R", "NRAS K117N", "NRAS A146T", "BRAF V600E");
+        if (list.contains(detection)) {
+            detectionMutationSet.add(detection);
+        }
+    }
+
+    //风险管理(癌症风险列表)基因过滤ATM、BRCA1、BRCA2、BARD1、BRIP1、CDH1、MLH1、MSH2、EPCAM、CDKN2A、CHEK2、MSH6、PMS2、NBN、NF1、PALB2、PTEN、RAD51C、RAD51D、STK11、TP53、APC、MUTYH、BMPR1A、GREM1、POLD1、POLE、AXIN2、NTHL1、MSH3
+    public HashSet<String> cancerRiskFilterGene(HashSet<String> cancerRiskGene, String gender) {
+        HashSet<String> cancerRiskFilterGene = new HashSet<>();
+        List<String> list = null;
+        if ("男".equals(gender)) {
+            // 男性基因列表
+            list = Arrays.asList("ATM", "BRCA1", "BRCA2", "CDH1", "MLH1", "MSH2", "EPCAM", "CDKN2A", "CHEK2", "MSH6", "PMS2", "NF1", "PALB2", "PTEN", "STK11", "TP53", "APC", "MUTYH", "BMPR1A", "SMAD4", "GREM1", "AXIN2", "MSH3", "POLD1", "POLE", "NTHL1", "GALNT12", "RNF43", "MBD4");
+        } else {
+            // 女性基因列表
+            list = Arrays.asList("ATM", "BRCA1", "BRCA2", "BARD1", "BRIP1", "CDH1", "MLH1", "MSH2", "EPCAM", "CDKN2A", "CHEK2", "MSH6", "PMS2", "NF1", "PALB2", "PTEN", "RAD51C", "RAD51D", "STK11", "TP53", "APC", "MUTYH", "BMPR1A", "SMAD4", "GREM1", "AXIN2", "MSH3", "POLD1", "POLE", "NTHL1", "GALNT12", "RNF43", "MBD4");
+        }
+        for (String gene : cancerRiskGene) {
+            if (list.contains(gene)) {
+                cancerRiskFilterGene.add(gene);
+            }
+        }
+        return cancerRiskFilterGene;
+    }
+
+    public String getUnknownVarInfo(String gene, Integer lang) {
+        Map geneDesc = getFirst(analysisReportDao.getGeneDesc(gene, lang));
+        String geneDescription = geneDesc.get("gene_description") == null ? "" : geneDesc.get("gene_description").toString();
+        String pathwayDescription = geneDesc.get("pathway_description") == null ? "" : geneDesc.get("pathway_description").toString();
+        String gene_description = geneDescription + pathwayDescription;
+        return gene_description;
+    }
+
+    public Map getFirst(List<Map> queryList) {
+        Map result = new HashMap<>();
+        if (queryList == null || CollectionUtils.isEmpty(queryList)) {
+            return result;
+        } else {
+            return queryList.get(0);
+        }
+    }
+
+    private Map<String, Object> getGeneClassification(List<String> geneSymbols, Map<String, Object> geneClassification) {
+        String genes = "", geneA = "", geneB = "", geneC = "", geneD = "", geneE = "", geneF = "", geneG = "", geneH = "", geneI = "", geneJ = "", geneK = "", geneL = "", geneM = "", geneN = "", geneO = "", geneP = "", geneQ = "", geneR = "", geneS = "", geneT = "", geneU = "", geneV = "", geneW = "", geneX = "", geneY = "", geneZ = "";
+        for (String geneSymbol : geneSymbols) {
+            genes = genes + geneSymbol + ",";
+            if (geneSymbol.startsWith("A")) {
+                geneA = geneA + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("B")) {
+                geneB = geneB + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("C")) {
+                geneC = geneC + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("D")) {
+                geneD = geneD + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("E")) {
+                geneE = geneE + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("F")) {
+                geneF = geneF + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("G")) {
+                geneG = geneG + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("H")) {
+                geneH = geneH + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("I")) {
+                geneI = geneI + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("J")) {
+                geneJ = geneJ + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("K")) {
+                geneK = geneK + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("L")) {
+                geneL = geneL + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("M")) {
+                geneM = geneM + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("N")) {
+                geneN = geneN + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("O")) {
+                geneO = geneO + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("P")) {
+                geneP = geneP + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("Q")) {
+                geneQ = geneQ + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("R")) {
+                geneR = geneR + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("S")) {
+                geneS = geneS + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("T")) {
+                geneT = geneT + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("U")) {
+                geneU = geneU + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("V")) {
+                geneV = geneV + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("W")) {
+                geneW = geneW + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("X")) {
+                geneX = geneX + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("Y")) {
+                geneY = geneY + geneSymbol + ",";
+            } else if (geneSymbol.startsWith("Z")) {
+                geneZ = geneZ + geneSymbol + ",";
+            }
+        }
+        geneClassification.put("genes", "".equals(genes) ? "" : genes.substring(0, genes.length() - 1));
+        geneClassification.put("geneA", "".equals(geneA) ? "" : geneA.substring(0, geneA.length() - 1));
+        geneClassification.put("geneB", "".equals(geneB) ? "" : geneB.substring(0, geneB.length() - 1));
+        geneClassification.put("geneC", "".equals(geneC) ? "" : geneC.substring(0, geneC.length() - 1));
+        geneClassification.put("geneD", "".equals(geneD) ? "" : geneD.substring(0, geneD.length() - 1));
+        geneClassification.put("geneE", "".equals(geneE) ? "" : geneE.substring(0, geneE.length() - 1));
+        geneClassification.put("geneF", "".equals(geneF) ? "" : geneF.substring(0, geneF.length() - 1));
+        geneClassification.put("geneG", "".equals(geneG) ? "" : geneG.substring(0, geneG.length() - 1));
+        geneClassification.put("geneH", "".equals(geneH) ? "" : geneH.substring(0, geneH.length() - 1));
+        geneClassification.put("geneI", "".equals(geneI) ? "" : geneI.substring(0, geneI.length() - 1));
+        geneClassification.put("geneJ", "".equals(geneJ) ? "" : geneJ.substring(0, geneJ.length() - 1));
+        geneClassification.put("geneK", "".equals(geneK) ? "" : geneK.substring(0, geneK.length() - 1));
+        geneClassification.put("geneL", "".equals(geneL) ? "" : geneL.substring(0, geneL.length() - 1));
+        geneClassification.put("geneM", "".equals(geneM) ? "" : geneM.substring(0, geneM.length() - 1));
+        geneClassification.put("geneN", "".equals(geneN) ? "" : geneN.substring(0, geneN.length() - 1));
+        geneClassification.put("geneO", "".equals(geneO) ? "" : geneO.substring(0, geneO.length() - 1));
+        geneClassification.put("geneP", "".equals(geneP) ? "" : geneP.substring(0, geneP.length() - 1));
+        geneClassification.put("geneQ", "".equals(geneQ) ? "" : geneQ.substring(0, geneQ.length() - 1));
+        geneClassification.put("geneR", "".equals(geneR) ? "" : geneR.substring(0, geneR.length() - 1));
+        geneClassification.put("geneS", "".equals(geneS) ? "" : geneS.substring(0, geneS.length() - 1));
+        geneClassification.put("geneT", "".equals(geneT) ? "" : geneT.substring(0, geneT.length() - 1));
+        geneClassification.put("geneU", "".equals(geneU) ? "" : geneU.substring(0, geneU.length() - 1));
+        geneClassification.put("geneV", "".equals(geneV) ? "" : geneV.substring(0, geneV.length() - 1));
+        geneClassification.put("geneW", "".equals(geneW) ? "" : geneW.substring(0, geneW.length() - 1));
+        geneClassification.put("geneX", "".equals(geneX) ? "" : geneX.substring(0, geneX.length() - 1));
+        geneClassification.put("geneY", "".equals(geneY) ? "" : geneY.substring(0, geneY.length() - 1));
+        geneClassification.put("geneZ", "".equals(geneZ) ? "" : geneZ.substring(0, geneZ.length() - 1));
+        return geneClassification;
+    }
+
+    @Override
+    public List<Map> getSarcomaTyping(List<Map> allMutation, String sarcomaProductName, Integer lang, String product_name) {
+        List<Map> sarcomaTypings = new ArrayList<>();
+        TranslateUtil translateUtil = new TranslateUtil();
+//        List<Map> allMutation = analysisReportDao.getAllMutationByReportId(report_id);
+        Iterator<Map> it = allMutation.iterator();
+        while (it.hasNext()) {
+            Map map = it.next();
+            Map sarcomaTyping = new HashMap();
+            String gene = map.get("gene").toString();
+            String transcript = map.get("transcript").toString();
+            String ori_variant = map.get("ori_variant").toString();
+            String mutFreq = map.get("mutFreq").toString();
+            // 突变说明
+            String mutDesc2 = translateUtil.translate2(gene, ori_variant, mutFreq);
+            mutFreq = getMutFreq(ori_variant, mutFreq, null);
+            // 变异解析
+            String mutationAnalysis = getUnknownVarInfo(gene, lang);
+            String variant = map.get("variant").toString();
+            String type = map.get("type").toString();
+            List<Map> sarcomaTypingGourp = new ArrayList<>();
+            List<Map> sarcomaTypingList = new ArrayList<>();
+            String mutation_type = "";
+            String mutation = "";
+            if (ori_variant.equals("Amplification")) {
+                mutation = gene + " " + ori_variant;
+                mutation_type = gene + " 扩增";
+                sarcomaTypingList = analysisReportDao.getSarcomaTyping(gene, "扩增", sarcomaProductName);
+                getSarcomaTypingGourp(sarcomaTypingGourp, sarcomaTypingList);
+            } else if (ori_variant.indexOf("Fusion") != -1) {
+                mutation = ori_variant;
+                // Fusion变异解析
+                String molecular_typing = ori_variant.substring(0, ori_variant.indexOf(" "));
+                String gene1 = "";
+                String gene2 = "";
+                if (molecular_typing.indexOf(gene) == 0) {
+                    gene1 = gene;
+                    gene2 = molecular_typing.substring(gene.length()+1);
+                } else {
+                    gene2 = gene;
+                    gene1 = molecular_typing.substring(0, molecular_typing.length()-gene.length()-1);
+                }
+                // Fusion突变说明
+                if (mutFreq.indexOf(".") != -1) {
+                    mutDesc2 += "此突变在样本中的突变丰度为" + mutFreq + "。";
+                } else {
+                    mutDesc2 += "此突变在样本中的突变reads为" + mutFreq + "。";
+                }
+                String unknownVarInfo = getUnknownVarInfo(gene1, lang);
+                String unknownVarInfo1 = getUnknownVarInfo(gene2, lang);
+                String mutation_analysis = analysisReportDao.getMutationAnalysis(gene1, gene2) == null ? "" : analysisReportDao.getMutationAnalysis(gene1, gene2);
+                mutationAnalysis = unknownVarInfo + unknownVarInfo1 + mutation_analysis;
+                mutation_type = molecular_typing + "融合";
+                sarcomaTypingList = analysisReportDao.getSarcomaTyping(molecular_typing, "融合", sarcomaProductName);
+                getSarcomaTypingGourp(sarcomaTypingGourp, sarcomaTypingList);
+                List<Map> sarcomaTypingList2 = analysisReportDao.getSarcomaTyping(gene1, "重排", sarcomaProductName);
+                getSarcomaTypingGourp(sarcomaTypingGourp, sarcomaTypingList2);
+                List<Map> sarcomaTypingList3 = analysisReportDao.getSarcomaTyping(gene2, "重排", sarcomaProductName);
+                getSarcomaTypingGourp(sarcomaTypingGourp, sarcomaTypingList3);
+            } else if ("体系".equals(type)) {
+                mutation = gene + ori_variant.substring(ori_variant.indexOf(" "));
+                mutation_type = gene + "突变";
+                sarcomaTypingList = analysisReportDao.getSarcomaTyping(gene, "突变", sarcomaProductName);
+                getSarcomaTypingGourp(sarcomaTypingGourp, sarcomaTypingList);
+                List<Map> sarcomaTypingList2 = analysisReportDao.getSarcomaTyping(gene, variant + "突变", sarcomaProductName);
+                getSarcomaTypingGourp(sarcomaTypingGourp, sarcomaTypingList2);
+            } else if ("胚系".equals(type)) {
+                mutation = gene + ori_variant.substring(ori_variant.indexOf(" "));
+                mutation_type = gene + "胚系突变";
+                sarcomaTypingList = analysisReportDao.getSarcomaTyping(gene, "胚系突变", sarcomaProductName);
+                getSarcomaTypingGourp(sarcomaTypingGourp, sarcomaTypingList);
+            }
+            if (ori_variant.indexOf("Fusion") < 0) {
+                if (sarcomaTypingGourp.isEmpty()) {
+//                    it.remove();
+                    continue;
+                }
+            }
+/*            ReportCrServiceImpl reportCrService = new ReportCrServiceImpl();
+            Integer mutationId = analysisReportDao.getMutationId(gene, variant);
+            if (mutationId == null) {
+                if (variant.indexOf("fs") > -1) {
+                    String[] split = variant.split("fs");
+                    String tmp_variant = reportCrService.getVariant(split[0]) + "fs";
+                    mutationId = analysisReportDao.getMutationId(gene, tmp_variant);
+                }
+                if (mutationId == null) {
+                    if (variant.indexOf("fs") > -1 || variant.indexOf("*") > -1 || variant.indexOf("+") > -1 || variant.indexOf("-") > -1) {
+                        mutationId = analysisReportDao.getMutationId(gene, "Inactive Mutation");
+                    }
+                }
+            }
+            List<Integer> mutationIdList = new ArrayList<>();
+            if (mutationId != null) {
+                mutationIdList.add(mutationId);
+                List<Integer> parentMutationIdList = analysisReportDao.getParentMutationId(mutationId);
+                mutationIdList.addAll(parentMutationIdList);
+            }
+            String unvariantDescription = "";
+            if ("Amplification".equals(variant)) {
+                unvariantDescription = "该变异为基因扩增，可能导致蛋白表达增加。";
+            } else if ((variant.indexOf("fs") > -1 || variant.indexOf("*") > -1 || variant.indexOf("+") > -1 || variant.indexOf("-") > -1) && !(variant.indexOf("Fusion") > -1)) {
+                unvariantDescription = "该变异为失活突变，可能会导致蛋白功能缺失。";
+            } else {
+                unvariantDescription = "该突变临床意义未明，若导致蛋白功能异常，可能影响下游信号通路，参与肿瘤发生发展。";
+            }
+            Map variantDesc = getFirst(CollectionUtils.isEmpty(mutationIdList) ? new ArrayList<>() : analysisReportDao.getVariantDescription(mutationIdList, lang));
+            String variantDescription = variantDesc == null ? unvariantDescription : (variantDesc.get("description") == null ? unvariantDescription : variantDesc.get("description").toString());
+            map.put("mutDesc2", mutDesc2 + variantDescription);*/
+            // 变异解析肉瘤亚型可能有多个
+            if (!sarcomaTypingGourp.isEmpty()) {
+                String evidence = sarcomaTypingGourp.get(0).get("evidence").toString();
+                if ("WHO".equals(evidence)) {
+                    if (product_name.contains("novopm2_rna62_Sarcoma")) {
+                        mutationAnalysis += "在《WHO-涎腺肿瘤指南》中提及";
+                    } else {
+                        mutationAnalysis += "在《WHO-软组织与骨肿瘤指南》中提及";
+                    }
+                } else if ("NCCN".equals(evidence)) {
+                    mutationAnalysis += "在《NCCN-软组织肉瘤等指南》中提及";
+                } else if ("CSCO".equals(evidence)) {
+                    mutationAnalysis += "在《CSCO-软组织肉瘤等指南》中提及";
+                } else if ("专家共识".equals(evidence)) {
+                    mutationAnalysis += "在《骨与软组织肿瘤二代测序中国专家共识》中提及";
+                }
+                mutationAnalysis += mutation_type + "可能与";
+                for (Map map1 : sarcomaTypingGourp) {
+                    String sarcoma_subtype = map1.get("sarcoma_subtype").toString();
+                    mutationAnalysis += sarcoma_subtype + ";";
+                }
+                mutationAnalysis = mutationAnalysis.substring(0, mutationAnalysis.length() - 1) + "相关。";
+            } else {
+                if (product_name.contains("rna") && ori_variant.indexOf("Fusion") != -1) {
+                    String molecular_typing = ori_variant.substring(0, ori_variant.indexOf(" "));
+                    String gene1 = molecular_typing.split("-")[0];
+                    String gene2 = molecular_typing.split("-")[1];
+                    mutationAnalysis += gene1 + "-" + gene2 + " 融合在分类/指南/专家共识中未见提及，因此不能判断该融合是否可以辅助肉瘤分型。";
+                }
+            }
+            sarcomaTyping.put("mutation", mutation);
+            sarcomaTyping.put("transcript", transcript);
+            sarcomaTyping.put("mutFreq", mutFreq);
+            sarcomaTyping.put("ori_variant", ori_variant);
+            sarcomaTyping.put("mutDesc2", mutDesc2);
+            sarcomaTyping.put("mutationAnalysis", mutationAnalysis);
+            sarcomaTyping.put("sarcomaAndEvidence", sarcomaTypingGourp);
+            sarcomaTyping.put("sarcomaAndEvidenceSize", sarcomaTypingGourp.size());
+            sarcomaTypings.add(sarcomaTyping);
+        }
+        return sarcomaTypings;
+    }
+
+    // 'WHO','NCCN','CSCO','专家共识'，根据证据过滤
+    public List<Map> getSarcomaTypingGourp(List<Map> sarcomaTypingGourp, List<Map> sarcomaTypingList) {
+        if (!sarcomaTypingList.isEmpty()) {
+            String evidence = "";
+            if (sarcomaTypingGourp.isEmpty()) {
+                evidence = sarcomaTypingList.get(0).get("evidence").toString();
+            } else {
+                evidence = sarcomaTypingGourp.get(0).get("evidence").toString();
+            }
+            for (Map sarcomaTyping : sarcomaTypingList) {
+                if (sarcomaTyping.get("evidence").toString().equals(evidence)) {
+                    sarcomaTypingGourp.add(sarcomaTyping);
+                }
+            }
+        }
+        return sarcomaTypingGourp;
+    }
+
+    public static <T> List<List<T>> splistList(List<T> list, int subNum) {
+        List<List<T>> tNewList = new ArrayList<List<T>>();
+        int priIndex = 0;
+        int lastPriIndex = 0;
+        int insertTimes = list.size() / subNum;
+        List<T> subList = new ArrayList<>();
+        for (int i = 0; i <= insertTimes; i++) {
+            priIndex = subNum * i;
+            lastPriIndex = priIndex + subNum;
+            if (i == insertTimes) {
+                subList = list.subList(priIndex, list.size());
+            } else {
+                subList = list.subList(priIndex, lastPriIndex);
+            }
+            if (subList.size() > 0) {
+                tNewList.add(subList);
+            }
+        }
+        return tNewList;
+    }
+
+    /*TMB计算分子：SNV+INDEL突变数量(仅统计即可。不做任何区分，无需按照丰度过滤，无需要考虑driver基因。)
+        TMB计算分母：按照产品区分(550:1.5，1238:1.4，484：1.2)，WES产品TMB不更新
+        TMB判断H/L：根据不同产品，不同癌种，不同类型区分： >= 阈值为TMB-H。<阈值为TMB-L
+        'blo_1238': {'肺癌': 15.714, '结直肠癌': 18.214, '其他': 15},
+        'tis_1238': {'肺癌': 6.429, '结直肠癌': 7.143, '其他': 5},
+        'blo_550': {'肺癌': 19.333, '结直肠癌': 19.333, '其他': 18.0},
+        'tis_550': {'肺癌': 12.0, '结直肠癌': 10.667, '其他': 10.0},
+        'blo_484': {'肺癌': 11.429, '结直肠癌': 11.429, '其他': 11.429},
+        'tis_484': {'肺癌': 11.429, '结直肠癌': 8.571, '其他': 8.571},
+        */
+    private Map<String, String> getTmb(List<Map> snpIndelFileAll, String productName, String chem_cancer) {
+        double tmbV = 0;
+        String tmb_status = "";
+        DecimalFormat df = new DecimalFormat("0.000");
+        int size = snpIndelFileAll.size();
+        if (productName.contains("1238")) {
+            tmbV = Double.valueOf(df.format(size / 1.4));
+            /*if (productName.contains("blo_1238")) {
+                tmb_status = "b" + getTmbStatus(tmbV, 20.0, 19.333, 19.333, chem_cancer);
+            } else if (productName.contains("tis_1238")) {
+                tmb_status = getTmbStatus(tmbV, 7.03, 4.81, 5.18, chem_cancer);
+            }*/
+            if (productName.contains("blo_1238")) {
+                tmb_status = getTmbStatus(tmbV, 15.714, 18.214, 15, chem_cancer);
+            } else if (productName.contains("tis_1238")) {
+                tmb_status = getTmbStatus(tmbV, 6.429, 7.143, 5, chem_cancer);
+            }
+        } else if (productName.contains("550")) {
+            tmbV = Double.valueOf(df.format(size / 1.5));
+            if (productName.contains("blo_550")) {
+                tmb_status = getTmbStatus(tmbV, 19.333, 19.333, 18.0, chem_cancer);
+            } else if (productName.contains("tis_550")) {
+                tmb_status = getTmbStatus(tmbV, 12.0, 10.667, 10.0, chem_cancer);
+            }
+        } else if (productName.contains("484")) {
+            tmbV = Double.valueOf(df.format(size / 1.2));
+            if (productName.contains("blo_484")) {
+                tmb_status = getTmbStatus(tmbV, 11.429, 11.429, 11.429, chem_cancer);
+            } else if (productName.contains("tis_484")) {
+                tmb_status = getTmbStatus(tmbV, 11.429, 8.571, 8.571, chem_cancer);
+            }
+        }
+        Map<String, String> map = new HashMap();
+        map.put("tmb", String.valueOf(tmbV));
+        map.put("tmb_status", tmb_status);
+        return map;
+    }
+
+    private String getTmbStatus(double tmbV, double v, double v1, double v2, String chem_cancer) {
+        String tmb_status = "";
+        if (chem_cancer.contains("肺") && !"小细胞肺癌".equals(chem_cancer) ) {
+            if (tmbV >= v) {
+                tmb_status = "TMB-H";
+            } else {
+                tmb_status = "TMB-L";
+            }
+        } else if (chem_cancer.contains("肠")) {
+            if (tmbV >= v1) {
+                tmb_status = "TMB-H";
+            } else {
+                tmb_status = "TMB-L";
+            }
+        } else {
+            if (tmbV >= v2) {
+                tmb_status = "TMB-H";
+            } else {
+                tmb_status = "TMB-L";
+            }
+        }
+        return tmb_status;
+    }
+
+    // 获取tmb图片
+    private String getTmbPIC(String tmb, String chem_cancer, String subbarcode, String productName) {
+        Properties prop = new Properties();
+        InputStream inStream = PyReportServiceImpl.class.getClassLoader().getResourceAsStream("jsch.properties");
+        try {
+            prop.load(inStream);
+            List<Object> ips = Arrays.asList(IpUtil.getLocalIp4Address().toArray());
+            if (ips.contains(ServerConfig.getServerFormalIP()) || ips.contains(ServerConfig.getServerTestIP())) {
+                return Jsch.sshCommand(prop.getProperty("host"), prop.getProperty("user"), prop.getProperty("pass"), Integer.valueOf(prop.getProperty("port")), "python /TJPROJ2/OBD/module/tmb_report/TMBtoBase64.py  " + tmb + " " + chem_cancer + " " + subbarcode + " " + productName + "  /TJPROJ13/CR/other/TMB_plot/");
+            } else {
+                return Jsch.sshCommand("192.168.200.82", "dell", "Novogene2023", 22, "bash /TJPROJ2/OBD/module/tmb_report/TMBtoBase64.sh  " + tmb + " " + chem_cancer + " " + subbarcode + " " + productName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    //检测结果小结(安为康个性化模块)
+    private void SiteResult(List<Map> siteResult, List<Map> snpIndelFileAll, List<Map> cNVAll, List<Map> fusionAll, List<Map> crAllList) {
+        for (Map map : snpIndelFileAll) {
+            Map siteMap = new HashMap();
+            siteMap.put("variation_type", "SNV/InDel");
+            siteMap.put("gene", map.get("Gene_knownGene").toString());
+            siteMap.put("ExonicFunc_knownGene_Chinese", translateMutType(map.get("ExonicFunc_knownGene").toString()));
+            String my_ori_variant = map.get("my_ori_variant").toString();
+            String[] splits = my_ori_variant.split(" ");
+            siteMap.put("cHGVS", splits[2]);
+            if (splits.length >= 4) {
+                siteMap.put("pHGVS", splits[3]);
+            } else {
+                siteMap.put("pHGVS", "/");
+            }
+            siteMap.put("mutFreq", map.get("mutFreq").toString());
+            siteMap.put("chr", map.get("chr").toString().replace("chr", ""));
+            siteMap.put("Exon", splits[1].replace("exon", "").replace("intron", ""));
+            siteMap.put("Transcript", splits[0]);
+            siteMap.put("Clinical_significance", "/");
+            siteResult.add(siteMap);
+        }
+        for (Map map : cNVAll) {
+            Map siteMap = new HashMap();
+            siteMap.put("variation_type", "CNV");
+            siteMap.put("gene", map.get("gene_symbol").toString());
+            siteMap.put("ExonicFunc_knownGene_Chinese", "扩增");
+            siteMap.put("cHGVS", "/");
+            siteMap.put("pHGVS", "/");
+            siteMap.put("mutFreq", new DecimalFormat("0.0").format(Double.valueOf(map.get("mutFreq").toString())));
+            siteMap.put("chr", map.get("chr").toString().replace("chr", ""));
+            siteMap.put("Exon", "/");
+            siteMap.put("Transcript", "/");
+            siteMap.put("Clinical_significance", "/");
+            siteResult.add(siteMap);
+        }
+        for (Map map : fusionAll) {
+            Map siteMap = new HashMap();
+            siteMap.put("variation_type", "Fusion");
+            siteMap.put("gene", map.get("gene").toString());
+            siteMap.put("ExonicFunc_knownGene_Chinese", "融合");
+            String my_ori_variant = map.get("my_ori_variant").toString();
+            siteMap.put("cHGVS", my_ori_variant);
+            siteMap.put("pHGVS", "/");
+            /*String freq = map.get("freq").toString();
+            if (freq.indexOf(".") != -1 && Double.valueOf(freq) < 1) {
+                siteMap.put("mutFreq", new DecimalFormat("0.00").format(Double.valueOf(freq) * 100));
+            } else {
+                siteMap.put("mutFreq", freq);
+            }*/
+            String mutFreq = map.get("mutFreq").toString();
+            siteMap.put("mutFreq", mutFreq);
+            siteMap.put("Exon", "/");
+            String sclip1_info = map.get("sclip1_info").toString();
+            String sclip2_info = map.get("sclip2_info").toString();
+            String chromosome1 = map.get("chromosome1").toString().replace("chr", "");
+            String chromosome2 = map.get("chromosome2").toString().replace("chr", "");
+            String gene2 = sclip2_info.split(":")[1];
+            if (my_ori_variant.indexOf(gene2) == 0) {
+                siteMap.put("Transcript", sclip2_info.split(":")[0] + "/" + sclip1_info.split(":")[0]);
+                siteMap.put("chr", chromosome2.replace("chr", "") + "/" + chromosome1.replace("chr", ""));
+            } else {
+                siteMap.put("Transcript", sclip1_info.split(":")[0] + "/" + sclip2_info.split(":")[0]);
+                siteMap.put("chr", chromosome1.replace("chr", "") + "/" + chromosome2.toString().replace("chr", ""));
+            }
+            siteMap.put("Clinical_significance", "/");
+            siteResult.add(siteMap);
+        }
+        for (Map map : crAllList) {
+            Map siteMap = new HashMap();
+            siteMap.put("variation_type", "SNV/InDel");
+            siteMap.put("gene", map.get("Gene").toString());
+            siteMap.put("ExonicFunc_knownGene_Chinese", translateMutType(map.get("ExonicFunc").toString()));
+            siteMap.put("cHGVS", map.get("cHGVS").toString());
+            String pHGVS = map.get("pHGVS").toString();
+            if (StringUtils.isEmpty(pHGVS) || ".".equals(pHGVS) || "NA".equals(pHGVS)) {
+                pHGVS = "/";
+            }
+            siteMap.put("pHGVS", pHGVS);
+            siteMap.put("mutFreq", map.get("mutFreq").toString());
+            siteMap.put("chr", map.get("Chr").toString().replace("chr", ""));
+            siteMap.put("Exon", map.get("Exon").toString().replace("exon", "").replace("intron", ""));
+            siteMap.put("Transcript", map.get("Transcript").toString());
+            /*String Clinical_significance = map.get("rpCr") == null ? "-" : ((Map) map.get("rpCr")).get("Clinical_significance") == null ? "" : ((Map) map.get("rpCr")).get("Clinical_significance").toString();
+            siteMap.put("Clinical_significance", "-".equals(translateClinicalSignificance(Clinical_significance)) ? "/" : translateClinicalSignificance(Clinical_significance));*/
+            siteMap.put("Clinical_significance", "-".equals(map.get("Clinical_significance").toString()) ? "/" : map.get("Clinical_significance").toString());
+            siteResult.add(siteMap);
+        }
+    }
+
+    // 化疗小结（重医附二）
+    private Map<String, Object> CYChemo(List<Map<String, Object>> chemoResult, List<Map<String, Object>> result, Map<String, Object> chemoSummary) {
+        Set<String> chemoDrug = new HashSet<>();
+        for (Map<String, Object> map : chemoResult) {
+            chemoDrug.add(map.get("drug_name_chinese").toString());
+        }
+        List<Map<String, Object>> certain_cancer_effs = new ArrayList<>();
+        List<Map<String, Object>> certain_cancer_toxs = new ArrayList<>();
+        List<Map<String, Object>> other_cancer_effs = new ArrayList<>();
+        List<Map<String, Object>> other_cancer_toxs = new ArrayList<>();
+        String certain_cancer_effStr = chemoSummary.get("certain_cancer_effStr").toString().replace("可能药物敏感性较高：", "");
+        String certain_cancer_toxStr = chemoSummary.get("certain_cancer_toxStr").toString().replace("可能毒副作用风险较低：", "");
+        String other_cancer_effStr = chemoSummary.get("other_cancer_effStr").toString().replace("可能药物敏感性较高：", "");
+        String other_cancer_toxStr = chemoSummary.get("other_cancer_toxStr").toString().replace("可能毒副作用风险较低：", "");
+        // 设置需要加粗的药物
+        CYDrugBold(chemoDrug, certain_cancer_effs, certain_cancer_effStr);
+        CYDrugBold(chemoDrug, certain_cancer_toxs, certain_cancer_toxStr);
+        CYDrugBold(chemoDrug, other_cancer_effs, other_cancer_effStr);
+        CYDrugBold(chemoDrug, other_cancer_toxs, other_cancer_toxStr);
+
+        Map<String, Object> chemoSummaryCY = new HashMap<>();
+        chemoSummaryCY.put("certain_cancer_effs", certain_cancer_effs);
+        chemoSummaryCY.put("certain_cancer_toxs", certain_cancer_toxs);
+        chemoSummaryCY.put("other_cancer_effs", other_cancer_effs);
+        chemoSummaryCY.put("other_cancer_toxs", other_cancer_toxs);
+        return chemoSummaryCY;
+    }
+
+    private void CYDrugBold(Set<String> chemoDrug, List<Map<String, Object>> list, String drugStr) {
+        if (!"暂无，详见化疗药物用药解析。".equals(drugStr)) {
+            String[] drugs = drugStr.split("，");
+            for (String drug : drugs) {
+                Map map = new HashMap();
+                map.put("name", drug);
+                if (chemoDrug.contains(drug)) {
+                    map.put("isbold", true);
+                } else {
+                    map.put("isbold", false);
+                }
+                list.add(map);
+            }
+        }
+    }
+
+    private void importantTargetedGene(List<Map> importantTargetedGeneFilter, List<Map> list, List<Map> crAllList, boolean readsFlag, boolean b) {
+        for (Map map : importantTargetedGeneFilter) {
+            String gene = map.get("gene").toString();
+            String info = map.get("detection_content").toString().replace("\\r\\n", "/");
+            if ("MET".equals(gene) && !readsFlag && b) {
+                info = "突变/扩增";
+            }
+            boolean flag = false;
+            List<String> ori_variantList = new ArrayList<>();
+            List<String> ori_variantList2 = new ArrayList<>();
+            List<String> mutFreqList = new ArrayList<>();
+            for (Map map1 : list) {
+                String gene1 = map1.get("gene").toString();
+                String ori_variant = removeMutations(transferOriVariant(map1.getOrDefault("ori_variant", "").toString()));
+                String mutFreq = map1.get("mutFreq") == null ? "/" : map1.get("mutFreq").toString();
+                mutFreq = getMutFreq(ori_variant, mutFreq, null);
+                if ("突变/融合".equals(info)) {
+                    flag = !ori_variant.equals("Amplification");
+                } else if ("突变".equals(info)) {
+                    flag = !ori_variant.equals("Amplification") && !ori_variant.contains("Fusion");
+                } else if ("突变/扩增/14号外显子跳跃".equals(info)) {
+                    if (!ori_variant.contains("Fusion") || "MET-MET Fusion M13:M15".equals(ori_variant) || "MET-MET Fusion M15:M13".equals(ori_variant)) {
+                        flag = true;
+                    }
+                } else if ("突变/扩增".equals(info)) {
+                    flag = !ori_variant.contains("Fusion");
+                } else if ("融合".equals(info)) {
+                    flag = ori_variant.contains("Fusion");
+                } else if ("扩增".equals(info)) {
+                    flag = ori_variant.equals("Amplification");
+                }
+                List<Map> drugList = map1.get("drugList") == null ? null : (List<Map>) map1.get("drugList");
+                if (!CollectionUtils.isEmpty(drugList)) {
+                    if (gene1.equals(gene.split("\\\\r\\\\n")[0]) && flag) {
+                        ori_variantList.add(ori_variant);
+                        mutFreqList.add(mutFreq);
+                    }
+                }
+                if (gene1.equals(gene.split("\\\\r\\\\n")[0]) && flag && !mutFreq.contains("合")) {
+                    ori_variantList2.add(ori_variant);
+                }
+            }
+            for (Map map1 : crAllList) {
+                String gene1 = map1.get("Gene").toString();
+                String ori_variant = removeMutations(transferOriVariant(map1.getOrDefault("ori_variant", "").toString()));
+                if ("突变/融合".equals(info)) {
+                    flag = !ori_variant.equals("Amplification");
+                } else if ("突变".equals(info)) {
+                    flag = !ori_variant.equals("Amplification") && !ori_variant.contains("Fusion");
+                } else if ("突变/扩增".equals(info)) {
+                    flag = !ori_variant.contains("Fusion");
+                } else if ("融合".equals(info)) {
+                    flag = ori_variant.contains("Fusion");
+                } else if ("扩增".equals(info)) {
+                    flag = ori_variant.equals("Amplification");
+                }
+                if (gene1.equals(gene.split("\\\\r\\\\n")[0]) && flag) {
+                    ori_variantList2.add(ori_variant);
+                }
+            }
+            map.put("gene", gene.replace("\\r\\n", ""));
+            map.put("info", info);
+            map.put("ori_variantList", ori_variantList);
+            map.put("ori_variantList2", ori_variantList2);
+            map.put("mutFreqList", mutFreqList);
+        }
+    }
+
+    private void immnue(List<Map> list, Map<String, Object> immnueMap, String module, String detectionSignificance) {
+        String value = "-";
+        for (Map map : list) {
+            String gene = map.get("gene").toString().replaceAll("\\([^()]*\\)", "");
+            String ori_variant = "";
+            if (map.containsKey("ori_variant")) {
+                ori_variant = map.get("ori_variant").toString();
+            } else if (map.containsKey("variant")) {
+                ori_variant = map.get("variant").toString();
+            }
+            if (ori_variant.contains("c.")) {
+                ori_variant = ori_variant.substring(ori_variant.indexOf("c."));
+                sameKeyCombinationSet(immnueMap, module+gene, ori_variant);
+                value = detectionSignificance;
+            } else if ("Amplification".equals(ori_variant)) {
+                immnueMap.put(module+gene, gene + "扩增");
+                value = detectionSignificance;
+            } else if (ori_variant.contains("Fusion")) {
+                ori_variant = ori_variant.split(" ")[0] + "融合";
+                sameKeyCombinationSet(immnueMap, module+gene, ori_variant);
+                value = detectionSignificance;
+            } else {
+                immnueMap.put(module+gene, "-");
+            }
+        }
+        immnueMap.put("detectionSignificance", value);
+    }
+
+    // 相同key元素组合
+    private static void sameKeyCombinationSet(Map<String, Object> map, String key, String value) {
+        if (map.containsKey(key)) {
+            Set<String> set = (Set<String>) map.get(key);
+            set.add(value);
+            map.put(key, set);
+        } else {
+            Set<String> set = new HashSet<>();
+            set.add(value);
+            map.put(key, set);
+        }
+    }
+
+    // 相同key元素组合
+    private static void sameKeyCombinationList(Map<String, Object> map, String key, String value) {
+        if (map.containsKey(key)) {
+            List<String> list = (List<String>) map.get(key);
+            list.add(value);
+            map.put(key, list);
+        } else {
+            List<String> list = new ArrayList<>();
+            list.add(value);
+            map.put(key, list);
+        }
+    }
+
+    // 双层排序，根据variationClass2排序然后根据mutFreq2排序
+    private static List<Map> listSort(List<Map> list) {
+        Pattern pattern = Pattern.compile("[0-9]*\\.?[0-9]+");
+        for (Map map : list) {
+            String variationClass = map.get("variationClass").toString();
+            String mutFreq = map.get("mutFreq").toString();
+            map.put("variationClass2", "-".equals(variationClass) ? "0" : "I类".equals(variationClass) ? "1" : "II类".equals(variationClass) ? "2" : "3");
+            boolean isNum = pattern.matcher(mutFreq.replace("%", "")).matches();
+            map.put("mutFreq2", isNum ? mutFreq.contains("%") ? Double.valueOf(mutFreq.replace("%",""))/100 : mutFreq  : 0);
+        }
+        // 双层排序
+        List<Map> newList = new ArrayList<>();
+        Comparator comparator = Collator.getInstance(java.util.Locale.CHINA);
+        Map<String, List<Map>> name = list.stream().collect(Collectors.groupingBy(map -> map.get("variationClass2").toString()));
+        Set<String> objects = name.keySet();
+        String[] objects1 = objects.toArray(new String[objects.size()]);
+        Arrays.sort(objects1, comparator);
+        for (String s : objects1) {
+            //从大到小
+            newList.addAll(name.get(s).stream().sorted(Comparator.comparing(m -> Double.valueOf(m.get("mutFreq2").toString()), Comparator.reverseOrder())).collect(Collectors.toList()));
+        }
+        return newList;
+    }
+
+    // 同济双层排序，根据variationClass2排序然后根据药物（获益A>耐药A>获益B>耐药B>获益C>获益D>耐药C>耐药D）排序
+    private static List<Map> listSort2(List<Map> list) {
+        for (Map map : list) {
+            String variationClass = map.get("variationClass").toString();
+            map.put("variationClass2", "-".equals(variationClass) ? "0" : "I类".equals(variationClass) ? "1" : "II类".equals(variationClass) ? "2" : "3");
+            boolean containsKey = map.containsKey("DrugAStr");
+            if (containsKey) {
+                String druga = CollectionUtils.isEmpty((List<Map>) map.get("DrugAStr")) ? "0" : "1";
+                String drugb = CollectionUtils.isEmpty((List<Map>) map.get("DrugBStr")) ? "0" : "1";
+                String drugc = CollectionUtils.isEmpty((List<Map>) map.get("DrugCStr")) ? "0" : "1";
+                String drugd = CollectionUtils.isEmpty((List<Map>) map.get("DrugDStr")) ? "0" : "1";
+                String resistanta = CollectionUtils.isEmpty((List<Map>) map.get("ResistantADrug")) ? "0" : "1";
+                String resistantb = CollectionUtils.isEmpty((List<Map>) map.get("ResistantBDrug")) ? "0" : "1";
+                String resistantc = CollectionUtils.isEmpty((List<Map>) map.get("ResistantCDrug")) ? "0" : "1";
+                String resistantd = CollectionUtils.isEmpty((List<Map>) map.get("ResistantDDrug")) ? "0" : "1";
+                String tjDrugSort = druga+resistanta+drugb+resistantb+drugc+drugd+resistantc+resistantd;
+                map.put("tjDrugSort", tjDrugSort);
+            } else {
+                String druga = CollectionUtils.isEmpty((List<Map>) map.get("drugaStr")) ? "0" : "1";
+                String drugb = CollectionUtils.isEmpty((List<Map>) map.get("drugbStr")) ? "0" : "1";
+                String drugc = CollectionUtils.isEmpty((List<Map>) map.get("drugcStr")) ? "0" : "1";
+                String drugd = CollectionUtils.isEmpty((List<Map>) map.get("drugdStr")) ? "0" : "1";
+                String resistanta = CollectionUtils.isEmpty((List<Map>) map.get("resistantaStr")) ? "0" : "1";
+                String resistantb = CollectionUtils.isEmpty((List<Map>) map.get("resistantbStr")) ? "0" : "1";
+                String resistantc = CollectionUtils.isEmpty((List<Map>) map.get("resistantcStr")) ? "0" : "1";
+                String resistantd = CollectionUtils.isEmpty((List<Map>) map.get("resistantdStr")) ? "0" : "1";
+                String tjDrugSort = druga+resistanta+drugb+resistantb+drugc+drugd+resistantc+resistantd;
+                map.put("tjDrugSort", tjDrugSort);
+            }
+        }
+        // 双层排序
+        List<Map> newList = new ArrayList<>();
+        Comparator comparator = Collator.getInstance(java.util.Locale.CHINA);
+        Map<String, List<Map>> name = list.stream().collect(Collectors.groupingBy(map -> map.get("variationClass2").toString()));
+        Set<String> objects = name.keySet();
+        String[] objects1 = objects.toArray(new String[objects.size()]);
+        Arrays.sort(objects1, comparator);
+        for (String s : objects1) {
+            //从大到小
+            newList.addAll(name.get(s).stream().sorted(Comparator.comparing(m -> Double.valueOf(m.get("tjDrugSort").toString()), Comparator.reverseOrder())).collect(Collectors.toList()));
+        }
+        return newList;
+    }
+
+
+    private void immnueallDistinguishMutFreqType(List<Map> mapList) {
+        for (Map map : mapList) {
+            String mutFreq = map.get("mutFreq").toString();
+            String ori_variant = "";
+            if (map.containsKey("ori_variant")) {
+                ori_variant = map.get("ori_variant").toString();
+            } else if (map.containsKey("variant")) {
+                ori_variant = map.get("variant").toString();
+            }
+            map.put("mutFreqType", distinguishMutFreqType(ori_variant, mutFreq));
+        }
+    }
+
+    // mutFreq赋值
+    @Override
+   public String getMutFreq(String ori_variant, String mutFreq, String template_name) {
+        if (ori_variant.indexOf("Amplification") < 0 && !".".equals(mutFreq) && mutFreq.indexOf("合") < 0 && mutFreq.indexOf("-") < 0 && !"/".equals(mutFreq) && mutFreq.indexOf("%") < 0) {
+            if (ori_variant.indexOf("Fusion") != -1) {
+                if (mutFreq.indexOf(".") != -1 && Double.valueOf(mutFreq) < 100) {
+                    mutFreq += "%";
+                }
+            } else {
+                mutFreq += "%";
+            }
+        }
+        if (!StringUtils.isEmpty(template_name) && template_name.contains("广附一") && ori_variant.indexOf("Fusion") != -1) {
+            mutFreq = "融合";
+        }
+        return mutFreq;
+    }
+
+    // 区分mutFreq类型
+    private String distinguishMutFreqType(String ori_variant, String mutFreq) {
+        String mutFreqType = "";
+        if (ori_variant.contains("Amplification")) {
+            mutFreqType = "拷贝数";
+        } else if (ori_variant.contains("Fusion") && !mutFreq.contains(".")) {
+            if (mutFreq.contains("融合")) {
+                mutFreqType = "变异类型";
+            } else {
+                mutFreqType = "reads数";
+            }
+        } else {
+            mutFreqType = "变异丰度";
+        }
+        return mutFreqType;
+    }
+
+    private List<Map> immnueFilter(List<Map> immnue, List<String> genes, Integer flag) {
+        List<Map> immnueFilter = immnue.stream().filter(s -> genes.contains(s.get("gene").toString().replaceAll("\\([^()]*\\)", ""))).collect(Collectors.toList());
+        List<String> immnueGene = immnueFilter.stream().map(map -> map.get("gene").toString().replaceAll("\\([^()]*\\)", "")).collect(Collectors.toList());
+        for (String gene : genes) {
+            if (!immnueGene.contains(gene)) {
+                Map<String, Object> apiMap = new HashMap<>();
+                apiMap.put("flag", flag);
+                apiMap.put("gene", gene);
+                apiMap.put("variant", "/");
+                apiMap.put("mutFreq", "/");
+                apiMap.put("varDesc", "/");
+                immnueFilter.add(apiMap);
+            }
+        }
+        return immnueFilter;
+    }
+
+    // A级奥拉帕利前置到首位
+    private void getBrcaOrHrdPinned(List<Map> drugAStr) {
+        if (!drugAStr.isEmpty()) {
+            int index = -1;
+            for (int i = 0; i < drugAStr.size(); i++) {
+                String name = StringUtils.remove(StringUtils.remove(drugAStr.get(i).get("name").toString(), '*'), '#');
+                if ("奥拉帕利".equals(name)) {
+                    index = i;
+                    break;
+                }
+            }
+            if (index >= 0) {
+                Map map = drugAStr.remove(index);
+                drugAStr.add(0, map);
+            }
+        }
+    }
 }

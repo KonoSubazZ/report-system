@@ -1,11 +1,6 @@
 package com.novo.report.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -37,14 +32,13 @@ public class Base64Utils {
         } catch (Exception e) {  
             e.printStackTrace();  
         }  
-        // 对字节数组Base64编码  
-        BASE64Encoder encoder = new BASE64Encoder();  
-  
-        return encoder.encode(data);// 返回Base64编码过的字节数组字符串  
-    }  
-  
-      
-      
+        // 对字节数组Base64编码
+        BASE64Encoder encoder = new BASE64Encoder();
+        return encoder.encode(data);// 返回Base64编码过的字节数组字符串
+//        return Base64.getEncoder().encodeToString(data);// 返回一列
+    }
+
+
     /** 
      * 在线图片转换成base64字符串 
      *  
@@ -115,22 +109,26 @@ public class Base64Utils {
             return false;  
         }  
   
-    }  
+    }
+
     public static void main(String[] args) throws Exception {  
     	
-        //本地图片地址  
-        String url = "C:/Users/Administrator/Desktop/628947887489084892.jpg";  
+        /*//本地图片地址
+        String url = "C:/Users/Administrator/Desktop/628947887489084892.jpg";
         //在线图片地址  
-        String string = "ftp://172.17.8.208:21/Sample_Photo/WKHS180011070-1A.jpg";  
+        String string = "ftp://172.17.8.208:21/Sample_Photo/WKHS180011070-1A.jpg";
           
         String str = Base64Utils.ImageToBase64ByLocal(url);  
           
-        String ste = Base64Utils.ImageToBase64ByOnline(string);  
+        String ste = Base64Utils.ImageToBase64ByOnline(string);
         System.out.println(ste);
         System.out.println(str);  
           
-        Base64Utils.Base64ToImage(str,"C:/Users/Administrator/Desktop/test1.jpg");  
+        Base64Utils.Base64ToImage(str,"C:/Users/Administrator/Desktop/test1.jpg");
           
-        Base64Utils.Base64ToImage(ste, "C:/Users/Administrator/Desktop/test2.jpg");  
+        Base64Utils.Base64ToImage(ste, "C:/Users/Administrator/Desktop/test2.jpg");*/
+        String url = "D:/Novogene/report_en7/WebContent/images/苏州九院.png";
+        String str = Base64Utils.ImageToBase64ByLocal(url);
+        System.out.println(str);
     }  
 }

@@ -1,5 +1,6 @@
 package com.novo.report.dao.two;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,17 @@ public interface SampleFileDao {
 	List<String> text();
 
 	void updateSmapleType(SampleFile sampleFile);
-	
+
+	void updatePersonName(SampleFile sampleFile);
+
+	void updateGender(SampleFile sampleFile);
+
+	void updateAge(SampleFile sampleFile);
+
+	void updateDiseaseType(SampleFile sampleFile);
+
+	void updateSpecimenno(SampleFile sampleFile);
+
 	Integer isExistPerson_id(Integer person_id);
 	
 	void saveMutationsNum(NumberOfMutations numberOfMutations);
@@ -38,4 +49,10 @@ public interface SampleFileDao {
 	void saveMutationsNum2(@Param("mut_num")Integer mut_num,@Param("subbarcode")String subbarcode ,@Param("analysis_date")String analysis_date,@Param("file_type")String file_type);
 
 	List<Map> findMutationsNum(@Param("subbarcode")String subbarcode ,@Param("analysis_date")String analysis_date);
+
+	ArrayList<String> getErrorEmail();
+
+	List<Map> getEmailByCustomer(String customer);
+
+	List<Map> getEmailByRecordercode(String recordercode);
 }

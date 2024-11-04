@@ -30,6 +30,11 @@ public class NgsAvailableDataVwController {
 		model.addAttribute("currentNgsAvailable", currentNgsAvailable);
 		return "ngs/ngsList";
 	}
+	@RequestMapping(value="lifeList2", produces = "application/text; charset=utf-8")
+	public String lifeList2(CurrentNgsAvailableData currentNgsAvailable, Model model) {
+		model.addAttribute("currentNgsAvailable", currentNgsAvailable);
+		return "ngs/ngsList1";
+	}
 	@RequestMapping(value="resolveData", produces = "application/text; charset=utf-8")
 	public String resolveData(CurrentNgsAvailableData currentNgsAvailable, Model model) {
 		model.addAttribute("currentNgsAvailable", currentNgsAvailable);

@@ -13,6 +13,8 @@ public interface FilterCrDao {
 
 	void updateReport(String report, Integer record_id);
 
+	void updateReportNull(Integer record_id);
+
 	void updateFiltered(String filtered_rationale, Integer record_id);
 
 }

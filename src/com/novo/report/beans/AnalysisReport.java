@@ -12,6 +12,8 @@ public class AnalysisReport {
 	private String report_date;;
 	private String report_filename;
 	private String report_file_path;
+	private String small_report_file_path;
+	private String template_name;
 	private String status;
 	private String created_by;
 	private String created_date;
@@ -35,7 +37,12 @@ public class AnalysisReport {
 	private String user;
 	private String match_time;
 	private Integer send_way;
-	
+	private String chem_cancer;
+	private String target_cancer;
+	private Integer flag;
+	private String filename91360;
+	private String file_path91360;
+
 	public Integer getSend_way() {
 		return send_way;
 	}
@@ -210,6 +217,23 @@ public class AnalysisReport {
 	public void setReport_file_path(String report_file_path) {
 		this.report_file_path = report_file_path;
 	}
+
+	public String getSmall_report_file_path() {
+		return small_report_file_path;
+	}
+
+	public void setSmall_report_file_path(String small_report_file_path) {
+		this.small_report_file_path = small_report_file_path;
+	}
+
+	public String getTemplate_name() {
+		return template_name;
+	}
+
+	public void setTemplate_name(String template_name) {
+		this.template_name = template_name;
+	}
+
 	public String getStatus() {
 		return status;
 	}
@@ -240,6 +264,44 @@ public class AnalysisReport {
 	public void setUpdate_date(String update_date) {
 		this.update_date = update_date;
 	}
-	
 
+	public String getChem_cancer() {
+		return chem_cancer;
+	}
+
+	public void setChem_cancer(String chem_cancer) {
+		this.chem_cancer = chem_cancer;
+	}
+
+	public String getTarget_cancer() {
+		return target_cancer;
+	}
+
+	public void setTarget_cancer(String target_cancer) {
+		this.target_cancer = target_cancer;
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
+	public String getFilename91360() {
+		return filename91360;
+	}
+
+	public void setFilename91360(String filename91360) {
+		this.filename91360 = filename91360;
+	}
+
+	public String getFile_path91360() {
+		return file_path91360;
+	}
+
+	public void setFile_path91360(String file_path91360) {
+		this.file_path91360 = file_path91360;
+	}
 }

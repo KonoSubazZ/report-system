@@ -86,6 +86,7 @@
 					var report_id_N=0;
 					$.each(jsonObject.dataList,function(i,n){
 					    htmlString += '<tr class="odd">';
+						// htmlString += '<td><a name="mya" href="http://localhost:60151/load?file=http://172.30.0.5:3070/data/bam_link/1699897100_TKHS230055788-1AT.final.bam.xml&amp;locus=11:63672368-63672368&amp;merge=false">11:63672368</a></td>';
 						htmlString += '<td>'+n.file_id+'</td>';
 						htmlString += '<td>'+n.chr+'</td>';
 						htmlString += '<td>'+n.start+'</td>';
@@ -105,13 +106,13 @@
 						htmlString += '<td>'+(n.variant == null? "" :n.gene_knownGene+" "+n.variant) +'</td>';
 						
 						if(n.report == 0){
-							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option selected="selected" value="0">不出</option><option value="1">出</option><option value="2">default</option></select></td>';
+							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" name="check" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option selected="selected" value="0">不出</option><option value="1">出</option><option value="2">default</option></select></td>';
 						}
 						if(n.report == 1){
-							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option selected="selected" value="1">出</option><option value="2">default</option></select></td>';
+							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" name="check" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option selected="selected" value="1">出</option><option value="2">default</option></select></td>';
 						}
 						if(n.report == null || n.report == "."){
-							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option value="1">出</option><option selected="selected" value="2">default</option></select></td>';
+							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" name="check" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option value="1">出</option><option selected="selected" value="2">default</option></select></td>';
 						}
 						if(n.filtered_rationale==null || n.filtered_rationale=="null"){
 							htmlString += '<td><input id="inp'+i+'" type="text" onblur="updateFiltered('+n.record_id+','+i+')" onfocus="cleanMessage2()" value=""/></td>';
@@ -154,7 +155,8 @@
 						}
 						htmlString +='</span> <div id="esp6500si_all'+i+'" style="display:none;">'+n.esp6500si_all+'</div></td>';
 						htmlString += '<td>'+n.dbSNP_rs+'</td>';
-						htmlString += '</tr>'; 
+						htmlString += '<td>'+n.interpro_domain+'</td>';
+						htmlString += '</tr>';
 					});
 					//将上面拼接好的json字符串追加到tbody中
 					$("#tInfo2").append(htmlString);
@@ -227,6 +229,12 @@
 			}
 		}); 
 	}
+
+	//report批量选择
+    function selects() {
+	    var report = $("#report").val();
+        $("[name='check']").val(report).change();
+    }
 </script>
 
 </head>
@@ -250,10 +258,14 @@
         <li>Gene_knownGene</li>
         <li>
           <input type="text" placeholder="请输入搜索关键字" id="Gene_knownGene" name="Gene_knownGene" value="" class="input" style="width:250px; line-height:17px;display:inline-block" />
-        </li> 
+        </li>
+        <li>report</li>
+        <li>
+            <select id="report" onchange="selects();"><option value="0">不出</option><option value="1">出</option><option selected="selected" value="2">default</option></select>
+        </li>
         <li style="padding-left:2830px;float: left;color: red;font-size: 14px"><span id="message2"></span></li>
       </ul>
-      
+
     </div>
     <script type="text/javascript">
 		    $(function(){
@@ -278,6 +290,7 @@
 	    </script> 
     <table class="table table-hover text-center">
       <tr>
+        <%--<th>IGV</th>--%>
         <th>file_id</th>
         <th>chr</th>
         <th>start</th>
@@ -302,6 +315,7 @@
         <th>AAChange_knownGene</th>
         <th>esp6500si_all</th>
         <th>dbSNP_rs</th>
+        <th>Interpro_domain</th>
       </tr>
       <tr>
       <tbody id="tInfo2">

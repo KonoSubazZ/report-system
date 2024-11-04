@@ -114,4 +114,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
 		</where>
 	</select>
+
+	<update id="updateCrAll">
+		update cr_all
+		set ExonicFunc=#{ExonicFunc},checked_by=#{update_by},checked_date=sysdate()
+		where file_id=(SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and file_type='CR_ALL' and status='Loaded')
+		and Gene=#{Gene} and Exon=#{Exon} and cHGVS=#{cHGVS} and pHGVS=#{pHGVS}
+	</update>
 </mapper>

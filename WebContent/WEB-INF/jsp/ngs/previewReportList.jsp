@@ -687,7 +687,7 @@ tr {
 					var ori_variant = encodeURIComponent(medicine.ori_variant);
 					var cosmic = encodeURIComponent(medicine.cosmic);
 					var mutFreq = encodeURIComponent(medicine.mutFreq);
-					$.post("${pageContext.request.contextPath}/geneMarkerVw/updateFromNkb?userAccount=${user.user_account}&gene="+medicine.gene+"&variant="+variant+"&ori_variant="+ori_variant+"&cosmic="+cosmic+"&mutFreq="+mutFreq+"&disease_id=${diseaseId}&lang=2", null, function(returnData){
+					$.post("${pageContext.request.contextPath}/geneMarkerVw/updateFromNkb?userAccount=${user.user_account}&gene="+medicine.gene+"&variant="+variant+"&ori_variant="+ori_variant+"&cosmic="+cosmic+"&mutFreq="+mutFreq+"&disease_id=${diseaseId}&lang=2&reportId=${geneticMarkerVwPageBean.report_id}&gender=${sampleFile.gender}", null, function(returnData){
 						if(!returnData || !returnData.isError) {
 							medicineList[index-1].drugList = returnData.drugList||[];
 							medicineList[index-1].varDrugNote = returnData.varDrugNote||[];
@@ -1689,7 +1689,7 @@ tr {
 						crAllList[parseInt(index)-1] = data;
 						crAllList[parseInt(index)-1].check_date = returnData.check_date;
 						update_flag = true;
-						$.post("${pageContext.request.contextPath}/geneMarkerVw/deleteDrugRecord?diseaseId=${diseaseId}&lang=2", data, function(returnData){
+						$.post("${pageContext.request.contextPath}/geneMarkerVw/deleteDrugRecord?diseaseId=${diseaseId}&lang=2&gender=${sampleFile.gender}", data, function(returnData){
 							
 						});
 						$.post("${pageContext.request.contextPath}/geneMarkerVw/deleteRpVariantOrder", 
@@ -2563,7 +2563,7 @@ tr {
 		var ori_variant = encodeURIComponent(medicine.ori_variant)
 		$.ajax({
 			type: "post",
-			url: "${pageContext.request.contextPath}/geneMarkerVw/saveDrugRecord?userAccount=${user.user_account}&gene="+medicine.gene+"&ori_variant="+ori_variant+"&disease_id=${diseaseId}&record_id="+medicine.record_id+"&lang=2",
+			url: "${pageContext.request.contextPath}/geneMarkerVw/saveDrugRecord?userAccount=${user.user_account}&gene="+medicine.gene+"&ori_variant="+ori_variant+"&disease_id=${diseaseId}&record_id="+medicine.record_id+"&lang=2&gender=${sampleFile.gender}",
 			data: JSON.stringify(drugList),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",
@@ -2590,7 +2590,7 @@ tr {
 		aaa = JSON.stringify(aaa);
 		aaa = aaa.replace(/"name"/g, '"key"');
 		if(varDrugNote_modified) {
-			$.post("${pageContext.request.contextPath}/geneMarkerVw/updateVarDrugNote?userAccount=${user.user_account}&gene="+medicine.gene+"&ori_variant="+ori_variant+"&disease_id=${diseaseId}&record_id="+medicine.record_id+"&lang=2", 
+			$.post("${pageContext.request.contextPath}/geneMarkerVw/updateVarDrugNote?userAccount=${user.user_account}&gene="+medicine.gene+"&ori_variant="+ori_variant+"&disease_id=${diseaseId}&record_id="+medicine.record_id+"&lang=2&gender=${sampleFile.gender}",
 					{"var_drug_desc":aaa}, 
 			function(returnData){
 				if(!returnData || !returnData.isError) {
@@ -2619,7 +2619,7 @@ tr {
 		var medicine = medicineList[index];
 		var variant = encodeURIComponent(medicine.variant);
 		var ori_variant = encodeURIComponent(medicine.ori_variant);
-		$.post("${pageContext.request.contextPath}/geneMarkerVw/deleteDrugAndAddUnknownVar?userAccount=${user.user_account}&gene="+medicine.gene+"&variant="+variant+"&ori_variant="+ori_variant+"&disease_id=${diseaseId}&lang=2&resultType="+resultType, null, function(returnData){
+		$.post("${pageContext.request.contextPath}/geneMarkerVw/deleteDrugAndAddUnknownVar?userAccount=${user.user_account}&gene="+medicine.gene+"&variant="+variant+"&ori_variant="+ori_variant+"&disease_id=${diseaseId}&lang=2&gender=${sampleFile.gender}&resultType="+resultType, null, function(returnData){
 			if(!returnData || !returnData.isError) {
 				medicineList[index].resultTypeDesc = returnData.resultTypeDesc;
 				medicineList[index].resultTypeVal = returnData.resultTypeVal;
@@ -2637,7 +2637,7 @@ tr {
 		var ori_variant = encodeURIComponent(medicine.ori_variant);
 		var cosmic = encodeURIComponent(medicine.cosmic);
 		var mutFreq = encodeURIComponent(medicine.mutFreq);
-		$.post("${pageContext.request.contextPath}/geneMarkerVw/deleteUnknownVar?userAccount=${user.user_account}&gene="+medicine.gene+"&variant="+variant+"&ori_variant="+ori_variant+"&cosmic="+cosmic+"&mutFreq="+mutFreq+"&disease_id=${diseaseId}&lang=2&parent_mutID="+gene_variant_id, null, function(returnData){
+		$.post("${pageContext.request.contextPath}/geneMarkerVw/deleteUnknownVar?userAccount=${user.user_account}&gene="+medicine.gene+"&variant="+variant+"&ori_variant="+ori_variant+"&cosmic="+cosmic+"&mutFreq="+mutFreq+"&disease_id=${diseaseId}&lang=2&reportId=${geneticMarkerVwPageBean.report_id}&parent_mutID="+gene_variant_id, null, function(returnData){
 			if(!returnData || !returnData.isError) {
 				medicineList[index].resultTypeDesc = returnData.resultTypeDesc;
 				medicineList[index].resultTypeVal = returnData.resultTypeVal;
@@ -2710,7 +2710,7 @@ tr {
 		var ori_variant = encodeURIComponent(medicine.ori_variant);
 		$.ajax({
 			type: "post",
-			url: "${pageContext.request.contextPath}/geneMarkerVw/saveClinicalRecord?userAccount=${user.user_account}&gene="+medicine.gene+"&ori_variant="+ori_variant+"&disease_id=${diseaseId}&record_id="+medicine.record_id+"&lang=2",
+			url: "${pageContext.request.contextPath}/geneMarkerVw/saveClinicalRecord?userAccount=${user.user_account}&gene="+medicine.gene+"&ori_variant="+ori_variant+"&disease_id=${diseaseId}&record_id="+medicine.record_id+"&lang=2&gender=${sampleFile.gender}",
 			data: JSON.stringify(clinicalList),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",

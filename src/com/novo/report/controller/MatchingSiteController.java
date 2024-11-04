@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.novo.report.utils.WebserviceProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -475,10 +476,11 @@ public class MatchingSiteController {
 	@ResponseBody
 	public Boolean auditing(AnalysisReport analysisReport,HttpServletRequest httpServletRequest) {
 		User user = (User) httpServletRequest.getSession().getAttribute("user");
-		analysisReport.setBioinfo_checker(user.getUser_account());
+		String bioinfo_checker = user==null ? "" : user.getUser_account();
+		analysisReport.setBioinfo_checker(bioinfo_checker);
 		try {
 			String status = lifeService.getStatus(analysisReport.getReport_id());
-			if(status!=null && !status.contains("报告审核通过") && !status.contains("报告发送成功")){
+			if(status==null || !status.contains("报告审核通过") && !status.contains("报告发送成功")){
 				status="生信审核";
 			}else {
 				return false;
@@ -486,6 +488,9 @@ public class MatchingSiteController {
 			if("生信审核".equals(status)){
 				analysisReport.setStatus(status);
 				lifeService.editStatus(analysisReport);
+				if (analysisReport.getFlag() != null && analysisReport.getFlag() == 1) {
+					WebserviceProxyUtils.status(analysisReport.getSubbarcode(), "product_status", status);
+				}
 			}
 			return true;
 		} catch (Exception e) {

@@ -6,7 +6,42 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.novo.report.dao.two.NgsAvailableDataVwDao">
 	<!--分页查询 -->
 	<select id="getTotal" resultType="Long">
-		select count(platform) from ngs_available_data_vw
+		select count(*) from
+		(select distinct b.report_id as report_id,a.platform as platform,a.analysis_date as analysis_date,a.barcode as
+		barcode,a.subbarcode as subbarcode,
+		ifnull(b.product_name,a.product_name) as product_name,c.disease_class_chinese as primary_cancer,b.chem_cancer as chem_cancer,
+		b.analyzer as analyzer,b.checked_date as checked_date,
+		b.checked_by as checked_by,b.report_time as report_date,b.report_filename as report_filename,b.report_file_path
+		as report_file_path,b.status as status
+		from ((data_file_status a left join analysis_report b on(((b.subbarcode = a.subbarcode) and (b.platform =
+		a.platform) and (b.analysis_date = a.analysis_date))))
+		left join disease_class c on((b.primary_cancer_id = c.class_id)))
+		<where>
+			and a.subbarcode &lt;&gt; ''
+			<if test="platform!=null and platform!=''">
+				and a.platform=#{platform}
+			</if>
+			<if test="analysis_date!=null and analysis_date!=''">
+				and a.analysis_date=#{analysis_date}
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and a.subbarcode=#{subbarcode}
+			</if>
+			<if test="status!=null and status!=''">
+				and b.status=#{status}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and (b.product_name =#{product_name} or (b.product_name is null and a.product_name=#{product_name}))
+			</if>
+			<if test=" subbarcodes!=null and subbarcodes.length>0">
+				and a.subbarcode in
+				<foreach collection="subbarcodes" open="(" close=")" separator="," item="item">
+					#{item}
+				</foreach>
+
+			</if>
+		</where>) b
+		<!--select count(platform) from ngs_available_data_vw
 		<where>
 			
 			<if test="platform!=null and platform!=''">
@@ -31,10 +66,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				</foreach>
 				
 			</if>
-		</where>
+		</where>-->
 	</select>
 	<select id="getNgsAvailableDataVwByPage" resultType="NgsAvailableDataVw">
-		select report_id,platform, analysis_date,barcode,subbarcode,product_name, platform,primary_cancer,
+		select distinct b.report_id as report_id,a.platform as platform,a.analysis_date as analysis_date,a.barcode as barcode,a.subbarcode as subbarcode,
+		ifnull(b.product_name,a.product_name) as product_name,c.disease_class_chinese as primary_cancer,b.chem_cancer as chem_cancer,b.analyzer as analyzer,b.checked_date as checked_date,
+		b.checked_by as checked_by,b.report_time as report_date,b.report_filename as report_filename,b.report_file_path as report_file_path,b.status as status
+		from ((data_file_status a left join analysis_report b on(((b.subbarcode = a.subbarcode) and (b.platform = a.platform) and (b.analysis_date = a.analysis_date))))
+		left join disease_class c on((b.primary_cancer_id = c.class_id)))
+		<where>
+			and a.subbarcode &lt;&gt; ''
+			<if test="platform!=null and platform!=''">
+				and a.platform=#{platform}
+			</if>
+			<if test="analysis_date!=null and analysis_date!=''">
+				and a.analysis_date=#{analysis_date}
+			</if>
+			<if test="subbarcode!=null and subbarcode!=''">
+				and a.subbarcode=#{subbarcode}
+			</if>
+			<if test="status!=null and status!=''">
+				and b.status=#{status}
+			</if>
+			<if test="product_name!=null and product_name!=''">
+				and (b.product_name =#{product_name} or (b.product_name is null and a.product_name=#{product_name}))
+			</if>
+			<if test=" subbarcodes!=null and subbarcodes.length>0">
+				and a.subbarcode in
+				<foreach collection="subbarcodes" open="(" close=")" separator="," item="item">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+		order by b.report_time
+		limit #{pageNo},#{pageSize}
+<!--		select report_id,platform, analysis_date,barcode,subbarcode,product_name, platform,primary_cancer,
 		analyzer,checked_date,checked_by,report_time as report_date,report_filename,report_file_path,status
 		from ngs_available_data_vw
 		<where>
@@ -60,22 +126,38 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				</foreach>
 			</if>
 		</where>
-		order by report_id
-		limit #{pageNo},#{pageSize} 
+		order by subbarcode
+		limit #{pageNo},#{pageSize} -->
 	</select>
 	
 	<select id="getSubbarcodeListByPlatform" resultType="String">
-		select distinct subbarcode from ngs_available_data_vw
+		select distinct a.subbarcode
+		from ((data_file_status a left join analysis_report b on(((b.subbarcode = a.subbarcode) and (b.platform = a.platform) and (b.analysis_date = a.analysis_date)))))
+		<where>
+			and a.subbarcode &lt;&gt; ''
+			<if test="platform!=null and platform!=''">
+				and a.platform=#{platform}
+			</if>
+		</where>
+		<!--select distinct subbarcode from ngs_available_data_vw
 			<if test="platform!=null and platform!=''">
 				where platform=#{platform}
-			</if>
+			</if>-->
 	</select>
 	
 	<select id="getProductNameListByPlatform" resultType="String">
-		select distinct product_name from ngs_available_data_vw
+		select distinct ifnull(b.product_name,a.product_name) as product_name
+		from ((data_file_status a left join analysis_report b on(((b.subbarcode = a.subbarcode) and (b.platform = a.platform) and (b.analysis_date = a.analysis_date)))))
+		<where>
+			and a.subbarcode &lt;&gt; ''
+			<if test="platform!=null and platform!=''">
+				and a.platform=#{platform}
+			</if>
+		</where>
+		<!--select distinct product_name from ngs_available_data_vw
 			<if test="platform!=null and platform!=''">
 				where platform=#{platform}
-			</if>
+			</if>-->
 	</select>
 	
 	<!-- 根据id获取 PCRReportVw-->

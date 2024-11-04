@@ -6,8 +6,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.novo.report.dao.two.PanelGeneDao">
 
 	<select id="getDetectionResultList" resultType="DetectionResult">
+		<!-- SELECT gene, mutation_type FROM omics.panel_gene
+		where product_id = #{0} and gene not in (select distinct gene from omics.this_genetic_marker_vw where report_id = #{1})-->
 		SELECT gene, mutation_type FROM omics.panel_gene
-		where product_id = #{0} and gene not in (select distinct gene from omics.this_genetic_marker_vw where report_id = #{1})
+		where product_id = #{0} and gene not in (select distinct gene from omics.this_genetic_marker_vw2 where report_id = #{1})
 	</select>
 	<select id="getTagByGene" resultType="String">
 		SELECT distinct tag FROM panel_gene

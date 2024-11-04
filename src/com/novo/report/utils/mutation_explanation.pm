@@ -36,35 +36,35 @@ sub chgvs {
 	my ($exon1,$exon2)=("","");
 	$exon1=$self->exon($region[0]);
 	$exon2=$self->exon($region[1]) if $region[1];
-	if ($chgvs=~/c\.([\d\+\-]+)([ACGT])>([ACGT])$/) {	#SNP
+	if ($chgvs=~/c\.([\d\+\-\*]+)([ACGT])>([ACGT]+)$/) {	#SNP
 		return "位于".$exon1."的".$self->cpos($1)."核苷酸$2被核苷酸$3替代";
-	} elsif ($chgvs=~/c\.([\d\+\-]+)_([\d\+\-]+)([ACGT]+)>([ACGT]+)$/) { #MNP
+	} elsif ($chgvs=~/c\.([\d\+\-\*]+)_([\d\+\-\*]+)([ACGT]+)>([ACGT]+)$/) { #MNP
 		return "位于".$exon1."的".$self->cpos($1) . "到".$self->cpos($2)."核苷酸$3被核苷酸$4替代";
-	} elsif ($chgvs=~/c\.([\d\+\-]+)_([\d\+\-]+)ins([ACGTN]+)$/) {	#ins
+	} elsif ($chgvs=~/c\.([\d\+\-\*]+)_([\d\+\-\*]+)ins([ACGTN]+)$/) {	#ins
 		if ($exon2) {
 			return "位于".$exon1.$self->cpos($1)."与".$exon2.$self->cpos($2)."之间插入核苷酸".$3;
 		} else {
 			return "位于".$exon1."的".$self->cpos($1)."与".$self->cpos($2)."之间插入核苷酸".$3;
 		}
-	} elsif ($chgvs=~/c\.([\d\+\-]+)dup([ACGTN]?)$/) {	#dup 1bp
+	} elsif ($chgvs=~/c\.([\d\+\-\*]+)dup([ACGTN]?)$/) {	#dup 1bp
 		return "位于".$exon1."的".$self->cpos($1)."核苷酸".$2."发生重复";
-	} elsif ($chgvs=~/c\.([\d\+\-]+)_([\d\+\-]+)dup([ACGTN]*)$/) {	#dup >1bp
+	} elsif ($chgvs=~/c\.([\d\+\-\*]+)_([\d\+\-\*]+)dup([ACGTN]*)$/) {	#dup >1bp
 		if ($exon2) {
 			return "位于".$exon1.$self->cpos($1)."到".$exon2.$self->cpos($2)."核苷酸".$3."发生重复";
 		} else {
 			return "位于".$exon1."的".$self->cpos($1)."到".$self->cpos($2)."核苷酸".$3."发生重复";
 		}
-	} elsif ($chgvs=~/c\.([\d\+\-]+)del([ACGTN]?)$/) {	#del 1bp
+	} elsif ($chgvs=~/c\.([\d\+\-\*]+)del([ACGTN]?)$/) {	#del 1bp
 		return "位于".$exon1."的".$self->cpos($1)."缺失核苷酸".$2;
-	} elsif ($chgvs=~/c\.([\d\+\-]+)_([\d\+\-]+)del([ACGTN]*)$/) {	#del >1bp
+	} elsif ($chgvs=~/c\.([\d\+\-\*]+)_([\d\+\-\*]+)del([ACGTN]*)$/) {	#del >1bp
 		if ($exon2) {
 			return "位于".$exon1.$self->cpos($1)."到".$exon2.$self->cpos($2)."缺失核苷酸".$3;
 		} else {
 			return "位于".$exon1."的".$self->cpos($1)."到".$self->cpos($2)."缺失核苷酸".$3;
 		}
-	} elsif ($chgvs=~/c\.([\d\+\-]+)del([ACGTN]?)ins([ACGTN]+)$/) {	#delins one to more
+	} elsif ($chgvs=~/c\.([\d\+\-\*]+)del([ACGTN]?)ins([ACGTN]+)$/) {	#delins one to more
 		return "位于".$exon1."的".$self->cpos($1)."缺失核苷酸".$2."并插入核苷酸".$3;
-	} elsif ($chgvs=~/c\.([\d\+\-]+)_([\d\+\-]+)del([ACGTN]*)ins([ACGTN]+)$/) {	#delins more to more
+	} elsif ($chgvs=~/c\.([\d\+\-\*]+)_([\d\+\-\*]+)del([ACGTN]*)ins([ACGTN]+)$/) {	#delins more to more
 		if ($exon2) {
 			return "位于".$exon1.$self->cpos($1)."到".$exon2.$self->cpos($2)."缺失核苷酸".$3."并插入核苷酸".$4;
 		} else {
@@ -79,20 +79,23 @@ sub exon {
 		return "$1号外显子上";
 	} elsif ($exon=~/intron(\d+)/) {
 		return "$1号内含子上";
-	}
-      elsif ($exon=~/promoter/) {
+	} elsif ($exon=~/promoter/) {
         return "启动子区";
     }
 }
 
 sub cpos {
 	my ($self,$pos)=@_;
+	my $s = "";
+	if ($pos=~/\*/) {
+		$s = "翻译终止密码子下游";
+	}
 	if ($pos=~/(\d+)-(\d+)/) {
-		return "-$2位";
+		return $s.="-$2位";
 	} elsif ($pos=~/(\d+)\+(\d+)/) {
-		return "+$2位";
+		return $s.="+$2位";
 	} else {
-		return "第$pos位";
+		return $s.="第$pos位";
 	}
 }
 
@@ -129,6 +132,15 @@ sub phgvs {
 			$des.="，终止密码子位置无法确定";
 		}
 		return $des;
+	} elsif ($phgvs=~/p\.([A-Z\*][a-z]{0,2})(\d+)([a-z]{0,2})fs/) {	#frameshif
+		my $des = "第$2位氨基酸$aa_exp{$1}被替代并发生移码";
+		if ($phgvs =~ /fs\*(\d+)/) {
+			$des .= "，从此位置开始第$1位为终止密码子(*)";
+		}
+		elsif ($phgvs =~ /fs\*\?/) {
+			$des .= "，终止密码子位置无法确定";
+		}
+		return $des;
 	} elsif ($phgvs=~/p\.([A-Z\*a-z]+)(\d+)dup$/){
 		my $aa = $1;
 		my $pos = $2;
@@ -137,6 +149,8 @@ sub phgvs {
                         $aa3_exp.=$aa_exp{$1};
                 }
 		return "第$pos位氨基酸$aa3_exp重复";
+	} elsif ($phgvs=~/p\.([A-Z\*][a-z]{0,2})(\d+)_([A-Z\*][a-z]{0,2})(\d+)dup$/) {	#dup more
+		return "第$2位氨基酸$aa_exp{$1}到第$4位氨基酸$aa_exp{$3}重复";
 	} elsif ($phgvs=~/p\.([A-Z\*][a-z]{0,2})(\d+)=$/) { #同义突变
 		return "第$2位氨基酸$aa_exp{$1}未发生改变";
 	} elsif ($phgvs=~/p\.([A-Z\*][a-z]{0,2})(\d+)([A-Z\*][a-z]{0,2})$/) {	# SNP

@@ -111,6 +111,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updateReport">
 		update cr_all set report=#{0} where record_id=#{1}
 	</update>
+	<update id="updateReportNull">
+		update cr_all set report=NULL where record_id=#{1}
+	</update>
 	
 	<update id="updateFiltered">
 		update cr_all set filtered_rationale=#{0} where record_id=#{1}

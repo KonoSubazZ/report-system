@@ -48,4 +48,6 @@ public interface ReportCrDao {
 	
 	@Delete("delete from rp_cr")
 	void deleteAllRecord();
+
+	void updateCrAll(@Param("subbarcode")String subbarcode, @Param("analysis_date")String analysis_date, @Param("Gene")String Gene, @Param("Exon")String Exon, @Param("cHGVS")String cHGVS, @Param("pHGVS")String pHGVS, @Param("ExonicFunc")String ExonicFunc, @Param("update_by")String update_by);
 }

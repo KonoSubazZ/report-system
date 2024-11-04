@@ -71,7 +71,7 @@
 			    <input type="hidden" name="analysis_date_show" value="${currentNgsAvailable.analysis_date_show}" id="analysis_date_hidden">
 			    <input type="hidden" name="product_name" value="${currentNgsAvailable.product_name}" id="analysis_date_hidden">
 			    <input type="hidden" name="pageNo" value="${currentNgsAvailable.pageNo}" id="pageNo_hidden">
-			    <input type="hidden" name="status" value="${currentNgsAvailable.status}" id="status">
+			    <input type="hidden" name="status_show" value="${currentNgsAvailable.status_show}" id="status_show">
 		    </form>
 	        <script type="text/javascript">
 	        	function fun_back(){
@@ -102,7 +102,7 @@
 	   		      objFrm.src = "${pageContext.request.contextPath}/geneMarkerVw/getGeneMarker?report_id=${currentNgsAvailable.report_id}&platform=${currentNgsAvailable.platform}&subbarcode=${currentNgsAvailable.subbarcode}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}&life=${currentNgsAvailable.life}&illumina=${currentNgsAvailable.illumina}&subbarcode_show=${currentNgsAvailable.subbarcode_show}&product_name_show=${currentNgsAvailable.product_name_show}&analysis_date_show=${currentNgsAvailable.analysis_date_show}&pageNo=${currentNgsAvailable.pageNo}";
 	   		      objFrm.style.display = "block";
 	    		}
-	        	function urlRunp4(data){
+	        	function urlRunp4(data, moduleFlag, i){
 		   			  var objFrm = document.getElementById('previewReport');
 		   				$("#wait").show();
 		   				$(".overlay").show();
@@ -114,7 +114,7 @@
 			   				urlRun_4(data);
 			   				alert("该样本已有报告，请重新点击知识库匹配按钮！");
 			   			}else{
-			   				objFrm.src = "${pageContext.request.contextPath}/geneMarkerVw/getGeneMarkerData?report_id=${currentNgsAvailable.report_id}&platform=${currentNgsAvailable.platform}&subbarcode=${currentNgsAvailable.subbarcode}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}&life=${currentNgsAvailable.life}&illumina=${currentNgsAvailable.illumina}&subbarcode_show=${currentNgsAvailable.subbarcode_show}&product_name_show=${currentNgsAvailable.product_name_show}&analysis_date_show=${currentNgsAvailable.analysis_date_show}&pageNo=${currentNgsAvailable.pageNo}";
+			   				objFrm.src = "${pageContext.request.contextPath}/geneMarkerVw/getGeneMarkerData?report_id=${currentNgsAvailable.report_id}&platform=${currentNgsAvailable.platform}&subbarcode=${currentNgsAvailable.subbarcode}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}&life=${currentNgsAvailable.life}&illumina=${currentNgsAvailable.illumina}&subbarcode_show=${currentNgsAvailable.subbarcode_show}&product_name_show=${currentNgsAvailable.product_name_show}&analysis_date_show=${currentNgsAvailable.analysis_date_show}&pageNo=${currentNgsAvailable.pageNo}&moduleFlag="+moduleFlag+"&module="+i;
 				   		    objFrm.style.display = "block";
 			   			}
 		    		}

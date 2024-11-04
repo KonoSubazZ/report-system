@@ -16,7 +16,12 @@ public class CurrentNgsAvailableData {
 	private Integer pageNo;
 	private String platformOne;
 	private String status;
-	
+	private String disease_class_chinese;
+	private Integer flag;
+	private String moduleFlag;
+	private String module;
+	private String status_show;
+
 	public String getStatus() {
 		return status;
 	}
@@ -107,5 +112,45 @@ public class CurrentNgsAvailableData {
 	}
 	public void setFalg(int falg) {
 		this.falg = falg;
+	}
+
+	public String getDisease_class_chinese() {
+		return disease_class_chinese;
+	}
+
+	public void setDisease_class_chinese(String disease_class_chinese) {
+		this.disease_class_chinese = disease_class_chinese;
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
+	public String getModuleFlag() {
+		return moduleFlag;
+	}
+
+	public void setModuleFlag(String moduleFlag) {
+		this.moduleFlag = moduleFlag;
+	}
+
+	public String getModule() {
+		return module;
+	}
+
+	public void setModule(String module) {
+		this.module = module;
+	}
+
+	public String getStatus_show() {
+		return status_show;
+	}
+
+	public void setStatus_show(String status_show) {
+		this.status_show = status_show;
 	}
 }

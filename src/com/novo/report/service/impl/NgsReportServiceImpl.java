@@ -101,7 +101,7 @@ public class NgsReportServiceImpl implements NgsReportService{
 		Gson gson = new Gson();
 		//根据report_id获取产品信息
 		Product product = lifeService.getProduct(currentNgsAvailable.getReport_id());
-		List<Map> thisGeneticmarkerVwList = analysisReportDao.getThisGeneticmarkerVwList(currentNgsAvailable.getReport_id());
+		List<Map> thisGeneticmarkerVwList = analysisReportDao.getThisGeneticmarkeren7VwList(currentNgsAvailable.getReport_id());
 		List<Map> crDrugList = new ArrayList<>();
 		
 		//根据report_id获取原发癌种信息
@@ -175,7 +175,7 @@ public class NgsReportServiceImpl implements NgsReportService{
 			msi_status = "MSI-H";
 		}
 		
-		List<String> chemoJsonList = analysisReportDao.getChemoJson(currentNgsAvailable.getSubbarcode());
+		List<String> chemoJsonList = analysisReportDao.getChemoJson(currentNgsAvailable.getSubbarcode(),currentNgsAvailable.getAnalysis_date(),currentNgsAvailable.getProduct_name());
 		
 		boolean isblood = false;
 		//获取样本信息
@@ -202,7 +202,7 @@ public class NgsReportServiceImpl implements NgsReportService{
 		while(iterator2.hasNext()) {
 			Map map = iterator2.next();
 			try {
-				reportCrService.handleDrugList(user.getUser_account(), diseaseId, map, diseaseIdList, parentdiseaseIdList,0,lang);
+				reportCrService.handleDrugList(user.getUser_account(), diseaseId, map, diseaseIdList, parentdiseaseIdList,0,lang, currentNgsAvailable.getReport_id());
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -897,7 +897,8 @@ public class NgsReportServiceImpl implements NgsReportService{
 //			filenameEncoder = new String((filename).getBytes("GBK"),"iso8859-1");
 		} else {
 			// 其它浏览器
-			filenameEncoder = URLEncoder.encode(filename, "utf-8");				
+			filenameEncoder = URLEncoder.encode(filename, "utf-8");
+//			filenameEncoder = filenameEncoder.replace("%2B", "+");
 		}
 
 		//要下载的这个文件的类型-----客户端通过文件的MIME类型去区分类型
@@ -940,6 +941,12 @@ public class NgsReportServiceImpl implements NgsReportService{
 	@Override
 	public void updateFileNameById(String report_id, String report_filename,String report_file_path) {
 		analysisReportDao.updateFileNameById(report_id,report_filename,report_file_path);
+		analysisReportDao.updateStoreFileNameById(report_id,report_filename);
+	}
+
+	@Override
+	public void updateFileName91360ById(String report_id, String filename91360,String file_path91360) {
+		analysisReportDao.updateFileName91360ById(report_id,filename91360,file_path91360);
 	}
 
 	public String transferOriVariant(String ori_variant) {

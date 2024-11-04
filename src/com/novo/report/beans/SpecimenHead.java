@@ -28,6 +28,7 @@ public class SpecimenHead {
 	private String emailaddress;//客户邮箱
 	private String collectdate;//送检日期 ？ 样本采集日期
 	private String specimennum;//样本数量
+	private String sampletime;//寄养时间
 	private String unit;//样本单位
 	private String sampletype;//样本种类
 	private String clinicalstages; //临床分期
@@ -55,13 +56,24 @@ public class SpecimenHead {
 	private String manageremail;   //大区经理邮箱
 	private String pmemail;   //运营群邮箱
 	private String pathologynum;   //病理编号
-	private String recorder;
-	
-	public String getRecorder() {
-		return recorder;
+	private String customedesc;	//送检单位
+	private String sampleremark;
+	private String firsttreatment;	//治疗史1
+	private String secondtreatment;	//治疗史2
+	private String thirdtreatment;	//治疗史3
+	private String outpatient;	//门诊/住院号
+	private String specimenno;	//病理编号 或者 银丰样本编号（银丰基因科技有限公司）
+	private String recordercode;	//创建人编码
+	private String mailingaddress;	//报告邮寄地址 / 病理诊断
+	private String patientphone;	//患者电话
+	private String receivertelephone;	//接收电话
+	private String customertype;	//客户类别
+
+	public String getCustomedesc() {
+		return customedesc;
 	}
-	public void setRecorder(String recorder) {
-		this.recorder = recorder;
+	public void setCustomedesc(String customedesc) {
+		this.customedesc = customedesc;
 	}	
 	public String getPathologynum() {
 		return pathologynum;
@@ -249,6 +261,15 @@ public class SpecimenHead {
 	public void setSpecimennum(String specimennum) {
 		this.specimennum = specimennum;
 	}
+
+	public String getSampletime() {
+		return sampletime;
+	}
+
+	public void setSampletime(String sampletime) {
+		this.sampletime = sampletime;
+	}
+
 	public String getUnit() {
 		return unit;
 	}
@@ -381,29 +402,163 @@ public class SpecimenHead {
 	public void setFastcode(String fastcode) {
 		this.fastcode = fastcode;
 	}
-	
+
+	public String getSampleremark() {
+		return sampleremark;
+	}
+
+	public void setSampleremark(String sampleremark) {
+		this.sampleremark = sampleremark;
+	}
+
+	public String getFirsttreatment() {
+		return firsttreatment;
+	}
+
+	public void setFirsttreatment(String firsttreatment) {
+		this.firsttreatment = firsttreatment;
+	}
+
+	public String getSecondtreatment() {
+		return secondtreatment;
+	}
+
+	public void setSecondtreatment(String secondtreatment) {
+		this.secondtreatment = secondtreatment;
+	}
+
+	public String getThirdtreatment() {
+		return thirdtreatment;
+	}
+
+	public void setThirdtreatment(String thirdtreatment) {
+		this.thirdtreatment = thirdtreatment;
+	}
+
+	public String getOutpatient() {
+		return outpatient;
+	}
+
+	public void setOutpatient(String outpatient) {
+		this.outpatient = outpatient;
+	}
+
+	public String getSpecimenno() {
+		return specimenno;
+	}
+
+	public void setSpecimenno(String specimenno) {
+		this.specimenno = specimenno;
+	}
+
+	public String getRecordercode() {
+		return recordercode;
+	}
+
+	public void setRecordercode(String recordercode) {
+		this.recordercode = recordercode;
+	}
+
+	public String getMailingaddress() {
+		return mailingaddress;
+	}
+
+	public void setMailingaddress(String mailingaddress) {
+		this.mailingaddress = mailingaddress;
+	}
+
+	public String getPatientphone() {
+		return patientphone;
+	}
+
+	public void setPatientphone(String patientphone) {
+		this.patientphone = patientphone;
+	}
+
+	public String getReceivertelephone() {
+		return receivertelephone;
+	}
+
+	public void setReceivertelephone(String receivertelephone) {
+		this.receivertelephone = receivertelephone;
+	}
+
+	public String getCustomertype() {
+		return customertype;
+	}
+
+	public void setCustomertype(String customertype) {
+		this.customertype = customertype;
+	}
+
 	@Override
 	public String toString() {
-		return "SpecimenHead [shsampletype=" + shsampletype + ", srsampletype=" + srsampletype + ", sampleunit="
-				+ sampleunit + ", operatedate=" + operatedate + ", familyhistory=" + familyhistory + ", cancertype="
-				+ cancertype + ", pathologicaltype=" + pathologicaltype + ", barcode=" + barcode + ", subBarcode="
-				+ subBarcode + ", patientname=" + patientname + ", erpsalername=" + erpsalername + ", sex=" + sex
-				+ ", age=" + age + ", enterdate=" + enterdate + ", getspecdate=" + getspecdate + ", reportreceiver="
-				+ reportreceiver + ", birthday=" + birthday + ", clinicalremark=" + clinicalremark + ", room=" + room
-				+ ", bed=" + bed + ", customername=" + customername + ", emailaddress=" + emailaddress
-				+ ", collectdate=" + collectdate + ", samplenum=" + samplenum + ", specimennum=" + specimennum
-				+ ", unit=" + unit + ", sampletype=" + sampletype + ", clinicalstages=" + clinicalstages
-				+ ", doctorname=" + doctorname + ", locationname=" + locationname + ", erptestname=" + erptestname
-				+ ", samplesource=" + samplesource + ", fromorgan=" + fromorgan + ", genetype=" + genetype
-				+ ", generesult=" + generesult + ", birthplace=" + birthplace + ", familyfirst=" + familyfirst
-				+ ", familyfirst_cancertype=" + familyfirst_cancertype + ", familyfirst_confirmtime="
-				+ familyfirst_confirmtime + ", familyfirst_age=" + familyfirst_age + ", familysecond=" + familysecond
-				+ ", familysecond_cancertype=" + familysecond_cancertype + ", familysecond_confirmtime="
-				+ familysecond_confirmtime + ", familysecond_age=" + familysecond_age + ", senddate=" + senddate
-				+ ", libraryname=" + libraryname + ", fastcode=" + fastcode + "]";
+		return "SpecimenHead{" +
+				"shsampletype='" + shsampletype + '\'' +
+				", srsampletype='" + srsampletype + '\'' +
+				", samplenum='" + samplenum + '\'' +
+				", sampleunit='" + sampleunit + '\'' +
+				", operatedate='" + operatedate + '\'' +
+				", familyhistory='" + familyhistory + '\'' +
+				", idnum='" + idnum + '\'' +
+				", cancertype='" + cancertype + '\'' +
+				", pathologicaltype='" + pathologicaltype + '\'' +
+				", barcode='" + barcode + '\'' +
+				", subBarcode='" + subBarcode + '\'' +
+				", patientname='" + patientname + '\'' +
+				", erpsalername='" + erpsalername + '\'' +
+				", sex='" + sex + '\'' +
+				", age='" + age + '\'' +
+				", enterdate='" + enterdate + '\'' +
+				", getspecdate='" + getspecdate + '\'' +
+				", reportreceiver='" + reportreceiver + '\'' +
+				", birthday='" + birthday + '\'' +
+				", clinicalremark='" + clinicalremark + '\'' +
+				", room='" + room + '\'' +
+				", bed='" + bed + '\'' +
+				", customername='" + customername + '\'' +
+				", emailaddress='" + emailaddress + '\'' +
+				", collectdate='" + collectdate + '\'' +
+				", specimennum='" + specimennum + '\'' +
+				", unit='" + unit + '\'' +
+				", sampletype='" + sampletype + '\'' +
+				", clinicalstages='" + clinicalstages + '\'' +
+				", doctorname='" + doctorname + '\'' +
+				", locationname='" + locationname + '\'' +
+				", erptestname='" + erptestname + '\'' +
+				", samplesource='" + samplesource + '\'' +
+				", fromorgan='" + fromorgan + '\'' +
+				", genetype='" + genetype + '\'' +
+				", generesult='" + generesult + '\'' +
+				", birthplace='" + birthplace + '\'' +
+				", familyfirst='" + familyfirst + '\'' +
+				", familyfirst_cancertype='" + familyfirst_cancertype + '\'' +
+				", familyfirst_confirmtime='" + familyfirst_confirmtime + '\'' +
+				", familyfirst_age='" + familyfirst_age + '\'' +
+				", familysecond='" + familysecond + '\'' +
+				", familysecond_cancertype='" + familysecond_cancertype + '\'' +
+				", familysecond_confirmtime='" + familysecond_confirmtime + '\'' +
+				", familysecond_age='" + familysecond_age + '\'' +
+				", senddate='" + senddate + '\'' +
+				", libraryname='" + libraryname + '\'' +
+				", fastcode='" + fastcode + '\'' +
+				", saleremail='" + saleremail + '\'' +
+				", supportemail='" + supportemail + '\'' +
+				", manageremail='" + manageremail + '\'' +
+				", pmemail='" + pmemail + '\'' +
+				", pathologynum='" + pathologynum + '\'' +
+				", customedesc='" + customedesc + '\'' +
+				", sampleremark='" + sampleremark + '\'' +
+				", firsttreatment='" + firsttreatment + '\'' +
+				", secondtreatment='" + secondtreatment + '\'' +
+				", thirdtreatment='" + thirdtreatment + '\'' +
+				", outpatient='" + outpatient + '\'' +
+				", specimenno='" + specimenno + '\'' +
+				", recordercode='" + recordercode + '\'' +
+				", mailingaddress='" + mailingaddress + '\'' +
+				", patientphone='" + patientphone + '\'' +
+				", receivertelephone='" + receivertelephone + '\'' +
+				", customertype='" + customertype + '\'' +
+				'}';
 	}
-	
-	
-	
-	
 }

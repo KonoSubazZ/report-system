@@ -8,6 +8,7 @@ public class OfflineReport {
 	private String	tested_by;//报告上传人
 	private String	report_filenameone;
 	private String	report_filenametwo;
+	private String	report_filenamethree;
 	private String	report_file_path;
 	private String	emailaddress;
 	private String saleremail;   //销售员邮箱
@@ -85,6 +86,15 @@ public class OfflineReport {
 	public void setReport_filenametwo(String report_filenametwo) {
 		this.report_filenametwo = report_filenametwo;
 	}
+
+	public String getReport_filenamethree() {
+		return report_filenamethree;
+	}
+
+	public void setReport_filenamethree(String report_filenamethree) {
+		this.report_filenamethree = report_filenamethree;
+	}
+
 	public String getReport_file_path() {
 		return report_file_path;
 	}

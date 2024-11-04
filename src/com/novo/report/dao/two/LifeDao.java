@@ -7,6 +7,7 @@ import com.novo.report.beans.DataFileStatus;
 import com.novo.report.beans.DataFileStatusPageBean;
 import com.novo.report.beans.DiseaseClass;
 import com.novo.report.beans.Product;
+import org.apache.ibatis.annotations.Param;
 
 public interface LifeDao {
 
@@ -44,4 +45,19 @@ public interface LifeDao {
 	
 	String getDiseaseClassChineseById(Integer primary_cancer_id);
 
+	String getProductByProductId(Integer product_id);
+
+	DiseaseClass getDiseaseClassFromSampleCancertype(Integer report_id);
+
+	String getGender(Integer report_id);
+
+	String getAnalysis_date(Integer report_id);
+
+	String getAnalyzer(Integer report_id);
+
+	String getFilePath(@Param("subbarcode")String subbarcode, @Param("analysis_date")String analysis_date);
+
+	Integer getClassIdByDiseaseClassChinese(String disease_class_chinese);
+
+	Integer getPendingAndErrorCount(@Param("subbarcode")String subbarcode, @Param("analysis_date")String analysis_date);
 }

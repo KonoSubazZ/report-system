@@ -4,14 +4,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.novo.report.dao.two.ReportVarDrugDao">
-	
+
 	<insert id="insertRpVarDrug" keyProperty="record_id" useGeneratedKeys="true">
-		insert into rp_var_drug(gene,lang,variant,ori_variant,disease_id,var_drug_desc,drugsA,drugsB,drugsC,drugsD,resistant_drugs,clinical_trial,modified,update_by,update_date)
-			values(#{gene},#{lang},#{variant},#{ori_variant},#{disease_id},#{var_drug_desc},#{drugsA},#{drugsB},#{drugsC},#{drugsD},#{resistant_drugs},#{clinical_trial},#{modified},#{update_by},sysdate())
+		insert into rp_var_drug_en7(gene,lang,variant,ori_variant,disease_id,gender,var_drug_desc,drugsA,drugsB,drugsC,drugsD,resistant_drugsA,resistant_drugsB,resistant_drugsC,resistant_drugsD,clinical_trial,modified,parent_mutID,update_by,update_date)
+			values(#{gene},#{lang},#{variant},#{ori_variant},#{disease_id},#{gender},#{var_drug_desc},#{drugsA},#{drugsB},#{drugsC},#{drugsD},#{resistant_drugsA},#{resistant_drugsB},#{resistant_drugsC},#{resistant_drugsD},#{clinical_trial},#{modified},#{parent_mutID},#{update_by},sysdate())
 	</insert>
-	
+
 	<update id="updateRpVarDrug">
-		update rp_var_drug 
+		update rp_var_drug_en7
 		<set>
 			<if test="var_drug_desc !=null">
 				var_drug_desc=#{var_drug_desc},
@@ -28,8 +28,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="drugsD !=null">
 				drugsD=#{drugsD},
 			</if>
-			<if test="resistant_drugs !=null">
-				resistant_drugs=#{resistant_drugs},
+			<if test="resistant_drugsA !=null">
+				resistant_drugsA=#{resistant_drugsA},
+			</if>
+			<if test="resistant_drugsB !=null">
+				resistant_drugsB=#{resistant_drugsB},
+			</if>
+			<if test="resistant_drugsC !=null">
+				resistant_drugsC=#{resistant_drugsC},
+			</if>
+			<if test="resistant_drugsD !=null">
+				resistant_drugsD=#{resistant_drugsD},
 			</if>
 			<if test="clinical_trial !=null">
 				clinical_trial=#{clinical_trial},
@@ -37,29 +46,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="modified !=null">
 				modified=#{modified},
 			</if>
+			<if test="parent_mutID !=null">
+				parent_mutID=#{parent_mutID},
+			</if>
 			<if test="update_by !=null">
 				update_by=#{update_by},
 			</if>
 			update_date = sysdate(),
 			check_date = #{check_date}
 		</set>
-		where gene = #{gene} and ori_variant = #{ori_variant} and disease_id = #{disease_id} and lang = #{lang}
+		where gene = #{gene} and ori_variant = #{ori_variant} and disease_id = #{disease_id} and lang = #{lang} and gender = #{gender}
 	</update>
 	
 	<update id="updateRpVarDrugById">
-		update rp_var_drug set check_date = sysdate() where record_id=#{record_id}
+		update rp_var_drug_en7 set check_date = sysdate() where record_id=#{record_id}
 	</update>
 	
 	<update id="updateModifiedById">
-		update rp_var_drug set modified = 1 where record_id=#{record_id}
+		update rp_var_drug_en7 set modified = 1 where record_id=#{record_id}
 	</update>
 	
 	<update id="updateCheckDate">
-		update rp_var_drug set check_date = null where record_id=#{record_id}
+		update rp_var_drug_en7 set check_date = null where record_id=#{record_id}
 	</update>
 	
 	<select id="getTotal" resultType="Long">
-		select count(*) from rp_var_drug_evw
+		select count(*) from rp_var_drug_en7_evw
 		<where>
 			<if test="condition!=null and condition!=''">modified=1</if>
 			<if test="before_date!=null and before_date!=''">
@@ -73,8 +85,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!--分页查询 -->
 	<select id="selectRecordByPage" resultType="java.util.LinkedHashMap">
-		select record_id,lang, gene,variant,ori_variant,disease_id,disease_name_chinese,var_drug_desc,drugsA,drugsB,drugsC,drugsD,resistant_drugs,clinical_trial,modified,update_by,date_format(update_date,'%Y-%m-%d %H:%i:%s') as update_date,date_format(check_date,'%Y-%m-%d %H:%i:%s') as check_date 
-		from rp_var_drug_evw
+		select record_id,lang, gene,variant,ori_variant,disease_id,gender,disease_name_chinese,var_drug_desc,drugsA,drugsB,drugsC,drugsD,resistant_drugsA,resistant_drugsB,resistant_drugsC,resistant_drugsD,clinical_trial,modified,update_by,date_format(update_date,'%Y-%m-%d %H:%i:%s') as update_date,date_format(check_date,'%Y-%m-%d %H:%i:%s') as check_date
+		from rp_var_drug_en7_evw
 		<where>
 			<if test="condition!=null and condition!=''">modified=1</if>
 			<if test="before_date!=null and before_date!=''">
@@ -88,8 +100,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="exportFile" resultType="java.util.LinkedHashMap">
-		select gene,lang,variant,ori_variant,disease_id,disease_name_chinese,var_drug_desc,drugsA,drugsB,drugsC,drugsD,resistant_drugs,clinical_trial,modified,update_by,date_format(update_date,'%Y-%m-%d %H:%i:%s') as update_date ,date_format(check_date,'%Y-%m-%d %H:%i:%s') as check_date
-		from rp_var_drug_evw
+		select gene,lang,variant,ori_variant,disease_id,gender,disease_name_chinese,var_drug_desc,drugsA,drugsB,drugsC,drugsD,resistant_drugsA,resistant_drugsB,resistant_drugsC,resistant_drugsD,clinical_trial,modified,update_by,date_format(update_date,'%Y-%m-%d %H:%i:%s') as update_date ,date_format(check_date,'%Y-%m-%d %H:%i:%s') as check_date
+		from rp_var_drug_en7_evw
 		<where>
 			<if test="condition!=null and condition!=''">modified=1</if>
 			<if test="before_date!=null and before_date!=''">

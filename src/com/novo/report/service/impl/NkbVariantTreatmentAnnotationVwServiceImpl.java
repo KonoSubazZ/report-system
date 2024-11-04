@@ -25,7 +25,6 @@ import com.novo.report.beans.PanelDisplay;
 import com.novo.report.beans.PotentialDrug;
 import com.novo.report.beans.PreviewReport;
 import com.novo.report.beans.ThisGeneticmarkerVw;
-import com.novo.report.beans.User;
 import com.novo.report.dao.two.GeneticMarkerVwDao;
 import com.novo.report.dao.two.MutationMarkerDao;
 import com.novo.report.dao.two.NkbVariantTreatmentAnnotationVwDao;
@@ -34,7 +33,6 @@ import com.novo.report.dao.two.PanelGeneDao;
 import com.novo.report.service.NkbVariantTreatmentAnnotationVwService;
 import com.novo.report.service.ReportCrService;
 import com.novo.report.utils.ListUtils;
-import com.novo.report.utils.TextConversionUtil;
 import com.novo.report.dao.two.AnalysisReportDao;
 
 @Service
@@ -66,14 +64,14 @@ public class NkbVariantTreatmentAnnotationVwServiceImpl implements NkbVariantTre
 		getParentId(parentDiseaseList, parentIdList);
 		parentdiseaseIdList.addAll(parentIdList);
 		AnalysisReport rp = analysisReportDao.getReportById(report_id);
-		List<Map> thisGeneticmarkerVwList = analysisReportDao.getThisGeneticmarkerVwList(rp.getReport_id());
+		List<Map> thisGeneticmarkerVwList = analysisReportDao.getThisGeneticmarkeren7VwList(rp.getReport_id());
 		VarDrugList.addAll(thisGeneticmarkerVwList);
 		Iterator<Map> iterator2 = VarDrugList.iterator();
 		while(iterator2.hasNext()) {
 			Map map = iterator2.next();
 			try {
 //				if ("EGFR".equals(map.get("gene").toString()) || "KDR".equals(map.get("gene").toString()) || "TSC2".equals(map.get("gene").toString())) {
-					reportCrService.handleDrugList(user, diseaseId, map, diseaseIdList, parentdiseaseIdList,0,1);
+					reportCrService.handleDrugList(user, diseaseId, map, diseaseIdList, parentdiseaseIdList,0,1, report_id);
 //				} else {
 //					iterator2.remove();
 //				}

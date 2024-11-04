@@ -15,9 +15,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="subbarcode!=null and subbarcode!=''">
 				and subbarcode =#{subbarcode}
 			</if>
-			<if test="product_name!=null and product_name!=''">
-				and product_name =#{product_name}
-			</if>
 		</where>
 	</select>
 	<select id="getDataFileStatusByPage" resultType="DataFileStatus">
@@ -31,16 +28,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="subbarcode!=null and subbarcode!=''">
 				and subbarcode =#{subbarcode}
 			</if>
-			<if test="product_name!=null and product_name!=''">
-				and product_name =#{product_name}
-			</if>
 		</where>
 		limit #{pageNo},#{pageSize}
 	</select>
 	
 	<insert id="addAnalysisReport"  keyProperty="report_id" useGeneratedKeys="true" >
-		insert into analysis_report (subbarcode,platform,product_name,analysis_date,analyzer,status,created_by,created_date,
-		update_date)values(#{subbarcode},#{platform},#{product_name},#{analysis_date},#{analyzer},#{status},#{created_by},#{created_date},#{update_date})
+		insert into analysis_report (subbarcode,platform,product_name,analysis_date,primary_cancer_id,product_id,analyzer,status,created_by,created_date,
+		update_date)values(#{subbarcode},#{platform},#{product_name},#{analysis_date},#{primary_cancer_id},#{product_id},#{analyzer},#{status},#{created_by},#{created_date},#{update_date})
 	</insert>
 	
 	<delete id="deleteParseFile">
@@ -105,5 +99,38 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	<select id="getProductByPathName" resultType="Product">
 		select product_id,product_name_chinese from product where path_name=#{path_name} limit 1
+	</select>
+	<select id="getProductByProductId" resultType="String">
+		select product_name from product where product_id=#{product_id}
+	</select>
+
+	<select id="getDiseaseClassFromSampleCancertype" resultType="DiseaseClass">
+		select class_id,disease_class_chinese from disease_class
+		where disease_class_chinese IN (select Cancertype from sample_file where subbarcode IN (select subbarcode from analysis_report where report_id=#{report_id}))
+		and disease_area = 'onco' limit 1
+	</select>
+
+	<select id="getGender" resultType="String">
+		select gender from sample_file where subbarcode = (select subbarcode from analysis_report where report_id=#{report_id})
+	</select>
+
+	<select id="getAnalysis_date" resultType="String">
+		select analysis_date from analysis_report where report_id=#{report_id}
+	</select>
+
+	<select id="getAnalyzer" resultType="String">
+		select analyzer from analysis_report where report_id=#{report_id}
+	</select>
+
+	<select id="getFilePath" resultType="String">
+		select file_path from data_file_status where subbarcode=#{subbarcode} and analysis_date=#{analysis_date} limit 1
+	</select>
+
+	<select id="getClassIdByDiseaseClassChinese" resultType="Integer">
+		select class_id from disease_class where disease_class_chinese=#{disease_class_chinese}
+	</select>
+
+	<select id="getPendingAndErrorCount" resultType="Integer">
+		select count(file_id) from data_file_status where subbarcode = #{subbarcode} and analysis_date = #{analysis_date} and (status = 'Pending' or status = 'Error')
 	</select>
 </mapper>

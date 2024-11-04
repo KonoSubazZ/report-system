@@ -13,7 +13,7 @@ import com.novo.report.beans.User;
  */
 public class LoginInterceptor extends HandlerInterceptorAdapter {
     private static final String[] IGNORE_URI = {"/login", "/js/","/jquery/","/css/","/images/","/main"};
- 
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         boolean flag = false;
@@ -35,7 +35,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         }
         return flag;
     }
- 
+
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         super.postHandle(request, response, handler, modelAndView);

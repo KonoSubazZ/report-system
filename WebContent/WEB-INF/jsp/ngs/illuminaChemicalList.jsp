@@ -90,13 +90,13 @@
 						htmlString += '<td>'+n.freq+'</td>';
 						
 						if(n.report == 0){
-							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option selected="selected" value="0">不出</option><option value="1">出</option><option value="2">default</option></select></td>';
+							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" name="check" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option selected="selected" value="0">不出</option><option value="1">出</option><option value="2">default</option></select></td>';
 						}
 						if(n.report == 1){
-							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option selected="selected" value="1">出</option><option value="2">default</option></select></td>';
+							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" name="check" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option selected="selected" value="1">出</option><option value="2">default</option></select></td>';
 						}
 						if(n.report == null || n.report == "."){
-							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option value="1">出</option><option selected="selected" value="2">default</option></select></td>';
+							htmlString += '<td  id="report'+i+'"><select id="sel'+i+'" name="check" onchange="updateReport('+n.record_id+','+"'"+i+"'"+')" ><option value="0">不出</option><option value="1">出</option><option selected="selected" value="2">default</option></select></td>';
 						}
 						if(n.filtered_rationale==null){
 							htmlString += '<td><input id="inp'+i+'" type="text" onblur="updateFiltered('+n.record_id+','+i+')" onfocus="cleanMessage2()" value=""/></td>';
@@ -182,6 +182,12 @@
 		}); 
 		
 	}
+
+    //report批量选择
+    function selects() {
+        var report = $("#report").val();
+        $("[name='check']").val(report).change();
+    }
 </script>
 
 </head>
@@ -201,7 +207,11 @@
 	      <input onchange="displayData(0);" name="isPass" type="checkbox" value="passNo" />不通过&nbsp;
 	      <input onchange="displayData(0);" name="isPass" type="checkbox" value="mateNo" />无匹配&nbsp;
 	      <input onchange="displayData(0);" name="isPass" type="checkbox" value="mate" />匹配
-        </li>   
+        </li>
+        <li>report</li>
+        <li>
+          <select id="report" onchange="selects();"><option value="0">不出</option><option value="1">出</option><option selected="selected" value="2">default</option></select>
+        </li>
         <li style="padding-left:800px;float: left;color: red;font-size: 14px"><span id="message2"></span></li>      
       </ul>
     </div>

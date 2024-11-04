@@ -127,7 +127,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 	
 	<select id="selectIndexOf" resultType="Integer">
-		SELECT index_id from rp_variant_order WHERE analysis_report_id = #{analysis_report_id} AND variant=#{variant} and ori_variant = #{ori_variant}
+		SELECT distinct index_id from rp_variant_order WHERE analysis_report_id = #{analysis_report_id} AND variant=#{variant} and ori_variant = #{ori_variant}
 	</select>
 	
 	<select id="selectMaxIndexOf" resultType="Integer">
