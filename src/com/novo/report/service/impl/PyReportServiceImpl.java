@@ -125,10 +125,9 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> allMutation = new ArrayList<>();
         allMutation.addAll(thisGeneticmarkerList);
         allMutation.addAll(crList);
-
-        //根据report_id获取原发癌种信息
         TranslateUtil translateUtil = new TranslateUtil();
 
+        // NOTE: 基因数量汇总
         // 胚系基因数量
         int crGeneCount = 0;
         //  somatic+cr的基因数量（体系+胚系）
@@ -140,12 +139,11 @@ public class PyReportServiceImpl implements PyReportService {
         // 用于记录与 "CR" 基因相关的药物列表数量。
         int crDrugList = 0;
 
-
+        // 用于记录所有基因
         HashSet<Object> allGeneSet = new HashSet<>();
-
         // 胚系
         HashSet<Object> crGeneSet = new HashSet<>();
-        // 胚系（1、2、3 不包括vus）
+        // 体系（1、2、3 不包括vus）
         HashSet<Object> embryonalGeneSet = new HashSet<>();
         // 体系
         HashSet<Object> bodyGeneSet = new HashSet<>();
@@ -156,17 +154,23 @@ public class PyReportServiceImpl implements PyReportService {
         Map result_map = new HashMap();
         String user_account = user == null ? "" : user.getUser_account();
 
-        // 获取所有位点信息（体系 胚系）& 暂时理解 胚系有用药
+        // 获取所有位点信息（体系 胚系）& 暂时理解 胚系有用药 体系 i II 类有用药，III(vus) 无用药
         List<Map> list = complexMutationService.matchComplexMutation(user_account, currentNgsAvailable.getReport_id(), result_map, lang, rt.getTemplate_name());
-
+        // 所有胚系位点信息（CR）
         List<Map> crAllList = (List<Map>) result_map.get("crAllList");
+        // 癌种的子父级id
         List<Integer> parentdiseaseIdList = (List<Integer>) result_map.get("parentdiseaseIdList");
+        // 所有体系位点信息
         List<Map> thisGeneticmarkerVwList = (List<Map>) result_map.get("thisGeneticmarkerVwList");
+        // 癌种list
         List<Integer> diseaseIdList = (List<Integer>) result_map.get("diseaseIdList");
         Integer diseaseId = (Integer) result_map.get("diseaseId");
         String diseaseName = result_map.get("diseaseName").toString();
+        // cr 相关药物数量(需要看下什么形式)
         int crDrugListSize = (int) result_map.get("crDrugListSize");
+        // 胚系突变的数量
         int crAllListSize = (int) result_map.get("crAllListSize");
+        //
         int totalDrugMutNum = (int) result_map.get("totalDrugMutNum");
         int totalMutNum = (int) result_map.get("totalMutNum");
         int totalUnknownNum = (int) result_map.get("totalUnknownNum");
@@ -279,12 +283,16 @@ public class PyReportServiceImpl implements PyReportService {
         } else if ("Unstable".equalsIgnoreCase(msi_status) || "POS".equalsIgnoreCase(msi_status)) {
             msi_status = "MSI-H";
         }
-        //获取质控结果
+
+        // 获取质控 QC 结果
         String qualityStat = analysisReportDao.getQualityStat(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
-        //获取免疫正负相关内容
-//        List<Map> immnueall = analysisReportDao.getIMMNUEALL(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+
+        // 获取免疫正负相关内容
+        // List<Map> immnueall = analysisReportDao.getIMMNUEALL(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         /*List<Map> medicalEvidence = analysisReportDao.getMedicalEvidence();
         List<Map> immnueall = ImmuneAllUtil.immuneAll(allMutation, medicalEvidence);*/
+
+        // 获取 immune_all（有突变信息的）
         List<MmImmnueAll> mmImmnueAlls = moduleModificationAllDao.selectMmImmnueAllByReportId(currentNgsAvailable.getReport_id());
         List<Map> immnueall = mmImmnueAlls.stream().map(it -> {
             Map<String, Object> apiMap = new HashMap<>();

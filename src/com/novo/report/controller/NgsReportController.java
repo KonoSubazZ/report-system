@@ -164,22 +164,24 @@ public class NgsReportController {
         User user = (User) httpServletRequest.getSession().getAttribute("user");
         try {
             //根据report_id获取文件名及路径
-            //根据subbarcode获取samplefile
+            // 获取样本信息
             SampleFile sf = sampleFileService.querySampleFileBySubbarcode(analysisReport.getSubbarcode());
-            //发件人
+
+            // 发件人
             String from = EmailUtil.getInstance("mail.properties").username;
-            //收件人
-//            String[] to = {sf.getEmailaddress()};
+            // 收件人，可能为多个，用逗号（全角，半角）、空格 隔开
             String[] to = sf.getEmailaddress() == null ? null : sf.getEmailaddress().split(",|，| ");
+            // 去重过滤
             HashSet<String> recipientSet = new HashSet<String>();
             for (String s : to) {
                 if (s != null && !s.equals("null") && !s.equals("")) {
                     recipientSet.add(s);
                 }
             }
-            //抄送
+
+            // 抄送人
             String[] copyto = {sf.getSaleremail(), sf.getSupportemail(), sf.getManageremail(), sf.getPmemail()};
-            //String[] copyto = {sf.getSaleremail(),sf.getSupportemail(),sf.getManageremail(),"baojianxiang@novogene.com","zhangyuqi@novogene.com"};
+
             //去除空白项
             HashSet<String> ccSet = new HashSet<String>();
             for (String s : copyto) {
@@ -206,11 +208,12 @@ public class NgsReportController {
             //技术服务部报告邮箱
             ccSet.add("novomedicine-om@novogene.com");
             ccSet.add("novomedicine-db@novogene.com");
-//			ccSet.add("report-zhongliu@novogene.com");
+			// ccSet.add("report-zhongliu@novogene.com");
             ccSet.add("operation-oncology@novogene.com");
             ccSet.add("marketing-zhongliu@novogene.com");
             ccSet.add("product-zhongliu@novogene.com");
-            //删除错误抄送邮箱
+
+            // 删除错误抄送邮箱，离职人员
             ArrayList<String> errorEmail = sampleFileService.getErrorEmail();
             ccSet.removeAll(errorEmail);
 
@@ -259,6 +262,12 @@ public class NgsReportController {
             if (sf.getEmailaddress() != null && !"".equals(sf.getEmailaddress())) {
                 //发送邮件
                 long startTime = System.currentTimeMillis();
+
+                // 20241105 需求去除收件人 cdyyjyjczx@163.com 的抄送邮箱
+                if (sf.getEmailaddress().contains("cdyyjyjczx@163.com")){
+                    copyto = null;
+                }
+
                 Map sendMail = EmailUtil.getInstance("mail.properties").sendMail(from, to, copyto, subject, content, fileList);
                 long endTime = System.currentTimeMillis();
                 long duration = (endTime - startTime) / 1000;
