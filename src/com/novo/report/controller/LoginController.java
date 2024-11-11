@@ -33,7 +33,7 @@ public class LoginController {
 	@RequestMapping("login")
 	@ResponseBody
 	public Object login(String user_account, String encoded_password, HttpServletRequest request){
-		//{"success":true}成功  {"success":false,"errMsg":""}失败
+
 		Map<String, Object> jsonMap =new HashMap<String,Object>();
 		String session_id = request.getSession().getId();
 		System.err.println(session_id);
