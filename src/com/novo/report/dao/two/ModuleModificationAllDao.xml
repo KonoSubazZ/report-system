@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.ModuleModificationAllDao">
+
+	<insert id="insertMmTcga">
+		insert into mm_tcga(report_id,tcga,update_by,update_date) values (#{report_id},#{tcga},#{update_by},sysdate())
+	</insert>
+
+	<update id="updateMmTcga">
+		update mm_tcga set tcga=#{tcga},update_by=#{update_by},update_date=sysdate() where report_id=#{report_id}
+	</update>
+
+	<select id="selectMmTcgaByReportId" resultType="String">
+		select tcga from mm_tcga where report_id = #{report_id}
+	</select>
+
+	<insert id="insertMmSarcomaTyping">
+		insert into mm_sarcoma_typing(report_id,mutation,transcript,mutFreq,sarcoma_subtype,evidence,ori_variant,mutDesc2,mutationAnalysis,update_by,update_date)
+		values (#{report_id},#{mutation},#{transcript},#{mutFreq},#{sarcoma_subtype},#{evidence},#{ori_variant},#{mutDesc2},#{mutationAnalysis},#{update_by},#{update_date})
+	</insert>
+
+	<update id="updateMmSarcomaTyping">
+		update mm_sarcoma_typing set transcript=#{transcript},sarcoma_subtype=#{sarcoma_subtype},evidence=#{evidence},mutDesc2=#{mutDesc2},mutationAnalysis=#{mutationAnalysis},update_by=#{update_by},update_date=sysdate()
+		where report_id=#{report_id} and mutation=#{mutation} and mutFreq=#{mutFreq} and ori_variant=#{ori_variant}
+	</update>
+
+	<select id="selectMmSarcomaTypingByReportId" resultType="MmSarcomaTyping">
+		select report_id,mutation,transcript,mutFreq,sarcoma_subtype,evidence,ori_variant,mutDesc2,mutationAnalysis,update_by,update_date
+		from mm_sarcoma_typing
+		where report_id = #{report_id}
+	</select>
+
+    <insert id="insertMmLymphomaTyping">
+		insert into mm_lymphoma_typing(report_id,gene,ori_variant,mutFreq,lymphoma_subtype,lymphoma_subtype2,evidence,update_by,update_date)
+		values (#{report_id},#{gene},#{ori_variant},#{mutFreq},#{lymphoma_subtype},#{lymphoma_subtype2},#{evidence},#{update_by},#{update_date})
+	</insert>
+
+    <update id="updateMmLymphomaTyping">
+		update mm_lymphoma_typing set lymphoma_subtype=#{lymphoma_subtype},lymphoma_subtype2=#{lymphoma_subtype2},evidence=#{evidence},update_by=#{update_by},update_date=sysdate()
+		where report_id=#{report_id} and gene=#{gene} and ori_variant=#{ori_variant} and mutFreq=#{mutFreq}
+	</update>
+
+    <select id="selectMmLymphomaTypingByReportId" resultType="MmLymphomaTyping">
+		select report_id,gene,ori_variant,mutFreq,lymphoma_subtype,lymphoma_subtype2,evidence,update_by,update_date
+		from mm_lymphoma_typing
+		where report_id = #{report_id}
+	</select>
+
+	<select id="selectLymphomaSubtype" resultType="MmLymphomaTyping">
+		select lymphoma_subtype,lymphoma_subtype2
+		from mm_lymphoma_typing
+		where report_id = #{report_id} and gene = #{gene} and ori_variant = #{ori_variant} and mutFreq = #{mutFreq}
+	</select>
+
+	<insert id="insertMmThyroidHotspot">
+		insert into mm_thyroid_hotspot(report_id,gene,`type`,meaning,situation,update_by,update_date)
+		values (#{report_id},#{gene},#{type},#{meaning},#{situation},#{update_by},#{update_date})
+	</insert>
+
+	<update id="updateMmThyroidHotspot">
+		update mm_thyroid_hotspot set situation=#{situation},update_by=#{update_by},update_date=sysdate()
+		where report_id=#{report_id} and gene=#{gene}
+	</update>
+
+	<select id="selectMmThyroidHotspotByReportId" resultType="MmThyroidHotspot">
+		select report_id,gene,`type`,meaning,situation,update_by,update_date
+		from mm_thyroid_hotspot
+		where report_id = #{report_id}
+	</select>
+
+	<insert id="insertMmThyroidPrognosis">
+		insert into mm_thyroid_prognosis(report_id,gene,ori_variant,mutFreq,prognosis_evaluation,prognosis_assessment,update_by,update_date)
+		values (#{report_id},#{gene},#{ori_variant},#{mutFreq},#{prognosis_evaluation},#{prognosis_assessment},#{update_by},#{update_date})
+	</insert>
+
+	<update id="updateMmThyroidPrognosis">
+		update mm_thyroid_prognosis set ori_variant=#{ori_variant},prognosis_evaluation=#{prognosis_evaluation},prognosis_assessment=#{prognosis_assessment},update_by=#{update_by},update_date=sysdate()
+		where report_id=#{report_id} and gene=#{gene} and ori_variant=#{ori_variant} and mutFreq=#{mutFreq}
+	</update>
+
+	<select id="selectMmThyroidPrognosisByReportId" resultType="MmThyroidPrognosis">
+		select report_id,gene,ori_variant,mutFreq,prognosis_evaluation,prognosis_assessment,update_by,update_date
+		from mm_thyroid_prognosis
+		where report_id = #{report_id}
+	</select>
+
+    <insert id="insertMmDmmr">
+		insert into mm_dmmr(report_id,gene,ori_variant,mutFreq,mut_type,update_by,update_date)
+		values (#{report_id},#{gene},#{ori_variant},#{mutFreq},#{mut_type},#{update_by},#{update_date})
+	</insert>
+
+    <update id="updateMmDmmr">
+		update mm_dmmr set ori_variant=#{ori_variant},mut_type=#{mut_type},update_by=#{update_by},update_date=sysdate()
+		where report_id=#{report_id} and gene=#{gene} and ori_variant=#{ori_variant} and mutFreq=#{mutFreq}
+	</update>
+
+    <select id="selectMmDmmrByReportId" resultType="MmDmmr">
+		select report_id,gene,ori_variant,mutFreq,mut_type,update_by,update_date
+		from mm_dmmr
+		where report_id = #{report_id}
+	</select>
+
+	<insert id="insertMmImmnueAll">
+		insert into mm_immnue_all(report_id,flag,gene,variant,mutFreq,varDesc,update_by,update_date)
+		values (#{report_id},#{flag},#{gene},#{variant},#{mutFreq},#{varDesc},#{update_by},#{update_date})
+	</insert>
+
+	<update id="updateMmImmnueAll">
+		update mm_immnue_all set varDesc=#{varDesc},update_by=#{update_by},update_date=sysdate()
+		where report_id=#{report_id} and flag=#{flag} and gene=#{gene} and variant=#{variant} and mutFreq=#{mutFreq}
+	</update>
+
+	<select id="selectMmImmnueAllByReportId" resultType="MmImmnueAll">
+		select report_id,flag,gene,variant,mutFreq,varDesc,update_by,update_date
+		from mm_immnue_all
+		where report_id = #{report_id}
+	</select>
+
+	<insert id="insertMmBrainGlioma">
+		insert into mm_brain_glioma(report_id,gene,info,`output`,update_by,update_date)
+		values (#{report_id},#{gene},#{info},#{output},#{update_by},#{update_date})
+	</insert>
+
+	<update id="updateMmBrainGlioma">
+		update mm_brain_glioma set `output`=#{output},update_by=#{update_by},update_date=sysdate()
+		where report_id=#{report_id} and info=#{info}
+	</update>
+
+	<select id="selectMmBrainGliomaByReportId" resultType="MmBrainGlioma">
+		select report_id,gene,info,`output`,update_by,update_date
+		from mm_brain_glioma
+		where report_id = #{report_id}
+	</select>
+
+	<insert id="insertMmEndocrineTherapy">
+		insert into mm_endocrine_therapy(report_id,gene,info,`output`,update_by,update_date)
+		values (#{report_id},#{gene},#{info},#{output},#{update_by},#{update_date})
+	</insert>
+
+	<update id="updateMmEndocrineTherapy">
+		update mm_endocrine_therapy set `output`=#{output},update_by=#{update_by},update_date=sysdate()
+		where report_id=#{report_id} and info=#{info}
+	</update>
+
+	<select id="selectMmEndocrineTherapyByReportId" resultType="MmEndocrineTherapy">
+		select report_id,gene,info,`output`,update_by,update_date
+		from mm_endocrine_therapy
+		where report_id = #{report_id}
+	</select>
+
+	<insert id="insertMmEndocrineDifferentiation">
+		insert into mm_endocrine_differentiation(report_id,gene,info,`output`,update_by,update_date)
+		values (#{report_id},#{gene},#{info},#{output},#{update_by},#{update_date})
+	</insert>
+
+	<update id="updateMmEndocrineDifferentiation">
+		update mm_endocrine_differentiation set `output`=#{output},update_by=#{update_by},update_date=sysdate()
+		where report_id=#{report_id} and info=#{info}
+	</update>
+
+	<select id="selectMmEndocrineDifferentiationByReportId" resultType="MmEndocrineDifferentiation">
+		select report_id,gene,info,`output`,update_by,update_date
+		from mm_endocrine_differentiation
+		where report_id = #{report_id}
+	</select>
+
+    <insert id="insertMmUrinaryProstate">
+		insert into mm_urinary_prognosis(report_id,gene,info,`output`,disease_class,update_by,update_date)
+		values (#{report_id},#{gene},#{info},#{output},#{disease_class},#{update_by},#{update_date})
+	</insert>
+
+    <update id="updateMmUrinaryProstate">
+		update mm_urinary_prognosis set `output`=#{output},update_by=#{update_by},update_date=sysdate()
+		where report_id=#{report_id} and info=#{info}
+	</update>
+
+    <select id="selectMmUrinaryProstateByReportId" resultType="MmUrinaryProstate">
+		select report_id,gene,info,`output`,disease_class,update_by,update_date
+		from mm_urinary_prognosis
+		where report_id = #{report_id}
+	</select>
+
+	<insert id="insertMmHrd">
+		insert into mm_hrd(report_id,hrd_brca_state,hrd_score,hrd_state,update_by,update_date) values (#{report_id},#{hrd_brca_state},#{hrd_score},#{hrd_state},#{update_by},sysdate())
+	</insert>
+
+	<update id="updateMmHrd">
+		update mm_hrd set hrd_brca_state=#{hrd_brca_state},hrd_score=#{hrd_score},hrd_state=#{hrd_state},update_by=#{update_by},update_date=sysdate() where report_id=#{report_id}
+	</update>
+
+	<select id="selectMmHrdByReportId" resultType="java.util.Map">
+		select hrd_brca_state,hrd_score,hrd_state from mm_hrd where report_id = #{report_id}
+	</select>
+
+    <insert id="insertMmApprovedDrug">
+		insert into mm_approved_drug(report_id,approved_id,disease,drug,indication,institution,update_by,update_date)
+		values (#{report_id},#{approved_id},#{disease},#{drug},#{indication},#{institution},#{update_by},#{update_date})
+	</insert>
+
+    <update id="updateMmApprovedDrug">
+		update mm_approved_drug set indication=#{indication},institution=#{institution},update_by=#{update_by},update_date=sysdate()
+		where report_id=#{report_id} and disease=#{disease} and drug=#{drug}
+	</update>
+
+    <select id="selectMmApprovedDrugByReportId" resultType="MmApprovedDrug">
+		select report_id,approved_id,disease,drug,indication,institution,update_by,update_date
+		from mm_approved_drug
+		where report_id = #{report_id}
+	</select>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.FilterPdDao">
+    <select id="getPDInfo" resultType="com.novo.report.beans.FilterPd">
+        SELECT file_id,subbarcode,client,Ackerman_num,test_item,Overall_quality,HE_Dyeing,Seen_microscopically,TPS,CPS,reporter,reviewers,Tumor_cel_content,Tumor_cell_count,Detection_method,Detect_antibody,loaded_date,checked_by,checked_date
+        FROM omics.pdinfo_file
+        WHERE file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type="PDINFO" and status="Loaded")
+    </select>
+
+    <update id="updatePd">
+		update pdinfo_file
+		set Ackerman_num=#{Ackerman_num},Tumor_cell_count=#{Tumor_cell_count},Seen_microscopically=#{Seen_microscopically},test_item=#{test_item},Detection_method=#{Detection_method},Detect_antibody=#{Detect_antibody},TPS=#{TPS},CPS=#{CPS},reporter=#{reporter},checked_by=#{checked_by},checked_date=#{checked_date}
+		where file_id=#{file_id}
+	</update>
+</mapper>

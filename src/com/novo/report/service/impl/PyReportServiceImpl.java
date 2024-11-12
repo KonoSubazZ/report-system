@@ -3499,7 +3499,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // NOTE: 从这里新增个性化模板逻辑
 
-        // 晶赛188 550 个性化模板相关逻辑
+        //CUSTOM 晶赛188 550 个性化模板相关逻辑
         if (rt.getTemplate_name().contains("晶赛")){
             Map<String, Object> JingsaiCustomInfo = generateJingsaiData(bodyDrugTipLineStr,
                                                                         unknownTipLineStr,
@@ -3511,10 +3511,18 @@ public class PyReportServiceImpl implements PyReportService {
                                                                         positiveDDR,
                                                                         positiveOther,
                                                                         negative,
-                                                                        hpd);
+                                                                        hpd,
+                                                                        bodyDrugNoComplexStr,
+                                                                        complexDrugStr);
 
             rt.setJingsaiCustomInfo(JingsaiCustomInfo);
         }
+
+        //CUSTOM 肺癌60基因模板-河南人民60个性化模板相关逻辑
+        if (rt.getTemplate_name().contains("肺癌60基因模板-河南人民-单样本")){
+//            geneHenanRenMingData()
+        }
+
 
         AnalysisReport analysisReport = null;
         String status = null;
@@ -3616,10 +3624,12 @@ public class PyReportServiceImpl implements PyReportService {
      * @param dMMRGeneList            MMR基因list
      * @param crAllList               所有胚系突变信息
      * @param thisGeneticmarkerVwList 所有体系信息
-     * @param positiveInfo             免疫正信息map，包含所有基因
-     * @param positiveOtherInfo             免疫正其他信息map
-     * @param negativeInfo             免疫负信息map
-     * @param hpdInfo             免疫超进展信息map
+     * @param positiveInfo            免疫正信息map，包含所有基因
+     * @param positiveOtherInfo       免疫正其他信息map
+     * @param negativeInfo            免疫负信息map
+     * @param hpdInfo                 免疫超进展信息map
+     * @param bodyDrugList            体细胞用药解析
+     * @param complexDrugList         共突变用药解析
      *
      * @return
      */
@@ -3633,7 +3643,9 @@ public class PyReportServiceImpl implements PyReportService {
                                                     Map<String, Object> positiveInfo,
                                                     Map<String, Object> positiveOtherInfo,
                                                     Map<String, Object> negativeInfo,
-                                                    Map<String, Object> hpdInfo) {
+                                                    Map<String, Object> hpdInfo,
+                                                    List<Map> bodyDrugList,
+                                                    List<Map> complexDrugList) {
         // 晶赛个性化结果汇总
         Map<String, Object> JingsaiCustomInfo = new HashMap<>();
 
@@ -3810,6 +3822,25 @@ public class PyReportServiceImpl implements PyReportService {
             }
         });
 
+        // 判断体细胞和共突变是否有临床实验信息
+        boolean hasClinicalTrialInformationStr = false;
+        for (Map bodyDrug : bodyDrugList) {
+            List clinicalTrialInformationStr =(List) bodyDrug.get("clinicalTrialInformationStr");
+            if (clinicalTrialInformationStr.size() > 0){
+                hasClinicalTrialInformationStr = true;
+                break;
+            }
+        }
+
+        if (!hasClinicalTrialInformationStr){
+            for (Map complexDrug : complexDrugList) {
+                List clinicalTrialInformationStr =(List) complexDrug.get("clinicalTrialInformationStr");
+                if (clinicalTrialInformationStr.size() > 0){
+                    hasClinicalTrialInformationStr = true;
+                    break;
+                }
+            }
+        }
 
 //        for (Map geneInfo : allGeneticmarkerVwList) {
 //            if ("突变".equals(geneInfo.get("mut_type"))){
@@ -3833,6 +3864,7 @@ public class PyReportServiceImpl implements PyReportService {
         JingsaiCustomInfo.put("positiveList", positiveList);
         JingsaiCustomInfo.put("negativeList", negativeList);
         JingsaiCustomInfo.put("hpdList", hpdList);
+        JingsaiCustomInfo.put("hasClinicalTrialInformationStr", hasClinicalTrialInformationStr);
 
         return JingsaiCustomInfo;
     }

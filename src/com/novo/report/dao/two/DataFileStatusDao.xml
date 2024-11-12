@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.novo.report.dao.two.DataFileStatusDao">
+
+    <insert id="saveDataFileStatus"  useGeneratedKeys="true" keyProperty="fileId">
+        insert into data_file_status(file_path, file_name, data_type, file_type, file_text, analysis_date, analyzer,
+		barcode, subbarcode, product_name, platform, status, message, created_by, created_date)
+		values(#{file_path},#{file_name},#{data_type},#{file_type},#{file_text},
+			#{analysis_date},#{analyzer},#{barcode},#{subbarcode},#{product_name},#{platform},#{status},#{message},#{created_by},#{created_date})
+    </insert>
+</mapper>

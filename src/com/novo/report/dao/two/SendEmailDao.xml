@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.SendEmailDao">
+
+	<select id="selectSendEmailByCustomer" resultType="SendEmail">
+		select email_id,customer,emailaddress,CCemail from send_email where customer=#{customer}
+	</select>
+
+	<select id="getCustomer" resultType="AutoComplete">
+		SELECT DISTINCT customer name from send_email where customer is not null
+	</select>
+
+	<!--分页查询 -->
+	<select id="getSendEmailTotal" resultType="Long">
+		select count(*) from send_email
+		<where>
+			<if test="customer!=null and customer!=''">
+				and customer =#{customer}
+			</if>
+		</where>
+	</select>
+	<select id="getSendEmailByPage" resultType="SendEmail">
+		select email_id,customer,emailaddress,CCemail,content,created_by,created_date,update_by,update_date from send_email
+		<where>
+			<if test="customer!=null and customer!=''">
+				and customer =#{customer}
+			</if>
+		</where>
+		limit #{pageNo},#{pageSize}
+	</select>
+
+	<insert id="saveSendEmail">
+		insert into send_email(customer,emailaddress,CCemail,content,created_by,created_date)
+		values(#{customer},#{emailaddress},#{CCemail},#{content},#{created_by},#{created_date})
+	</insert>
+
+	<delete id="deleteSendEmail">
+		delete from send_email where email_id=#{email_id}
+	</delete>
+
+	<select id="getSendEmailById" resultType="SendEmail">
+		select email_id,customer,emailaddress,CCemail,content,created_by,created_date,update_by,update_date from send_email
+		where email_id = #{email_id}
+	</select>
+
+	<update id="updateSendEmail">
+     	update send_email set customer=#{customer},emailaddress=#{emailaddress},CCemail=#{CCemail},content=#{content},update_by=#{update_by},update_date=#{update_date} where email_id=#{email_id}
+    </update>
+
+	<select id="getContentByCustomer" resultType="String">
+		select content from send_email where customer = #{customer}
+	</select>
+</mapper>

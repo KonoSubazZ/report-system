@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.AnalysisReportStoreDao">
+
+	<insert id="insertAnalysisReportStore">
+		<selectKey keyProperty="count" resultType="java.lang.Integer" order="BEFORE">
+			select count(*) from analysis_report_store where report_id = #{report_id}
+		</selectKey>
+		<if test="count == 0">
+			insert into analysis_report_store(report_id,report_filename,report_detail)
+			values (#{report_id},#{report_filename},#{report_detail})
+		</if>
+		<if test="count > 0">
+			update analysis_report_store set report_filename=#{report_filename},report_detail=#{report_detail}
+			where report_id=#{report_id}
+		</if>
+	</insert>
+</mapper>

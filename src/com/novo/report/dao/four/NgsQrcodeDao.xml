@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.four.NgsQrcodeDao">
+
+	<insert id="insertNgsQrcode">
+		  insert into ngs_qrcode(client,subbarcode,product_name,qrcode,report_date)
+		  values(#{client},#{subbarcode},#{product_name},#{qrcode},#{report_date})
+	</insert>
+</mapper>

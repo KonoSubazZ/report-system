@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.ChemJsonDao">
+	<insert id="insertChemJson">
+		<selectKey keyProperty="count" resultType="java.lang.Integer" order="BEFORE">
+			select count(*) from chem_json where report_id = #{report_id}
+		</selectKey>
+		<if test="count == 0">
+			insert into chem_json(report_id,subbarcode,disease_name,che_json,checked_by,checked_date)
+			values(#{report_id},#{subbarcode},#{disease_name},#{che_json},#{checked_by},#{checked_date})
+		</if>
+		<if test="count > 0">
+			update chem_json set subbarcode=#{subbarcode},disease_name=#{disease_name},che_json=#{che_json},checked_by=#{checked_by},checked_date=#{checked_date}
+			where report_id=#{report_id}
+		</if>
+	</insert>
+</mapper>

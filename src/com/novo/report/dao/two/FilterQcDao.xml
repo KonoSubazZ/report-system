@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.FilterQcDao">
+
+	<update id="updateSampleFile">
+		update sample_file
+		set tumorcellcontent=#{tumorcellcontent},DNA_total=#{DNA_total},DNA_degradation=#{DNA_degradation},outbound_quantity=#{outbound_quantity}
+		where subbarcode=#{subbarcode}
+	</update>
+
+    <update id="updateQc">
+		update qc_file
+		set tumorcellcontent=#{tumorcellcontent},DNA_total=#{DNA_total},DNA_degradation=#{DNA_degradation},outbound_quantity=#{outbound_quantity},sequencing_depth=#{sequencing_depth},coverage_uniformity=#{coverage_uniformity},genome_alignment=#{genome_alignment},base_quality=#{base_quality},checked_by=#{checked_by},checked_date=#{checked_date}
+		where file_id=#{file_id}
+	</update>
+
+	<update id="updateQcRna">
+		update qc_rna_file
+		set tumorcellcontent=#{tumorcellcontent},RNA_total=#{RNA_total},RNA_degradation=#{RNA_degradation},outbound_quantity=#{rna_outbound_quantity},total_reads=#{total_reads},base_quality=#{rna_base_quality},checked_by=#{checked_by},checked_date=#{checked_date}
+		where file_id=#{rna_file_id}
+	</update>
+
+	<update id="updateQcHrd">
+		update qc_hrd_file
+		set tumorcellcontent=#{tumorcellcontent},DNA_total=#{hrd_DNA_total},DNA_degradation=#{hrd_DNA_degradation},outbound_quantity=#{hrd_outbound_quantity},sequencing_depth=#{hrd_sequencing_depth},coverage_uniformity=#{hrd_coverage_uniformity},genome_alignment=#{hrd_genome_alignment},base_quality=#{hrd_base_quality},checked_by=#{checked_by},checked_date=#{checked_date}
+		where file_id=#{hrd_file_id}
+	</update>
+</mapper>
