@@ -3728,6 +3728,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // MMR基因（只包含胚系）
         List<Map> JingsaiDMMRGeneList = new ArrayList<>();
+        int JingsaiDMMRGeneCount = 0;
         for (Map dMMRGene : dMMRGeneList) {
 
             HashMap<String, Object> dMMRGeneInfo = new HashMap<>();
@@ -3750,7 +3751,7 @@ public class PyReportServiceImpl implements PyReportService {
                     dMMRGeneInfo.put("cHGVS", CR.get("cHGVS"));
                     dMMRGeneInfo.put("pHGVS", CR.get("PHGVS"));
                     dMMRGeneInfo.put("Clinical_significance", translateClinicalSignificance(CR.get("Clinical_significance").toString()));
-
+                    JingsaiDMMRGeneCount++;
                     break; // 如果只需要找到第一个匹配项，可以在这里 break
                 }
             }
@@ -3822,24 +3823,66 @@ public class PyReportServiceImpl implements PyReportService {
             }
         });
 
-        // 判断体细胞和共突变是否有临床实验信息
+//        List<Map> clinicalTrialInformationList = new ArrayList<>();
+//        boolean hasClinicalTrialInformationStr = false;
+//        for (Map bodyDrug : bodyDrugList) {
+//            List clinicalTrialInformationStr =(List) bodyDrug.get("clinicalTrialInformationStr");
+//            if (clinicalTrialInformationStr.size() > 0){
+//                hasClinicalTrialInformationStr = true;
+//            }
+//            clinicalTrialInformationList.addAll(clinicalTrialInformationStr);
+//        }
+
+        // 判断体细胞和共突变是否有临床实验信息以及临床实验信息去重 by id & drugName
+        List<Map> clinicalTrialInformationList = new ArrayList<>();
+        Set<String> seenSet = new HashSet<>();
         boolean hasClinicalTrialInformationStr = false;
+
         for (Map bodyDrug : bodyDrugList) {
-            List clinicalTrialInformationStr =(List) bodyDrug.get("clinicalTrialInformationStr");
-            if (clinicalTrialInformationStr.size() > 0){
+            List<Map> clinicalTrialInformationStr = (List<Map>) bodyDrug.get("clinicalTrialInformationStr");
+
+            if (!hasClinicalTrialInformationStr && clinicalTrialInformationStr.size() > 0) {
                 hasClinicalTrialInformationStr = true;
-                break;
+            }
+
+            for (Map clinicalInfo : clinicalTrialInformationStr) {
+                List<Map> drugInfoList = (List<Map>) clinicalInfo.get("drug_name_chinese");
+                String drugNames = "";
+
+                for (Map drugInfo : drugInfoList) {
+                    drugNames += (String) drugInfo.get("name") + "|";
+                }
+                String uniqueKey = clinicalInfo.get("clinical_trial_id") + "|" + drugNames;
+
+                if (!seenSet.contains(uniqueKey)) {
+                    seenSet.add(uniqueKey);
+                    clinicalTrialInformationList.add(clinicalInfo);
+                }
             }
         }
 
-        if (!hasClinicalTrialInformationStr){
-            for (Map complexDrug : complexDrugList) {
-                List clinicalTrialInformationStr =(List) complexDrug.get("clinicalTrialInformationStr");
-                if (clinicalTrialInformationStr.size() > 0){
-                    hasClinicalTrialInformationStr = true;
-                    break;
+        for (Map complexDrug : complexDrugList) {
+            List<Map> clinicalTrialInformationStr =(List<Map>) complexDrug.get("clinicalTrialInformationStr");
+
+            if (!hasClinicalTrialInformationStr && clinicalTrialInformationStr.size() > 0) {
+                hasClinicalTrialInformationStr = true;
+            }
+
+            for (Map clinicalInfo : clinicalTrialInformationStr) {
+                List<Map> drugInfoList = (List<Map>) clinicalInfo.get("drug_name_chinese");
+                String drugNames = "";
+
+                for (Map drugInfo : drugInfoList) {
+                    drugNames += (String) drugInfo.get("name") + "|";
+                }
+                String uniqueKey = clinicalInfo.get("clinical_trial_id") + "|" + drugNames;
+
+                if (!seenSet.contains(uniqueKey)) {
+                    seenSet.add(uniqueKey);
+                    clinicalTrialInformationList.add(clinicalInfo);
                 }
             }
+
         }
 
 //        for (Map geneInfo : allGeneticmarkerVwList) {
@@ -3865,6 +3908,8 @@ public class PyReportServiceImpl implements PyReportService {
         JingsaiCustomInfo.put("negativeList", negativeList);
         JingsaiCustomInfo.put("hpdList", hpdList);
         JingsaiCustomInfo.put("hasClinicalTrialInformationStr", hasClinicalTrialInformationStr);
+        JingsaiCustomInfo.put("JingsaiDMMRGeneCount", JingsaiDMMRGeneCount);
+        JingsaiCustomInfo.put("clinicalTrialInformationList", clinicalTrialInformationList);
 
         return JingsaiCustomInfo;
     }
