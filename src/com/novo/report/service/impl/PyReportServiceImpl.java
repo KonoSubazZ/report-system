@@ -160,7 +160,7 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> crAllList = (List<Map>) result_map.get("crAllList");
         // 癌种的子父级id
         List<Integer> parentdiseaseIdList = (List<Integer>) result_map.get("parentdiseaseIdList");
-        // 所有体系位点信息
+        // 所有体细胞位点信息
         List<Map> thisGeneticmarkerVwList = (List<Map>) result_map.get("thisGeneticmarkerVwList");
         // 癌种list
         List<Integer> diseaseIdList = (List<Integer>) result_map.get("diseaseIdList");
@@ -3689,7 +3689,7 @@ public class PyReportServiceImpl implements PyReportService {
             }
         }
 
-        // 共突变分级提示
+        // 共突变（多靶点）分级提示
         HashMap<String, List> complexDrugTipInfo = new HashMap<>();
         for (Map complexDrugTip : complexDrugTipList) {
 
@@ -3829,7 +3829,7 @@ public class PyReportServiceImpl implements PyReportService {
         JingsaiCustomInfo.put("JingsaiDMMRGeneList", JingsaiDMMRGeneList);
         JingsaiCustomInfo.put("snpGeneList", snpGeneList);
         JingsaiCustomInfo.put("cnvGeneList", cnvGeneList);
-        JingsaiCustomInfo.put("fusionGeneList", cnvGeneList);
+        JingsaiCustomInfo.put("fusionGeneList", fusionGeneList);
         JingsaiCustomInfo.put("positiveList", positiveList);
         JingsaiCustomInfo.put("negativeList", negativeList);
         JingsaiCustomInfo.put("hpdList", hpdList);
