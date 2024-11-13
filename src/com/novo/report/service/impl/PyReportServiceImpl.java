@@ -3520,7 +3520,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         //CUSTOM 肺癌60基因模板-河南人民60个性化模板相关逻辑
         if (rt.getTemplate_name().contains("肺癌60基因模板-河南人民-单样本")){
-//            geneHenanRenMingData()
+            geneHenanRenMingData(thisGeneticmarkerVwList);
         }
 
 
@@ -3612,6 +3612,38 @@ public class PyReportServiceImpl implements PyReportService {
         return reportId;
     }
 
+    private Map<String, Object> geneHenanRenMingData(List<Map> somaticMutationSiteList) {
+        // 河南人民检测基因列表
+        List<String> geneList = Arrays.asList("EGFR", "KRAS", "BRAF", "PIK3CA", "ALK", "ROS1", "MET", "RET", "ERBB2", "TP53");
+        // 河南人民60个性化数据汇总
+        Map<String, Object> HenanRenMingCustomInfo = new HashMap<>();
+
+        // 体细胞位点信息 检测结果
+        List<Map> somaticMutationSiteInfoList = new ArrayList<>();
+        Map<String, List<Map>> somaticMutationSitesInfo = new HashMap<>();
+        geneList.stream().forEach(gene -> somaticMutationSitesInfo.put(gene, null));
+        somaticMutationSiteList.stream()
+                .forEach(site -> {
+//                    String gene = (String) site.get("gene");
+//                    if (somaticMutationSitesInfo.containsKey(gene)) {
+//                        List<Map> geneInfo = somaticMutationSitesInfo.get(gene);
+//
+//                        geneInfo.add(site);
+//                   }
+                    System.out.println(site);
+                });
+
+        for (Map site : somaticMutationSiteList) {
+            String gene = (String) site.get("gene");
+            if (somaticMutationSitesInfo.containsKey(gene)) {
+                    List<Map> geneInfo = somaticMutationSitesInfo.get(gene);
+
+                    geneInfo.add(site);
+                   }
+        }
+
+        return HenanRenMingCustomInfo;
+    }
 
 
     /**
