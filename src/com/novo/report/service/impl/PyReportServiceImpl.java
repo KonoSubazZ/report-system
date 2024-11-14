@@ -3519,8 +3519,8 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         //CUSTOM 肺癌60基因模板-河南人民60个性化模板相关逻辑
-        if (rt.getTemplate_name().contains("肺癌60基因模板-河南人民-单样本")){
-            geneHenanRenMingData(thisGeneticmarkerVwList);
+        if (rt.getTemplate_name().contains("肺癌60基因-河南人民-单样本")){
+            Map<String, Object> HenanPeopleCustomInfo = geneHenanPeopleData(thisGeneticmarkerVwList);
         }
 
 
@@ -3612,37 +3612,56 @@ public class PyReportServiceImpl implements PyReportService {
         return reportId;
     }
 
-    private Map<String, Object> geneHenanRenMingData(List<Map> somaticMutationSiteList) {
+    private Map<String, Object> geneHenanPeopleData(List<Map> somaticMutationSiteList) {
         // 河南人民检测基因列表
         List<String> geneList = Arrays.asList("EGFR", "KRAS", "BRAF", "PIK3CA", "ALK", "ROS1", "MET", "RET", "ERBB2", "TP53");
         // 河南人民60个性化数据汇总
-        Map<String, Object> HenanRenMingCustomInfo = new HashMap<>();
+        Map<String, Object> HenanPeopleCustomInfo = new HashMap<>();
 
         // 体细胞位点信息 检测结果
         List<Map> somaticMutationSiteInfoList = new ArrayList<>();
         Map<String, List<Map>> somaticMutationSitesInfo = new HashMap<>();
-        geneList.stream().forEach(gene -> somaticMutationSitesInfo.put(gene, null));
-        somaticMutationSiteList.stream()
-                .forEach(site -> {
-//                    String gene = (String) site.get("gene");
-//                    if (somaticMutationSitesInfo.containsKey(gene)) {
-//                        List<Map> geneInfo = somaticMutationSitesInfo.get(gene);
-//
-//                        geneInfo.add(site);
-//                   }
-                    System.out.println(site);
-                });
+        geneList.stream().forEach(gene -> somaticMutationSitesInfo.put(gene, new ArrayList<>()));
+//        somaticMutationSiteList.stream()
+//                .forEach(site -> {
+////                    String gene = (String) site.get("gene");
+////                    if (somaticMutationSitesInfo.containsKey(gene)) {
+////                        List<Map> geneInfo = somaticMutationSitesInfo.get(gene);
+////
+////                        geneInfo.add(site);
+////                   }
+//                    System.out.println(site);
+//                });
 
         for (Map site : somaticMutationSiteList) {
             String gene = (String) site.get("gene");
             if (somaticMutationSitesInfo.containsKey(gene)) {
-                    List<Map> geneInfo = somaticMutationSitesInfo.get(gene);
+                List<Map> geneInfo = somaticMutationSitesInfo.get(gene);
+                String mutation = "";
+                String exon = (String)site.get("exon");
+                String mutationType = (String)site.get("mut_type");
+                String mutFreq = (String)site.get("mutFreq");
+                String oriVariant = (String)site.get("ori_variant");
+                String[] oriVariantArr = oriVariant.split(" ");
+                String mutFreqStr = mutationType.equals("拷贝数变异") ? "  (reads数：" + mutFreq + ")" : "  (丰度：" + mutFreq + "%" + ")";
+                int len = oriVariantArr.length;
 
-                    geneInfo.add(site);
-                   }
+                if ("突变".equals(mutationType)){
+                    String region = StringUtils.isNotBlank(exon)
+                            ? exon + "外显子"
+                            : oriVariantArr[len - 2].replaceAll("\\D+", "") + "内含子";
+                    mutation = region + oriVariantArr[len - 1] + mutationType + mutFreqStr;
+                } else if ("融合".equals(mutationType)) {
+                    mutation = oriVariantArr[0]  + "(" + oriVariantArr[len - 1] + ")" + mutationType + mutFreqStr;
+                }else {
+                    mutation = oriVariantArr[0] + mutationType + mutFreqStr;
+                }
+                site.put("mutation", mutation);
+                geneInfo.add(site);
+            }
         }
-
-        return HenanRenMingCustomInfo;
+        HenanPeopleCustomInfo.put("somaticMutationSitesInfo", somaticMutationSitesInfo);
+        return HenanPeopleCustomInfo;
     }
 
 
