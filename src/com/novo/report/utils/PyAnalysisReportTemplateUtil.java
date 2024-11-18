@@ -307,9 +307,13 @@ public class PyAnalysisReportTemplateUtil {
 
 		// 定制个性化数据
 
-		// 晶赛定制化数据
+		// 晶赛 188、550 定制化数据
 		if (rt.getTemplate_name().contains("晶赛")){
 			data.put("JingsaiCustomInfo", rt.getJingsaiCustomInfo());
+		}
+		// 河南人民60
+		if (rt.getTemplate_name().contains("河南人民")){
+			data.put("HenanPeopleCustomInfo", rt.getHenanPeopleCustomInfo());
 		}
 
 		//data.put("FrequencySinglePageData", rt.getFrequencySinglePageData());

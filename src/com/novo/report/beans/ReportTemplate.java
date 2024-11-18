@@ -348,7 +348,16 @@ public class ReportTemplate {
 	 *  docs: 晶赛报告自定义的 BodyDrugTipCustomList
 	 *  基于通用的bodyDrugTipLineStr（item是位点 ） ->  更新为变异等级（I   II）分类
 	 */
-	private Map<String, Object> JingsaiCustomInfo ;
+	private Map<String, Object> JingsaiCustomInfo;
+	private Map<String, Object> HenanPeopleCustomInfo ;
+
+	public Map<String, Object> getHenanPeopleCustomInfo() {
+		return HenanPeopleCustomInfo;
+	}
+
+	public void setHenanPeopleCustomInfo(Map<String, Object> henanPeopleCustomInfo) {
+		HenanPeopleCustomInfo = henanPeopleCustomInfo;
+	}
 
 	public Map<String, Object> getJingsaiCustomInfo() {
 		return JingsaiCustomInfo;

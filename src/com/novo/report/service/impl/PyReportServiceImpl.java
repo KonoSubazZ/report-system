@@ -692,12 +692,17 @@ public class PyReportServiceImpl implements PyReportService {
 
                     String ori_variant = map.get("ori_variant").toString();
                     String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
-                    List<String> templates = lifeNoNDFTemplate(); //life报告模板融合不输出突变丰度和NDF值
+                    // life报告模板融合不输出突变丰度和NDF值
+                    // 20241115 解读需求输出突变丰度
+                    /*
+                    List<String> templates = lifeNoNDFTemplate();
                     if (templates.contains(rt.getTemplate_name())) {
                         if (ori_variant.indexOf("Fusion") != -1) {
                             mutFreq = "/";
                         }
                     }
+                     */
+
                     if (mutFreq.equals(".")) {
                         mutFreq = "/";
                     }
@@ -3520,7 +3525,9 @@ public class PyReportServiceImpl implements PyReportService {
 
         //CUSTOM 肺癌60基因模板-河南人民60个性化模板相关逻辑
         if (rt.getTemplate_name().contains("肺癌60基因-河南人民-单样本")){
-            Map<String, Object> HenanPeopleCustomInfo = geneHenanPeopleData(thisGeneticmarkerVwList);
+            Map<String, Object> HenanPeopleCustomInfo = geneHenanPeopleData(thisGeneticmarkerVwList,
+                                                                            bodyDrugTipLineStr);
+            rt.setHenanPeopleCustomInfo(HenanPeopleCustomInfo);
         }
 
 
@@ -3612,26 +3619,22 @@ public class PyReportServiceImpl implements PyReportService {
         return reportId;
     }
 
-    private Map<String, Object> geneHenanPeopleData(List<Map> somaticMutationSiteList) {
+    private Map<String, Object> geneHenanPeopleData(List<Map> somaticMutationSiteList, List<Map> bodyDrugTipList) {
         // 河南人民检测基因列表
         List<String> geneList = Arrays.asList("EGFR", "KRAS", "BRAF", "PIK3CA", "ALK", "ROS1", "MET", "RET", "ERBB2", "TP53");
         // 河南人民60个性化数据汇总
         Map<String, Object> HenanPeopleCustomInfo = new HashMap<>();
 
-        // 体细胞位点信息 检测结果
-        List<Map> somaticMutationSiteInfoList = new ArrayList<>();
+        // 体细胞位点信息汇总map 检测结果1
         Map<String, List<Map>> somaticMutationSitesInfo = new HashMap<>();
+        // 体细胞位点信息过滤list 检测结果2
+        List<Map> somaticMutationSiteInfoList = new ArrayList<>();
+
         geneList.stream().forEach(gene -> somaticMutationSitesInfo.put(gene, new ArrayList<>()));
-//        somaticMutationSiteList.stream()
-//                .forEach(site -> {
-////                    String gene = (String) site.get("gene");
-////                    if (somaticMutationSitesInfo.containsKey(gene)) {
-////                        List<Map> geneInfo = somaticMutationSitesInfo.get(gene);
-////
-////                        geneInfo.add(site);
-////                   }
-//                    System.out.println(site);
-//                });
+        // 过滤bodyDrugTipList，只保留包含geneList中的基因的数据
+        List<Map> BodyDrugTipList = bodyDrugTipList.stream()
+                .filter(map -> geneList.contains(map.get("gene")))
+                .collect(Collectors.toList());
 
         for (Map site : somaticMutationSiteList) {
             String gene = (String) site.get("gene");
@@ -3641,12 +3644,14 @@ public class PyReportServiceImpl implements PyReportService {
                 String exon = (String)site.get("exon");
                 String mutationType = (String)site.get("mut_type");
                 String mutFreq = (String)site.get("mutFreq");
+                // NDF值展示逻辑
+                String mutFreqString = mutFreq.contains("-")? mutFreq : mutFreq + "%";
                 String oriVariant = (String)site.get("ori_variant");
                 String[] oriVariantArr = oriVariant.split(" ");
-                String mutFreqStr = mutationType.equals("拷贝数变异") ? "  (reads数：" + mutFreq + ")" : "  (丰度：" + mutFreq + "%" + ")";
+                String mutFreqStr = mutationType.equals("拷贝数变异") ? "  ( 拷贝数：" + mutFreq + ")" : "  ( 丰度：" + mutFreqString + ")";
                 int len = oriVariantArr.length;
 
-                if ("突变".equals(mutationType)){
+                if ("突变".equals(mutationType) || "缺失".equals(mutationType)){
                     String region = StringUtils.isNotBlank(exon)
                             ? exon + "外显子"
                             : oriVariantArr[len - 2].replaceAll("\\D+", "") + "内含子";
@@ -3659,8 +3664,15 @@ public class PyReportServiceImpl implements PyReportService {
                 site.put("mutation", mutation);
                 geneInfo.add(site);
             }
+
+            if (geneList.contains(gene)){
+                somaticMutationSiteInfoList.add(site);
+            }
         }
+
         HenanPeopleCustomInfo.put("somaticMutationSitesInfo", somaticMutationSitesInfo);
+        HenanPeopleCustomInfo.put("somaticMutationSiteInfoList", somaticMutationSiteInfoList);
+        HenanPeopleCustomInfo.put("BodyDrugTipList", BodyDrugTipList);
         return HenanPeopleCustomInfo;
     }
 
