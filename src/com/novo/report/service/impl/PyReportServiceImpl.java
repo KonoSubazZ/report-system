@@ -4822,7 +4822,7 @@ public class PyReportServiceImpl implements PyReportService {
         a.add("肺癌26基因报告模板-重庆分子");
         a.add("结直肠26基因报告模板-重庆分子");
         a.add("肺癌54基因重肿");
-        a.add("肺癌60基因重肿");
+//        a.add("肺癌60基因重肿"); 20241122 重肿输出NDF值
         a.add("实体瘤60基因重肿");
         a.add("肺癌10基因-患者版");
         a.add("肺癌60基因报告模板-非盖章国药版");
