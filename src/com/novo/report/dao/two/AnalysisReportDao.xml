@@ -611,7 +611,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getEWSR1DataInfo" resultType="com.novo.report.beans.EWSR1File">
 		SELECT
 			ef.tumor_cell_ratio,
-			ef.break_singal_position_ratio,
+			ef.break_signal_positive_ratio,
 			ef.detection,
 			ef.examiner,
 			ef.auditor
