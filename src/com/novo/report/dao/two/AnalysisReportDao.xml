@@ -594,4 +594,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getApprovedDrugDataByDisease" resultType="MmApprovedDrug">
 		SELECT approved_id,disease,drug,indication,institution FROM approved_drug_data WHERE disease = #{disease}
 	</select>
+
+
+	<select id="getEWSR1imgBase64Str" resultType="java.lang.String">
+		SELECT
+		    a.file_text AS imgBase64Str
+		FROM
+			data_file_status a
+		WHERE
+			a.subbarcode = #{subbarcode}
+		  AND a.analysis_date = #{analysis_date}
+		  AND a.product_name = #{product_name}
+		  AND a.file_type = 'EWSR1_PIC';
+
+	</select>
+	<select id="getEWSR1DataInfo" resultType="com.novo.report.beans.EWSR1File">
+		SELECT
+			ef.tumor_cell_ratio,
+			ef.break_singal_position_ratio,
+			ef.detection,
+			ef.examiner,
+			ef.auditor
+		FROM
+			ewsr1_file ef
+		JOIN
+			omics.data_file_status dfs
+		ON
+			ef.file_id = dfs.file_id
+		WHERE
+			dfs.subbarcode = #{subbarcode}
+		  AND dfs.analysis_date = #{analysis_date}
+		  AND dfs.product_name = #{product_name}
+		  AND dfs.file_type = 'EWSR1';
+	</select>
 </mapper>

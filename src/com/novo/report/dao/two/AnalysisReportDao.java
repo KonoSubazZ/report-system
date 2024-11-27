@@ -557,4 +557,12 @@ public interface AnalysisReportDao {
 	// CNV_BE
 	@Select("SELECT gene,variation_type,detection_result,copy_number FROM omics.cnv_be_file WHERE file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"CNV_BE\" and status=\"Loaded\")")
 	List<Map> getCnvBe(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
+
+	/**
+	 * 20241127 阿克曼EWSR1文件
+	 */
+	String getEWSR1imgBase64Str(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
+
+	EWSR1File getEWSR1DataInfo(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
+
 }

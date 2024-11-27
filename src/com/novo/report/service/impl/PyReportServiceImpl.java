@@ -95,12 +95,13 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 创建报告
+     *
      * @param response
      * @param request
-     * @param rt 模板 实体类 ——> 最后转化为json
-     * @param pr 报告 analysisReport 实体类
+     * @param rt                  模板 实体类 ——> 最后转化为json
+     * @param pr                  报告 analysisReport 实体类
      * @param session
-     * @param currentNgsAvailable  回显页面数据
+     * @param currentNgsAvailable 回显页面数据
      */
     @Override
     public Integer createReport2(HttpServletResponse response,
@@ -231,7 +232,7 @@ public class PyReportServiceImpl implements PyReportService {
         //获取TMB
         List<Map> TMBList = analysisReportDao.getTMB(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         String tmb = CollectionUtils.isEmpty(TMBList) ? "" : TMBList.get(0).getOrDefault("TMB", "").toString();
-        String tmb_status = CollectionUtils.isEmpty(TMBList) ? "" : TMBList.get(0).getOrDefault("Status", "").toString().replaceFirst("b","");
+        String tmb_status = CollectionUtils.isEmpty(TMBList) ? "" : TMBList.get(0).getOrDefault("Status", "").toString().replaceFirst("b", "");
         if (tmb_status.equals("NA")) {
             throw new RuntimeException("tmb_status值为NA");
         }
@@ -283,11 +284,11 @@ public class PyReportServiceImpl implements PyReportService {
         List<MmImmnueAll> mmImmnueAlls = moduleModificationAllDao.selectMmImmnueAllByReportId(currentNgsAvailable.getReport_id());
         List<Map> immnueall = mmImmnueAlls.stream().map(it -> {
             Map<String, Object> apiMap = new HashMap<>();
-            apiMap.put("flag",it.getFlag());
-            apiMap.put("gene",it.getGene());
-            apiMap.put("variant",it.getVariant());
-            apiMap.put("mutFreq",it.getMutFreq());
-            apiMap.put("varDesc",it.getVarDesc());
+            apiMap.put("flag", it.getFlag());
+            apiMap.put("gene", it.getGene());
+            apiMap.put("variant", it.getVariant());
+            apiMap.put("mutFreq", it.getMutFreq());
+            apiMap.put("varDesc", it.getVarDesc());
             return apiMap;
         }).collect(Collectors.toList());
 
@@ -556,7 +557,7 @@ public class PyReportServiceImpl implements PyReportService {
             for (Map map : thisGeneticmarkerList) {
                 String gene = map.get("gene").toString();
                 String ori_variant = map.get("ori_variant").toString();
-                if (Arrays.asList("ROS1","ALK","RET","MET").contains(gene) && ori_variant.contains("Fusion")) {
+                if (Arrays.asList("ROS1", "ALK", "RET", "MET").contains(gene) && ori_variant.contains("Fusion")) {
                     bengbu.add(gene);
                 }
             }
@@ -967,8 +968,7 @@ public class PyReportServiceImpl implements PyReportService {
                                 }
                                 targetDrugTipLine.put("mutation", gene + ori_variant.substring(ori_variant.indexOf(" ")));
                                 targetDrugTipLine.put("transcript", splits[0]);
-                            }
-                            else {
+                            } else {
                                 targetDrugTipLine.put("Transcript", "/");
                                 targetDrugTipLine.put("Exon", "/");
                                 targetDrugTipLine.put("cHGVS", ori_variant_split);
@@ -1524,13 +1524,13 @@ public class PyReportServiceImpl implements PyReportService {
                 if (rt.getTemplate_name().contains("广附一")) {
                     List<Map> gfyDrugStr = new ArrayList<Map>();
                     List<Map> gfyResistantStr = new ArrayList<Map>();
-                    gfyDrugStr.addAll(drugaStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
-                    gfyDrugStr.addAll(drugbStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
-                    gfyDrugStr.addAll(drugcStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
+                    gfyDrugStr.addAll(drugaStr.stream().filter(s -> (boolean) s.get("isbold")).collect(Collectors.toList()));
+                    gfyDrugStr.addAll(drugbStr.stream().filter(s -> (boolean) s.get("isbold")).collect(Collectors.toList()));
+                    gfyDrugStr.addAll(drugcStr.stream().filter(s -> (boolean) s.get("isbold")).collect(Collectors.toList()));
 //                    gfyDrugStr.addAll(drugdStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
-                    gfyResistantStr.addAll(resistantaStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
-                    gfyResistantStr.addAll(resistantbStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
-                    gfyResistantStr.addAll(resistantcStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
+                    gfyResistantStr.addAll(resistantaStr.stream().filter(s -> (boolean) s.get("isbold")).collect(Collectors.toList()));
+                    gfyResistantStr.addAll(resistantbStr.stream().filter(s -> (boolean) s.get("isbold")).collect(Collectors.toList()));
+                    gfyResistantStr.addAll(resistantcStr.stream().filter(s -> (boolean) s.get("isbold")).collect(Collectors.toList()));
 //                    gfyResistantStr.addAll(resistantdStr.stream().filter(s -> (boolean)s.get("isbold")).collect(Collectors.toList()));
                     targetedDrugDetection.put("gfyDrugStr", gfyDrugStr);
                     targetedDrugDetection.put("gfyResistantStr", gfyResistantStr);
@@ -1706,8 +1706,8 @@ public class PyReportServiceImpl implements PyReportService {
                             targetedDrugDetection.put("mutation", gene + " " + ori_variant.substring(ori_variant.indexOf("c.") + 2));
                         }
                         MmLymphomaTyping mmLymphomaTyping = moduleModificationAllDao.selectLymphomaSubtype(currentNgsAvailable.getReport_id(), gene, ori_variant, mutFreq);
-                        targetedDrugDetection.put("lymphoma_subtype", mmLymphomaTyping==null ? "无" : StringUtils.isEmpty(mmLymphomaTyping.getLymphoma_subtype()) ? "无" : mmLymphomaTyping.getLymphoma_subtype());
-                        targetedDrugDetection.put("lymphoma_subtype2", mmLymphomaTyping==null ? "无" : StringUtils.isEmpty(mmLymphomaTyping.getLymphoma_subtype2()) ? "无" : mmLymphomaTyping.getLymphoma_subtype2());
+                        targetedDrugDetection.put("lymphoma_subtype", mmLymphomaTyping == null ? "无" : StringUtils.isEmpty(mmLymphomaTyping.getLymphoma_subtype()) ? "无" : mmLymphomaTyping.getLymphoma_subtype());
+                        targetedDrugDetection.put("lymphoma_subtype2", mmLymphomaTyping == null ? "无" : StringUtils.isEmpty(mmLymphomaTyping.getLymphoma_subtype2()) ? "无" : mmLymphomaTyping.getLymphoma_subtype2());
                         bodyDrugNoComplexStr.add(targetedDrugDetection);
                         if (gene6.contains(gene)) {
                             bodyDrugNoComplexGene6Str.add(targetedDrugDetection);
@@ -1982,7 +1982,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setCrAnalysisIndex("false");
         if (hasPathogenicityCount != 0) {
             rt.setCrAnalysisIndex("true");
-            List<Map> geneticCancerRiskInfo  = new ArrayList<Map>();
+            List<Map> geneticCancerRiskInfo = new ArrayList<Map>();
             int crCount2 = 0;
             for (Map a : crAllList) {
                 Map geneticCancerRisk = new HashMap();
@@ -2014,7 +2014,7 @@ public class PyReportServiceImpl implements PyReportService {
                         geneticCancerRisk.put("gene", Gene);
                         geneticCancerRisk.put("ori_variant", ori_variant);
                         geneticCancerRisk.put("mutFreq", Zygosity);
-                        geneticCancerRisk.put("mutFreqType",  distinguishMutFreqTypeUtil(ori_variant, Zygosity));
+                        geneticCancerRisk.put("mutFreqType", distinguishMutFreqTypeUtil(ori_variant, Zygosity));
                         geneticCancerRisk.put("mutDesc", mutDesc);
                         geneticCancerRisk.put("GeneDesc", GeneDesc);
                         geneticCancerRisk.put("VarClianno", VarClianno);
@@ -2026,7 +2026,7 @@ public class PyReportServiceImpl implements PyReportService {
                         geneticCancerRisk.put("resistantbStr", new ArrayList<>());
                         geneticCancerRisk.put("resistantcStr", new ArrayList<>());
                         geneticCancerRisk.put("resistantdStr", new ArrayList<>());
-                        String varDrugNote = "[{\"key\":\"基因说明:\",\"value\":\""+GeneDesc+"\"},{\"key\":\"突变说明:\",\"value\":\""+mutDesc+"\"},{\"key\":\"变异解析:\",\"value\":\""+VarClianno+"\"}]";
+                        String varDrugNote = "[{\"key\":\"基因说明:\",\"value\":\"" + GeneDesc + "\"},{\"key\":\"突变说明:\",\"value\":\"" + mutDesc + "\"},{\"key\":\"变异解析:\",\"value\":\"" + VarClianno + "\"}]";
                         JSONArray array = JSONArray.fromObject(varDrugNote);
                         geneticCancerRisk.put("medicationDescription", array);
                         geneticCancerRisk.put("drugResearchList", new ArrayList<>());
@@ -2425,7 +2425,7 @@ public class PyReportServiceImpl implements PyReportService {
                     }
                     String pHGVS = map.get("pHGVS") == null ? "" : map.get("pHGVS").toString();
                     if (StringUtils.isEmpty(pHGVS) || "NA".equals(pHGVS)) {
-                        map.put("pHGVS",".");
+                        map.put("pHGVS", ".");
                     }
                     brcaCheckLineStr.add(map);
                 }
@@ -2538,10 +2538,10 @@ public class PyReportServiceImpl implements PyReportService {
         // 全外显子基因突变结果
         List<Map> wesMutation = analysisReportDao.getWesMutation(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         if (rt.getTemplate_name().contains("迪安"))
-        for (Map map : wesMutation) {
-            String impact = map.get("impact").toString();
-            map.put("impact", translateMutType(impact));
-        }
+            for (Map map : wesMutation) {
+                String impact = map.get("impact").toString();
+                map.put("impact", translateMutType(impact));
+            }
         rt.setWesMutation(wesMutation);
         summaryOfRresults.put("wesMutationSize", wesMutation.size());
 
@@ -2587,9 +2587,10 @@ public class PyReportServiceImpl implements PyReportService {
             pd.put("pdInfoTable", pdInfoTable);
             List<Map> pdInfoTable2 = analysisReportDao.getPDInfoTable2();
             List<List<Map>> groupList = new ArrayList<>();
-            pdInfoTable2.stream().collect(Collectors.groupingBy(map->map.get("disease_name"), Collectors.toList())).
+            pdInfoTable2.stream().collect(Collectors.groupingBy(map -> map.get("disease_name"), Collectors.toList())).
                     forEach((map, fooListByDiseaseName) -> {
-                        groupList.add(fooListByDiseaseName);});
+                        groupList.add(fooListByDiseaseName);
+                    });
             pd.put("pdInfoTable2", groupList);
             /*if (pd.containsKey("antibody")) {
                 String antibody = pd.get("antibody").toString();
@@ -2638,6 +2639,22 @@ public class PyReportServiceImpl implements PyReportService {
             }
         }
         rt.setMet(met);
+
+        // 20241127 阿克曼外包EWSR1报告
+        if ("ewsr1".equals(product_name)) {
+            String EWSR1imgBase64Str = analysisReportDao.getEWSR1imgBase64Str(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            EWSR1File ewsr1File = analysisReportDao.getEWSR1DataInfo(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            Map<String, Object> ewsr1Info = new HashMap<>();
+            ewsr1Info.put("EWSR1imgBase64Str", EWSR1imgBase64Str);
+            if (ewsr1File != null) {
+                ewsr1Info.put("tumorCellRatio", ewsr1File.getTumorCellRatio());
+                ewsr1Info.put("breakSignalPositiveRatio", ewsr1File.getBreakSignalPositiveRatio());
+                ewsr1Info.put("detection", ewsr1File.getDetection());
+                ewsr1Info.put("examiner", ewsr1File.getExaminer());
+                ewsr1Info.put("auditor", ewsr1File.getAuditor());
+            }
+            rt.setEWSR1Info(ewsr1Info);
+        }
 
         // 阅微乳腺癌21
         if ("breastcancer_21".equals(product_name)) {
@@ -2811,7 +2828,7 @@ public class PyReportServiceImpl implements PyReportService {
         summaryOfRresults.put("tcga", tcga);
         // 子宫内膜癌 && 组织双样本（子宫内膜癌TCGA分子分型模块展示判断逻辑）
         boolean endometrialCarcinoma = false;
-        if (currentNgsAvailable.getProduct_name().indexOf("_") != -1 && !"12k_tis_single".equals(currentNgsAvailable.getProduct_name()) && !currentNgsAvailable.getProduct_name().contains("novoivd")  || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
+        if (currentNgsAvailable.getProduct_name().indexOf("_") != -1 && !"12k_tis_single".equals(currentNgsAvailable.getProduct_name()) && !currentNgsAvailable.getProduct_name().contains("novoivd") || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
             String[] split = currentNgsAvailable.getProduct_name().split("_");
             if (diseaseName.contains("子宫内膜癌") && "tis".equals(split[1]) || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
                 endometrialCarcinoma = true;
@@ -2842,7 +2859,7 @@ public class PyReportServiceImpl implements PyReportService {
                             Map sarcomaAndEvidenceMap = new HashMap();
                             sarcomaAndEvidenceMap.put("sarcoma_subtype", sarcoma_subtypes[i]);
                             if (i == 0) {
-                                sarcomaAndEvidenceMap.put("evidence",evidence);
+                                sarcomaAndEvidenceMap.put("evidence", evidence);
                             }
                             sarcomaAndEvidence.add(sarcomaAndEvidenceMap);
                         }
@@ -2919,11 +2936,11 @@ public class PyReportServiceImpl implements PyReportService {
             List<MmThyroidPrognosis> mmThyroidPrognoses = moduleModificationAllDao.selectMmThyroidPrognosisByReportId(currentNgsAvailable.getReport_id());
             List<Map> prognosticEvaluation = mmThyroidPrognoses.stream().map(it -> {
                 Map<String, Object> apiMap = new HashMap<>();
-                apiMap.put("gene",it.getGene());
-                apiMap.put("ori_variant",it.getOri_variant());
-                apiMap.put("mutFreq",it.getMutFreq());
-                apiMap.put("prognosis_evaluation",it.getPrognosis_evaluation());
-                apiMap.put("prognosis_assessment",it.getPrognosis_assessment());
+                apiMap.put("gene", it.getGene());
+                apiMap.put("ori_variant", it.getOri_variant());
+                apiMap.put("mutFreq", it.getMutFreq());
+                apiMap.put("prognosis_evaluation", it.getPrognosis_evaluation());
+                apiMap.put("prognosis_assessment", it.getPrognosis_assessment());
                 return apiMap;
             }).collect(Collectors.toList());
             for (Map map : prognosticEvaluation) {
@@ -3267,10 +3284,10 @@ public class PyReportServiceImpl implements PyReportService {
         List<MmDmmr> mmDmmrs = moduleModificationAllDao.selectMmDmmrByReportId(currentNgsAvailable.getReport_id());
         List<Map> dMMRinfo = mmDmmrs.stream().map(it -> {
             Map<String, Object> apiMap = new HashMap<>();
-            apiMap.put("gene",it.getGene());
-            apiMap.put("ori_variant",it.getOri_variant());
-            apiMap.put("mutFreq",it.getMutFreq());
-            apiMap.put("mut_type",it.getMut_type());
+            apiMap.put("gene", it.getGene());
+            apiMap.put("ori_variant", it.getOri_variant());
+            apiMap.put("mutFreq", it.getMutFreq());
+            apiMap.put("mut_type", it.getMut_type());
             return apiMap;
         }).collect(Collectors.toList());
         List<String> valuesForKey = dMMRinfo.stream().map(map -> map.get("gene").toString()).collect(Collectors.toList());
@@ -3285,7 +3302,7 @@ public class PyReportServiceImpl implements PyReportService {
                 dMMRinfo.add(dmmr);
             }
         }
-        dMMRinfo.sort((o1,o2)->(o1.get("gene").toString()).compareTo(o2.get("gene").toString()));
+        dMMRinfo.sort((o1, o2) -> (o1.get("gene").toString()).compareTo(o2.get("gene").toString()));
 //        List<Map> dMMRinfo = getHotgeneData(dMMRGene, bodyDrugTipLineStr, crCheckLineStrPathopoiesia, "allgene", "未检测到相关基因失活突变", rt.getTemplate_name());
         rt.setdMMRinfo(dMMRinfo);
         summaryOfRresults.put("dMMRinfoSize", dMMRinfo.stream().filter(s -> !"未检测到相关基因失活突变".equals(s.get("ori_variant").toString())).collect(Collectors.toList()).size());
@@ -3438,7 +3455,7 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setHrr45List(hrr45List);
             String hrrBrcaStr = "未检出";
             Map<String, Object> hrr45map = new HashMap<String, Object>();
-            List<String> list1 = Arrays.asList("BRCA1","BRCA2","ATM", "ATR", "BARD1", "BRIP1", "CDK12", "CHEK1", "CHEK2", "ERCC3", "FANCA", "FANCL", "FANCM", "GEN1", "HDAC2", "MRE11", "EPCAM", "MLH1", "MLH3", "MSH2", "MSH6", "NBN", "PALB2", "PMS2", "PPM1D", "PPP2R2A", "PTEN", "RAD50", "RAD51B", "RAD51C", "RAD51D", "RAD54L", "TP53", "CDH1", "NF1", "STK11", "APC", "MUTYH", "AR", "ESR1", "ERBB2", "PIK3CA");
+            List<String> list1 = Arrays.asList("BRCA1", "BRCA2", "ATM", "ATR", "BARD1", "BRIP1", "CDK12", "CHEK1", "CHEK2", "ERCC3", "FANCA", "FANCL", "FANCM", "GEN1", "HDAC2", "MRE11", "EPCAM", "MLH1", "MLH3", "MSH2", "MSH6", "NBN", "PALB2", "PMS2", "PPM1D", "PPP2R2A", "PTEN", "RAD50", "RAD51B", "RAD51C", "RAD51D", "RAD54L", "TP53", "CDH1", "NF1", "STK11", "APC", "MUTYH", "AR", "ESR1", "ERBB2", "PIK3CA");
             for (String gene : list1) {
                 List<String> ori_variantList = new ArrayList<>();
                 List<Map> getHotInfo = getHotInfo(gene, thisGeneticmarkerList, crList, "allgene");
@@ -3466,8 +3483,8 @@ public class PyReportServiceImpl implements PyReportService {
                 String ori_variant = gfyHgeneDatum.get("ori_variant").toString();
                 String mutFreq = gfyHgeneDatum.get("mutFreq").toString();
                 if (!"/".equals(ori_variant) && !"/".equals(mutFreq)) {
-                    sameKeyCombinationList(gfy_ori_variant, "gfy"+gene, ori_variant);
-                    sameKeyCombinationList(gfy_mutFreq, "gfy"+gene, mutFreq);
+                    sameKeyCombinationList(gfy_ori_variant, "gfy" + gene, ori_variant);
+                    sameKeyCombinationList(gfy_mutFreq, "gfy" + gene, mutFreq);
                 }
             }
             rt.setGfy_ori_variant(gfy_ori_variant);
@@ -3491,7 +3508,7 @@ public class PyReportServiceImpl implements PyReportService {
         ngsQrcode.setReport_date(pr.getReport_date());
         ngsQrcodeService.insertNgsQrcode(ngsQrcode);*/
         // 调取接口，上传二维码信息
-        String ngsQrcode = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/"+sf.getClient()+"/subbarcode/"+sf.getSubbarcode()+"/product_name/"+sf.getProduct_name()+"/username/3/qrcode/"+qrcode+"/report_date/"+pr.getReport_date();
+        String ngsQrcode = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/" + sf.getClient() + "/subbarcode/" + sf.getSubbarcode() + "/product_name/" + sf.getProduct_name() + "/username/3/qrcode/" + qrcode + "/report_date/" + pr.getReport_date();
         String httpURLGETCase = WebserviceProxyUtils.httpURLGETCase(ngsQrcode);
         System.out.println(httpURLGETCase);
 //        String binary = QrCodeUtils.creatRrCode(qrcode, 200, 200);
@@ -3505,28 +3522,28 @@ public class PyReportServiceImpl implements PyReportService {
         // NOTE: 从这里新增个性化模板逻辑
 
         //CUSTOM 晶赛188 550 个性化模板相关逻辑
-        if (rt.getTemplate_name().contains("晶赛")){
+        if (rt.getTemplate_name().contains("晶赛")) {
             Map<String, Object> JingsaiCustomInfo = generateJingsaiData(bodyDrugTipLineStr,
-                                                                        unknownTipLineStr,
-                                                                        complexDrugTipLineStr,
-                                                                        targetedDrugDetectionStr,
-                                                                        dMMRGene,
-                                                                        crAllList,
-                                                                        thisGeneticmarkerVwList,
-                                                                        positiveDDR,
-                                                                        positiveOther,
-                                                                        negative,
-                                                                        hpd,
-                                                                        bodyDrugNoComplexStr,
-                                                                        complexDrugStr);
+                    unknownTipLineStr,
+                    complexDrugTipLineStr,
+                    targetedDrugDetectionStr,
+                    dMMRGene,
+                    crAllList,
+                    thisGeneticmarkerVwList,
+                    positiveDDR,
+                    positiveOther,
+                    negative,
+                    hpd,
+                    bodyDrugNoComplexStr,
+                    complexDrugStr);
 
             rt.setJingsaiCustomInfo(JingsaiCustomInfo);
         }
 
         //CUSTOM 肺癌60基因模板-河南人民60个性化模板相关逻辑
-        if (rt.getTemplate_name().contains("肺癌60基因-河南人民-单样本")){
+        if (rt.getTemplate_name().contains("肺癌60基因-河南人民-单样本")) {
             Map<String, Object> HenanPeopleCustomInfo = geneHenanPeopleData(thisGeneticmarkerVwList,
-                                                                            bodyDrugTipLineStr);
+                    bodyDrugTipLineStr);
             rt.setHenanPeopleCustomInfo(HenanPeopleCustomInfo);
         }
 
@@ -3584,7 +3601,7 @@ public class PyReportServiceImpl implements PyReportService {
                             Properties prop = new Properties();
                             InputStream inStream = PyReportServiceImpl.class.getClassLoader().getResourceAsStream("jdbc.properties");
                             prop.load(inStream);
-                            Connection conn  = DriverManager.getConnection(prop.getProperty("dbTwo.jdbc.url"),prop.getProperty("dbTwo.jdbc.username"),prop.getProperty("dbTwo.jdbc.password"));
+                            Connection conn = DriverManager.getConnection(prop.getProperty("dbTwo.jdbc.url"), prop.getProperty("dbTwo.jdbc.username"), prop.getProperty("dbTwo.jdbc.password"));
                             Statement stmt = conn.createStatement();
                             ResultSet rs = stmt.executeQuery("select * from analysis_report where report_id = " + reportId);
                             while (rs.next()) {
@@ -3641,31 +3658,31 @@ public class PyReportServiceImpl implements PyReportService {
             if (somaticMutationSitesInfo.containsKey(gene)) {
                 List<Map> geneInfo = somaticMutationSitesInfo.get(gene);
                 String mutation = "";
-                String exon = (String)site.get("exon");
-                String mutationType = (String)site.get("mut_type");
-                String mutFreq = (String)site.get("mutFreq");
+                String exon = (String) site.get("exon");
+                String mutationType = (String) site.get("mut_type");
+                String mutFreq = (String) site.get("mutFreq");
                 // NDF值展示逻辑
-                String mutFreqString = mutFreq.contains("-")? mutFreq : mutFreq + "%";
-                String oriVariant = (String)site.get("ori_variant");
+                String mutFreqString = mutFreq.contains("-") ? mutFreq : mutFreq + "%";
+                String oriVariant = (String) site.get("ori_variant");
                 String[] oriVariantArr = oriVariant.split(" ");
                 String mutFreqStr = mutationType.equals("拷贝数变异") ? "  ( 拷贝数：" + mutFreq + ")" : "  ( 丰度：" + mutFreqString + ")";
                 int len = oriVariantArr.length;
 
-                if ("突变".equals(mutationType) || "缺失".equals(mutationType)){
+                if ("突变".equals(mutationType) || "缺失".equals(mutationType)) {
                     String region = StringUtils.isNotBlank(exon)
                             ? exon + "外显子"
                             : oriVariantArr[len - 2].replaceAll("\\D+", "") + "内含子";
                     mutation = region + oriVariantArr[len - 1] + mutationType + mutFreqStr;
                 } else if ("融合".equals(mutationType)) {
-                    mutation = oriVariantArr[0]  + "(" + oriVariantArr[len - 1] + ")" + mutationType + mutFreqStr;
-                }else {
+                    mutation = oriVariantArr[0] + "(" + oriVariantArr[len - 1] + ")" + mutationType + mutFreqStr;
+                } else {
                     mutation = oriVariantArr[0] + mutationType + mutFreqStr;
                 }
                 site.put("mutation", mutation);
                 geneInfo.add(site);
             }
 
-            if (geneList.contains(gene)){
+            if (geneList.contains(gene)) {
                 somaticMutationSiteInfoList.add(site);
             }
         }
@@ -3693,7 +3710,6 @@ public class PyReportServiceImpl implements PyReportService {
      * @param hpdInfo                 免疫超进展信息map
      * @param bodyDrugList            体细胞用药解析
      * @param complexDrugList         共突变用药解析
-     *
      * @return
      */
     private Map<String, Object> generateJingsaiData(List<Map> bodyDrugTipList,
@@ -3718,7 +3734,7 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> fusionGeneList = new ArrayList<>();
 
         // 变异分级提示（基因 位点 用药）
-        
+
         // 体细胞变异分级提示（基因 位点 用药）
         HashMap<String, List> bodyDrugTipInfo = new HashMap<>();
         for (Map bodyDrugTip : bodyDrugTipList) {
@@ -3730,18 +3746,18 @@ public class PyReportServiceImpl implements PyReportService {
 
             // 将当前突变数据放入对应的分类组
             bodyDrugTipInfo.get(variationClass).add(bodyDrugTip);
-            
+
             // 判断体系突变类型 snp cnv fusion
             String oriVariant = (String) bodyDrugTip.get("ori_variant");
-           if (oriVariant != null){
-               if (oriVariant.contains("Fusion")){
-                   fusionGeneList.add(bodyDrugTip);
-               } else if (oriVariant.contains("Amplification")) {
-                   cnvGeneList.add(bodyDrugTip);
-               }else {
-                   snpGeneList.add(bodyDrugTip);
-               }
-           }
+            if (oriVariant != null) {
+                if (oriVariant.contains("Fusion")) {
+                    fusionGeneList.add(bodyDrugTip);
+                } else if (oriVariant.contains("Amplification")) {
+                    cnvGeneList.add(bodyDrugTip);
+                } else {
+                    snpGeneList.add(bodyDrugTip);
+                }
+            }
         }
 
         // vus分级提示
@@ -3753,12 +3769,12 @@ public class PyReportServiceImpl implements PyReportService {
             unknownTipInfo.get(variationClass).add(unknownTip);
             // 判断体系突变类型 snp cnv fusion
             String oriVariant = (String) unknownTip.get("ori_variant");
-            if (oriVariant != null){
-                if (oriVariant.contains("Fusion")){
+            if (oriVariant != null) {
+                if (oriVariant.contains("Fusion")) {
                     fusionGeneList.add(unknownTip);
                 } else if (oriVariant.contains("Amplification")) {
                     cnvGeneList.add(unknownTip);
-                }else {
+                } else {
                     snpGeneList.add(unknownTip);
                 }
             }
@@ -3774,17 +3790,17 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // 可获益的临床实验信息（汇总 去重）
-        List<Map> allClinicalTrialInformationList = new  ArrayList<>();
+        List<Map> allClinicalTrialInformationList = new ArrayList<>();
         for (Map targetedDrugTip : targetedDrugTipList) {
 
-             List<Map> clinicalTrialInformationList = (List<Map>) targetedDrugTip.get("clinicalTrialInformationStr");
+            List<Map> clinicalTrialInformationList = (List<Map>) targetedDrugTip.get("clinicalTrialInformationStr");
 
             if (clinicalTrialInformationList != null) {
                 for (Map clinicalTrialInformation : clinicalTrialInformationList) {
 
-                    String drugNameChinese3Val = (String)clinicalTrialInformation.get("clinical_trial_id");
+                    String drugNameChinese3Val = (String) clinicalTrialInformation.get("clinical_trial_id");
                     // 根据 clinical_trial_id 去重
-                    addIfAbsent(allClinicalTrialInformationList,"clinical_trial_id", drugNameChinese3Val, clinicalTrialInformation);
+                    addIfAbsent(allClinicalTrialInformationList, "clinical_trial_id", drugNameChinese3Val, clinicalTrialInformation);
                 }
             }
         }
@@ -3828,11 +3844,10 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> hpdList = new ArrayList<>();
 
 
-
         positiveInfo.forEach((key, value) -> {
             // 排除掉没有位点的基因
             boolean isVariant = !"-".equals(value) && !"detectionSignificance".equals(key);
-            if(isVariant){
+            if (isVariant) {
                 HashMap<String, Object> resInfo = new HashMap<>();
                 String gene = key.substring("positiveDDR".length());
                 resInfo.put("gene", gene + "突变");
@@ -3842,14 +3857,14 @@ public class PyReportServiceImpl implements PyReportService {
         });
         positiveOtherInfo.forEach((key, value) -> {
             boolean isVariant = !"-".equals(value) && !"detectionSignificance".equals(key);
-            if(isVariant){
+            if (isVariant) {
                 HashMap<String, Object> resInfo = new HashMap<>();
                 String gene = key.substring("positiveOther".length());
                 // 晶赛排除几个基因
-                if (!"PBRMI".equals(gene)){
+                if (!"PBRMI".equals(gene)) {
                     String desc = "突变";
-                    if(gene.equals("CD274") || gene.equals("PDCD1LG2")){
-                        desc= "扩增";
+                    if (gene.equals("CD274") || gene.equals("PDCD1LG2")) {
+                        desc = "扩增";
                     }
                     resInfo.put("gene", gene + desc);
                     resInfo.put("variant", value);
@@ -3859,13 +3874,13 @@ public class PyReportServiceImpl implements PyReportService {
         });
         negativeInfo.forEach((key, value) -> {
             boolean isVariant = !"-".equals(value) && !"detectionSignificance".equals(key);
-            if (isVariant){
+            if (isVariant) {
                 HashMap<String, Object> resInfo = new HashMap<>();
                 String gene = key.substring("negative".length());
-                if (!"B2M".equals(gene) || !"KEAPI".equals(gene)){
+                if (!"B2M".equals(gene) || !"KEAPI".equals(gene)) {
                     String desc = "突变";
-                    if(gene.equals("ALK")){
-                        desc= "扩增";
+                    if (gene.equals("ALK")) {
+                        desc = "扩增";
                     }
                     resInfo.put("gene", gene + desc);
                     resInfo.put("variant", value);
@@ -3875,13 +3890,13 @@ public class PyReportServiceImpl implements PyReportService {
         });
         hpdInfo.forEach((key, value) -> {
             boolean isVariant = !"-".equals(value) && !"detectionSignificance".equals(key);
-            if(isVariant){
+            if (isVariant) {
                 HashMap<String, Object> resInfo = new HashMap<>();
                 String gene = key.substring("hpd".length());
-                if (!"CCNDI".equals(gene) || !"DNMT3A".equals(gene)){
-                resInfo.put("gene", gene + "融合");
-                resInfo.put("variant", value);
-                hpdList.add(resInfo);
+                if (!"CCNDI".equals(gene) || !"DNMT3A".equals(gene)) {
+                    resInfo.put("gene", gene + "融合");
+                    resInfo.put("variant", value);
+                    hpdList.add(resInfo);
                 }
             }
         });
@@ -3925,7 +3940,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         for (Map complexDrug : complexDrugList) {
-            List<Map> clinicalTrialInformationStr =(List<Map>) complexDrug.get("clinicalTrialInformationStr");
+            List<Map> clinicalTrialInformationStr = (List<Map>) complexDrug.get("clinicalTrialInformationStr");
 
             if (!hasClinicalTrialInformationStr && clinicalTrialInformationStr.size() > 0) {
                 hasClinicalTrialInformationStr = true;
@@ -3980,10 +3995,10 @@ public class PyReportServiceImpl implements PyReportService {
     /**
      * 如果列表中不存在具有相同字段值的 Map，则将新的 Map 添加到列表中。
      *
-     * @param list 列表
-     * @param fieldName 要检查的字段名称
+     * @param list       列表
+     * @param fieldName  要检查的字段名称
      * @param fieldValue 要检查的字段值
-     * @param map 要添加的 Map
+     * @param map        要添加的 Map
      */
     public static void addIfAbsent(List<Map> list, String fieldName, Object fieldValue, Map map) {
         // 判断是否存在具有相同字段值的 Map
@@ -4053,6 +4068,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 判断是否用药name是否标红
+     *
      * @param drugNameList
      * @return
      */
@@ -4070,6 +4086,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 翻译样本类型
+     *
      * @param sample_type
      * @return 组织、血液
      */
@@ -4086,6 +4103,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 该方法用于移除字符串 ori_variant 末尾的单个空格和句点（.）
+     *
      * @param ori_variant
      * @return
      */
@@ -4093,8 +4111,10 @@ public class PyReportServiceImpl implements PyReportService {
         return ori_variant.replaceFirst(" \\.$", "");
     }
 
-    /**TODO 似乎没啥作用 待移除
+    /**
+     * TODO 似乎没啥作用 待移除
      * 移除字符串末尾的 [Mutation]
+     *
      * @param str
      * @return
      */
@@ -4107,6 +4127,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 翻译突变类型
+     *
      * @param ExonicFunc
      * @return
      */
@@ -4146,6 +4167,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 翻译临床意义 12345->是否致病
+     *
      * @param Clinical_significance
      * @return 致病性
      */
@@ -4530,7 +4552,7 @@ public class PyReportServiceImpl implements PyReportService {
         List<DrugResearch> drugResearchList = tmbMap.get("drugResearchList") == null ? null : (List<DrugResearch>) tmbMap.get("drugResearchList");
         List<PotentialDrug> potentialDrugList = tmbMap.get("potentialDrugList") == null ? null : (List<PotentialDrug>) tmbMap.get("potentialDrugList");
         // 三峡、重医附二模板删除非A级药物（获批上市、指南推荐）的潜在受益药物研究信息、潜在耐药研究信息
-        if (template_name.contains("三峡")  || template_name.contains("重医附二")) {
+        if (template_name.contains("三峡") || template_name.contains("重医附二")) {
             if (drugResearchList != null) {
                 Iterator<DrugResearch> iterator1 = drugResearchList.iterator();
                 while (iterator1.hasNext()) {
@@ -5071,10 +5093,10 @@ public class PyReportServiceImpl implements PyReportService {
                 String gene2 = "";
                 if (molecular_typing.indexOf(gene) == 0) {
                     gene1 = gene;
-                    gene2 = molecular_typing.substring(gene.length()+1);
+                    gene2 = molecular_typing.substring(gene.length() + 1);
                 } else {
                     gene2 = gene;
-                    gene1 = molecular_typing.substring(0, molecular_typing.length()-gene.length()-1);
+                    gene1 = molecular_typing.substring(0, molecular_typing.length() - gene.length() - 1);
                 }
                 // Fusion突变说明
                 if (mutFreq.indexOf(".") != -1) {
@@ -5235,6 +5257,7 @@ public class PyReportServiceImpl implements PyReportService {
      * 'tis_550': {'肺癌': 12.0, '结直肠癌': 10.667, '其他': 10.0},
      * 'blo_484': {'肺癌': 11.429, '结直肠癌': 11.429, '其他': 11.429},
      * 'tis_484': {'肺癌': 11.429, '结直肠癌': 8.571, '其他': 8.571},
+     *
      * @param snpIndelFileAll
      * @param productName
      * @param chem_cancer
@@ -5280,7 +5303,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     private String getTmbStatus(double tmbV, double v, double v1, double v2, String chem_cancer) {
         String tmb_status = "";
-        if (chem_cancer.contains("肺") && !"小细胞肺癌".equals(chem_cancer) ) {
+        if (chem_cancer.contains("肺") && !"小细胞肺癌".equals(chem_cancer)) {
             if (tmbV >= v) {
                 tmb_status = "TMB-H";
             } else {
@@ -5524,9 +5547,10 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 免疫标志物评估小结util-生成一个免疫map
-     * @param list 所有免疫检测结果
-     * @param immnueMap immnueRes
-     * @param module 模块 "positive" netagive "other"
+     *
+     * @param list                  所有免疫检测结果
+     * @param immnueMap             immnueRes
+     * @param module                模块 "positive" netagive "other"
      * @param detectionSignificance 检测意义
      */
     private void immnue(List<Map> list, Map<String, Object> immnueMap, String module, String detectionSignificance) {
@@ -5544,17 +5568,17 @@ public class PyReportServiceImpl implements PyReportService {
 
             if (ori_variant.contains("c.")) {
                 ori_variant = ori_variant.substring(ori_variant.indexOf("c."));
-                sameKeyCombinationSet(immnueMap, module+gene, ori_variant);
+                sameKeyCombinationSet(immnueMap, module + gene, ori_variant);
                 value = detectionSignificance;
             } else if ("Amplification".equals(ori_variant)) {
-                immnueMap.put(module+gene, gene + "扩增");
+                immnueMap.put(module + gene, gene + "扩增");
                 value = detectionSignificance;
             } else if (ori_variant.contains("Fusion")) {
                 ori_variant = ori_variant.split(" ")[0] + "融合";
-                sameKeyCombinationSet(immnueMap, module+gene, ori_variant);
+                sameKeyCombinationSet(immnueMap, module + gene, ori_variant);
                 value = detectionSignificance;
             } else {
-                immnueMap.put(module+gene, "-");
+                immnueMap.put(module + gene, "-");
             }
         }
         immnueMap.put("detectionSignificance", value);
@@ -5562,6 +5586,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 相同key元素组合
+     *
      * @param map
      * @param key
      * @param value
@@ -5599,7 +5624,7 @@ public class PyReportServiceImpl implements PyReportService {
             String mutFreq = map.get("mutFreq").toString();
             map.put("variationClass2", "-".equals(variationClass) ? "0" : "I类".equals(variationClass) ? "1" : "II类".equals(variationClass) ? "2" : "3");
             boolean isNum = pattern.matcher(mutFreq.replace("%", "")).matches();
-            map.put("mutFreq2", isNum ? mutFreq.contains("%") ? Double.valueOf(mutFreq.replace("%",""))/100 : mutFreq  : 0);
+            map.put("mutFreq2", isNum ? mutFreq.contains("%") ? Double.valueOf(mutFreq.replace("%", "")) / 100 : mutFreq : 0);
         }
         // 双层排序
         List<Map> newList = new ArrayList<>();
@@ -5630,7 +5655,7 @@ public class PyReportServiceImpl implements PyReportService {
                 String resistantb = CollectionUtils.isEmpty((List<Map>) map.get("ResistantBDrug")) ? "0" : "1";
                 String resistantc = CollectionUtils.isEmpty((List<Map>) map.get("ResistantCDrug")) ? "0" : "1";
                 String resistantd = CollectionUtils.isEmpty((List<Map>) map.get("ResistantDDrug")) ? "0" : "1";
-                String tjDrugSort = druga+resistanta+drugb+resistantb+drugc+drugd+resistantc+resistantd;
+                String tjDrugSort = druga + resistanta + drugb + resistantb + drugc + drugd + resistantc + resistantd;
                 map.put("tjDrugSort", tjDrugSort);
             } else {
                 String druga = CollectionUtils.isEmpty((List<Map>) map.get("drugaStr")) ? "0" : "1";
@@ -5641,7 +5666,7 @@ public class PyReportServiceImpl implements PyReportService {
                 String resistantb = CollectionUtils.isEmpty((List<Map>) map.get("resistantbStr")) ? "0" : "1";
                 String resistantc = CollectionUtils.isEmpty((List<Map>) map.get("resistantcStr")) ? "0" : "1";
                 String resistantd = CollectionUtils.isEmpty((List<Map>) map.get("resistantdStr")) ? "0" : "1";
-                String tjDrugSort = druga+resistanta+drugb+resistantb+drugc+drugd+resistantc+resistantd;
+                String tjDrugSort = druga + resistanta + drugb + resistantb + drugc + drugd + resistantc + resistantd;
                 map.put("tjDrugSort", tjDrugSort);
             }
         }
@@ -5675,7 +5700,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     // mutFreq赋值
     @Override
-   public String getMutFreq(String ori_variant, String mutFreq, String template_name) {
+    public String getMutFreq(String ori_variant, String mutFreq, String template_name) {
         if (ori_variant.indexOf("Amplification") < 0 && !".".equals(mutFreq) && mutFreq.indexOf("合") < 0 && mutFreq.indexOf("-") < 0 && !"/".equals(mutFreq) && mutFreq.indexOf("%") < 0) {
             if (ori_variant.indexOf("Fusion") != -1) {
                 if (mutFreq.indexOf(".") != -1 && Double.valueOf(mutFreq) < 100) {
@@ -5693,6 +5718,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 区分 mutFreq 变异类型
+     *
      * @param ori_variant
      * @param mutFreq
      * @return mutFreqType 拷贝数 变异类型 reads数 变异丰度
@@ -5714,11 +5740,12 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
     /**
-     *  ImmuneFilter 用于过滤和补充免疫相关基因的数据
+     * ImmuneFilter 用于过滤和补充免疫相关基因的数据
      *  TODO？immune_all 还存在不在 immuneList的基因吗
+     *
      * @param immnue 有位点的免疫基因list
-     * @param genes 完整免疫基因列表
-     * @param flag 1正，2负，3超进展
+     * @param genes  完整免疫基因列表
+     * @param flag   1正，2负，3超进展
      * @return 完整的免疫基因list（包括有位点和 没有位点 / 代替）
      */
     private List<Map> immnueFilter(List<Map> immnue, List<String> genes, Integer flag) {

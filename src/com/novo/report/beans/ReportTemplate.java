@@ -351,6 +351,16 @@ public class ReportTemplate {
 	private Map<String, Object> JingsaiCustomInfo;
 	private Map<String, Object> HenanPeopleCustomInfo ;
 
+	public Map<String, Object> getEWSR1Info() {
+		return EWSR1Info;
+	}
+
+	public void setEWSR1Info(Map<String, Object> EWSR1Info) {
+		this.EWSR1Info = EWSR1Info;
+	}
+
+	private Map<String, Object> EWSR1Info ;
+
 	public Map<String, Object> getHenanPeopleCustomInfo() {
 		return HenanPeopleCustomInfo;
 	}
