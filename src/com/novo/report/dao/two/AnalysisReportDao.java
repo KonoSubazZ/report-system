@@ -559,10 +559,13 @@ public interface AnalysisReportDao {
 	List<Map> getCnvBe(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
 	/**
-	 * 20241127 阿克曼EWSR1文件
+	 * 20241127 阿克曼 EWSR1 图片
 	 */
 	String getEWSR1imgBase64Str(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
+	/**
+	 * 20241127 阿克曼 EWSR1 dataInfo
+	 */
 	EWSR1File getEWSR1DataInfo(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
 }

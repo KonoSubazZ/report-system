@@ -318,7 +318,7 @@ public class PyAnalysisReportTemplateUtil {
 
 		// 阿克曼EWSR1数据
 		if (rt.getTemplate_name().contains("EWSR1")){
-			data.put("EWSR1", rt.getEWSR1Info());
+			data.put("EWSR1Info", rt.getEWSR1Info());
 		}
 
 		//data.put("FrequencySinglePageData", rt.getFrequencySinglePageData());
