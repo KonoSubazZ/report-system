@@ -5,7 +5,7 @@ package com.novo.report.beans;
  */
 public class EWSR1File {
     private Integer id;
-    private Integer fileId;
+    private Integer file_id;
 
     /**
      * 肿瘤细胞比率
@@ -45,11 +45,11 @@ public class EWSR1File {
     }
 
     public Integer getFileId() {
-        return fileId;
+        return file_id;
     }
 
     public void setFileId(Integer fileId) {
-        this.fileId = fileId;
+        this.file_id = fileId;
     }
 
     public String getTumorCellRatio() {

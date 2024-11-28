@@ -361,6 +361,16 @@ public class ReportTemplate {
 
 	private Map<String, Object> EWSR1Info ;
 
+	public Map<String, Object> getTROP2Info() {
+		return TROP2Info;
+	}
+
+	public void setTROP2Info(Map<String, Object> TROP2Info) {
+		this.TROP2Info = TROP2Info;
+	}
+
+	private Map<String, Object> TROP2Info ;
+
 	public Map<String, Object> getHenanPeopleCustomInfo() {
 		return HenanPeopleCustomInfo;
 	}

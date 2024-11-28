@@ -321,6 +321,11 @@ public class PyAnalysisReportTemplateUtil {
 			data.put("EWSR1Info", rt.getEWSR1Info());
 		}
 
+		// 阿克曼TROP2数据
+		if (rt.getTemplate_name().contains("TROP2")){
+			data.put("TROP2Info", rt.getTROP2Info());
+		}
+
 		//data.put("FrequencySinglePageData", rt.getFrequencySinglePageData());
 		//7、创建一个Writer对象，指定输出文件的路径及文件名。
 //		FileSystemView fsv = FileSystemView.getFileSystemView();

@@ -627,4 +627,73 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND dfs.product_name = #{product_name}
 		  AND dfs.file_type = 'EWSR1';
 	</select>
+	<select id="getTROP2HEBase64Str" resultType="java.lang.String">
+		SELECT
+			a.file_text AS imgBase64Str
+		FROM
+			data_file_status a
+		WHERE
+			a.subbarcode = #{subbarcode}
+		  AND a.analysis_date = #{analysis_date}
+		  AND a.product_name = #{product_name}
+		  AND a.file_type = 'HE_PIC';
+	</select>
+	<select id="getTROP2PDBase64Str" resultType="java.lang.String">
+		SELECT
+			a.file_text AS imgBase64Str
+		FROM
+			data_file_status a
+		WHERE
+			a.subbarcode = #{subbarcode}
+		  AND a.analysis_date = #{analysis_date}
+		  AND a.product_name = #{product_name}
+		  AND a.file_type = 'PD_PIC';
+	</select>
+	<select id="getTROP2yinkongBase64Str" resultType="java.lang.String">
+		SELECT
+			a.file_text AS imgBase64Str
+		FROM
+			data_file_status a
+		WHERE
+			a.subbarcode = #{subbarcode}
+		  AND a.analysis_date = #{analysis_date}
+		  AND a.product_name = #{product_name}
+		  AND a.file_type = 'yinkong_PIC';
+	</select>
+	<select id="getTROP2yangkongHEBase64Str" resultType="java.lang.String">
+		SELECT
+			a.file_text AS imgBase64Str
+		FROM
+			data_file_status a
+		WHERE
+			a.subbarcode = #{subbarcode}
+		  AND a.analysis_date = #{analysis_date}
+		  AND a.product_name = #{product_name}
+		  AND a.file_type = 'yangkong_PIC';
+	</select>
+	<select id="getTROP2DataInfo" resultType="com.novo.report.beans.TROP2File">
+		SELECT
+			tf.patient_id,
+			tf.tumor_cell_ratio,
+			tf.tumor_cell_count_over_100,
+			tf.microscopic_desc,
+			tf.level0,
+			tf.level1,
+			tf.level2,
+			tf.level3,
+			tf.HScore,
+			tf.examiner,
+			tf.auditor
+		FROM
+			trop2_file tf
+		JOIN
+			omics.data_file_status dfs
+		ON
+			tf.file_id = dfs.file_id
+		WHERE
+			dfs.subbarcode = #{subbarcode}
+		  AND dfs.analysis_date = #{analysis_date}
+		  AND dfs.product_name = #{product_name}
+		  AND dfs.file_type = 'TROP2';
+	</select>
 </mapper>

@@ -2656,6 +2656,40 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setEWSR1Info(ewsr1Info);
         }
 
+        // 20241128 阿克曼外包TROP2报告
+        if ("trop2".equals(product_name)) {
+            String subbarcode = currentNgsAvailable.getSubbarcode();
+            String analysisDate = currentNgsAvailable.getAnalysis_date();
+            String prodName = currentNgsAvailable.getProduct_name();
+
+            //查询TROP2info
+            TROP2File trop2File = analysisReportDao.getTROP2DataInfo(subbarcode, analysisDate, prodName);
+            String TROP2HEBase64Str = analysisReportDao.getTROP2HEBase64Str(subbarcode, analysisDate, prodName);
+            String TROP2yinkongBase64Str = analysisReportDao.getTROP2yinkongBase64Str(subbarcode, analysisDate, prodName);
+            String TROP2yangkongBase64Str = analysisReportDao.getTROP2yangkongHEBase64Str(subbarcode, analysisDate, prodName);
+            String TROP2PDBase64Str = analysisReportDao.getTROP2PDBase64Str(subbarcode, analysisDate, prodName);
+            Map<String, Object> trop2Info = new HashMap<>();
+            trop2Info.put("TROP2HEBase64Str", TROP2HEBase64Str);
+            trop2Info.put("TROP2yinkongBase64Str", TROP2yinkongBase64Str);
+            trop2Info.put("TROP2yangkongBase64Str", TROP2yangkongBase64Str);
+            trop2Info.put("TROP2PDBase64Str", TROP2PDBase64Str);
+            if (trop2File != null) {
+                trop2Info.put("patientId", trop2File.getPatientId());
+                trop2Info.put("tumorCellRatio", trop2File.getTumorCellRatio());
+                trop2Info.put("tumorCellCountOver100", trop2File.getTumorCellCountOver100());
+                trop2Info.put("microscopicDesc", trop2File.getMicroscopicDesc());
+                trop2Info.put("level0", trop2File.getLevel0());
+                trop2Info.put("level1", trop2File.getLevel1());
+                trop2Info.put("level2", trop2File.getLevel2());
+                trop2Info.put("level3", trop2File.getLevel3());
+                trop2Info.put("HScore", trop2File.getHScore());
+                trop2Info.put("examiner", trop2File.getExaminer());
+                trop2Info.put("auditor", trop2File.getAuditor());
+
+            }
+            rt.setTROP2Info(trop2Info);
+        }
+
         // 阅微乳腺癌21
         if ("breastcancer_21".equals(product_name)) {
             Map bc = new HashMap();
