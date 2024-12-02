@@ -897,7 +897,8 @@ public class GeneMarkerVwController {
                                     output = "检出";
                                 }
                             }
-								if ("ERG".equals(gene) && ori_variant.contains("ERG-TMPRSS2")) { // 仅ERG-TMPRSS2融合
+								// 20241129修改 TMPRSS2-ERG
+								if ("ERG".equals(gene) && ori_variant.contains("TMPRSS2-ERG")) { // 仅ERG-TMPRSS2融合
 									output = "检出";
 								}
                         }
