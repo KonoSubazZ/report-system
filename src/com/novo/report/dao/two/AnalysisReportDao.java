@@ -65,7 +65,7 @@ public interface AnalysisReportDao {
     @Select("SELECT file_text FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"TMB_PIC\" and status=\"Loaded\"")
     String getTMB_PIC(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
-    // 获取遗传风险相关的数据（胚系）
+    // 获取遗传风险相关的数据（胚系） 这里关于临床意义 匹配的是之前的检出过的信息
     @Select("SELECT\r\n" +
             "ca.Gene,ca.Gene as gene,rc.has_drug, Chr, Exon, cHGVS, pHGVS, ori_variant,ca.variant as variant, ca.Zygosity,ca.Zygosity as mutFreq, ca.ExonicFunc, ca.c1000g2015aug_all, ca.ExAC_EAS, ca.avsnp150, ca.SIFT_pred, ca.Polyphen2_HDIV_pred, ca.MutationTaster_pred, ca.revel, ca.gnomAD_genome_ALL, ca.Interpro_domain, ca.CLNSIG, ca.OMIM_Phenotypes, ca.HGMD_tag, ca.HGMD_disease, ca.HGMD_pmid, rc.Clinical_significance, ca.depth, loaded_date, ca.record_id,rc.VarClianno,rc.suggestion, rc.conclusion,checked_by, check_date, IFNULL(rc.Clinical_significance, 99) cs, Pos, Transcript, rc.record_id as rc_record_id\r\n" +
             "FROM omics.cr_evw ca\r\n" +

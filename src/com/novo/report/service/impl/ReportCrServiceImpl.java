@@ -66,6 +66,20 @@ public class ReportCrServiceImpl implements ReportCrService {
 
     private final static Comparator<Object> CHINA_COMPARE = Collator.getInstance(java.util.Locale.CHINA);
 
+    /**
+     * 获取用药信息（暂时理解体细胞突变都有用药 胚系只有检出才有用药 待确认）
+     * @param user
+     * @param diseaseId 本癌肿id
+     * @param a 位点信息（基因 突变）
+     * @param diseaseIdList 病种id列表
+     * @param parentdiseaseIdList 父级癌种id列表
+     * @param Flag
+     * @param lang
+     * @param report_id
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     */
     @Override
     @Transactional
     //用药信息获取，支持修改
@@ -659,11 +673,16 @@ public class ReportCrServiceImpl implements ReportCrService {
     public List<Map> getDrugListFromStr(String drugNameStr, Integer level, Integer lang, Integer diseaseId, List<Integer> diseaseIdList) {
         List<Map> drugList = new ArrayList<Map>();
         if (drugNameStr == null || "".equals(drugNameStr)) return drugList;
+        System.out.println("========drugNameStr:===========" + drugNameStr);
         List<String> groupList = Arrays.asList(drugNameStr.split(";"));
         for (String group : groupList) {
             List<String> list = Arrays.asList(group.split("&"));
             String drugName = list.get(0);
             String diseaseName = list.get(1);
+            // 20241205 知识库更新了胰脏腺癌 本地没有更新 修复
+            if (diseaseName.equals("胰脏腺癌")){
+                diseaseName = "胰腺腺癌";
+            }
             Map disease = analysisReportDao.getDiseaseId(diseaseName);
             Integer disease_id = Integer.valueOf(disease.get("do_id").toString());
             String evidencePhase = list.get(2);

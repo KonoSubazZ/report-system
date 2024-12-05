@@ -4924,7 +4924,7 @@ public class PyReportServiceImpl implements PyReportService {
             detection = "EGFR G719X";
         } else if ("EGFR".equals(gene) && "19".equals(exon) && variant.contains("del")) {
             detection = "EGFR Exon19 Del";
-        } else if ("EGFR".equals(gene) && "20".equals(exon) && (variant.contains("Ins") || variant.contains("dup"))) {
+        } else if ("EGFR".equals(gene) && "20".equals(exon) && (variant.contains("ins") || variant.contains("dup"))) {
             detection = "EGFR Exon20 Ins";
         } else {
             detection = gene + " " + variant;

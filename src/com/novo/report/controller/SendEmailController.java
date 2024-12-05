@@ -22,7 +22,7 @@ import java.util.*;
 
 @Controller
 @RequestMapping("sendEmail")
-public class SendEmailController {
+public class    SendEmailController {
 
     @Autowired
     private SendEmailService sendEmailService;
