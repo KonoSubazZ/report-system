@@ -3112,5 +3112,6 @@ public class ReportTemplate {
     }
 
     public void setMGMTInfo(Map<String, Object> mgmtInfo) {
+        this.MGMTInfo = mgmtInfo;
     }
 }

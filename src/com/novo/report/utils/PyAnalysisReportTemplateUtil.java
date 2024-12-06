@@ -305,7 +305,7 @@ public class PyAnalysisReportTemplateUtil {
 		data.put("urinaryProstateDisease", rt.getUrinaryProstateDisease());
 		data.put("cnvBe", rt.getCnvBe());
 
-		// 定制个性化数据
+		// ===============定制个性化数据===================
 
 		// 晶赛 188、550 定制化数据
 		if (rt.getTemplate_name().contains("晶赛")){
