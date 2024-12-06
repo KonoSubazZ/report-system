@@ -326,6 +326,11 @@ public class PyAnalysisReportTemplateUtil {
 			data.put("TROP2Info", rt.getTROP2Info());
 		}
 
+		// MGMT甲基化检测数据
+		if (rt.getTemplate_name().contains("MGMT")){
+			data.put("MGMTInfo", rt.getMGMTInfo());
+		}
+
 		//data.put("FrequencySinglePageData", rt.getFrequencySinglePageData());
 		//7、创建一个Writer对象，指定输出文件的路径及文件名。
 //		FileSystemView fsv = FileSystemView.getFileSystemView();

@@ -696,4 +696,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND dfs.product_name = #{product_name}
 		  AND dfs.file_type = 'TROP2';
 	</select>
+	<select id="getMGMTDataInfo" resultType="java.lang.String">
+		SELECT
+			mf.detection
+		FROM
+			mgmt_file mf
+				JOIN
+			data_file_status dfs ON mf.file_id = dfs.file_id
+		WHERE
+			dfs.subbarcode = #{subbarcode}
+		  AND dfs.analysis_date = #{analysis_date}
+		  AND dfs.product_name = #{product_name}
+		  AND dfs.file_type = 'MGMT'
+	</select>
 </mapper>

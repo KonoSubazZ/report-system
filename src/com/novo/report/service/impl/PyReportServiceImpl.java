@@ -2690,6 +2690,14 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setTROP2Info(trop2Info);
         }
 
+        // 20241206 MGMT甲基化检测
+        if ("mgmt".equals(product_name)) {
+            String detection = analysisReportDao.getMGMTDataInfo(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            Map<String, Object> mgmtInfo = new HashMap();
+            mgmtInfo.put("detection", detection);
+            rt.setMGMTInfo(mgmtInfo);
+        }
+
         // 阅微乳腺癌21
         if ("breastcancer_21".equals(product_name)) {
             Map bc = new HashMap();

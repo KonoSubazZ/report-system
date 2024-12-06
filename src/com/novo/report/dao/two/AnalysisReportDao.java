@@ -600,5 +600,14 @@ public interface AnalysisReportDao {
      */
     TROP2File getTROP2DataInfo(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
+    /**
+     * 20241206 mgmt甲基化检测结果（阴 阳）
+     * @param subbarcode
+     * @param analysis_date
+     * @param product_name
+     * @return
+     */
+    String getMGMTDataInfo(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
+
 
 }
