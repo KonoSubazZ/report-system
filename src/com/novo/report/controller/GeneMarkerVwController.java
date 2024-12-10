@@ -1215,7 +1215,7 @@ public class GeneMarkerVwController {
 	}
 	
 	//更新rp_cr表
-	@RequestMapping("updateRpCr")
+	@RequestMapping("updateRpCr")	
 	@ResponseBody
 	public Map updateRpCr(@RequestParam Map map, @RequestParam("userAccount") String userAccount,
 			@RequestParam("subbarcode") String subbarcode, @RequestParam("reportId") Integer reportId, 
