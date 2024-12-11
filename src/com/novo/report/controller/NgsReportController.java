@@ -16,7 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.novo.report.beans.*;
+import com.novo.report.common.Result;
+import com.novo.report.query.AnalysisReportQuery;
 import com.novo.report.utils.*;
+import com.novo.report.vo.AnalysisReportVO;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,10 +30,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.novo.report.dao.two.AnalysisReportDao;
@@ -155,6 +155,19 @@ public class NgsReportController {
         }
     }
 
+    /**
+     * 获取待审核报告
+     * @param analysisDate 分析时间
+     * @param subbarcode   样本编号
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getPendingReports", method = RequestMethod.GET)
+    public Result<List<AnalysisReportVO>> getPendingReports(AnalysisReportQuery analysisReportQuery)
+    {
+        List<AnalysisReportVO> analysisReportList = analysisReportDao.getPendingReports(analysisReportQuery);
+        return  Result.success(analysisReportList);
+    }
     @RequestMapping("sendEmail")
     @ResponseBody
     private Map sendEmail(AnalysisReport analysisReport, HttpServletRequest httpServletRequest) {

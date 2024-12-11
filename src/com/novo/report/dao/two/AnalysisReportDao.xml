@@ -1,712 +1,926 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.novo.report.dao.two.AnalysisReportDao">
-	
-	<update id="updateAnalysisReport">
-		update analysis_report set chem_cancer=#{chem_cancer},analyzer=#{analyzer},tested_date=#{tested_date},tested_by=#{tested_by},
-			checked_date=#{checked_date},checked_by=#{checked_by},report_date=#{report_date},
-			report_filename=#{report_filename},report_file_path=#{report_file_path},small_report_file_path=#{small_report_file_path},template_name=#{template_name},
-			status=#{status},update_by=#{update_by},update_date=#{update_date},report_time=sysdate(),reporter=#{user}
-		where report_id=#{report_id}
-	</update>
-	
-	<update id="updateSendWay">
-		update analysis_report set send_way=#{send_way} where report_id=#{report_id}
-	</update>
-	
-	<update id="updateAnalysisReportByReport">
-		UPDATE analysis_report set product_id = #{product_id}, primary_cancer_id = #{primary_cancer_id}, product_name = #{product_name} where report_id = #{report_id}
-	</update>
-	
-	<select id="getReportById" resultType="AnalysisReport">
-		select report_id,subbarcode,platform,product_name,analysis_date,product_id,primary_cancer_id,tested_date,
-			tested_by,analyzer,checked_date,checked_by,
-			report_date,report_filename,report_file_path,small_report_file_path,status,
-			created_by,created_date,update_by,update_date
-		from analysis_report where report_id =#{report_id}
-	</select>
-	
-	<select id="getReportFileNameByReportId" resultType="AnalysisReport">
-		select report_filename,report_file_path,send_way,filename91360,file_path91360 from analysis_report where report_id=#{report_id}
-	</select>
-	
-	<select id="getAnalysisReportById" resultType="AnalysisReport">
-		SELECT report_id,product_id,primary_cancer_id,report_filename,bioinfo_checker,bioinfo_check_time,match_time,send_way from analysis_report where report_id =#{report_id}
-	</select>
-	
-	<select id="getReportDetailById" resultType="java.util.Map">
-		SELECT json_extract(report_detail,'$') as report_detail,report_checker,report_check_time from analysis_report where report_id =#{report_id}
-	</select>
-	
-	<select id="getReportDetailById2" resultType="java.util.Map">
-		SELECT json_extract(report_detail,'$') as report_detail,status from analysis_report where report_id =#{report_id}
-	</select>
-	
-	<insert id="insertAnalysisReport" keyProperty="report_id" useGeneratedKeys="true">
-		insert into analysis_report(subbarcode,platform,product_name,analysis_date,primary_cancer_id,product_id,tested_date,tested_by,
-			analyzer,checked_date,checked_by,report_date,report_filename,report_file_path,
-			status,created_by,created_date,update_by,update_date, bioinfo_checker,bioinfo_check_time,match_time)
-			values(#{subbarcode},#{platform},#{product_name},#{analysis_date},#{primary_cancer_id},#{product_id},
-				#{tested_date},#{tested_by},#{analyzer},#{checked_date},#{checked_by},#{report_date},
-				#{report_filename},#{report_file_path},#{status},#{created_by},#{created_date},
-				#{update_by},sysdate(),#{bioinfo_checker},#{bioinfo_check_time},#{match_time})
-	</insert>
-	
-	<select id="getSubbarcodeByReportId" resultType="String">
-		select subbarcode from analysis_report where report_id=#{report_id}
-	</select>
-	
-	<select id="getSubbarcodeCount" resultType="Integer">
-		select count(subbarcode) from analysis_report where subbarcode=#{subbarcode}
-	</select>
-	
-	<delete id="deleteNgsReportByReportId">
-		delete from analysis_report where report_id=#{report_id}
-	</delete>
-	
-	<update id="updateAnalysisReportByReportId">
-		update analysis_report set tested_date=null,tested_by=null,checked_date=null,
-			checked_by=null,report_date=null,checked_by=null,report_filename=null,
-			report_file_path=null,status=#{status} where report_id=#{report_id}
-	</update>
-	<select id="getStatusByReportId" resultType="String">
-		select status from analysis_report where report_id = #{report_id}
-	</select>
-	<select id="getProductIdByReportId" resultType="Integer">
-		select product_id from analysis_report where report_id=#{report_id}
-	</select>
+
+    <update id="updateAnalysisReport">
+        update analysis_report
+        set chem_cancer=#{chem_cancer},
+            analyzer=#{analyzer},
+            tested_date=#{tested_date},
+            tested_by=#{tested_by},
+            checked_date=#{checked_date},
+            checked_by=#{checked_by},
+            report_date=#{report_date},
+            report_filename=#{report_filename},
+            report_file_path=#{report_file_path},
+            small_report_file_path=#{small_report_file_path},
+            template_name=#{template_name},
+            status=#{status},
+            update_by=#{update_by},
+            update_date=#{update_date},
+            report_time=sysdate(),
+            reporter=#{user}
+        where report_id = #{report_id}
+    </update>
+
+    <update id="updateSendWay">
+        update analysis_report
+        set send_way=#{send_way}
+        where report_id = #{report_id}
+    </update>
+
+    <update id="updateAnalysisReportByReport">
+        UPDATE analysis_report
+        set product_id        = #{product_id},
+            primary_cancer_id = #{primary_cancer_id},
+            product_name      = #{product_name}
+        where report_id = #{report_id}
+    </update>
+
+    <select id="getReportById" resultType="AnalysisReport">
+        select report_id,
+               subbarcode,
+               platform,
+               product_name,
+               analysis_date,
+               product_id,
+               primary_cancer_id,
+               tested_date,
+               tested_by,
+               analyzer,
+               checked_date,
+               checked_by,
+               report_date,
+               report_filename,
+               report_file_path,
+               small_report_file_path,
+               status,
+               created_by,
+               created_date,
+               update_by,
+               update_date
+        from analysis_report
+        where report_id = #{report_id}
+    </select>
+
+    <select id="getReportFileNameByReportId" resultType="AnalysisReport">
+        select report_filename, report_file_path, send_way, filename91360, file_path91360
+        from analysis_report
+        where report_id = #{report_id}
+    </select>
+
+    <select id="getAnalysisReportById" resultType="AnalysisReport">
+        SELECT report_id,
+               product_id,
+               primary_cancer_id,
+               report_filename,
+               bioinfo_checker,
+               bioinfo_check_time,
+               match_time,
+               send_way
+        from analysis_report
+        where report_id = #{report_id}
+    </select>
+
+    <select id="getReportDetailById" resultType="java.util.Map">
+        SELECT json_extract(report_detail, '$') as report_detail, report_checker, report_check_time
+        from analysis_report
+        where report_id = #{report_id}
+    </select>
+
+    <select id="getReportDetailById2" resultType="java.util.Map">
+        SELECT json_extract(report_detail, '$') as report_detail, status
+        from analysis_report
+        where report_id = #{report_id}
+    </select>
+
+    <insert id="insertAnalysisReport" keyProperty="report_id" useGeneratedKeys="true">
+        insert into analysis_report(subbarcode, platform, product_name, analysis_date, primary_cancer_id, product_id,
+                                    tested_date, tested_by,
+                                    analyzer, checked_date, checked_by, report_date, report_filename, report_file_path,
+                                    status, created_by, created_date, update_by, update_date, bioinfo_checker,
+                                    bioinfo_check_time, match_time)
+        values (#{subbarcode}, #{platform}, #{product_name}, #{analysis_date}, #{primary_cancer_id}, #{product_id},
+                #{tested_date}, #{tested_by}, #{analyzer}, #{checked_date}, #{checked_by}, #{report_date},
+                #{report_filename}, #{report_file_path}, #{status}, #{created_by}, #{created_date},
+                #{update_by}, sysdate(), #{bioinfo_checker}, #{bioinfo_check_time}, #{match_time})
+    </insert>
+
+    <select id="getSubbarcodeByReportId" resultType="String">
+        select subbarcode
+        from analysis_report
+        where report_id = #{report_id}
+    </select>
+
+    <select id="getSubbarcodeCount" resultType="Integer">
+        select count(subbarcode)
+        from analysis_report
+        where subbarcode = #{subbarcode}
+    </select>
+
+    <delete id="deleteNgsReportByReportId">
+        delete
+        from analysis_report
+        where report_id = #{report_id}
+    </delete>
+
+    <update id="updateAnalysisReportByReportId">
+        update analysis_report
+        set tested_date=null,
+            tested_by=null,
+            checked_date=null,
+            checked_by=null,
+            report_date=null,
+            checked_by=null,
+            report_filename=null,
+            report_file_path=null,
+            status=#{status}
+        where report_id = #{report_id}
+    </update>
+    <select id="getStatusByReportId" resultType="String">
+        select status
+        from analysis_report
+        where report_id = #{report_id}
+    </select>
+    <select id="getProductIdByReportId" resultType="Integer">
+        select product_id
+        from analysis_report
+        where report_id = #{report_id}
+    </select>
     <select id="getCountBySubbarcodeAndAnalysisDate" resultType="Integer">
-		select count(report_id) from analysis_report where subbarcode=#{subbarcode} and analysis_date=#{analysis_date}
-	</select>
-	<update id="updateFileNameById">
-		update analysis_report set report_filename=#{report_filename},report_file_path=#{report_file_path} where report_id=#{report_id}
-	</update>
-	<update id="updateStoreFileNameById">
-		update analysis_report_store set report_filename=#{report_filename} where report_id=#{report_id}
-	</update>
-	<update id="updateFileName91360ById">
-		update analysis_report set filename91360=#{filename91360},file_path91360=#{file_path91360} where report_id=#{report_id}
-	</update>
-	<update id="updateSmallReportFilePathById">
-		update analysis_report set small_report_file_path=#{small_report_file_path} where report_id=#{report_id}
-	</update>
-	<update id="updateModuleFlagByReportId">
-		update analysis_report set module_flag=#{module_flag} where report_id=#{report_id}
-	</update>
-	<select id="getModuleFlagByReportId" resultType="String">
-		select module_flag from analysis_report where report_id=#{report_id}
-	</select>
-	<select id="getReportIdBySubbarcodeAndFilename" resultType="Integer">
-		select report_id from analysis_report where subbarcode=#{subbarcode} and report_filename like concat('%',#{report_filename},'%')
-	</select>
-	
-	<select id="getClinicalNumber" resultType="Integer">
-		SELECT COUNT(DISTINCT clinical_trial_id) FROM
-		nkb.clinical_trial WHERE
-		(recruiting_status = 'Recruiting' OR recruiting_status = 'Enrolling by invitation')
-		AND checking_status_id = 2
-		AND clinical_trial_id IN (SELECT clinical_trial_id FROM
-		nkb.variant_drug_anno_trial WHERE annotation_id=#{annotation_id})
-		AND
-		clinical_trial_id NOT IN (select clinical_trial_id FROM
-		nkb.clinical_trial_exclude_disease where disease_id in
-		<foreach collection="diseaseIdList" item="item" index="index"
-			open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-		)
-	</select>
-	
-	<select id="selectClinical" resultType="java.util.Map">
-	    SELECT clinical_trial_id,
-               title_chinese,
-               phase,
-               condition_chinese,
-               inclusion_criteria,
-               exclusion_criteria,
-               location_chinese,
-               update_date,
-               CASE phase when 'Phase IV' then 5
-                when 'Phase III' then 4
-                when 'Phase II/III' then 3
-                when 'Phase II' then 2
-                when 'Phase I/II' then 1
-                when 'Phase I' then 0
-                end as order_num,
-               #{drug_name_chinese} as drug_name_chinese,
-               unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
-		        FROM nkb.clinical_trial
-		        where (recruiting_status = 'Recruiting' or recruiting_status = 'Enrolling by invitation') and clinical_trial_id in 
-		        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-			      #{item}
-			    </foreach>
-			    and clinical_trial_id not in (select clinical_trial_id from nkb.clinical_trial_exclude_disease where disease_id in
-			    <foreach collection="diseaseIdList" item="item" index="index" open="(" close=")" separator=",">
-			      #{item}
-			    </foreach>
-               ) order by order_num desc
-  	</select>
-  	<select id="getVariantDescription" resultType="java.util.Map">
-  		SELECT annotation_id, description, simple_desc, unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
-			FROM nkb_variant_desc_evw
-		WHERE gene_variant_id in
-		<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-		and lang=#{lang}
-		order by field(gene_variant_id,
-		<foreach collection="list" item="item" index="index" open="" close="" separator=",">
-			#{item}
-		</foreach>
-		)
-  	</select>
-  	<select id="getNccnRecommend" resultType="java.util.Map">
-  		SELECT DISTINCT drug, gene, content FROM nccn_recommend
-		WHERE do_id in
-		<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-  	</select>
-  	<select id="getApprovedDrugs" resultType="java.util.Map">
-  		SELECT DISTINCT approved_drug_id, drug_name, drug_name_chinese, disease_name_chinese, approval_description_chinese FROM nkb.approved_drug_evw
-		WHERE drug_id = #{DrugID} and checking_status = "Approved" and disease_id in
-		<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-  	</select>
-  	<!--<select id="getNccnDrugs" resultType="java.util.Map">
-  		SELECT DISTINCT record_id, drug_name, guideline_type, guideline_title, guildeline_version, guideline_description FROM nkb_guideline_drug_evw
-		WHERE drug_id = #{DrugID} and lang =#{lang} and disease_id in
-		<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-		order by field(disease_id,
-		<foreach collection="list" item="item" index="index" open="" close="" separator=",">
-			#{item}
-		</foreach>
-		)
-  	</select>-->
-	<select id="getNccnDrugs" resultType="java.util.Map">
-		SELECT DISTINCT record_id, drug_name, guideline_type, guideline_title, guildeline_version, guideline_description
-		FROM nkb_guideline_drug_evw
-		WHERE drug_id = #{DrugID} and lang =#{lang} and disease_id = #{anno_disease_id}
-	</select>
-  	<select id="getDrugListByIdList" resultType="java.util.Map">
-  		SELECT annotation_id, gene_variant_id, gene_symbol, gene_variant, drug_id, drug_name, anno_disease_id, anno_disease_name, relationship, annotation,evidence_phase_id,evidence_phase,has_previous_clinical_result, give, unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date,other_test_required
-			FROM nkb_var_drug_anno_view
-			WHERE gene_variant_id in
-			<foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
-				#{item1}
-			</foreach>
-			and (anno_disease_id in
-			<foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
-				#{item2}
-			</foreach>
-			) and lang = #{lang}
-			and mutation_type in (#{mutation_type},"S/G")
-  	</select>
-  	<select id="getUpdateByIdList" resultType="java.sql.Timestamp">
-  		SELECT MAX(update_date)
-			FROM nkb.variant_drug_annotation 
-			WHERE gene_variant_id in 
-			<foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
-				#{item1}
-			</foreach>
-			and (evidence_phase_id > 22 or disease_id in
-			<foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
-				#{item2}
-			</foreach>
-			)
-  	</select>
-  	<select id="getVariantFreqByIdList" resultType="java.util.Map">
-  		SELECT annotation_id, gene_variant_id, gene_symbol, gene_variant, disease_id, disease_name, frequency, description, description_chinese, checking_status, created_by, created_date, checked_by, checked_date, update_by, unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date 
-		FROM nkb.gene_variant_frequency_evw WHERE gene_variant_id in 
-		<foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
-			#{item1}
-		</foreach>
-		and disease_id in
-		<foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
-			#{item2}
-		</foreach>
-		and checking_status='Approved'
-  	</select>
-  	<select id="getVariantFreqByIdListOrder" resultType="java.util.Map">
-  		SELECT annotation_id, gene_variant_id, gene_symbol, gene_variant, disease_id, disease_name, frequency, description, description_chinese, checking_status, created_by, created_date, checked_by, checked_date, update_by, unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date 
-		FROM nkb.gene_variant_frequency_evw WHERE gene_variant_id in 
-		<foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
-			#{item1}
-		</foreach>
-		and disease_id in
-		<foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
-			#{item2}
-		</foreach>
-		and checking_status='Approved'
-		order by field(gene_variant_id,
-		<foreach collection="list1" item="item1" index="index1" open="" close="" separator=",">
-			#{item1}
-		</foreach>
-		), field(disease_id,
-		<foreach collection="list2" item="item2" index="index2" open="" close="" separator=",">
-			#{item2}
-		</foreach>
-		)
-  	</select>
-  	<select id="getGeneAnnotationByIdList"  resultType="java.util.Map">
-  		SELECT
-		  drug_annotation,
-		  clinical_annotation,
-		  unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) AS update_date
-		FROM nkb_gene_annotation_evw
-		WHERE gene_symbol = #{gene} AND checking_status = 'Approved' and lang = #{lang} AND do_id in 
-		<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-		order by field(do_id,
-		<foreach collection="list" item="item" index="index" open="" close="" separator=",">
-			#{item}
-		</foreach>
-		) 
-  	</select>
-  	<select id="getGeneAnnotationById"  resultType="java.util.Map">
-  		SELECT
-		  drug_annotation,
-		  clinical_annotation,
-		  unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) AS update_date
-		FROM nkb_gene_annotation_evw
-		WHERE gene_symbol = #{gene} AND checking_status = 'Approved' and lang = #{lang} AND do_id = #{diseaseID}
-  	</select>
-  	<select id="getVarAnnotationById"  resultType="java.util.Map">
-  		SELECT
-		  drug_annotation,
-		  clinical_annotation,
-		  unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) AS update_date
-		FROM nkb_var_annotation_evw
-		WHERE var_id = #{mutID} AND checking_status = 'Approved' and lang = #{lang} AND do_id = #{diseaseID}
-  	</select>
-  	<select id="getVarAnnotationByIdList"  resultType="java.util.Map">
-  		SELECT
-		  drug_annotation,
-		  clinical_annotation,
-		  unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) AS update_date
-		FROM nkb_var_annotation_evw
-		WHERE gene_symbol = #{gene} AND gene_variant=#{variant} AND checking_status = 'Approved' and lang = #{lang} AND do_id in 
-		<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-		order by field(do_id,
-		<foreach collection="list" item="item" index="index" open="" close="" separator=",">
-			#{item}
-		</foreach>
-		)
-  	</select>
-  	<select id="getVarAnnotationByIdList2"  resultType="java.util.Map">
-  		SELECT
-		  drug_annotation,
-		  clinical_annotation,
-		  unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) AS update_date
-		FROM nkb_var_annotation_evw
-		WHERE var_id = #{mutID} AND checking_status = 'Approved' and lang = #{lang} AND do_id in 
-		<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-		order by field(do_id,
-		<foreach collection="list" item="item" index="index" open="" close="" separator=",">
-			#{item}
-		</foreach>
-		)
-  	</select>
-  	<select id="getDrugsInThisCancer" resultType="Integer">
-  		SELECT drug_id FROM nkb_var_drug_anno_view 
-			WHERE gene_variant_id in 
-			<foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
-				#{item1}
-			</foreach>
-			and (relationship != 'Resistant' and (anno_disease_id in
-			<foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
-				#{item2}
-			</foreach>
-			)) and lang =#{lang}
-  	</select>
-  	<select id="getVarDrugAnnoUpdateTime" resultType="java.sql.Timestamp">
-  		SELECT max(greatest(update_time,var_clinical_update_time,clinical_update_time,drug_update_time,guideline_drug_update_time,approved_drug_update_time))
-  		FROM nkb.var_drug_annotation_updatetime_evw where gene_variant_id IN
-  		<foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
-				#{item1}
-		</foreach>
-		and disease_id IN
-		<foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
-				#{item2}
-		</foreach>
-  	</select>
-  	
-  	<select id="getGeneAnnoUpdateTime" resultType="java.sql.Timestamp">
-  		SELECT max(update_date) FROM nkb.gene_annotation 
-  		where gene_id IN (select gene_id from nkb.ncbi_gene where gene_symbol=#{gene}) and do_id IN 
-		<foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
-				#{item2}
-		</foreach>
-  	</select>
-  	
-  	<select id="getVariantAnnoUpdateTime" resultType="java.sql.Timestamp">
-  		SELECT max(update_date) FROM nkb.variant_annotation where var_id = #{mutID} and do_id IN 
-		<foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
-				#{item2}
-		</foreach>
-  	</select>
-  	
-  	<select id="getOtherADrugListByIdList" resultType="java.util.Map">
-  		<!--SELECT drug_id FROM nkb_var_drug_anno_view
-			WHERE (evidence_phase = 'Approved' or evidence_phase = 'Guildline recommended') and gene_variant_id in
-			<foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
-				#{item1}
-			</foreach>
-			and (anno_disease_id not in
-			<foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
-				#{item2}
-			</foreach>
-			)  and lang=#{lang}
-			and mutation_type in (#{mutation_type},"S/G")-->
-		SELECT annotation_id, gene_variant_id, gene_symbol, gene_variant, drug_id, drug_name, anno_disease_id, anno_disease_name, relationship, annotation,evidence_phase_id,evidence_phase,has_previous_clinical_result, give, unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date,other_test_required
-		FROM nkb_var_drug_anno_view
-		WHERE evidence_phase_id = 24 and lang = #{lang} and mutation_type in (#{mutation_type},"S/G")
-		and gene_variant_id in
-		<foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
-			#{item1}
-		</foreach>
-		and anno_disease_id not in
-		<foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
-			#{item2}
-		</foreach>
-		<if test="!list3.isEmpty()">
-		and anno_disease_id not in
-		<foreach collection="list3" item="item3" index="index3" open="(" close=")" separator=",">
-			#{item3}
-		</foreach>
-		</if>
-  	</select>
-  	<select id="getClinicalTrial" resultType="java.util.Map">
-	SELECT clinical_trial_id,
-	#{lang} as lang,
-	if(#{lang}=1, official_title_chinese, official_title) as title,
-	phase,
-	if(#{lang}=1, condition_chinese, recruiting_condition) as recruiting_condition,
-	inclusion_criteria,
-	exclusion_criteria,
-	if(#{lang}=1, location_chinese, location) as `location`,
-	CASE phase when 'Phase IV' then 6
-	when 'Phase III' then 5
-	when 'Phase II/III' then 4
-	when 'Phase II' then 3
-	when 'Phase I/II' then 2
-	when 'Phase I' then 1
-	when 'Unknown' then 0
-	end as order_num,
-	#{drug_name} as drug_name,
-	unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
-	FROM nkb.clinical_trial
-	where (recruiting_status = 'Recruiting' or recruiting_status = 'Enrolling by invitation') and checking_status_id = 2 and clinical_trial_id IN
-	(SELECT clinical_trial_id FROM nkb.variant_drug_anno_trial WHERE
-	annotation_id=#{annotation_id})
-	AND clinical_trial_id not in (select clinical_trial_id from
-	nkb.clinical_trial_exclude_disease where disease_id in
-	<foreach collection="diseaseIdList" item="item" index="index"
-		open="(" close=")" separator=",">
-		#{item}
-	</foreach>
-	) order by order_num desc
-	</select>
-  	<select id="getdMMRByReportIdAndGene" resultType="java.util.Map">
-		SELECT Gene as gene, Zygosity as mutFreq, ori_variant as ori_variant, variant as variant, ExonicFunc AS ExonicFunc, '胚系' as type FROM cr_evw WHERE report_id = #{report_id} and gene =#{gene}
-		UNION 
-		SELECT gene,mutFreq,ori_variant,variant,ExonicFunc,'体系' as type
-  		from this_genetic_marker_en7_vw2 
-  		WHERE report_id = #{report_id} and gene =#{gene} ORDER BY mutFreq DESC
-  	</select>
+        select count(report_id)
+        from analysis_report
+        where subbarcode = #{subbarcode}
+          and analysis_date = #{analysis_date}
+    </select>
+    <update id="updateFileNameById">
+        update analysis_report
+        set report_filename=#{report_filename},
+            report_file_path=#{report_file_path}
+        where report_id = #{report_id}
+    </update>
+    <update id="updateStoreFileNameById">
+        update analysis_report_store
+        set report_filename=#{report_filename}
+        where report_id = #{report_id}
+    </update>
+    <update id="updateFileName91360ById">
+        update analysis_report
+        set filename91360=#{filename91360},
+            file_path91360=#{file_path91360}
+        where report_id = #{report_id}
+    </update>
+    <update id="updateSmallReportFilePathById">
+        update analysis_report
+        set small_report_file_path=#{small_report_file_path}
+        where report_id = #{report_id}
+    </update>
+    <update id="updateModuleFlagByReportId">
+        update analysis_report
+        set module_flag=#{module_flag}
+        where report_id = #{report_id}
+    </update>
+    <select id="getModuleFlagByReportId" resultType="String">
+        select module_flag
+        from analysis_report
+        where report_id = #{report_id}
+    </select>
+    <select id="getReportIdBySubbarcodeAndFilename" resultType="Integer">
+        select report_id
+        from analysis_report
+        where subbarcode = #{subbarcode}
+          and report_filename like concat('%', #{report_filename}, '%')
+    </select>
 
-	<select id="getHotByReportIdAndGene" resultType="java.util.Map">
-		SELECT gene,mutFreq,ori_variant,variant,ExonicFunc,transcript,'体系' as type
-  		from this_genetic_marker_en7_vw2
-  		WHERE report_id = #{report_id} ORDER BY mutFreq DESC
-  	</select>
+    <select id="getClinicalNumber" resultType="Integer">
+        SELECT COUNT(DISTINCT clinical_trial_id) FROM
+        nkb.clinical_trial WHERE
+        (recruiting_status = 'Recruiting' OR recruiting_status = 'Enrolling by invitation')
+        AND checking_status_id = 2
+        AND clinical_trial_id IN (SELECT clinical_trial_id FROM
+        nkb.variant_drug_anno_trial WHERE annotation_id=#{annotation_id})
+        AND
+        clinical_trial_id NOT IN (select clinical_trial_id FROM
+        nkb.clinical_trial_exclude_disease where disease_id in
+        <foreach collection="diseaseIdList" item="item" index="index"
+                 open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        )
+    </select>
 
-	<!--<select id="getHotCRByReportIdAndGene" resultType="java.util.Map">
-		SELECT Gene as gene, Zygosity as mutFreq, ori_variant as ori_variant, variant as variant, ExonicFunc AS ExonicFunc, '胚系' as type FROM cr_evw WHERE report_id = #{report_id}
-  	</select>-->
-	<select id="getHotCRByReportIdAndGene" resultType="java.util.Map">
-		SELECT cr.Gene as gene, cr.Zygosity as mutFreq, cr.ori_variant as ori_variant, cr.variant as variant, cr.ExonicFunc AS ExonicFunc,Transcript as transcript, '胚系' as type
-		FROM cr_evw cr join rp_cr cp on cr.Gene = cp.Gene and cr.ori_variant = cp.ori_mutation
-		WHERE cr.report_id = #{report_id} and cp.Clinical_significance != 4 and cp.Clinical_significance != 5
-	</select>
-  	
-  	<select id="getImmuneRelatedGene" resultType="java.util.Map">
-		SELECT gene,info from gene_subset where subclass = #{subclass}
-  	</select>
-  	
-  	<select id="getReportName" resultType="String">
-		SELECT json_extract(report_detail,'$') as report_detail from analysis_report ar 
-		INNER JOIN sample_file sf on ar.subbarcode = sf.subbarcode
-		INNER JOIN disease_class dc on ar.primary_cancer_id = dc.class_id
-		where CONCAT(ar.report_file_path,ar.report_filename) is not null and sf.customer is not null and ar.status = "报告发送成功" 
-		<if test="product_name!=null and product_name!=''">
-			and ar.product_name = #{product_name}
-		</if>
-		<if test="customer!=null and customer!=''">
-			and sf.customer = #{customer}
-		</if>
-		<if test="analysis_date_B!=null and analysis_date_B!=''">
-			and ar.report_time &gt; #{analysis_date_B}
-		</if>
-		<if test="analysis_date_N!=null and analysis_date_N!=''">
-			and ar.report_time &lt; #{analysis_date_N}
-		</if>
-	</select>
-	
-	<select id="getReportInfo" resultType="java.util.Map">
-		SELECT ar.report_id as report_id,ar.subbarcode as subbarcode,ar.product_name as product_name,ar.analysis_date as analysis_date from analysis_report ar 
-		INNER JOIN sample_file sf on ar.subbarcode = sf.subbarcode
-		INNER JOIN disease_class dc on ar.primary_cancer_id = dc.class_id
-		where CONCAT(ar.report_file_path,ar.report_filename) is not null and sf.customer is not null and ar.status = "报告发送成功" 
-		<if test="product_name!=null and product_name!=''">
-			and ar.product_name = #{product_name}
-		</if>
-		<if test="customer!=null and customer!=''">
-			and sf.customer = #{customer}
-		</if>
-		<if test="analysis_date_B!=null and analysis_date_B!=''">
-			and ar.report_time &gt; #{analysis_date_B}
-		</if>
-		<if test="analysis_date_N!=null and analysis_date_N!=''">
-			and ar.report_time &lt; #{analysis_date_N}
-		</if>
-	</select>
-	
-	<update id="updateReportDetail">
-		update analysis_report set report_detail=#{report_detail} where report_id=#{report_id}
-	</update>
-	<select id="getParentDiseaseList2" resultType="java.util.Map">
-		SELECT do_id, disease_name, disease_name_chinese, disease_description, parent_do_id, parent_disease_name, parent_disease_chinese
-		FROM nkb_disease_parent_evw
-		WHERE do_id IN 
-		<foreach collection="diseaseIdList" item="item" index="index" open="(" close=")" separator=",">	
-			#{item}
-		</foreach>
-	</select>
-	
-	<select id="getClnsigIdByGeneAndVariant" resultType="Integer">
-  		SELECT clnsig_id FROM nkb.gene_variant_evw WHERE gene_symbol = #{gene} AND gene_variant = #{variant} 
-  	</select>
-  	
-  	<select id="getGeneDescByGeneAndVariant" resultType="java.util.Map">
-  		SELECT description,description_chinese FROM nkb.gen_gene_variant_desc_vw WHERE gene_symbol = #{gene} AND gene_variant = #{variant} 
-  	</select>
+    <select id="selectClinical" resultType="java.util.Map">
+        SELECT clinical_trial_id,
+        title_chinese,
+        phase,
+        condition_chinese,
+        inclusion_criteria,
+        exclusion_criteria,
+        location_chinese,
+        update_date,
+        CASE phase when 'Phase IV' then 5
+        when 'Phase III' then 4
+        when 'Phase II/III' then 3
+        when 'Phase II' then 2
+        when 'Phase I/II' then 1
+        when 'Phase I' then 0
+        end as order_num,
+        #{drug_name_chinese} as drug_name_chinese,
+        unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
+        FROM nkb.clinical_trial
+        where (recruiting_status = 'Recruiting' or recruiting_status = 'Enrolling by invitation') and clinical_trial_id
+        in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        and clinical_trial_id not in (select clinical_trial_id from nkb.clinical_trial_exclude_disease where disease_id
+        in
+        <foreach collection="diseaseIdList" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        ) order by order_num desc
+    </select>
+    <select id="getVariantDescription" resultType="java.util.Map">
+        SELECT annotation_id, description, simple_desc, unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as
+        update_date
+        FROM nkb_variant_desc_evw
+        WHERE gene_variant_id in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        and lang=#{lang}
+        order by field(gene_variant_id,
+        <foreach collection="list" item="item" index="index" open="" close="" separator=",">
+            #{item}
+        </foreach>
+        )
+    </select>
+    <select id="getNccnRecommend" resultType="java.util.Map">
+        SELECT DISTINCT drug, gene, content FROM nccn_recommend
+        WHERE do_id in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+    <select id="getApprovedDrugs" resultType="java.util.Map">
+        SELECT DISTINCT approved_drug_id, drug_name, drug_name_chinese, disease_name_chinese,
+        approval_description_chinese FROM nkb.approved_drug_evw
+        WHERE drug_id = #{DrugID} and checking_status = "Approved" and disease_id in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+    <!--<select id="getNccnDrugs" resultType="java.util.Map">
+        SELECT DISTINCT record_id, drug_name, guideline_type, guideline_title, guildeline_version, guideline_description FROM nkb_guideline_drug_evw
+      WHERE drug_id = #{DrugID} and lang =#{lang} and disease_id in
+      <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+          #{item}
+      </foreach>
+      order by field(disease_id,
+      <foreach collection="list" item="item" index="index" open="" close="" separator=",">
+          #{item}
+      </foreach>
+      )
+    </select>-->
+    <select id="getNccnDrugs" resultType="java.util.Map">
+        SELECT DISTINCT record_id, drug_name, guideline_type, guideline_title, guildeline_version, guideline_description
+        FROM nkb_guideline_drug_evw
+        WHERE drug_id = #{DrugID}
+          and lang = #{lang}
+          and disease_id = #{anno_disease_id}
+    </select>
+    <select id="getDrugListByIdList" resultType="java.util.Map">
+        SELECT annotation_id, gene_variant_id, gene_symbol, gene_variant, drug_id, drug_name, anno_disease_id,
+        anno_disease_name, relationship, annotation,evidence_phase_id,evidence_phase,has_previous_clinical_result, give,
+        unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date,other_test_required
+        FROM nkb_var_drug_anno_view
+        WHERE gene_variant_id in
+        <foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
+            #{item1}
+        </foreach>
+        and (anno_disease_id in
+        <foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
+            #{item2}
+        </foreach>
+        ) and lang = #{lang}
+        and mutation_type in (#{mutation_type},"S/G")
+    </select>
+    <select id="getUpdateByIdList" resultType="java.sql.Timestamp">
+        SELECT MAX(update_date)
+        FROM nkb.variant_drug_annotation
+        WHERE gene_variant_id in
+        <foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
+            #{item1}
+        </foreach>
+        and (evidence_phase_id > 22 or disease_id in
+        <foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
+            #{item2}
+        </foreach>
+        )
+    </select>
+    <select id="getVariantFreqByIdList" resultType="java.util.Map">
+        SELECT annotation_id, gene_variant_id, gene_symbol, gene_variant, disease_id, disease_name, frequency,
+        description, description_chinese, checking_status, created_by, created_date, checked_by, checked_date,
+        update_by, unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
+        FROM nkb.gene_variant_frequency_evw WHERE gene_variant_id in
+        <foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
+            #{item1}
+        </foreach>
+        and disease_id in
+        <foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
+            #{item2}
+        </foreach>
+        and checking_status='Approved'
+    </select>
+    <select id="getVariantFreqByIdListOrder" resultType="java.util.Map">
+        SELECT annotation_id, gene_variant_id, gene_symbol, gene_variant, disease_id, disease_name, frequency,
+        description, description_chinese, checking_status, created_by, created_date, checked_by, checked_date,
+        update_by, unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
+        FROM nkb.gene_variant_frequency_evw WHERE gene_variant_id in
+        <foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
+            #{item1}
+        </foreach>
+        and disease_id in
+        <foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
+            #{item2}
+        </foreach>
+        and checking_status='Approved'
+        order by field(gene_variant_id,
+        <foreach collection="list1" item="item1" index="index1" open="" close="" separator=",">
+            #{item1}
+        </foreach>
+        ), field(disease_id,
+        <foreach collection="list2" item="item2" index="index2" open="" close="" separator=",">
+            #{item2}
+        </foreach>
+        )
+    </select>
+    <select id="getGeneAnnotationByIdList" resultType="java.util.Map">
+        SELECT
+        drug_annotation,
+        clinical_annotation,
+        unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) AS update_date
+        FROM nkb_gene_annotation_evw
+        WHERE gene_symbol = #{gene} AND checking_status = 'Approved' and lang = #{lang} AND do_id in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        order by field(do_id,
+        <foreach collection="list" item="item" index="index" open="" close="" separator=",">
+            #{item}
+        </foreach>
+        )
+    </select>
+    <select id="getGeneAnnotationById" resultType="java.util.Map">
+        SELECT drug_annotation,
+               clinical_annotation,
+               unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) AS update_date
+        FROM nkb_gene_annotation_evw
+        WHERE gene_symbol = #{gene}
+          AND checking_status = 'Approved'
+          and lang = #{lang}
+          AND do_id = #{diseaseID}
+    </select>
+    <select id="getVarAnnotationById" resultType="java.util.Map">
+        SELECT drug_annotation,
+               clinical_annotation,
+               unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) AS update_date
+        FROM nkb_var_annotation_evw
+        WHERE var_id = #{mutID}
+          AND checking_status = 'Approved'
+          and lang = #{lang}
+          AND do_id = #{diseaseID}
+    </select>
+    <select id="getVarAnnotationByIdList" resultType="java.util.Map">
+        SELECT
+        drug_annotation,
+        clinical_annotation,
+        unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) AS update_date
+        FROM nkb_var_annotation_evw
+        WHERE gene_symbol = #{gene} AND gene_variant=#{variant} AND checking_status = 'Approved' and lang = #{lang} AND
+        do_id in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        order by field(do_id,
+        <foreach collection="list" item="item" index="index" open="" close="" separator=",">
+            #{item}
+        </foreach>
+        )
+    </select>
+    <select id="getVarAnnotationByIdList2" resultType="java.util.Map">
+        SELECT
+        drug_annotation,
+        clinical_annotation,
+        unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) AS update_date
+        FROM nkb_var_annotation_evw
+        WHERE var_id = #{mutID} AND checking_status = 'Approved' and lang = #{lang} AND do_id in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        order by field(do_id,
+        <foreach collection="list" item="item" index="index" open="" close="" separator=",">
+            #{item}
+        </foreach>
+        )
+    </select>
+    <select id="getDrugsInThisCancer" resultType="Integer">
+        SELECT drug_id FROM nkb_var_drug_anno_view
+        WHERE gene_variant_id in
+        <foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
+            #{item1}
+        </foreach>
+        and (relationship != 'Resistant' and (anno_disease_id in
+        <foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
+            #{item2}
+        </foreach>
+        )) and lang =#{lang}
+    </select>
+    <select id="getVarDrugAnnoUpdateTime" resultType="java.sql.Timestamp">
+        SELECT
+        max(greatest(update_time,var_clinical_update_time,clinical_update_time,drug_update_time,guideline_drug_update_time,approved_drug_update_time))
+        FROM nkb.var_drug_annotation_updatetime_evw where gene_variant_id IN
+        <foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
+            #{item1}
+        </foreach>
+        and disease_id IN
+        <foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
+            #{item2}
+        </foreach>
+    </select>
 
-	<select id="gethotGeneDrug" resultType="java.util.Map">
-		SELECT gene,info from gene_subset where subclass = #{subclass} and info = #{info}
-  	</select>
+    <select id="getGeneAnnoUpdateTime" resultType="java.sql.Timestamp">
+        SELECT max(update_date) FROM nkb.gene_annotation
+        where gene_id IN (select gene_id from nkb.ncbi_gene where gene_symbol=#{gene}) and do_id IN
+        <foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
+            #{item2}
+        </foreach>
+    </select>
 
-	<select id="getWesMutation" resultType="java.util.Map">
-		SELECT Gene_knownGene as gene, chr as chrom, ExonicFunc_knownGene as impact, substring_index(ori_variant, ' ', 1) as transcript, substring_index(substring_index(ori_variant, ' ', 2), ' ', -1) as exon, substring_index(substring_index(ori_variant, ' ', 3), ' ', -1) as codon_change, if(locate('p.',ori_variant) > 0,substring_index(ori_variant, ' ', -1),'/') as aa_change, mutFreq as VAF FROM omics.snp_indel_file WHERE (report = 1 or report is null) and file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and (file_type='SNP' or file_type='Indel') and status='Loaded')
-		union
-		SELECT gene,chrom,impact,transcript,exon,codon_change,aa_change,VAF FROM omics.wes_mutation_file WHERE file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type='Wes_Mutation' and status='Loaded')
-  	</select>
+    <select id="getVariantAnnoUpdateTime" resultType="java.sql.Timestamp">
+        SELECT max(update_date) FROM nkb.variant_annotation where var_id = #{mutID} and do_id IN
+        <foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
+            #{item2}
+        </foreach>
+    </select>
 
-	<select id="getAllMutationByReportId" resultType="java.util.Map">
-		SELECT gene,mutFreq,ori_variant,variant,ExonicFunc,transcript,'体系' as type from this_genetic_marker_en7_vw2 WHERE report_id = #{report_id}
-  		UNION
-  		SELECT Gene as gene, Zygosity as mutFreq, ori_variant as ori_variant, variant as variant, ExonicFunc AS ExonicFunc,Transcript as transcript,'胚系' as type FROM cr_evw WHERE report_id = #{report_id}
-  		order by gene
-  	</select>
+    <select id="getOtherADrugListByIdList" resultType="java.util.Map">
+        <!--SELECT drug_id FROM nkb_var_drug_anno_view
+          WHERE (evidence_phase = 'Approved' or evidence_phase = 'Guildline recommended') and gene_variant_id in
+          <foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
+              #{item1}
+          </foreach>
+          and (anno_disease_id not in
+          <foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
+              #{item2}
+          </foreach>
+          )  and lang=#{lang}
+          and mutation_type in (#{mutation_type},"S/G")-->
+        SELECT annotation_id, gene_variant_id, gene_symbol, gene_variant, drug_id, drug_name, anno_disease_id,
+        anno_disease_name, relationship, annotation,evidence_phase_id,evidence_phase,has_previous_clinical_result, give,
+        unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date,other_test_required
+        FROM nkb_var_drug_anno_view
+        WHERE evidence_phase_id = 24 and lang = #{lang} and mutation_type in (#{mutation_type},"S/G")
+        and gene_variant_id in
+        <foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
+            #{item1}
+        </foreach>
+        and anno_disease_id not in
+        <foreach collection="list2" item="item2" index="index2" open="(" close=")" separator=",">
+            #{item2}
+        </foreach>
+        <if test="!list3.isEmpty()">
+            and anno_disease_id not in
+            <foreach collection="list3" item="item3" index="index3" open="(" close=")" separator=",">
+                #{item3}
+            </foreach>
+        </if>
+    </select>
+    <select id="getClinicalTrial" resultType="java.util.Map">
+        SELECT clinical_trial_id,
+        #{lang} as lang,
+        if(#{lang}=1, official_title_chinese, official_title) as title,
+        phase,
+        if(#{lang}=1, condition_chinese, recruiting_condition) as recruiting_condition,
+        inclusion_criteria,
+        exclusion_criteria,
+        if(#{lang}=1, location_chinese, location) as `location`,
+        CASE phase when 'Phase IV' then 6
+        when 'Phase III' then 5
+        when 'Phase II/III' then 4
+        when 'Phase II' then 3
+        when 'Phase I/II' then 2
+        when 'Phase I' then 1
+        when 'Unknown' then 0
+        end as order_num,
+        #{drug_name} as drug_name,
+        unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
+        FROM nkb.clinical_trial
+        where (recruiting_status = 'Recruiting' or recruiting_status = 'Enrolling by invitation') and checking_status_id
+        = 2 and clinical_trial_id IN
+        (SELECT clinical_trial_id FROM nkb.variant_drug_anno_trial WHERE
+        annotation_id=#{annotation_id})
+        AND clinical_trial_id not in (select clinical_trial_id from
+        nkb.clinical_trial_exclude_disease where disease_id in
+        <foreach collection="diseaseIdList" item="item" index="index"
+                 open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        ) order by order_num desc
+    </select>
+    <select id="getdMMRByReportIdAndGene" resultType="java.util.Map">
+        SELECT Gene        as gene,
+               Zygosity    as mutFreq,
+               ori_variant as ori_variant,
+               variant     as variant,
+               ExonicFunc  AS ExonicFunc,
+               '胚系'      as type
+        FROM cr_evw
+        WHERE report_id = #{report_id}
+          and gene = #{gene}
+        UNION
+        SELECT gene, mutFreq, ori_variant, variant, ExonicFunc, '体系' as type
+        from this_genetic_marker_en7_vw2
+        WHERE report_id = #{report_id}
+          and gene = #{gene}
+        ORDER BY mutFreq DESC
+    </select>
 
-	<select id="getChemicalData" resultType="java.util.Map">
-  		SELECT drug_name,drug_name_chinese,rs_id,position,ref,calling,evidence,type,gene,phenotype,translation,cancer_type,allele_info1,allele1,trans1,tox1,
-  		eff1,allele_info2,allele2,trans2,tox2,eff2,allele_info3,allele3,trans3,tox3,eff3,PMID
-  		FROM chemical_data
-  	</select>
+    <select id="getHotByReportIdAndGene" resultType="java.util.Map">
+        SELECT gene, mutFreq, ori_variant, variant, ExonicFunc, transcript, '体系' as type
+        from this_genetic_marker_en7_vw2
+        WHERE report_id = #{report_id}
+        ORDER BY mutFreq DESC
+    </select>
 
-	<select id="getChemicalData2" resultType="java.util.Map">
-  		SELECT drug_name,drug_name_chinese,drug_class,rs_id,chr,position,ref,calling,evidence,type,gene,phenotype,translation,cancer_type,allele_info1,allele1,trans1,tox1,
-  		eff1,allele_info2,allele2,trans2,tox2,eff2,allele_info3,allele3,trans3,tox3,eff3,PMID
-  		FROM chemical_data2
-  	</select>
+    <!--<select id="getHotCRByReportIdAndGene" resultType="java.util.Map">
+        SELECT Gene as gene, Zygosity as mutFreq, ori_variant as ori_variant, variant as variant, ExonicFunc AS ExonicFunc, '胚系' as type FROM cr_evw WHERE report_id = #{report_id}
+      </select>-->
+    <select id="getHotCRByReportIdAndGene" resultType="java.util.Map">
+        SELECT cr.Gene        as gene,
+               cr.Zygosity    as mutFreq,
+               cr.ori_variant as ori_variant,
+               cr.variant     as variant,
+               cr.ExonicFunc  AS ExonicFunc,
+               Transcript     as transcript,
+               '胚系'         as type
+        FROM cr_evw cr
+                 join rp_cr cp on cr.Gene = cp.Gene and cr.ori_variant = cp.ori_mutation
+        WHERE cr.report_id = #{report_id}
+          and cp.Clinical_significance != 4 and cp.Clinical_significance != 5
+    </select>
 
-	<select id="getChemicalData2ByCancerType" resultType="java.util.Map">
-  		SELECT drug_name,drug_name_chinese,drug_class,rs_id,chr,position,ref,calling,evidence,type,gene,phenotype,translation,cancer_type,allele_info1,allele1,trans1,tox1,
-  		eff1,allele_info2,allele2,trans2,tox2,eff2,allele_info3,allele3,trans3,tox3,eff3,PMID
-  		FROM chemical_data2
-  		WHERE cancer_type like concat('%',#{cancer_type},'%')
-  	</select>
+    <select id="getImmuneRelatedGene" resultType="java.util.Map">
+        SELECT gene, info
+        from gene_subset
+        where subclass = #{subclass}
+    </select>
 
-	<select id="getComplexMutationById" resultType="java.util.Map">
-		select gene_variant_id,gene_symbol as gene,gene_variant as variant,ori_variant,'.' as cosmic, '.' as mutFreq
-		from nkb.gene_variant_evw
-		WHERE gene_symbol = "Complex" and checking_status != "Obsolete" and gene_variant_id IN
-		<foreach collection="geneVariantIdList" item="item" index="index" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-	</select>
-	<select id="getApprovedDrugDataByDiseaseIdList" resultType="MmApprovedDrug">
-		SELECT approved_id,disease,drug,indication,institution
-		FROM approved_drug_data
-		WHERE disease = '实体瘤' or disease_id in
-		<foreach collection="diseaseIdList" item="item" index="index1" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-	</select>
-	<select id="getApprovedDrugDataByLikeSarcoma" resultType="MmApprovedDrug">
-		SELECT approved_id,disease,drug,indication,institution
-		FROM approved_drug_data
-		WHERE disease like '%肉瘤%'
-		or disease in
-		<foreach collection="diseaseList" item="item" index="index1" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-		or disease_id in
-		<foreach collection="diseaseIdList" item="item" index="index1" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-	</select>
-	<select id="getApprovedDrugDataBySarcoma" resultType="MmApprovedDrug">
-		SELECT approved_id,disease,drug,indication,institution
-		FROM approved_drug_data
-		WHERE disease in
-		<foreach collection="diseaseList" item="item" index="index1" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-		or disease_id in
-		<foreach collection="diseaseIdList" item="item" index="index1" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-	</select>
-	<select id="getApprovedDrugDataByDiseaseList" resultType="MmApprovedDrug">
-		SELECT approved_id,disease,drug,indication,institution
-		FROM approved_drug_data
-		WHERE disease in
-		<foreach collection="diseaseList" item="item" index="index1" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-	</select>
-	<select id="getApprovedDrugData" resultType="MmApprovedDrug">
-		SELECT approved_id,disease,drug,indication,institution FROM approved_drug_data
-	</select>
+    <select id="getReportName" resultType="String">
+        SELECT json_extract(report_detail,'$') as report_detail from analysis_report ar
+        INNER JOIN sample_file sf on ar.subbarcode = sf.subbarcode
+        INNER JOIN disease_class dc on ar.primary_cancer_id = dc.class_id
+        where CONCAT(ar.report_file_path,ar.report_filename) is not null and sf.customer is not null and ar.status =
+        "报告发送成功"
+        <if test="product_name!=null and product_name!=''">
+            and ar.product_name = #{product_name}
+        </if>
+        <if test="customer!=null and customer!=''">
+            and sf.customer = #{customer}
+        </if>
+        <if test="analysis_date_B!=null and analysis_date_B!=''">
+            and ar.report_time &gt; #{analysis_date_B}
+        </if>
+        <if test="analysis_date_N!=null and analysis_date_N!=''">
+            and ar.report_time &lt; #{analysis_date_N}
+        </if>
+    </select>
+
+    <select id="getReportInfo" resultType="java.util.Map">
+        SELECT ar.report_id as report_id,ar.subbarcode as subbarcode,ar.product_name as product_name,ar.analysis_date as
+        analysis_date from analysis_report ar
+        INNER JOIN sample_file sf on ar.subbarcode = sf.subbarcode
+        INNER JOIN disease_class dc on ar.primary_cancer_id = dc.class_id
+        where CONCAT(ar.report_file_path,ar.report_filename) is not null and sf.customer is not null and ar.status =
+        "报告发送成功"
+        <if test="product_name!=null and product_name!=''">
+            and ar.product_name = #{product_name}
+        </if>
+        <if test="customer!=null and customer!=''">
+            and sf.customer = #{customer}
+        </if>
+        <if test="analysis_date_B!=null and analysis_date_B!=''">
+            and ar.report_time &gt; #{analysis_date_B}
+        </if>
+        <if test="analysis_date_N!=null and analysis_date_N!=''">
+            and ar.report_time &lt; #{analysis_date_N}
+        </if>
+    </select>
+
+    <update id="updateReportDetail">
+        update analysis_report
+        set report_detail=#{report_detail}
+        where report_id = #{report_id}
+    </update>
+    <select id="getParentDiseaseList2" resultType="java.util.Map">
+        SELECT do_id, disease_name, disease_name_chinese, disease_description, parent_do_id, parent_disease_name,
+        parent_disease_chinese
+        FROM nkb_disease_parent_evw
+        WHERE do_id IN
+        <foreach collection="diseaseIdList" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="getClnsigIdByGeneAndVariant" resultType="Integer">
+        SELECT clnsig_id
+        FROM nkb.gene_variant_evw
+        WHERE gene_symbol = #{gene}
+          AND gene_variant = #{variant}
+    </select>
+
+    <select id="getGeneDescByGeneAndVariant" resultType="java.util.Map">
+        SELECT description, description_chinese
+        FROM nkb.gen_gene_variant_desc_vw
+        WHERE gene_symbol = #{gene}
+          AND gene_variant = #{variant}
+    </select>
+
+    <select id="gethotGeneDrug" resultType="java.util.Map">
+        SELECT gene, info
+        from gene_subset
+        where subclass = #{subclass}
+          and info = #{info}
+    </select>
+
+    <select id="getWesMutation" resultType="java.util.Map">
+        SELECT Gene_knownGene                                                                as gene,
+               chr                                                                           as chrom,
+               ExonicFunc_knownGene                                                          as impact,
+               substring_index(ori_variant, ' ', 1)                                          as transcript,
+               substring_index(substring_index(ori_variant, ' ', 2), ' ', -1)                as exon,
+               substring_index(substring_index(ori_variant, ' ', 3), ' ', -1)                as codon_change,
+               if(locate('p.', ori_variant) > 0, substring_index(ori_variant, ' ', -1), '/') as aa_change,
+               mutFreq                                                                       as VAF
+        FROM omics.snp_indel_file
+        WHERE (report = 1 or report is null)
+          and file_id IN (SELECT file_id
+                          FROM omics.data_file_status
+                          WHERE subbarcode = #{subbarcode}
+                            and analysis_date = #{analysis_date}
+                            and product_name = #{product_name}
+                            and (file_type = 'SNP' or file_type = 'Indel')
+                            and status = 'Loaded')
+        union
+        SELECT gene,
+               chrom,
+               impact,
+               transcript,
+               exon,
+               codon_change,
+               aa_change,
+               VAF
+        FROM omics.wes_mutation_file
+        WHERE file_id IN (SELECT file_id
+                          FROM omics.data_file_status
+                          WHERE subbarcode = #{subbarcode}
+                            and analysis_date = #{analysis_date}
+                            and product_name = #{product_name}
+                            and file_type = 'Wes_Mutation'
+                            and status = 'Loaded')
+    </select>
+
+    <select id="getAllMutationByReportId" resultType="java.util.Map">
+        SELECT gene, mutFreq, ori_variant, variant, ExonicFunc, transcript, '体系' as type
+        from this_genetic_marker_en7_vw2
+        WHERE report_id = #{report_id}
+        UNION
+        SELECT Gene        as gene,
+               Zygosity    as mutFreq,
+               ori_variant as ori_variant,
+               variant     as variant,
+               ExonicFunc  AS ExonicFunc,
+               Transcript  as transcript,
+               '胚系'      as type
+        FROM cr_evw
+        WHERE report_id = #{report_id}
+        order by gene
+    </select>
+
+    <select id="getChemicalData" resultType="java.util.Map">
+        SELECT drug_name,
+               drug_name_chinese,
+               rs_id,
+               position,
+               ref,
+               calling,
+               evidence,
+               type,
+               gene,
+               phenotype, translation, cancer_type, allele_info1, allele1, trans1, tox1, eff1, allele_info2, allele2, trans2, tox2, eff2, allele_info3, allele3, trans3, tox3, eff3, PMID
+        FROM chemical_data
+    </select>
+
+    <select id="getChemicalData2" resultType="java.util.Map">
+        SELECT drug_name,
+               drug_name_chinese,
+               drug_class,
+               rs_id,
+               chr,
+               position,
+               ref,
+               calling,
+               evidence,
+               type,
+               gene,
+               phenotype, translation, cancer_type, allele_info1, allele1, trans1, tox1, eff1, allele_info2, allele2, trans2, tox2, eff2, allele_info3, allele3, trans3, tox3, eff3, PMID
+        FROM chemical_data2
+    </select>
+
+    <select id="getChemicalData2ByCancerType" resultType="java.util.Map">
+        SELECT drug_name,
+               drug_name_chinese,
+               drug_class,
+               rs_id,
+               chr,
+               position,
+               ref,
+               calling,
+               evidence,
+               type,
+               gene,
+               phenotype, translation, cancer_type, allele_info1, allele1, trans1, tox1, eff1, allele_info2, allele2, trans2, tox2, eff2, allele_info3, allele3, trans3, tox3, eff3, PMID
+        FROM chemical_data2
+        WHERE cancer_type like concat('%', #{cancer_type}, '%')
+    </select>
+
+    <select id="getComplexMutationById" resultType="java.util.Map">
+        select gene_variant_id,gene_symbol as gene,gene_variant as variant,ori_variant,'.' as cosmic, '.' as mutFreq
+        from nkb.gene_variant_evw
+        WHERE gene_symbol = "Complex" and checking_status != "Obsolete" and gene_variant_id IN
+        <foreach collection="geneVariantIdList" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+    <select id="getApprovedDrugDataByDiseaseIdList" resultType="MmApprovedDrug">
+        SELECT approved_id,disease,drug,indication,institution
+        FROM approved_drug_data
+        WHERE disease = '实体瘤' or disease_id in
+        <foreach collection="diseaseIdList" item="item" index="index1" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+    <select id="getApprovedDrugDataByLikeSarcoma" resultType="MmApprovedDrug">
+        SELECT approved_id,disease,drug,indication,institution
+        FROM approved_drug_data
+        WHERE disease like '%肉瘤%'
+        or disease in
+        <foreach collection="diseaseList" item="item" index="index1" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        or disease_id in
+        <foreach collection="diseaseIdList" item="item" index="index1" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+    <select id="getApprovedDrugDataBySarcoma" resultType="MmApprovedDrug">
+        SELECT approved_id,disease,drug,indication,institution
+        FROM approved_drug_data
+        WHERE disease in
+        <foreach collection="diseaseList" item="item" index="index1" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        or disease_id in
+        <foreach collection="diseaseIdList" item="item" index="index1" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+    <select id="getApprovedDrugDataByDiseaseList" resultType="MmApprovedDrug">
+        SELECT approved_id,disease,drug,indication,institution
+        FROM approved_drug_data
+        WHERE disease in
+        <foreach collection="diseaseList" item="item" index="index1" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+    <select id="getApprovedDrugData" resultType="MmApprovedDrug">
+        SELECT approved_id, disease, drug, indication, institution
+        FROM approved_drug_data
+    </select>
     <select id="getApprovedDrugDataByDisease" resultType="MmApprovedDrug">
-		SELECT approved_id,disease,drug,indication,institution FROM approved_drug_data WHERE disease = #{disease}
-	</select>
+        SELECT approved_id, disease, drug, indication, institution
+        FROM approved_drug_data
+        WHERE disease = #{disease}
+    </select>
 
 
-	<select id="getEWSR1imgBase64Str" resultType="java.lang.String">
-		SELECT
-		    a.file_text AS imgBase64Str
-		FROM
-			data_file_status a
-		WHERE
-			a.subbarcode = #{subbarcode}
-		  AND a.analysis_date = #{analysis_date}
-		  AND a.product_name = #{product_name}
-		  AND a.file_type = 'EWSR1_PIC';
+    <select id="getEWSR1imgBase64Str" resultType="java.lang.String">
+        SELECT a.file_text AS imgBase64Str
+        FROM data_file_status a
+        WHERE a.subbarcode = #{subbarcode}
+          AND a.analysis_date = #{analysis_date}
+          AND a.product_name = #{product_name}
+          AND a.file_type = 'EWSR1_PIC';
 
-	</select>
-	<select id="getEWSR1DataInfo" resultType="com.novo.report.beans.EWSR1File">
-		SELECT
-			ef.tumor_cell_ratio,
-			ef.break_signal_positive_ratio,
-			ef.detection,
-			ef.examiner,
-			ef.auditor
-		FROM
-			ewsr1_file ef
-		JOIN
-			omics.data_file_status dfs
-		ON
-			ef.file_id = dfs.file_id
-		WHERE
-			dfs.subbarcode = #{subbarcode}
-		  AND dfs.analysis_date = #{analysis_date}
-		  AND dfs.product_name = #{product_name}
-		  AND dfs.file_type = 'EWSR1';
-	</select>
-	<select id="getTROP2HEBase64Str" resultType="java.lang.String">
-		SELECT
-			a.file_text AS imgBase64Str
-		FROM
-			data_file_status a
-		WHERE
-			a.subbarcode = #{subbarcode}
-		  AND a.analysis_date = #{analysis_date}
-		  AND a.product_name = #{product_name}
-		  AND a.file_type = 'HE_PIC';
-	</select>
-	<select id="getTROP2PDBase64Str" resultType="java.lang.String">
-		SELECT
-			a.file_text AS imgBase64Str
-		FROM
-			data_file_status a
-		WHERE
-			a.subbarcode = #{subbarcode}
-		  AND a.analysis_date = #{analysis_date}
-		  AND a.product_name = #{product_name}
-		  AND a.file_type = 'PD_PIC';
-	</select>
-	<select id="getTROP2yinkongBase64Str" resultType="java.lang.String">
-		SELECT
-			a.file_text AS imgBase64Str
-		FROM
-			data_file_status a
-		WHERE
-			a.subbarcode = #{subbarcode}
-		  AND a.analysis_date = #{analysis_date}
-		  AND a.product_name = #{product_name}
-		  AND a.file_type = 'yinkong_PIC';
-	</select>
-	<select id="getTROP2yangkongHEBase64Str" resultType="java.lang.String">
-		SELECT
-			a.file_text AS imgBase64Str
-		FROM
-			data_file_status a
-		WHERE
-			a.subbarcode = #{subbarcode}
-		  AND a.analysis_date = #{analysis_date}
-		  AND a.product_name = #{product_name}
-		  AND a.file_type = 'yangkong_PIC';
-	</select>
-	<select id="getTROP2DataInfo" resultType="com.novo.report.beans.TROP2File">
-		SELECT
-			tf.patient_id,
-			tf.tumor_cell_ratio,
-			tf.tumor_cell_count_over_100,
-			tf.microscopic_desc,
-			tf.level0,
-			tf.level1,
-			tf.level2,
-			tf.level3,
-			tf.HScore,
-			tf.examiner,
-			tf.auditor
-		FROM
-			trop2_file tf
-		JOIN
-			omics.data_file_status dfs
-		ON
-			tf.file_id = dfs.file_id
-		WHERE
-			dfs.subbarcode = #{subbarcode}
-		  AND dfs.analysis_date = #{analysis_date}
-		  AND dfs.product_name = #{product_name}
-		  AND dfs.file_type = 'TROP2';
-	</select>
-	<select id="getMGMTDataInfo" resultType="java.lang.String">
-		SELECT
-			mf.detection
-		FROM
-			mgmt_file mf
-				JOIN
-			data_file_status dfs ON mf.file_id = dfs.file_id
-		WHERE
-			dfs.subbarcode = #{subbarcode}
-		  AND dfs.analysis_date = #{analysis_date}
-		  AND dfs.product_name = #{product_name}
-		  AND dfs.file_type = 'MGMT'
-	</select>
+    </select>
+    <select id="getEWSR1DataInfo" resultType="com.novo.report.beans.EWSR1File">
+        SELECT ef.tumor_cell_ratio,
+               ef.break_signal_positive_ratio,
+               ef.detection,
+               ef.examiner,
+               ef.auditor
+        FROM ewsr1_file ef
+                 JOIN
+             omics.data_file_status dfs
+             ON
+                 ef.file_id = dfs.file_id
+        WHERE dfs.subbarcode = #{subbarcode}
+          AND dfs.analysis_date = #{analysis_date}
+          AND dfs.product_name = #{product_name}
+          AND dfs.file_type = 'EWSR1';
+    </select>
+    <select id="getTROP2HEBase64Str" resultType="java.lang.String">
+        SELECT a.file_text AS imgBase64Str
+        FROM data_file_status a
+        WHERE a.subbarcode = #{subbarcode}
+          AND a.analysis_date = #{analysis_date}
+          AND a.product_name = #{product_name}
+          AND a.file_type = 'HE_PIC';
+    </select>
+    <select id="getTROP2PDBase64Str" resultType="java.lang.String">
+        SELECT a.file_text AS imgBase64Str
+        FROM data_file_status a
+        WHERE a.subbarcode = #{subbarcode}
+          AND a.analysis_date = #{analysis_date}
+          AND a.product_name = #{product_name}
+          AND a.file_type = 'PD_PIC';
+    </select>
+    <select id="getTROP2yinkongBase64Str" resultType="java.lang.String">
+        SELECT a.file_text AS imgBase64Str
+        FROM data_file_status a
+        WHERE a.subbarcode = #{subbarcode}
+          AND a.analysis_date = #{analysis_date}
+          AND a.product_name = #{product_name}
+          AND a.file_type = 'yinkong_PIC';
+    </select>
+    <select id="getTROP2yangkongHEBase64Str" resultType="java.lang.String">
+        SELECT a.file_text AS imgBase64Str
+        FROM data_file_status a
+        WHERE a.subbarcode = #{subbarcode}
+          AND a.analysis_date = #{analysis_date}
+          AND a.product_name = #{product_name}
+          AND a.file_type = 'yangkong_PIC';
+    </select>
+    <select id="getTROP2DataInfo" resultType="com.novo.report.beans.TROP2File">
+        SELECT tf.patient_id,
+               tf.tumor_cell_ratio,
+               tf.tumor_cell_count_over_100,
+               tf.microscopic_desc,
+               tf.level0,
+               tf.level1,
+               tf.level2,
+               tf.level3,
+               tf.HScore,
+               tf.examiner,
+               tf.auditor
+        FROM trop2_file tf
+                 JOIN
+             omics.data_file_status dfs
+             ON
+                 tf.file_id = dfs.file_id
+        WHERE dfs.subbarcode = #{subbarcode}
+          AND dfs.analysis_date = #{analysis_date}
+          AND dfs.product_name = #{product_name}
+          AND dfs.file_type = 'TROP2';
+    </select>
+    <select id="getMGMTDataInfo" resultType="java.lang.String">
+        SELECT mf.detection
+        FROM mgmt_file mf
+                 JOIN
+             data_file_status dfs ON mf.file_id = dfs.file_id
+        WHERE dfs.subbarcode = #{subbarcode}
+          AND dfs.analysis_date = #{analysis_date}
+          AND dfs.product_name = #{product_name}
+          AND dfs.file_type = 'MGMT'
+    </select>
+    <select id="getPendingReports" resultType="com.novo.report.vo.AnalysisReportVO">
+        SELECT report_id,
+               subbarcode,
+               product_name,
+               created_by,
+               analysis_date,
+               report_filename,
+               status
+        FROM omics.analysis_report
+        WHERE report_date IS NOT NULL
+          AND status != '报告发送成功'
+		  AND analysis_date = #{analysisDate}
+        <if test="subbarcode != null and subbarcode != ''">
+            AND subbarcode = #{subbarcode}
+        </if>
+        LIMIT #{pageNo}, #{pageSize}
+    </select>
 </mapper>

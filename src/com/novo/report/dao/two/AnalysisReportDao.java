@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.novo.report.beans.*;
+import com.novo.report.query.AnalysisReportQuery;
+import com.novo.report.vo.AnalysisReportVO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -610,4 +612,11 @@ public interface AnalysisReportDao {
     String getMGMTDataInfo(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
 
+    /**
+     * 获取待审核报告
+     * @param analysisDate
+     * @param subbarcode
+     * @return
+     */
+    List<AnalysisReportVO> getPendingReports(AnalysisReportQuery analysisReportQuery);
 }

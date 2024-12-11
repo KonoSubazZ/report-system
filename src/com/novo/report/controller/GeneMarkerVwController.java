@@ -26,6 +26,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.novo.report.utils.TranslateUtil;
 
+ /**
+  * NGS报告管理
+  */
  @Controller
 @RequestMapping("geneMarkerVw")
 public class GeneMarkerVwController {
@@ -133,7 +136,16 @@ public class GeneMarkerVwController {
 			return "ngs/previewReportList2";
 		}
 	}
-	
+
+	 /**
+	  * 获取报告预览数据
+	  * 匹配最新库（突变、用药、module: 0）|| 匹配木块花（MSI、module: 1）
+	  * @param httpServletRequest
+	  * @param currentNgsAvailable 当前报告参数
+	  * @param model 模板回显数据
+	  * @return
+	  * @throws Exception
+	  */
 	@RequestMapping("getGeneMarkerData")
 	public String getGeneMarkerData(HttpServletRequest httpServletRequest, CurrentNgsAvailableData currentNgsAvailable, Model model) throws Exception {
 		User user = (User) httpServletRequest.getSession().getAttribute("user");
@@ -1056,15 +1068,24 @@ public class GeneMarkerVwController {
 		}
 	}
 
-	 // 获取QC质控信息
+	 /**
+	  * 获取 QC(DNA、RNA、HRD) 质控信息
+	  * @param currentNgsAvailable 当前报告参数
+	  * @param model 模板回显数据
+	  */
 	public void getQC(CurrentNgsAvailableData currentNgsAvailable, Model model) {
-		// QC质控信息
+		// QC-DNA 质控信息
 		Map qc = analysisReportDao.getQC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
-		//QC RNA质控信息
+
+		// QC-RNA 质控信息
 		Map rna = analysisReportDao.getQCRNA(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
-		//QC HRD质控信息
+
+		// QC-HRD 质控信息
 		Map hrd = analysisReportDao.getQCHRD(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
+
+		// 样本信息
 		SampleFile sf = sampleFileService.getSampleFileBySubbarcode(currentNgsAvailable.getSubbarcode());
+
 		// 实验QC以样本模板上传的样本信息为主
 		boolean flag = false;
 		if (sf != null && qc != null) {
@@ -1213,8 +1234,15 @@ public class GeneMarkerVwController {
 		model.addAttribute("analysis_report", analysis_report);
 		return "ngs/reviewAndSendReport";
 	}
-	
-	//更新rp_cr表
+	 @RequestMapping("review")
+	 public Object review(CurrentNgsAvailableData currentNgsAvailableData,Model model) {
+		 AnalysisReport analysis_report = analysisReportDao.getReportFileNameByReportId(currentNgsAvailableData.getReport_id());
+		 model.addAttribute("currentNgsAvailableData", currentNgsAvailableData);
+		 model.addAttribute("analysis_report", analysis_report);
+		 return "ngs/review";
+	 }
+
+	 //更新rp_cr表
 	@RequestMapping("updateRpCr")	
 	@ResponseBody
 	public Map updateRpCr(@RequestParam Map map, @RequestParam("userAccount") String userAccount,

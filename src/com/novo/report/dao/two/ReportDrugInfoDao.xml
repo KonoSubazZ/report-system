@@ -78,7 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</foreach>
 		)
   	</select>
-	<select id="selectOneApprovedByDrugChineseName" resultType="java.util.Map">
+	 <select id="selectOneApprovedByDrugChineseName" resultType="java.util.Map">
 		SELECT drug_id,drug_name,disease_id,if(CFDA=1,concat(drug_name,'*'),drug_name) as drug_name2,CAST(cfda AS SIGNED) as cfda,approved,drug_approval_description as approval_desc,unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date
 		from nkb_approved_drug_evw
 		WHERE drug_name = #{drug_name} and lang = #{lang} and disease_id = #{disease_id}
