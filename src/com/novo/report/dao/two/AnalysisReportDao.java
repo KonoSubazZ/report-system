@@ -614,8 +614,7 @@ public interface AnalysisReportDao {
 
     /**
      * 获取待审核报告
-     * @param analysisDate
-     * @param subbarcode
+     * @param analysisReportQuery
      * @return
      */
     List<AnalysisReportVO> getPendingReports(AnalysisReportQuery analysisReportQuery);
