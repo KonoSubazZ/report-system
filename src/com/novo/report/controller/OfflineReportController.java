@@ -325,6 +325,11 @@ public class OfflineReportController {
 
             copyto = new String[ccSet.size()];
             ccSet.toArray(copyto);
+
+            // 20241105 需求去除收件人 cdyyjyjczx@163.com 的抄送邮箱
+            if (sf.getEmailaddress().contains("cdyyjyjczx@163.com")){
+                copyto = null;
+            }
             //主题
             String subject = "请查收诺禾致源的检测报告，姓名：" + sf.getPerson_name() + "-" + offlineReport.getSubbarcode() + ", 送检单位：" + sf.getCustomer();
             //内容

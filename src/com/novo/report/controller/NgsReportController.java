@@ -163,8 +163,9 @@ public class NgsReportController {
      */
     @ResponseBody
     @RequestMapping(value = "/getPendingReports", method = RequestMethod.GET)
-    public Result<List<AnalysisReportVO>> getPendingReports(AnalysisReportQuery analysisReportQuery)
+    public Result<List<AnalysisReportVO>> getPendingReports(AnalysisReportQuery analysisReportQuery, HttpServletRequest request)
     {
+        User user = (User) request.getSession().getAttribute("user");
         List<AnalysisReportVO> analysisReportList = analysisReportDao.getPendingReports(analysisReportQuery);
         return  Result.success(analysisReportList);
     }

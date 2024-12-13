@@ -50,11 +50,11 @@ public class AnalysisReportVO {
 
     // Getters and Setters
 
-    public Integer getReportId() {
+    public Integer getReport_id() {
         return reportId;
     }
 
-    public void setReportId(Integer reportId) {
+    public void setReport_id(Integer reportId) {
         this.reportId = reportId;
     }
 
@@ -66,35 +66,35 @@ public class AnalysisReportVO {
         this.subbarcode = subbarcode;
     }
 
-    public String getProductName() {
+    public String getProduct_name() {
         return productName;
     }
 
-    public void setProductName(String productName) {
+    public void setProduct_name(String productName) {
         this.productName = productName;
     }
 
-    public String getCreatedBy() {
+    public String getCreated_by() {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
+    public void setCreated_by(String createdBy) {
         this.createdBy = createdBy;
     }
 
-    public Date getAnalysisDate() {
+    public Date getAnalysis_date() {
         return analysisDate;
     }
 
-    public void setAnalysisDate(Date analysisDate) {
+    public void setAnalysis_date(Date analysisDate) {
         this.analysisDate = analysisDate;
     }
 
-    public String getReportFilename() {
+    public String getReport_filename() {
         return reportFilename;
     }
 
-    public void setReportFilename(String reportFilename) {
+    public void setReport_filename(String reportFilename) {
         this.reportFilename = reportFilename;
     }
 
@@ -106,19 +106,19 @@ public class AnalysisReportVO {
         this.status = status;
     }
 
-    public String getBioinfoChecker() {
+    public String getBioinfo_checker() {
         return bioinfoChecker;
     }
 
-    public void setBioinfoChecker(String bioinfoChecker) {
+    public void setBioinfo_checker(String bioinfoChecker) {
         this.bioinfoChecker = bioinfoChecker;
     }
 
-    public Date getBioinfoCheckTime() {
+    public Date getBioinfo_checkTime() {
         return bioinfoCheckTime;
     }
 
-    public void setBioinfoCheckTime(Date bioinfoCheckTime) {
+    public void setBioinfo_checkTime(Date bioinfoCheckTime) {
         this.bioinfoCheckTime = bioinfoCheckTime;
     }
 

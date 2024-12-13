@@ -37,7 +37,10 @@
 <body>
 <style>
     .layui-input {
-        border-color: rgba(221, 221, 221, 0.5);
+        border-color: rgb(204,204,204);
+    }
+    .layui-col-xs3 {
+        width: 20%;
     }
 </style>
 <div class="review" id="review" style="width: 100%;height: 100vh;background-color: #FFFFFF;">
@@ -56,8 +59,7 @@
                             <div class="layui-inline">
                                 <label class="layui-form-label">分析时间：</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" class="layui-input" id="ID-laydate-demo" placeholder="选择分析时间" style="border-color: red"
-                                 >
+                                    <input type="text" class="layui-input" id="ID-laydate-demo" placeholder="选择分析时间" >
                                 </div>
                             </div>
                         </div>
@@ -69,7 +71,7 @@
                                     <div class="layui-input-prefix">
                                         样本：
                                     </div>
-                                    <input type="text" placeholder="请输入样本编号" class="layui-input" style="border-color: rgba(221, 221, 221, 0.5)">
+                                    <input type="text" placeholder="请输入样本编号" class="layui-input">
                                 </div>
                             </div>
                         </div>
@@ -91,15 +93,23 @@
     </div>
 </div>
 
-
 <script>
-
     layui.use(['table', 'dropdown'], function () {
-        var element = layui.element;
-        var laydate = layui.laydate;
+        let element = layui.element;
+        let laydate = layui.laydate;
+        let table = layui.table;
 
-        var table = layui.table;
-        var dropdown = layui.dropdown;
+        // 渲染
+        laydate.render({
+            elem: '#ID-laydate-demo',
+            value: new Date(), // 设置默认日期为当前日期
+            format: 'yyyy-MM-dd', // 可选：设置日期格式（如果需要特定格式）
+            done: function(value, date, endDate){
+                console.log('日期选择完成后的值:', value);
+                date = value; // 更新日期值
+            }
+        });
+
         // 渲染
         table.render({
             elem: '#ID-table-demo-parse',
@@ -129,13 +139,27 @@
             height: 315
         });
 
-        // 渲染
-        laydate.render({
-            elem: '#ID-laydate-demo',
-            value: new Date(), // 设置默认日期为当前日期
-            format: 'yyyy-MM-dd' // 可选：设置日期格式（如果需要特定格式）
+        let date = $('#ID-laydate-demo').val();
+        $.ajax({
+            url: `${pageContext.request.contextPath}/ngs/getPendingReports?analysisDate=${date}&pageNo=1&pageSize=10`, // 替换为你的接口地址
+            method: 'GET',
+            success: function(response) {
+                // 使用 table.render 渲染表格
+                table.render({
+                    elem: '#dataTable',
+                    data: response.data, // 接口返回的数据
+                    cols: [[
+                        { field: 'id', title: 'ID', width: 100 },
+                        { field: 'name', title: '名称', width: 200 },
+                        { field: 'age', title: '年龄', width: 100 }
+                    ]],
+                    page: true // 开启分页（分页需自行处理）
+                });
+            },
+            error: function() {
+                alert('数据加载失败');
+            }
         });
-
         // tab 切换前的事件
         element.on('tabBeforeChange(test-hash)', function (data) {
             console.log(data.elem); // 得到当前的 tab 容器
@@ -144,8 +168,8 @@
             console.log(data.to.index); // 得到切换后的 tab 项所在下标
             console.log(data.to.id); // 得到切换后的 tab 项所在ID
             if (data.to.id === 'home') return false; // 返回 false 时阻止切换到对应的选项卡
+            console.log('当前日期值:', $('#ID-laydate-demo').val());
         });
-
 
     });
 </script>

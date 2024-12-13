@@ -142,6 +142,7 @@ public class ReportCrServiceImpl implements ReportCrService {
             }
             reportVarDrugUpdateTime = new Timestamp(reportVarDrug.getUpdate_date().getTime());
         }
+
         if (varUnknown != null) {
             Timestamp tempTime = new Timestamp(Long.valueOf((varUnknown.get("update_date").toString())) * 1000);
             if (reportVarDrugUpdateTime.before(tempTime)) {

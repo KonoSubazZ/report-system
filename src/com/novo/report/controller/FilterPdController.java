@@ -40,7 +40,8 @@ public class FilterPdController {
 			User user = (User) httpServletRequest.getSession().getAttribute("user");
 			filterPd.setChecked_by(user.getUser_account());
 			filterPd.setChecked_date(DateUtil.getSystemTime());
-			filterPdService.updatePd(filterPd);
+			filterPdService.
+					updatePd(filterPd);
 			map.put("success", true);
         }catch (Exception e) {
             e.printStackTrace();
