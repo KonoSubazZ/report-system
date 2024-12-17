@@ -68,9 +68,35 @@ public class LifeController {
 	
 	@RequestMapping("lifeMain")
 	public String lifeMain(CurrentNgsAvailableData currentNgsAvailable, Model model,HttpServletRequest request, HttpServletResponse response) throws IOException {
-		AnalysisReport analysisReport =new AnalysisReport();
+		AnalysisReport analysisReport = new AnalysisReport();
+		Integer reportId = currentNgsAvailable.getReport_id();
+
+		// 20241216 从新系统跳转过来,默认插入一条报告记录
+		if (reportId == null){
+
+			// 静态数据初始化
+			currentNgsAvailable.setLife("Life");
+			currentNgsAvailable.setIllumina("Illumina");
+			currentNgsAvailable.setPageNo(1);
+			currentNgsAvailable.setPlatform("Illumina");
+			currentNgsAvailable.setProduct_name_show(currentNgsAvailable.getProduct_name());
+
+			String username = currentNgsAvailable.getUser();
+			analysisReport.setSubbarcode(currentNgsAvailable.getSubbarcode());
+			analysisReport.setPlatform(currentNgsAvailable.getPlatform());
+			analysisReport.setProduct_name(currentNgsAvailable.getProduct_name());
+			analysisReport.setAnalysis_date(currentNgsAvailable.getAnalysis_date());
+			analysisReport.setAnalyzer(username);
+			analysisReport.setStatus("");
+			analysisReport.setCreated_by(username);
+			analysisReport.setCreated_date(DateUtil.getSystemTime());
+			analysisReport.setUpdate_date(DateUtil.getSystemTime());
+			lifeService.addAnalysisReport(analysisReport);
+			currentNgsAvailable.setReport_id(analysisReport.getReport_id());
+		}
+
 		Integer count = analysisReportDao.getCountBySubbarcodeAndAnalysisDate(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
-		if(currentNgsAvailable.getReport_id() == 0 && count == 0){
+		if(currentNgsAvailable.getReport_id() != null && currentNgsAvailable.getReport_id() == 0 && count == 0){
 			analysisReport.setSubbarcode(currentNgsAvailable.getSubbarcode());
 			analysisReport.setPlatform(currentNgsAvailable.getPlatform());
 			analysisReport.setProduct_name(currentNgsAvailable.getProduct_name());
@@ -95,7 +121,8 @@ public class LifeController {
 				}
 			}
 		}
-		if(currentNgsAvailable.getProduct_id()==null){
+
+		if(currentNgsAvailable.getProduct_id() == null){
 			Integer productId = analysisReportDao.getProductIdByReportId(currentNgsAvailable.getReport_id());
 			currentNgsAvailable.setProduct_id(productId);
 		}
