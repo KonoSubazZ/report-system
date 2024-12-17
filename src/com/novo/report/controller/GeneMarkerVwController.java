@@ -1213,6 +1213,21 @@ public class GeneMarkerVwController {
 		model.addAttribute("analysis_report", analysis_report);
 		return "ngs/reviewAndSendReport";
 	}
+
+	 /**
+	  *
+	  * 跳转到审核界面
+	  * @param currentNgsAvailableData
+	  * @param model
+	  * @return
+	  */
+	 @RequestMapping("review")
+	 public Object review(CurrentNgsAvailableData currentNgsAvailableData,Model model) {
+		 AnalysisReport analysis_report = analysisReportDao.getReportFileNameByReportId(currentNgsAvailableData.getReport_id());
+		 model.addAttribute("currentNgsAvailableData", currentNgsAvailableData);
+		 model.addAttribute("analysis_report", analysis_report);
+		 return "ngs/review";
+	 }
 	
 	//更新rp_cr表
 	@RequestMapping("updateRpCr")	

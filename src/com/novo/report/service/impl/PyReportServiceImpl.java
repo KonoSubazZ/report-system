@@ -3709,8 +3709,8 @@ public class PyReportServiceImpl implements PyReportService {
                 String[] oriVariantArr = oriVariant.split(" ");
                 String mutFreqStr = mutationType.equals("拷贝数变异") ? "  ( 拷贝数：" + mutFreq + ")" : "  ( 丰度：" + mutFreqString + ")";
                 int len = oriVariantArr.length;
-
-                if ("突变".equals(mutationType) || "缺失".equals(mutationType)) {
+                // fix 20241217 snpindel 显示不正确
+                if ("突变".equals(mutationType) || "缺失".equals(mutationType) || "插入".equals(mutationType)) {
                     String region = StringUtils.isNotBlank(exon)
                             ? exon + "外显子"
                             : oriVariantArr[len - 2].replaceAll("\\D+", "") + "内含子";
