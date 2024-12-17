@@ -1223,9 +1223,14 @@ public class GeneMarkerVwController {
 	  */
 	 @RequestMapping("review")
 	 public Object review(CurrentNgsAvailableData currentNgsAvailableData,Model model) {
+
+		 // 查询样本相关信息
 		 AnalysisReport analysis_report = analysisReportDao.getReportFileNameByReportId(currentNgsAvailableData.getReport_id());
+		 SampleFile sampleFile = sampleFileDao.selectSampleFileBySubbarcode(currentNgsAvailableData.getSubbarcode());
+
 		 model.addAttribute("currentNgsAvailableData", currentNgsAvailableData);
 		 model.addAttribute("analysis_report", analysis_report);
+		 model.addAttribute("sampleFile", sampleFile);
 		 return "ngs/review";
 	 }
 	

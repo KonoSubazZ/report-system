@@ -2883,7 +2883,9 @@ public class PyReportServiceImpl implements PyReportService {
         int geneRearrangementSize = 0;
         int geneRearrangementVariationSize2 = 0;
         List<Map> sarcomaTyping = new ArrayList<>();
-        if (diseaseName.contains("肉瘤") && !isblood || currentNgsAvailable.getModuleFlag().contains("肉瘤分子分型")) {
+
+        // 20241217 修复辅助肉瘤判断空指针
+        if ((diseaseName.contains("肉瘤") && !isblood) || (currentNgsAvailable.getModuleFlag() != null && currentNgsAvailable.getModuleFlag().contains("肉瘤分子分型"))) {
             sarcomaFlag = true;
             List<MmSarcomaTyping> mmSarcomaTypings = moduleModificationAllDao.selectMmSarcomaTypingByReportId(currentNgsAvailable.getReport_id());
             if (!mmSarcomaTypings.isEmpty()) {
