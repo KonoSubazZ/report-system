@@ -4,7 +4,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.novo.report.dao.two.AnalysisReportDao">
-	
+	<update id="updateStatusByReportId">
+		update analysis_report set status=#{status} where report_id=#{report_id}
+	</update>
+
 	<update id="updateAnalysisReport">
 		update analysis_report set chem_cancer=#{chem_cancer},analyzer=#{analyzer},tested_date=#{tested_date},tested_by=#{tested_by},
 			checked_date=#{checked_date},checked_by=#{checked_by},report_date=#{report_date},
@@ -20,21 +23,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updateAnalysisReportByReport">
 		UPDATE analysis_report set product_id = #{product_id}, primary_cancer_id = #{primary_cancer_id}, product_name = #{product_name} where report_id = #{report_id}
 	</update>
-	
+
 	<select id="getReportById" resultType="AnalysisReport">
-		select report_id,subbarcode,platform,product_name,analysis_date,product_id,primary_cancer_id,tested_date,
-			tested_by,analyzer,checked_date,checked_by,
-			report_date,report_filename,report_file_path,small_report_file_path,status,
-			created_by,created_date,update_by,update_date
-		from analysis_report where report_id =#{report_id}
+		select report_id,
+			   subbarcode,
+			   platform,
+			   product_name,
+			   analysis_date,
+			   product_id,
+			   primary_cancer_id,
+			   tested_date,
+			   tested_by,
+			   analyzer,
+			   checked_date,
+			   checked_by,
+			   report_date,
+			   report_time,
+			   report_filename,
+			   report_file_path,
+			   small_report_file_path,
+			   status,
+			   created_by,
+			   created_date,
+			   update_by,
+			   update_date
+		from analysis_report
+		where report_id = #{report_id}
 	</select>
 	
 	<select id="getReportFileNameByReportId" resultType="AnalysisReport">
-		select report_filename,report_file_path,send_way,filename91360,file_path91360 from analysis_report where report_id=#{report_id}
+		select report_filename,report_file_path,send_way,filename91360,file_path91360,status from analysis_report where report_id=#{report_id}
 	</select>
 	
 	<select id="getAnalysisReportById" resultType="AnalysisReport">
-		SELECT report_id,product_id,primary_cancer_id,report_filename,bioinfo_checker,bioinfo_check_time,match_time,send_way from analysis_report where report_id =#{report_id}
+		SELECT report_id,product_id,primary_cancer_id,report_filename,report_time,bioinfo_checker,bioinfo_check_time,match_time,send_way from analysis_report where report_id =#{report_id}
 	</select>
 	
 	<select id="getReportDetailById" resultType="java.util.Map">
@@ -709,4 +731,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND dfs.product_name = #{product_name}
 		  AND dfs.file_type = 'MGMT'
 	</select>
+
+
 </mapper>

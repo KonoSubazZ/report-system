@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.novo.report.beans.*;
+import com.novo.report.common.Result;
 import com.novo.report.utils.*;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
@@ -25,8 +26,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,12 +36,15 @@ import com.novo.report.service.LifeService;
 import com.novo.report.service.NgsReportService;
 import com.novo.report.service.PyReportService;
 import com.novo.report.service.SampleFileService;
-import com.novo.report.webservices.GenericServicesSoap;
 import sun.misc.BASE64Encoder;
 
 @Controller
 @RequestMapping("ngs")
 public class NgsReportController {
+
+//    @Value("${server.base.url}")
+//    private Integer BASE_URL;
+
     @Autowired
     private NgsReportService ngsReportService;
     @Autowired
@@ -705,5 +709,80 @@ public class NgsReportController {
         fileInputStream.close();
         bufferedInputStream.close();
     }
+
+    /**
+     * 预览pdf
+     * @param reportId
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping("/previewPdf")
+    public void previewPdf(@RequestParam("reportId") Integer reportId, HttpServletResponse response) throws IOException {
+
+        // 查询报告
+        AnalysisReport report = analysisReportDao.getReportById(reportId);
+
+        File file = new File(report.getReport_file_path(), report.getReport_filename());
+
+        // 判断文件是否存在
+        if (!file.exists() || !file.isFile()) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.getWriter().write("File not found");
+            return;
+        }
+
+        // 设置响应头
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "inline; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
+        response.setContentLength((int) file.length());
+
+        // 将文件写入响应流
+        try (FileInputStream fis = new FileInputStream(file);
+             OutputStream os = response.getOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+            os.flush();
+        }
+    }
+
+
+    /**
+     * 更新报告状态
+     * @param report_id
+     * @param status
+     */
+    @RequestMapping("updateStatus")
+    @ResponseBody
+    public void updateStatus(Integer report_id, String status) {
+
+        analysisReportDao.updateStatusByReportId(report_id, status);
+    }
+
+    /**
+     * 获取pdf报告预览url
+     * @param reportId
+     * @return
+     */
+    @RequestMapping("/getPreviewUrl")
+    @ResponseBody
+    public Result<String> getPreviewUrl(@RequestParam("reportId") Integer reportId) {
+
+        // 查询报告
+        AnalysisReport report = analysisReportDao.getReportById(reportId);
+        if (report == null){
+            return Result.failure(500, "报告不存在");
+        }
+
+        String path = report.getReport_file_path();
+        String webappsSubpath = path.substring(path.indexOf("webapps") + "webapps".length() + 1);
+//        String previewUrl = BASE_URL + webappsSubpath + report.getReport_filename();
+        String BASE_URL = "http://172.20.1.34:8088/";
+        String previewUrl = BASE_URL + webappsSubpath + report.getReport_filename();
+        return Result.success(previewUrl);
+    }
+
 }
 

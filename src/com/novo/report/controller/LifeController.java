@@ -65,7 +65,16 @@ public class LifeController {
 
 	@Autowired
 	private LifeDao lifeDao;
-	
+
+	/**
+	 * 报告系统使用的页面
+	 * @param currentNgsAvailable
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping("lifeMain")
 	public String lifeMain(CurrentNgsAvailableData currentNgsAvailable, Model model,HttpServletRequest request, HttpServletResponse response) throws IOException {
 		AnalysisReport analysisReport = new AnalysisReport();
@@ -130,6 +139,13 @@ public class LifeController {
 		return "ngs/iframe";
 	}
 
+	/**
+	 * 一体机使用的内嵌页面
+	 * @param currentNgsAvailable
+	 * @param model
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping("lifeMain1")
 	public String lifeMain1(CurrentNgsAvailableData currentNgsAvailable, Model model,HttpServletRequest request) {
 		AnalysisReport analysisReport =new AnalysisReport();

@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import com.novo.report.beans.*;
 import com.novo.report.dao.two.*;
@@ -1225,11 +1224,11 @@ public class GeneMarkerVwController {
 	 public Object review(CurrentNgsAvailableData currentNgsAvailableData,Model model) {
 
 		 // 查询样本相关信息
-		 AnalysisReport analysis_report = analysisReportDao.getReportFileNameByReportId(currentNgsAvailableData.getReport_id());
+		 AnalysisReport analysisReport = analysisReportDao.getReportById(currentNgsAvailableData.getReport_id());
 		 SampleFile sampleFile = sampleFileDao.selectSampleFileBySubbarcode(currentNgsAvailableData.getSubbarcode());
 
 		 model.addAttribute("currentNgsAvailableData", currentNgsAvailableData);
-		 model.addAttribute("analysis_report", analysis_report);
+		 model.addAttribute("analysisReport", analysisReport);
 		 model.addAttribute("sampleFile", sampleFile);
 		 return "ngs/review";
 	 }

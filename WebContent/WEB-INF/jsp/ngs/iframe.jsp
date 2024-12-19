@@ -59,7 +59,7 @@
 		    <li><a href="#tabs-5" onclick="urlRun4();" style="cursor: pointer;">报告预览</a></li>
 		    <c:if test="${ user.role_id != 8 }">
 		    	<li><a href="#tabs-6" onclick="urlRun5();" style="cursor: pointer;">产生报告</a></li>
-				<li><a href="#tabs-8" onclick="urlRun7();" style="cursor: pointer;">审核</a></li>
+				<li><a href="#tabs-9" onclick="urlRun7();" style="cursor: pointer;">审核</a></li>
 				<li><a href="#tabs-7" onclick="urlRun6();" style="cursor: pointer;">发送报告</a></li>
 		    </c:if>
 		    <li style="margin-left: 300px"><a href="#tabs-8" onclick="fun_back();" id="button_back" >返回报告管理</a></li>
@@ -75,6 +75,8 @@
 			    <input type="hidden" name="status_show" value="${currentNgsAvailable.status_show}" id="status_show">
 		    </form>
 	        <script type="text/javascript">
+
+
 	        	function fun_back(){
 	       			$("#form_back").submit();
 	        	};
@@ -129,17 +131,18 @@
 	   		      objFrm.src = "${pageContext.request.contextPath}/geneMarkerVw/reviewAndSendReport?report_id=${currentNgsAvailable.report_id}&platform=${currentNgsAvailable.platform}&subbarcode=${currentNgsAvailable.subbarcode}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}&life=${currentNgsAvailable.life}&illumina=${currentNgsAvailable.illumina}&subbarcode_show=${currentNgsAvailable.subbarcode_show}&product_name_show=${currentNgsAvailable.product_name_show}&analysis_date_show=${currentNgsAvailable.analysis_date_show}&status=${currentNgsAvailable.status}&pageNo=${currentNgsAvailable.pageNo}";
 	   		      objFrm.style.display = "block";
 	    		}
-				function urlRun7(){
-					var objFrm = document.getElementById('review');
-					objFrm.src = "${pageContext.request.contextPath}/geneMarkerVw/review?report_id=${currentNgsAvailable.report_id}&platform=${currentNgsAvailable.platform}&subbarcode=${currentNgsAvailable.subbarcode}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}&life=${currentNgsAvailable.life}&illumina=${currentNgsAvailable.illumina}&subbarcode_show=${currentNgsAvailable.subbarcode_show}&product_name_show=${currentNgsAvailable.product_name_show}&analysis_date_show=${currentNgsAvailable.analysis_date_show}&status=${currentNgsAvailable.status}&pageNo=${currentNgsAvailable.pageNo}";
-					objFrm.style.display = "block";
-				}
+
 	        	function urlRun_4(data){
 	        		window.location.href="${pageContext.request.contextPath}/life/lifeMain?report_id="+data+"&platform=${currentNgsAvailable.platform}&subbarcode=${currentNgsAvailable.subbarcode}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}&product_id=${product.product_id}&life=${currentNgsAvailable.life}&illumina=${currentNgsAvailable.illumina}&subbarcode_show=${currentNgsAvailable.subbarcode_show}&product_name_show=${currentNgsAvailable.product_name_show}&analysis_date_show=${currentNgsAvailable.analysis_date_show}&pageNo=${currentNgsAvailable.pageNo}&falg=4";
 	    		}
 	        	function urlRun_5(data){
           		  window.location.href="${pageContext.request.contextPath}/life/lifeMain?report_id="+data+"&platform=${currentNgsAvailable.platform}&subbarcode=${currentNgsAvailable.subbarcode}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}&product_id=${product.product_id}&life=${currentNgsAvailable.life}&illumina=${currentNgsAvailable.illumina}&subbarcode_show=${currentNgsAvailable.subbarcode_show}&product_name_show=${currentNgsAvailable.product_name_show}&analysis_date_show=${currentNgsAvailable.analysis_date_show}&pageNo=${currentNgsAvailable.pageNo}&falg=5";
 	    		}
+				function urlRun7(){
+					var objFrm = document.getElementById('review');
+					objFrm.src = "${pageContext.request.contextPath}/geneMarkerVw/review?report_id=${currentNgsAvailable.report_id}&platform=${currentNgsAvailable.platform}&subbarcode=${currentNgsAvailable.subbarcode}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}&life=${currentNgsAvailable.life}&illumina=${currentNgsAvailable.illumina}&subbarcode_show=${currentNgsAvailable.subbarcode_show}&product_name_show=${currentNgsAvailable.product_name_show}&analysis_date_show=${currentNgsAvailable.analysis_date_show}&status=${currentNgsAvailable.status}&pageNo=${currentNgsAvailable.pageNo}";
+					objFrm.style.display = "block";
+				}
 	        	
 	        </script>
 		  <div id="tabs-1" style="height:782px;">
@@ -163,11 +166,18 @@
 		  <div id="tabs-7" style="height:782px;">
 		  	<iframe id="reviewAndSendReport" scrolling="auto" width="100%" height="100%" frameborder="0"></iframe>
 		  </div>
-			<div id="tabs-8" style="height:782px;">
+			<div id="tabs-9" style="height:782px;">
 				<iframe id="review" scrolling="auto" width="100%" height="100%" frameborder="0"></iframe>
 			</div>
 		</div>
 		<div class="overlay" style="display:none;"></div>
 		<div id="wait" style="display:none; z-index:1;position: absolute; margin: 0px; left: 50%; top: 50%; font-weight: bold; font-size: 20px; color: white;">正在加载数据...</div>
+		<script>
+			console.log("${currentNgsAvailable.report_id}");
+			// 跳转审核界面
+			if (${currentNgsAvailable.report_id} != null){
+				urlRun7();
+			}
+		</script>
 	</body>
 </html>

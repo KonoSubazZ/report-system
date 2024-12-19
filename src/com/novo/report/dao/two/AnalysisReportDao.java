@@ -609,5 +609,10 @@ public interface AnalysisReportDao {
      */
     String getMGMTDataInfo(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
+    /**
+     * 20241218 更新报告状态
+     * @param report_id
+     */
+    void updateStatusByReportId(@Param("report_id") Integer report_id,@Param("status") String status);
 
 }
