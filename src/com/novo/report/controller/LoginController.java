@@ -38,7 +38,14 @@ public class LoginController {
 		String session_id = request.getSession().getId();
 		System.err.println(session_id);
 		try{
-			User user = userService.login(user_account, MD5Util.MD5(encoded_password));
+			User user = null;
+			// 新增根据新系统跳转登录操作
+			if (encoded_password != null){
+				 user = userService.login(user_account, MD5Util.MD5(encoded_password));
+			}else{
+				user = userService.getByAccount(user_account);
+			}
+
 			if(user !=null){
 				if( "F".equals(user.getChecking_status())){
 					jsonMap.put("success", false);
@@ -51,7 +58,9 @@ public class LoginController {
 					request.getSession().setAttribute("user", user);
 //					request.getSession().setMaxInactiveInterval(7200);
 					request.getSession().setMaxInactiveInterval(-1);
+//					cookie.setHttpOnly(false);
 					userService.saveUserLogging(user.getUser_id(),session_id);
+
 					jsonMap.put("success", true);
 				}
 			}else {

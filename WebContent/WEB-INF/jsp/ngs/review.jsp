@@ -12,10 +12,10 @@
     <base href="${pageContext.request.scheme }://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/">
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/lib/layui/css/layui.css"/>
-    <!-- 引入 layui.css -->
-    <link href="//unpkg.com/layui@2.9.20/dist/css/layui.css" rel="stylesheet">
-    <!-- 引入 layui.js -->
-    <script src="//unpkg.com/layui@2.9.20/dist/layui.js"></script>
+    <%--    <!-- 引入 layui.css -->--%>
+    <%--    <link href="//unpkg.com/layui@2.9.20/dist/css/layui.css" rel="stylesheet">--%>
+    <%--    <!-- 引入 layui.js -->--%>
+    <%--    <script src="//unpkg.com/layui@2.9.20/dist/layui.js"></script>--%>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.form.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.validate.min.js"></script>
@@ -33,13 +33,11 @@
         border-radius: 4px 4px 0 0;
         border-bottom: solid 1px #ddd;
     }
-
     .panel {
         border: solid 1px #ddd;
         border-radius: 4px;
     }
-
-    #fileName:hover{
+    #fileName:hover {
         color: #0a84ff;
     }
 </style>
@@ -74,7 +72,7 @@
         <div class="layui-row" style="padding:12px 0;">
             <div class="layui-col-xs5" style="display: flex;">
                 <div style="width:100px">解读人</div>
-                <div>${analysisReport.created_by}</div>
+                <div>${analysisReport.analyzer}</div>
             </div>
             <div class="layui-col-xs5" style="display: flex;">
                 <div style="width:100px">解读日期</div>
@@ -84,11 +82,11 @@
         <div class="layui-row" style="padding:12px 0;">
             <div class="layui-col-xs5" style="display: flex;">
                 <div style="width:100px">审核人</div>
-                <div>${analysisReport.bioinfo_checker}</div>
+                <div>${analysisReport.report_checker}</div>
             </div>
             <div class="layui-col-xs5" style="display: flex;">
                 <div style="width:100px">审核日期</div>
-                <div>${analysisReport.bioinfo_check_time}</div>
+                <div>${analysisReport.report_check_time}</div>
             </div>
         </div>
         <div class="layui-row" style="padding:12px 0;">
@@ -96,34 +94,58 @@
                 <div style="width:100px">报告文件</div>
                 <div id="download" style="cursor: pointer;">
                     <%--                    <i class="layui-icon layui-icon-file" style="font-size: 20px; color: #1E9FFF;"></i> --%>
-                    <span id="fileName" onclick="previewPdf(${analysisReport.report_id})">${analysisReport.report_filename}</span>
+                    <span id="fileName"
+                          onclick="previewPdf(${analysisReport.report_id})">${analysisReport.report_filename}</span>
                     <i class="layui-icon layui-icon-link"
                        style="font-size: 20px; color: #1E9FFF;margin-left: 5px;" onclick="download()"></i>
                 </div>
             </div>
             <div class="layui-col-5" style="display: flex;position: relative">
-                <div class="layui-upload-drag" style="display: block;" id="ID-upload-demo-drag">
-                    <i class="layui-icon layui-icon-upload"></i>
-                    <div>点击上传报告，或将文件拖拽到此处</div>
-                    <div class="layui-hide" id="ID-upload-demo-preview">
-                        <i class="layui-icon layui-icon-form"
-                           style="font-size: 20px; color:#00AAEE;"></i>${analysisReport.report_filename}
+                <c:if test="${analysisReport.analyzer == currentNgsAvailableData.user}">
+                    <div class="layui-upload-drag" style="display: block;" id="ID-upload-demo-drag">
+                        <i class="layui-icon layui-icon-upload"></i>
+                        <div>点击上传报告，或将文件拖拽到此处</div>
+                        <div class="layui-hide" id="ID-upload-demo-preview">
+                            <i class="layui-icon layui-icon-form"
+                               style="font-size: 20px; color:#00AAEE;"></i>${analysisReport.report_filename}
+                        </div>
                     </div>
-                </div>
-                <div style="position: absolute;left: 330px;top: 95px;">
-                    <button type="button" class="layui-btn" id="updateReport">更换报告</button>
-                </div>
+                    <div style="position: absolute;left: 330px;top: 95px;">
+                        <button type="button" class="layui-btn" id="updateReport">更换报告</button>
+                    </div>
+                </c:if>
+                <c:if test="${analysisReport.analyzer != currentNgsAvailableData.user}">
+                    <textarea name="" placeholder="请输入审核备注，最多300字" class="layui-textarea"
+                              style="width: 480px;height: 150px"></textarea>
+                    <button type="button" class="layui-btn" style="margin-top: 110px">提交</button>
+                </c:if>
             </div>
         </div>
         <div class="layui-row" style="padding:15px 0;">
             <div class="layui-col-xs5" style="display: flex;">
-                <div style="width:100px" id="status">报告状态</div>
-                <div>${analysisReport.status}</div>
+                <div style="width:100px;align-self: center" id="status">报告状态</div>
+                <div>
+                    <span>${analysisReport.status}</span>
+                    <c:if test="${analysisReport.status=='报告审核未通过'}">
+                        <i class="layui-icon layui-icon-help" onclick="showReportMsg()"
+                           style="color: red; margin-left: 10px;font-size: 22px;cursor: pointer;">原因</i>
+                    </c:if></div>
             </div>
             <div class="layui-col-xs5" style="display: flex;">
-                <button type="button" class="layui-btn layui-bg-blue" onclick="submitReport()"><i
-                        class="layui-icon layui-icon-ok"></i>提交审核
-                </button>
+                <c:if test="${analysisReport.status=='报告生成成功'}">
+                    <<button type="button" class="layui-btn layui-bg-blue" onclick="submitReport()"><i
+                    class="layui-icon layui-icon-ok"></i>提交审核
+                    </button>
+                </c:if>
+                <c:if test="${analysisReport.analyzer != currentNgsAvailableData.user}">
+                    <button type="button" class="layui-btn layui-bg-blue" onclick="updateCheckStatus(35)"><i
+                            class="layui-icon layui-icon-ok-circle" ></i>审核通过
+                    </button>
+                    <button type="button" class="layui-btn layui-bg-red" onclick="updateCheckStatus(36)"><i
+                            class="layui-icon layui-icon-close-fill" ></i>审核不通过
+                    </button>
+                </c:if>
+
             </div>
         </div>
     </div>
@@ -137,7 +159,7 @@
         const hh = date.getHours().toString().padStart(2, '0'); // 获取小时
         const min = date.getMinutes().toString().padStart(2, '0'); // 获取分钟
         const ss = date.getSeconds().toString().padStart(2, '0'); // 获取秒钟
-        return yy+mm+dd;
+        return yy + mm + dd;
     }
 
     // 下载文件
@@ -216,9 +238,7 @@
     function submitReport() {
         // 初始化参数
         let upload_date = formatDate(new Date());
-        console.log(upload_date);
-        let username = "${analysisReport.created_by}";
-
+        let username = "${analysisReport.analyzer}";
         let product = "${analysisReport.product_name}";
         let sample_code = "${analysisReport.subbarcode}";
         // 32-待审核
@@ -266,22 +286,77 @@
         $.ajax({
             url: '${pageContext.request.contextPath}/ngs/getPreviewUrl',
             type: 'GET',
-            data: { reportId: ${analysisReport.report_id} }, // 前端传递路径
+            data: {reportId: ${analysisReport.report_id}}, // 前端传递路径
             success: function (res) {
-               if (res.code === 200){
-                   if (res.data.includes('.docx')) {
-                       return  layer.msg('暂不支持预览word文件，请下载后查看', {icon: 0, offset: ['100px', '500px'],time: 1000});
-                   }
-                   window.open(res.data);
-               }else {
-                   layer.msg(data.message, {time: 1000, icon: 0});
-               }
+                if (res.code === 200) {
+                    if (res.data.includes('.docx')) {
+                        return layer.msg('暂不支持预览word文件，请下载后查看', {
+                            icon: 0,
+                            offset: ['100px', '500px'],
+                            time: 1000
+                        });
+                    }
+                    window.open(res.data);
+                } else {
+                    layer.msg(data.message, {time: 1000, icon: 0});
+                }
             },
             error: function (xhr, status, error) {
                 console.error('Error:', error);
             },
         });
 
+    }
+
+    // 审核报告 通过、未通过
+    function updateCheckStatus(code) {
+
+        let upload_date = formatDate(new Date());
+        let username = "${analysisReport.analyzer}";
+        let product = "${analysisReport.product_name}";
+        let sample_code = "${analysisReport.subbarcode}";
+        // 32-待审核
+        let status = code;
+        let report_id = "${analysisReport.report_id}";
+        const URL = 'http://10.1.181.174:9098';
+        $.ajax({
+            type: "GET",
+            url: URL + "/report/update_sample_report_status/" + username + "/" + upload_date + "/" + product + "/" + sample_code + "/" + status + "/" + report_id,
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    let rstatus = code == 35 ? "报告审核通过" : "报告审核未通过";
+                    $.post("${pageContext.request.contextPath}/life/editStatus", {
+                        "report_id": "${currentNgsAvailableData.report_id}",
+                        "status": rstatus
+                    }, function (data) {
+                        if (data.flag) {
+                            layer.msg("更新报告状态成功", {time: 1000, icon: 1});
+                        } else {
+                            layer.msg("操作失败，请重新尝试操作", {time: 1000, icon: 0});
+                        }
+                    })
+                }
+
+            },
+            error: function (xhr, status, error) {
+                layer.msg("请求失败" + error, {time: 1000});
+            }
+        })
+
+
+    }
+
+    // 展示审核未通过备注
+    function showReportMsg() {
+        let index = layer.open({
+            type: 1,
+            area: ['420px', '240px'], // 宽高
+            offset: ['25%', '25%'],
+            content: '<div style="padding: 11px;">任意 HTML 内容</div>'
+        });
+
+        layer.title('审核未通过备注', index);
     }
 </script>
 </html>

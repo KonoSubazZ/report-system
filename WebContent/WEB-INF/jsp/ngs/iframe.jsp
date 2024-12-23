@@ -140,7 +140,7 @@
 	    		}
 				function urlRun7(){
 					var objFrm = document.getElementById('review');
-					objFrm.src = "${pageContext.request.contextPath}/geneMarkerVw/review?report_id=${currentNgsAvailable.report_id}&platform=${currentNgsAvailable.platform}&subbarcode=${currentNgsAvailable.subbarcode}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}&life=${currentNgsAvailable.life}&illumina=${currentNgsAvailable.illumina}&subbarcode_show=${currentNgsAvailable.subbarcode_show}&product_name_show=${currentNgsAvailable.product_name_show}&analysis_date_show=${currentNgsAvailable.analysis_date_show}&status=${currentNgsAvailable.status}&pageNo=${currentNgsAvailable.pageNo}";
+					objFrm.src = "${pageContext.request.contextPath}/geneMarkerVw/review?report_id=${currentNgsAvailable.report_id}&platform=${currentNgsAvailable.platform}&subbarcode=${currentNgsAvailable.subbarcode}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}&life=${currentNgsAvailable.life}&illumina=${currentNgsAvailable.illumina}&subbarcode_show=${currentNgsAvailable.subbarcode_show}&product_name_show=${currentNgsAvailable.product_name_show}&analysis_date_show=${currentNgsAvailable.analysis_date_show}&status=${currentNgsAvailable.status}&pageNo=${currentNgsAvailable.pageNo}&user=${currentNgsAvailable.user}&checker=${currentNgsAvailable.checker}";
 					objFrm.style.display = "block";
 				}
 	        	
@@ -173,11 +173,11 @@
 		<div class="overlay" style="display:none;"></div>
 		<div id="wait" style="display:none; z-index:1;position: absolute; margin: 0px; left: 50%; top: 50%; font-weight: bold; font-size: 20px; color: white;">正在加载数据...</div>
 		<script>
-			console.log("${currentNgsAvailable.report_id}");
-			// 跳转审核界面
-			if (${currentNgsAvailable.report_id} != null){
-				urlRun7();
-			}
+			<%--console.log("${currentNgsAvailable.report_id}");--%>
+			<%--// 跳转审核界面--%>
+			<%--if (${currentNgsAvailable.report_id} != null){--%>
+			<%--	urlRun7();--%>
+			<%--}--%>
 		</script>
 	</body>
 </html>

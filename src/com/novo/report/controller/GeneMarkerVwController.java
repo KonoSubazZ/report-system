@@ -14,6 +14,7 @@ import com.novo.report.utils.DateUtil;
 import com.novo.report.utils.ImmuneAllUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
@@ -79,6 +80,8 @@ public class GeneMarkerVwController {
 
 	 @Autowired
 	 private SampleFileDao sampleFileDao;
+
+
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping("getGeneMarker")
@@ -1221,7 +1224,7 @@ public class GeneMarkerVwController {
 	  * @return
 	  */
 	 @RequestMapping("review")
-	 public Object review(CurrentNgsAvailableData currentNgsAvailableData,Model model) {
+	 public Object review(CurrentNgsAvailableData currentNgsAvailableData, Model model, HttpServletRequest request) {
 
 		 // 查询样本相关信息
 		 AnalysisReport analysisReport = analysisReportDao.getReportById(currentNgsAvailableData.getReport_id());

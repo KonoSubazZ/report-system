@@ -28,8 +28,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getById" resultType="User">
      	select user_id,user_account,full_name,encoded_password,checking_status,role_id from user where user_id= #{user_id}
      </select>
-     
-    <update id="update">
+
+	<select id="getByAccount" resultType="com.novo.report.beans.User">
+		select user_id,user_account,full_name,encoded_password,checking_status,role_id from user where user_account= #{account}
+	</select>
+
+	<update id="update">
      		update user set user_account=#{user_account},full_name=#{full_name},role_id=#{role_id},checking_status=#{checking_status},update_by=#{update_by},update_date=#{update_date} where user_id=#{user_id}
     </update>
     

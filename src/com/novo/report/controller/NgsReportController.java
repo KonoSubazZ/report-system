@@ -750,15 +750,14 @@ public class NgsReportController {
 
 
     /**
-     * 更新报告状态
-     * @param report_id
-     * @param status
+     * 更新报告状态及审核人、审核时间
+     * @param analysisReport
      */
     @RequestMapping("updateStatus")
     @ResponseBody
-    public void updateStatus(Integer report_id, String status) {
+    public void updateStatus(AnalysisReport analysisReport) {
 
-        analysisReportDao.updateStatusByReportId(report_id, status);
+        analysisReportDao.updateStatusByReportId(analysisReport);
     }
 
     /**

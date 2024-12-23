@@ -7,7 +7,8 @@
 
 package com.novo.report.webservices;
 
-public class UserLogin  implements java.io.Serializable {
+public class
+UserLogin  implements java.io.Serializable {
     private java.lang.String userName;
 
     private java.lang.String password;

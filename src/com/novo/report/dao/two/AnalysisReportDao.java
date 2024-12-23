@@ -1,18 +1,17 @@
 package com.novo.report.dao.two;
 
-import java.util.List;
-import java.util.Map;
-
 import com.novo.report.beans.*;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Map;
 
 public interface AnalysisReportDao {
 
+    //    void updateCheckedReportById(AnalysisReport analysisReport);
     void updateAnalysisReport(AnalysisReport analysisReport);
 
     void updateAnalysisReportByReport(@Param("product_id") Integer product_id, @Param("primary_cancer_id") Integer primary_cancer_id, @Param("report_id") Integer report_id, @Param("product_name") String product_name);
@@ -602,6 +601,7 @@ public interface AnalysisReportDao {
 
     /**
      * 20241206 mgmt甲基化检测结果（阴 阳）
+     *
      * @param subbarcode
      * @param analysis_date
      * @param product_name
@@ -610,9 +610,10 @@ public interface AnalysisReportDao {
     String getMGMTDataInfo(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
     /**
-     * 20241218 更新报告状态
-     * @param report_id
+     * 20241218 更新报告状态及审核人、审核时间
+     *
+     * @param analysisReport
      */
-    void updateStatusByReportId(@Param("report_id") Integer report_id,@Param("status") String status);
+    void updateStatusByReportId(AnalysisReport analysisReport);
 
 }

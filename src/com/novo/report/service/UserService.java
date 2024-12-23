@@ -26,4 +26,6 @@ public interface UserService {
 	//保存用户登录信息
 	void saveUserLogging(Integer user_id,String session_id);
 
+	User getByAccount(String account);
+
 }

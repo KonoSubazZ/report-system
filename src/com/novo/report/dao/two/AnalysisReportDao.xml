@@ -5,7 +5,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="com.novo.report.dao.two.AnalysisReportDao">
 	<update id="updateStatusByReportId">
-		update analysis_report set status=#{status} where report_id=#{report_id}
+		update analysis_report
+		set status=#{status}
+		<if test="auditor != null and auditor != ''">
+			, bioinfo_checker=#{bioinfo_checker}
+		</if>
+		<if test="audit_time != null">
+			, bioinfo_check_time=#{audit_time}
+		</if>
+		where report_id=#{report_id}
 	</update>
 
 	<update id="updateAnalysisReport">
@@ -508,6 +516,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updateReportDetail">
 		update analysis_report set report_detail=#{report_detail} where report_id=#{report_id}
 	</update>
+
 	<select id="getParentDiseaseList2" resultType="java.util.Map">
 		SELECT do_id, disease_name, disease_name_chinese, disease_description, parent_do_id, parent_disease_name, parent_disease_chinese
 		FROM nkb_disease_parent_evw

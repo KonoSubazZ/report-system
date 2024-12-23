@@ -38,4 +38,6 @@ public interface UserDao {
   	void updatepwd(String password, Integer id);
   	//保存用户登录信息
 	void saveUserLogging(@Param("user_id")Integer user_id,@Param("session_id")String session_id);
+
+	User getByAccount(String account);
 }

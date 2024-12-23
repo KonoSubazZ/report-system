@@ -16,6 +16,11 @@ public class UserServiceImpl implements UserService {
 	private UserDao userDao;
 
 	@Override
+	public User getByAccount(String account) {
+		return userDao.getByAccount(account);
+	}
+
+	@Override
 	public PaginationVO<User> getAllUserByPage(PageBean condition) {
 		PaginationVO<User> paginationVO = new PaginationVO<User>();
 		paginationVO.setTotal(userDao.getTotal(condition));

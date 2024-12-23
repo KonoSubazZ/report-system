@@ -23,6 +23,26 @@ public class CurrentNgsAvailableData {
     private String status_show;
     private String user;
 
+    private String password;
+
+    private String checker;
+
+    public String getChecker() {
+        return checker;
+    }
+
+    public void setChecker(String checker) {
+        this.checker = checker;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getUser() {
         return user;
     }
