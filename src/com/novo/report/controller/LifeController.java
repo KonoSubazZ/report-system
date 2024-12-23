@@ -75,6 +75,11 @@ public class LifeController {
     public String lifeMain(CurrentNgsAvailableData currentNgsAvailable, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String user_account = currentNgsAvailable.getUser();
+
+        // 从新系统【审核】跳转过来
+        if (user_account == null){
+            user_account = currentNgsAvailable.getChecker();
+        }
         String encoded_password = currentNgsAvailable.getPassword();
         String checker = currentNgsAvailable.getChecker();
 

@@ -611,7 +611,7 @@
                                     let product = "${currentNgsAvailableData.product_name}";
                                     let sample_code = "${currentNgsAvailableData.subbarcode}";
                                     // 32-待审核
-                                    let status = 35;
+                                    let status = 32;
                                     let report_id = "${currentNgsAvailableData.report_id}";
                                     const URL = 'http://10.1.181.174:9098';
                                     $.ajax({
