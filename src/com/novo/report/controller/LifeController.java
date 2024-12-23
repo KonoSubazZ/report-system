@@ -83,8 +83,8 @@ public class LifeController {
         String encoded_password = currentNgsAvailable.getPassword();
         String checker = currentNgsAvailable.getChecker();
 
-        // 从新系统【解读】跳转过来
-        if (user_account == null || checker == null) {
+        // 从新系统【解读】跳转过来, 正常检查这两个字段是没有值的
+        if (user_account != null || checker != null) {
             loginController.login(user_account, encoded_password, request);
         }
 

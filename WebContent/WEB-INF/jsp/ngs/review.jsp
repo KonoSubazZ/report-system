@@ -266,14 +266,14 @@
     function updateReportStatus(reportId, status) {
         $.ajax({
             type: "POST", // 或者 "GET" 根据你的实际需求
-            url: "${pageContext.request.contextPath}/updateStatus", // 后端接口路径
+            url: "${pageContext.request.contextPath}/ngs/updateStatus", // 后端接口路径
             data: {
                 report_id: reportId,
                 status: status
             },
             success: function (response) {
                 $("#status").text(status);
-                // alert("状态更新成功！");
+                // alert("状态更新成功！");shen
             },
             error: function (xhr, status, error) {
                 // alert("请求失败：" + error);

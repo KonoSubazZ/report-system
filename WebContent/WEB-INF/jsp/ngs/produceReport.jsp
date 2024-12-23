@@ -572,7 +572,7 @@
                                                                     if (data > 0) {
                                                                         if (confirm("报告生成成功！是否立即下载文件？")) {
                                                                             // 更新新系统报告状态
-                                                                            updateStatus();
+                                                                            // updateStatus();
                                                                             window.location.href = "${pageContext.request.contextPath}/ngs/download?report_id=" + data;
                                                                         }
                                                                     } else {
