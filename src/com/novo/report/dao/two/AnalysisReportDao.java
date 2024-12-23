@@ -616,4 +616,10 @@ public interface AnalysisReportDao {
      */
     void updateStatusByReportId(AnalysisReport analysisReport);
 
+    /**
+     * 20241223 更新审核人
+     * @param checker
+     * @param reportId
+     */
+    void updateCheckerByReportId(@Param("report_checker") String checker,@Param("report_id") Integer reportId);
 }

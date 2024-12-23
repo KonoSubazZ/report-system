@@ -3624,6 +3624,10 @@ public class PyReportServiceImpl implements PyReportService {
         analysisReportStore.setReport_filename(pr.getReport_filename());
         analysisReportStore.setReport_detail(rtToJson);
         analysisReportStoreDao.insertAnalysisReportStore(analysisReportStore);
+
+        // 更新报告状态到新系统 改为前端调用接口
+        // WebserviceProxyUtils.updateStatus(currentNgsAvailable);
+
         // 发送状态到一体机
         if (pr.getFlag() != null && pr.getFlag() == 1) {
             WebserviceProxyUtils.status(analysisReport.getSubbarcode(), "report_name", String.valueOf(reportId));

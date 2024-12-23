@@ -153,7 +153,7 @@
 </body>
 <script>
     function formatDate(date) {
-        const yy = date.getFullYear().toString().slice(-2); // 获取年份的最后两位
+        const yy = date.getFullYear().toString(); // 获取年份的最后两位
         const mm = (date.getMonth() + 1).toString().padStart(2, '0'); // 获取月份，注意月份从0开始，所以要加1
         const dd = date.getDate().toString().padStart(2, '0'); // 获取日期
         const hh = date.getHours().toString().padStart(2, '0'); // 获取小时

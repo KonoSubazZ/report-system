@@ -1472,6 +1472,11 @@ public class ReportCrServiceImpl implements ReportCrService {
                     map.put("recruiting", "0");
                 }
                 Integer drug_id = analysisReportDao.getDrugId(drugName);
+
+                // TODO 暂时解决一下 待排查
+                if (diseaseName.equals("胰脏腺癌")){
+                    diseaseName = "胰腺腺癌";
+                }
                 Map disease = analysisReportDao.getDiseaseId(diseaseName);
                 Integer disease_id = Integer.valueOf(disease.get("do_id").toString());
                 Integer evidence_phase_id = analysisReportDao.getEvidencePhaseId(evidencePhase);

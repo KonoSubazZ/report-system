@@ -1,8 +1,12 @@
 package com.novo.report.utils;
 
+import com.novo.report.beans.CurrentNgsAvailableData;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class WebserviceProxyUtils {
     public static String httpURLGETCase(String methodUrl) {
@@ -109,6 +113,31 @@ public class WebserviceProxyUtils {
 //        String result = httpURLGETCase("http://10.168.4.236/index.php/Api/Reportid/report/subbarcode/"+ subbarcode +"/"+status_type+"/"+ status);
         String result = httpURLGETCase("http://172.20.1.34/index.php/Api/Reportid/report/subbarcode/"+ subbarcode +"/"+status_type+"/"+ status);
         System.out.println(subbarcode+"样本发送"+status+"状态结果："+result);
+    }
+
+    /**
+     * 更新样本状态到新系统
+     * @param currentNgsAvailable
+     *
+     */
+    public static void updateStatus(CurrentNgsAvailableData currentNgsAvailable) {
+        String user = currentNgsAvailable.getUser();
+        String product = currentNgsAvailable.getProduct_name();
+        String subbarcode = currentNgsAvailable.getSubbarcode();
+        Integer reportId = currentNgsAvailable.getReport_id();
+        String date = getCurrentDateFormatted();
+        String res = httpURLGETCase("http://10.1.181.174:9098/report/update_sample_report_status/" + user + "/" + date + "/" + product + "/" + subbarcode + "/" + reportId);
+        System.out.println("更新样本状态到新系统结果："+res);
+    }
+
+    /**
+     * 生成当前日期并格式化为 yyyyMMdd
+     * @return 格式化后的日期字符串
+     */
+    public static String getCurrentDateFormatted() {
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        return currentDate.format(formatter);
     }
 
     public static void main(String[] args) {

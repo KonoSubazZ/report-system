@@ -1137,7 +1137,7 @@ public class GeneMarkerVwController {
 	}
 	
 	@RequestMapping("produceReport")
-	public Object produceReport(CurrentNgsAvailableData currentNgsAvailableData,Model model) {
+	public Object produceReport(CurrentNgsAvailableData currentNgsAvailableData,Model model, HttpServletRequest request) {
 		Integer primary_cancer_id = lifeService.getPrimaryCancerIdByRID(currentNgsAvailableData.getReport_id());
 		Integer count = lifeService.getClassIdCount(currentNgsAvailableData.getSubbarcode());
 		DiseaseClass diseaseClass=null;
@@ -1190,6 +1190,10 @@ public class GeneMarkerVwController {
 		} else if (diseaseIdList.contains(1612) && diseaseId != 10000003) {
 			target_cancer = "乳腺癌";
 		}
+		// 获取解读人信息
+		User user = (User) request.getSession().getAttribute("user");
+		currentNgsAvailableData.setUser(user.getUser_account());
+
 		// 获取癌种模块信息
 		String moduleFlag = analysisReportDao.getModuleFlagByReportId(currentNgsAvailableData.getReport_id());
 		model.addAttribute("currentNgsAvailableData", currentNgsAvailableData);

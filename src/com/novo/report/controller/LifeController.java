@@ -78,7 +78,7 @@ public class LifeController {
         String encoded_password = currentNgsAvailable.getPassword();
         String checker = currentNgsAvailable.getChecker();
 
-        // 从新系统跳转过来
+        // 从新系统【解读】跳转过来
         if (user_account == null || checker == null) {
             loginController.login(user_account, encoded_password, request);
         }
@@ -86,7 +86,7 @@ public class LifeController {
         AnalysisReport analysisReport = new AnalysisReport();
         Integer reportId = currentNgsAvailable.getReport_id();
 
-        // 20241216 从新系统跳转过来,默认插入一条报告记录
+        // 20241216 从新系统【解读】跳转过来,插入一条报告记录
         if (reportId == null) {
 
             // 静态数据初始化
@@ -110,6 +110,7 @@ public class LifeController {
             currentNgsAvailable.setReport_id(analysisReport.getReport_id());
         }
 
+        // 报告系统检查插入 report 的逻辑
         Integer count = analysisReportDao.getCountBySubbarcodeAndAnalysisDate(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
         if (currentNgsAvailable.getReport_id() != null && currentNgsAvailable.getReport_id() == 0 && count == 0) {
             analysisReport.setSubbarcode(currentNgsAvailable.getSubbarcode());
@@ -148,6 +149,12 @@ public class LifeController {
             User user = (User) request.getSession().getAttribute("user");
             currentNgsAvailable.setUser(user.getUser_account());
         }
+
+        // 审核界面跳转过来,更新审核人
+        if (checker != null && reportId != null){
+            analysisReportDao.updateCheckerByReportId(checker, reportId);
+        }
+
         model.addAttribute("currentNgsAvailable", currentNgsAvailable);
         return "ngs/iframe";
     }
