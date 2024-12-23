@@ -33,10 +33,12 @@
         border-radius: 4px 4px 0 0;
         border-bottom: solid 1px #ddd;
     }
+
     .panel {
         border: solid 1px #ddd;
         border-radius: 4px;
     }
+
     #fileName:hover {
         color: #0a84ff;
     }
@@ -115,7 +117,7 @@
                     </div>
                 </c:if>
                 <c:if test="${analysisReport.analyzer != currentNgsAvailableData.user}">
-                    <textarea name="" placeholder="请输入审核备注，最多300字" class="layui-textarea"
+                    <textarea id="comment" placeholder="请输入审核备注，最多300字" class="layui-textarea"
                               style="width: 480px;height: 150px"></textarea>
                     <button type="button" class="layui-btn" style="margin-top: 110px">提交</button>
                 </c:if>
@@ -133,16 +135,16 @@
             </div>
             <div class="layui-col-xs5" style="display: flex;">
                 <c:if test="${analysisReport.status=='报告生成成功'}">
-                    <<button type="button" class="layui-btn layui-bg-blue" onclick="submitReport()"><i
-                    class="layui-icon layui-icon-ok"></i>提交审核
+                    <button type="button" class="layui-btn layui-bg-blue" onclick="submitReport()"><i
+                            class="layui-icon layui-icon-ok"></i>提交审核
                     </button>
                 </c:if>
                 <c:if test="${analysisReport.analyzer != currentNgsAvailableData.user}">
                     <button type="button" class="layui-btn layui-bg-blue" onclick="updateCheckStatus(35)"><i
-                            class="layui-icon layui-icon-ok-circle" ></i>审核通过
+                            class="layui-icon layui-icon-ok-circle"></i>审核通过
                     </button>
                     <button type="button" class="layui-btn layui-bg-red" onclick="updateCheckStatus(36)"><i
-                            class="layui-icon layui-icon-close-fill" ></i>审核不通过
+                            class="layui-icon layui-icon-close-fill"></i>审核不通过
                     </button>
                 </c:if>
 
@@ -238,7 +240,7 @@
     function submitReport() {
         // 初始化参数
         let upload_date = formatDate(new Date());
-        let username = "${analysisReport.analyzer}";
+        let username = "${analysisReport.report_checker}";
         let product = "${analysisReport.product_name}";
         let sample_code = "${analysisReport.subbarcode}";
         // 32-待审核
@@ -271,8 +273,16 @@
                 report_id: reportId,
                 status: status
             },
-            success: function (response) {
-                $("#status").text(status);
+            success: function (res) {
+                if (res.code === 200) {
+                    layer.msg('状态更新成功', {
+                        icon: 0,
+                        offset: ['100px', '500px'],
+                        time: 1000
+                    });
+                    $("#status").text(status);
+                }
+
                 // alert("状态更新成功！");shen
             },
             error: function (xhr, status, error) {
@@ -311,6 +321,14 @@
     // 审核报告 通过、未通过
     function updateCheckStatus(code) {
 
+        if (code == 36 && $("#comment").val() == "") {
+            layer.msg("请填写审核意见！", {
+                icon: 0,
+                offset: ['100px', '500px'],
+                time: 1000
+            });
+            return;
+        }
         let upload_date = formatDate(new Date());
         let username = "${analysisReport.analyzer}";
         let product = "${analysisReport.product_name}";
@@ -319,23 +337,39 @@
         let status = code;
         let report_id = "${analysisReport.report_id}";
         const URL = 'http://10.1.181.174:9098';
+
         $.ajax({
             type: "GET",
             url: URL + "/report/update_sample_report_status/" + username + "/" + upload_date + "/" + product + "/" + sample_code + "/" + status + "/" + report_id,
             dataType: "json",
             success: function (data) {
-                if (data) {
+                if (data.status == "success") {
                     let rstatus = code == 35 ? "报告审核通过" : "报告审核未通过";
                     $.post("${pageContext.request.contextPath}/life/editStatus", {
                         "report_id": "${currentNgsAvailableData.report_id}",
                         "status": rstatus
                     }, function (data) {
-                        if (data.flag) {
-                            layer.msg("更新报告状态成功", {time: 1000, icon: 1});
-                        } else {
-                            layer.msg("操作失败，请重新尝试操作", {time: 1000, icon: 0});
+                        layer.msg("更新报告状态成功", {time: 1000, icon: 1});
+                        // if (data.flag) {
+                        //     layer.msg("更新报告状态成功", {time: 1000, icon: 1});
+                        // } else {
+                        //     layer.msg("操作失败，请重新尝试操作", {time: 1000, icon: 0});
+                        // }
+                    });
+                    $.post("${pageContext.request.contextPath}/ngs/updateComment", {
+                        "report_id": "${analysisReport.report_id}",
+                        "comment": $("#comment").val()
+                    }, function (res) {
+                        if (res.code === 200) {
+                            layer.msg('更新备注成功', {
+                                icon: 0,
+                                offset: ['100px', '500px'],
+                                time: 1000
+                            });
                         }
-                    })
+                    });
+                } else {
+                    layer.msg(data.msg, {time: 1000, icon: 1});
                 }
 
             },
@@ -349,14 +383,23 @@
 
     // 展示审核未通过备注
     function showReportMsg() {
-        let index = layer.open({
-            type: 1,
-            area: ['420px', '240px'], // 宽高
-            offset: ['25%', '25%'],
-            content: '<div style="padding: 11px;">任意 HTML 内容</div>'
-        });
+        $.get(
+            "${pageContext.request.contextPath}/ngs/getComment",
+            {"report_id": "${analysisReport.report_id}"},
+            function (res) {
+              if (res.code === 200){
+                  let index = layer.open({
+                      type: 1,
+                      area: ['420px', '240px'], // 宽高
+                      offset: ['25%', '25%'],
+                      content: '<div style="padding: 11px;">${res.data}</div>'
+                  });
 
-        layer.title('审核未通过备注', index);
+                  layer.title('审核未通过备注', index);
+              }
+            }
+        )
+
     }
 </script>
 </html>

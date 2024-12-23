@@ -35,11 +35,11 @@ public class Result<T> {
     }
 
     // Getter 和 Setter 方法
-    public int getStatus() {
+    public int getCode() {
         return code;
     }
 
-    public void setStatus(int code) {
+    public void setCode(int code) {
         this.code = code;
     }
 

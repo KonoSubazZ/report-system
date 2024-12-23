@@ -622,4 +622,17 @@ public interface AnalysisReportDao {
      * @param reportId
      */
     void updateCheckerByReportId(@Param("report_checker") String checker,@Param("report_id") Integer reportId);
+
+    /**
+     * 更新审核失败原因
+     * @param reportId
+     */
+    void updateComment(@Param("comment") String comment,@Param("report_id")Integer reportId);
+
+    /**
+     * 获取审核失败原因
+     * @param reportId
+     * @return
+     */
+    String getComment(@Param("report_id")Integer reportId);
 }

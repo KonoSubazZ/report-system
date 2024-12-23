@@ -7,10 +7,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updateStatusByReportId">
 		update analysis_report
 		set status=#{status}
-		<if test="auditor != null and auditor != ''">
+		<if test="bioinfo_checker != null and bioinfo_checker != ''">
 			, bioinfo_checker=#{bioinfo_checker}
 		</if>
-		<if test="audit_time != null">
+		<if test="bioinfo_check_time != null">
 			, bioinfo_check_time=#{audit_time}
 		</if>
 		where report_id=#{report_id}
@@ -54,7 +54,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			   created_by,
 			   created_date,
 			   update_by,
-			   update_date
+			   update_date,
+			   report_checker,
+			   report_check_time
 		from analysis_report
 		where report_id = #{report_id}
 	</select>
@@ -520,6 +522,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updateCheckerByReportId">
 		update analysis_report set report_checker=#{report_checker} where report_id=#{report_id}
 	</update>
+	<update id="updateComment">
+		update analysis_report set comment=#{comment} where report_id=#{report_id}
+	</update>
 
 	<select id="getParentDiseaseList2" resultType="java.util.Map">
 		SELECT do_id, disease_name, disease_name_chinese, disease_description, parent_do_id, parent_disease_name, parent_disease_chinese
@@ -744,6 +749,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND dfs.product_name = #{product_name}
 		  AND dfs.file_type = 'MGMT'
 	</select>
-
+	<select id="getComment" resultType="java.lang.String">
+		SELECT
+			comment
+		FROM
+			analysis_report
+		WHERE
+			report_id = #{report_id}
+	</select>
 
 </mapper>

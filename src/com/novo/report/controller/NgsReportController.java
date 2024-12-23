@@ -755,9 +755,10 @@ public class NgsReportController {
      */
     @RequestMapping("updateStatus")
     @ResponseBody
-    public void updateStatus(AnalysisReport analysisReport) {
+    public Result<String> updateStatus(AnalysisReport analysisReport) {
 
         analysisReportDao.updateStatusByReportId(analysisReport);
+        return Result.success();
     }
 
     /**
@@ -781,6 +782,21 @@ public class NgsReportController {
         String BASE_URL = "http://172.20.1.34:8088/";
         String previewUrl = BASE_URL + webappsSubpath + report.getReport_filename();
         return Result.success(previewUrl);
+    }
+
+    @RequestMapping("/updateComment")
+    @ResponseBody
+    public Result<String> updateComment(@RequestParam("reportId") Integer reportId, String comment){
+
+            analysisReportDao.updateComment(comment, reportId);
+            return Result.success();
+    }
+    @RequestMapping("/getComment")
+    @ResponseBody
+    public Result<String> getComment(@RequestParam("reportId") Integer reportId){
+
+        String comment = analysisReportDao.getComment(reportId);
+        return Result.success(comment);
     }
 
 }
