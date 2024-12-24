@@ -124,6 +124,12 @@ public interface AnalysisReportDao {
 
     // 获取疾病Disease的父疾病；递归查询，直到没有父为止
 //	@Select("select do_id, disease_name, disease_name_chinese, synonyms_chinese, parent_do_id, parent_disease_name, parent_disease_chinese,checking_status, created_by, created_date, updated_by, updated_date from nkb.disease_evw where checking_status = 'Approved' and do_id=#{diseaseId}")
+
+    /**
+     * 获取疾病 diseaseId 的所有父疾病（一般为只有一个父癌种，特殊的有多个）
+     * @param diseaseId
+     * @return
+     */
     @Select("SELECT do_id, disease_name, disease_name_chinese, disease_description, parent_do_id, parent_disease_name, parent_disease_chinese\r\n" +
             "FROM nkb_disease_parent_evw\r\n" +
             "WHERE do_id=#{diseaseId}")

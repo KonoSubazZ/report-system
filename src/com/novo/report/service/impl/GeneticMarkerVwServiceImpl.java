@@ -159,9 +159,11 @@ public class GeneticMarkerVwServiceImpl implements GeneticMarkerVwService {
         // 获取diseaseId
         Map disease = analysisReportDao.getDiseaseId(diseaseName);
         Integer diseaseId = Integer.valueOf(disease.get("do_id").toString());
+
         List<Integer> diseaseIdList = new ArrayList<>();
         List<Integer> parentdiseaseIdList = new ArrayList<>();
         complexMutationService.getDiseaseList(diseaseId, diseaseIdList, parentdiseaseIdList);
+
         String gene = map.get("Gene") == null ? "" : map.get("Gene").toString();
         String exon = map.get("Exon") == null ? "" : map.get("Exon").toString();
         String cHGVS = map.get("cHGVS") == null ? "" : map.get("cHGVS").toString();

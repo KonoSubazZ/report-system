@@ -69,11 +69,11 @@ public class ReportCrServiceImpl implements ReportCrService {
     /**
      * 获取用药信息（暂时理解体细胞突变都有用药 胚系只有检出才有用药 待确认）
      * @param user
-     * @param diseaseId 本癌肿id
+     * @param diseaseId 本癌种 id
      * @param a 位点信息（基因 突变）
      * @param diseaseIdList 病种id列表
      * @param parentdiseaseIdList 父级癌种id列表
-     * @param Flag
+     * @param Flag 0 、1
      * @param lang
      * @param report_id
      * @throws IllegalAccessException

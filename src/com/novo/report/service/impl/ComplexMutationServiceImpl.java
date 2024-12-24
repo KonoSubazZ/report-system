@@ -662,6 +662,11 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         }
     }
 
+    /**
+     * 递归获取父癌种的id
+     * @param parentList
+     * @param parentIdList
+     */
     public void getParentId(List<Map> parentList, List<Integer> parentIdList) {
         for (Map map : parentList) {
             if (map.get("parent_do_id") != null) {
@@ -692,9 +697,16 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
 
     }
 
+    /**
+     * 获取所有的疾病id 子父级
+     * @param diseaseId
+     * @param diseaseIdList
+     * @param parentdiseaseIdList
+     */
     public void getDiseaseList(Integer diseaseId, List<Integer> diseaseIdList, List<Integer> parentdiseaseIdList) {
         diseaseIdList.add(diseaseId);
         parentdiseaseIdList.add(diseaseId);
+
         List<Map> parentDiseaseList = analysisReportDao.getParentDiseaseList(diseaseId);
         List<Integer> parentIdList = new ArrayList<>();
         getParentId(parentDiseaseList, parentIdList);

@@ -353,10 +353,10 @@
                             </div>
                             <div class="field">
                                 <c:choose>
-                                    <c:when test="${user.user_account=='houlitao'}"><input type="text" class="input w50"
+                                    <c:when test="${user.user_account=='huangmanqin'}"><input type="text" class="input w50"
                                                                                            value="1" name="tested_by"
                                                                                            placeholder="盖章版请输入检测人"/></c:when>
-                                    <c:when test="${user.user_account=='liuxiaomin'}"><input type="text"
+                                    <c:when test="${user.user_account=='wangxingsui'}"><input type="text"
                                                                                              class="input w50" value="2"
                                                                                              name="tested_by"
                                                                                              placeholder="盖章版请输入检测人"/></c:when>
