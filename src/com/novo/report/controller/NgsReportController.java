@@ -784,6 +784,12 @@ public class NgsReportController {
         return Result.success(previewUrl);
     }
 
+    /**
+     * 更新报告备注 (审核未通过添加)
+     * @param reportId
+     * @param comment
+     * @return
+     */
     @RequestMapping("/updateComment")
     @ResponseBody
     public Result<String> updateComment(@RequestParam("reportId") Integer reportId, String comment){
@@ -791,6 +797,12 @@ public class NgsReportController {
             analysisReportDao.updateComment(comment, reportId);
             return Result.success();
     }
+
+    /**
+     * 获取报告审核未通过备注
+     * @param reportId
+     * @return
+     */
     @RequestMapping("/getComment")
     @ResponseBody
     public Result<String> getComment(@RequestParam("reportId") Integer reportId){
