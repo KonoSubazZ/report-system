@@ -385,7 +385,7 @@
     function showReportMsg() {
         $.get(
             "${pageContext.request.contextPath}/ngs/getComment",
-            {"report_id": "${analysisReport.report_id}"},
+            {"reportId": "${analysisReport.report_id}"},
             function (res) {
               if (res.code === 200){
                   let index = layer.open({
