@@ -73,7 +73,7 @@ public class ReportCrServiceImpl implements ReportCrService {
      * @param a 位点信息（基因 突变）
      * @param diseaseIdList 病种id列表
      * @param parentdiseaseIdList 父级癌种id列表
-     * @param Flag 0 、1
+     * @param Flag 0 、1去知识库获取用药
      * @param lang
      * @param report_id
      * @throws IllegalAccessException
@@ -94,8 +94,13 @@ public class ReportCrServiceImpl implements ReportCrService {
         if (a.get("mutFreq") != null) {
             mutFreq = a.get("mutFreq").toString().equals(".") ? "0" : a.get("mutFreq").toString();
         }
+
+        // 获取位点突变id
         Integer mutationId = getMutationID(gene, variant);
+        // 获取突变list
         List<Integer> mutationIdList = getMutIdList(mutationId);
+
+        // 这一块暂时没有使用到
         String parent_mutID = a.get("parent_mutID") == null ? "-1" : a.get("parent_mutID").toString();
         if (!parent_mutID.equals("-1")) {
             String[] split = parent_mutID.split(",");
@@ -115,10 +120,13 @@ public class ReportCrServiceImpl implements ReportCrService {
 		*/
 		// 获取性别
         String gender = lifeService.getGender(report_id) == null ? "" : lifeService.getGender(report_id);
-        // 查询本地库，看该位点是否有靶向药物信息
+        // 查询本地库，看该位点是否有靶向药物信息、一般来说只有一条
         List<ReportVarDrug> varDrugs = reportVarDrugDao.selectRecord(gene, ori_variant, diseaseId, lang, gender);
+        // 查询本地库，未知临床意义或不报告的位点 ？？
         Map varUnknown = reportUnknownVarDao.selectRpUnknownVar(gene, ori_variant, diseaseId, lang);
         ReportVarDrug reportVarDrug = null;
+
+        // 本地库更新时间
         Timestamp reportVarDrugUpdateTime = new Timestamp(0);
         if (varDrugs == null || CollectionUtils.isEmpty(varDrugs)) {
             // 本地没有数据
@@ -130,7 +138,10 @@ public class ReportCrServiceImpl implements ReportCrService {
             reportVarDrug.setLang(lang);
             reportVarDrug.setGender(gender);
         } else {
+            // 本地有数据,获取第一条，这里不知道有没有其他数据 所以用list 取第一条;
             reportVarDrug = varDrugs.get(0);
+
+            // 将本地库的父mutID 拆分出来，并添加到mutationIdList中 (去重)
             if (reportVarDrug.getParent_mutID() != null && !"".equals(reportVarDrug.getParent_mutID())) {
                 String parent_mutID1 = reportVarDrug.getParent_mutID();
                 String[] split = parent_mutID1.split(";");
@@ -148,12 +159,15 @@ public class ReportCrServiceImpl implements ReportCrService {
                 reportVarDrugUpdateTime = tempTime;
             }
         }
+        //  InNKB ？？
         if (mutationId != null) {
             a.put("InNKB", "true");
             a.put("mapped_variant_id", mutationId);
         } else {
             a.put("InNKB", "false");
         }
+
+        // NKB更新时间
         Timestamp nkbUpdateTime = new Timestamp(0);
         nkbUpdateTime = getNkbUpdateTime(mutationIdList, gene, diseaseIdList);
         String has_drug = a.get("has_drug") == null ? "" : a.get("has_drug").toString();
@@ -527,7 +541,13 @@ public class ReportCrServiceImpl implements ReportCrService {
         }
     }
 
-    //由gene 和 variant找出在知识库中的mutationID
+    /**
+     * 由gene 和 variant找出在知识库中的mutationID
+     * variant 解释 p.R611Q 一般为 p点后缀，比如R611Q，但是有些时候没有，比如p.Arg611Gln，此时需要截取到R611，再从知识库中查找，如果还是没有，则返回null
+     * @param gene
+     * @param variant
+     * @return
+     */
     public Integer getMutationID(String gene, String variant) {
         Integer mutationId = analysisReportDao.getMutationId(gene, variant);
         if (mutationId == null) {
@@ -545,6 +565,12 @@ public class ReportCrServiceImpl implements ReportCrService {
         return mutationId;
     }
 
+    /**
+     * 由mutationID找出所有的父级 mutationId
+     * 获取包括自身在内的mutationId list ，一个突变可能有多个父级
+     * @param mutationId
+     * @return
+     */
     public List<Integer> getMutIdList(Integer mutationId) {
         List<Integer> mutationIdList = new ArrayList<>();
         if (mutationId != null) {
@@ -558,7 +584,7 @@ public class ReportCrServiceImpl implements ReportCrService {
     //获取知识库的更新时间
     public Timestamp getNkbUpdateTime(List<Integer> mutationIdList, String gene, List<Integer> diseaseIdList) {
         Timestamp nkbUpdateTime = null;
-        if (mutationIdList.isEmpty()) {
+         if (mutationIdList.isEmpty()) {
             nkbUpdateTime = new Timestamp(0);
         } else {
             nkbUpdateTime = analysisReportDao.getVarDrugAnnoUpdateTime(mutationIdList, diseaseIdList);

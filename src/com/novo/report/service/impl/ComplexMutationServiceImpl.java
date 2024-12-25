@@ -48,6 +48,15 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
 
     private TranslateUtil translateUtil = new TranslateUtil();
 
+    /**
+     * 主要功能为匹配用药信息
+     * @param user
+     * @param report_id
+     * @param result
+     * @param lang
+     * @param template_name 在报告预览时，template_name:"" ; 生成报告：rt.template ??
+     * @return
+     */
     @Override
     public List<Map> matchComplexMutation(String user, Integer report_id, Map<String, Object> result, Integer lang, String template_name) {
 
@@ -82,6 +91,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         result.put("diseaseId", diseaseId);
         result.put("diseaseName", diseaseClass.getDisease_class_chinese());
 
+        // drug_var_list 匹配用药信息
         List<Map> drug_var_list = new ArrayList<Map>();
         drug_var_list.addAll(thisGeneticmarkerVwList);
 
@@ -95,19 +105,19 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
             result.put("associatedBowelCancer", true); // 是肠癌子父级癌种
         }*/
 
-        // 肠癌子父级癌种获取共突变
+        // 判断是否为肠癌 & 肠癌的相关逻辑 共突变？
         result.put("associatedBowelCancer", false); // 判断是不是肠癌子父级癌种
         if (diseaseIdList.contains(9256)) {
             result.put("associatedBowelCancer", true); // 是肠癌子父级癌种
         }
-
         if ((boolean) result.get("associatedBowelCancer")) {
             Map simpleSet = new HashMap();
             List<Map> Mutlist = new ArrayList<Map>();
             // List<Map> thisGeneticmarkerVwList_exclude_not_report = analysisReportDao.getThisGeneticmarkerVwListExcludeNotReported(report_id, lang);
             Mutlist.addAll(thisGeneticmarkerVwList);
             Mutlist.addAll(crAllList);
-            //得到所有突变的父级突变
+
+            // 得到所有突变的父级突变 String
             for (Map map : Mutlist) {
                 getParentMutId(map);
             }
@@ -149,7 +159,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
             geneSet.add(gene);
             update_cr_info(map, user, lang);
 
-            // 判断是否有用药
+            // 判断是否有用药 有 1 或 true
             String has_drug = map.get("has_drug") == null ? "" : map.get("has_drug").toString();
             if (!has_drug.equals("") && (has_drug.equals("true") || has_drug.equals("1"))) {
                 crDrugListSize++;
@@ -160,6 +170,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         }
         // 获取hrd
         AnalysisReport analysisReport = analysisReportDao.getReportById(report_id);
+        // 这里的判断应该不会生效吧
         if (analysisReport.getProduct_name().contains("hrd") && StringUtils.isEmpty(template_name)) {
             Map hrdMap = new HashMap();
             hrdMap.put("gene", "HRD");
@@ -175,6 +186,8 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         int totalUnknownNum = 0; // 未知临床意义的位点总数 （CR + Somatic）
         int allDrugMutNum = 0;//有用药的突变的总数（包含共突变）
         int somaticUnknownCount = 0; // somatic突变中的未知临床意义数目（不含cr及共突变）
+
+        // drug_var_list 来源 1. thisGeneticmarkerVwList（体系） 2. complexSet（肠癌子父级才有？） 3.crAllList（根据 has_drug 判断是否有用药）  4. hrdMap
         for (Map map : drug_var_list) {
             String gene = map.get("gene").toString();
 			/*String variant = map.get("variant").toString();
@@ -272,6 +285,8 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         String record_id = cr_info.get("rc_record_id") == null ? "" : cr_info.get("rc_record_id").toString();
         String check_date = cr_info.get("check_date") == null ? "" : cr_info.get("check_date").toString();
         cr_info.put("check_date", conversionTime(check_date));
+
+        // 没有使用到
         String mutDesc = translateUtil.translate2(Gene, ori_variant, ".");
         cr_info.put("mutDesc", mutDesc);
         //获取临床意义
@@ -334,10 +349,19 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         }
     }
 
+    /**
+     * 肠癌的相关逻辑
+     * 获取父变异ID：从数据库中查询指定基因和变异信息，获取其父变异信息。
+     * @param mutation
+     */
     public void getParentMutId(Map mutation) {
         String gene = mutation.get("gene") == null ? "" : mutation.get("gene").toString();
         String variant = mutation.get("variant") == null ? "" : mutation.get("variant").toString();
+
+        // 父级突变的变异信息，例 Exon11 Mutation， 可能有多个
         List<String> parentVariant = analysisReportDao.getParentVariant(gene, variant);
+
+        // 没有查询到父级突变 根据variant类型判断
         if (parentVariant.isEmpty() && (variant.indexOf("fs") > -1 || variant.indexOf("*") > -1 || variant.indexOf("+") > -1 || variant.indexOf("-") > -1) && !(variant.indexOf("Fusion") > -1)) {
             Integer mut_id = analysisReportDao.getMutationId(gene, "Inactive Mutation");
             if (mut_id != null) {
@@ -700,8 +724,8 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
     /**
      * 获取所有的疾病id 子父级
      * @param diseaseId
-     * @param diseaseIdList
-     * @param parentdiseaseIdList
+     * @param diseaseIdList 所有的疾病id list(包括自己)
+     * @param parentdiseaseIdList 父级疾病id list(包括自己)
      */
     public void getDiseaseList(Integer diseaseId, List<Integer> diseaseIdList, List<Integer> parentdiseaseIdList) {
         diseaseIdList.add(diseaseId);

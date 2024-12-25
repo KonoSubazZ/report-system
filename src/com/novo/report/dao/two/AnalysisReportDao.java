@@ -64,7 +64,14 @@ public interface AnalysisReportDao {
     @Select("SELECT file_text FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"TMB_PIC\" and status=\"Loaded\"")
     String getTMB_PIC(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
-    // 获取遗传风险相关的数据（胚系） 这里关于临床意义 匹配的是之前的检出过的信息
+    /**
+     * 获取所有遗传风险相关的数据（胚系位点）
+     * 这里关于临床意义 匹配的是之前的检出过的信息
+     * rp_cr 主要存储的是 胚系的用药信息
+     * @param report_id
+     * @param lang 1
+     * @return
+     */
     @Select("SELECT\r\n" +
             "ca.Gene,ca.Gene as gene,rc.has_drug, Chr, Exon, cHGVS, pHGVS, ori_variant,ca.variant as variant, ca.Zygosity,ca.Zygosity as mutFreq, ca.ExonicFunc, ca.c1000g2015aug_all, ca.ExAC_EAS, ca.avsnp150, ca.SIFT_pred, ca.Polyphen2_HDIV_pred, ca.MutationTaster_pred, ca.revel, ca.gnomAD_genome_ALL, ca.Interpro_domain, ca.CLNSIG, ca.OMIM_Phenotypes, ca.HGMD_tag, ca.HGMD_disease, ca.HGMD_pmid, rc.Clinical_significance, ca.depth, loaded_date, ca.record_id,rc.VarClianno,rc.suggestion, rc.conclusion,checked_by, check_date, IFNULL(rc.Clinical_significance, 99) cs, Pos, Transcript, rc.record_id as rc_record_id\r\n" +
             "FROM omics.cr_evw ca\r\n" +
@@ -156,13 +163,23 @@ public interface AnalysisReportDao {
             "WHERE gene_variant_id=#{mutId}")
     String getMutationEffect(@Param("mutId") Integer mutId);
 
-    // 获取某Gene的Mutation突变的Parent突变：仅查询一层
+    /**
+     * 获取某Gene的Mutation突变的Parent突变：仅查询一层
+     * 一个突变可能有多个父突变
+     * @param mutId
+     * @return
+     */
     @Select("SELECT parent_variant_id\r\n" +
             "FROM nkb_gene_variant_parent_evw\r\n" +
             "WHERE gene_variant_id=#{mutId}")
     List<Integer> getParentMutationId(@Param("mutId") Integer mutId);
 
-    // 获取某Gene的Mutation突变的Parent突变：仅查询一层
+    /**
+     * 获取某Gene的Mutation突变的Parent突变：仅查询一层
+     * @param gene_symbol
+     * @param gene_variant
+     * @return
+     */
     @Select("SELECT parent_variant from nkb.gene_variant_parent_vw where gene_symbol = #{gene_symbol} and gene_variant = #{gene_variant}")
     List<String> getParentVariant(@Param("gene_symbol") String gene_symbol, @Param("gene_variant") String gene_variant);
 
@@ -182,7 +199,12 @@ public interface AnalysisReportDao {
     // 获取临床试验数据
     List<Map> selectClinical(@Param("list") List<String> clinicalTrialNameList, @Param("drug_name_chinese") String drug_name_chinese, @Param("diseaseIdList") List<Integer> diseaseIdList);
 
-    // 获取某突变基因说明
+    /**
+     * 从 nkb 获取某突变基因说明
+     * @param gene
+     * @param lang 1:cn 2: en
+     * @return
+     */
     @Select("SELECT gene_id, gene_symbol, gene_name, gene_description, related_pathway, pathway_description, unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date\r\n" +
             "FROM nkb_onco_gene_description_evw\r\n" +
             "WHERE gene_symbol=#{gene} and lang = #{lang}")
