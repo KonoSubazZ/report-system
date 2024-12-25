@@ -197,6 +197,8 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
 			}*/
             try {
                 reportCrService.handleDrugList(user, diseaseId, map, diseaseIdList, parentdiseaseIdList, 0, lang, report_id);
+
+                // 统计总数
                 if (!"Complex".equals(gene)) {
                     totalMutNum++;
                     geneSet.add(gene);
@@ -754,10 +756,18 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         return a;
     }
 
+    /**
+     * 根据性别和疾病id过滤 diseaseIdList
+     * 男性不输出女性生殖器官肿瘤及子级癌种、女性不输出男性生殖器官肿瘤及子级癌种
+     * 实体瘤不输出血液肿瘤及子级癌种、血液肿瘤不输出实体瘤及子级癌种
+     * @param gender
+     * @param diseaseIdList
+     * @return
+     */
     @Override
     public List<Integer> solidTumorFiltration(String gender, List<Integer> diseaseIdList) {
         List<Integer> sonIdList = new ArrayList<>();
-        //男性不输出女性生殖器官肿瘤及子级癌种、女性不输出男性生殖器官肿瘤及子级癌种
+        // 男性不输出女性生殖器官肿瘤及子级癌种、女性不输出男性生殖器官肿瘤及子级癌种
         if (gender != null && !"".equals(gender)) {
             if ("男".equals(gender)) {
                 sonIdList.add(120);
@@ -781,7 +791,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
                 }
             }
         }
-        //实体瘤不输出血液肿瘤及子级癌种、血液肿瘤不输出实体瘤及子级癌种
+        // 实体瘤不输出血液肿瘤及子级癌种、血液肿瘤不输出实体瘤及子级癌种
         if (diseaseIdList.contains(10000003)) {
             sonIdList.add(2531);
             List<Map> sonDiseaseList = analysisReportDao.getSonDiseaseList(2531);

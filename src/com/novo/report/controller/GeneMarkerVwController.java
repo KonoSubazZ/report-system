@@ -1364,6 +1364,24 @@ public class GeneMarkerVwController {
 		return geneticMarkerVwService.deleteUnknownVar(userAccount, gene, variant, ori_variant, parent_mutID, cosmic, mutFreq, disease_id, lang, reportId);
 	}
 
+	 /**
+	  *
+	  * 小匹配 直接匹配知识库
+	  * @param userAccount
+	  * @param gene
+	  * @param variant
+	  * @param ori_variant
+	  * @param cosmic
+	  * @param mutFreq
+	  * @param disease_id
+	  * @param lang
+	  * @param reportId
+	  * @param gender
+	  * @return
+	  * @throws IllegalAccessException
+	  * @throws InvocationTargetException
+	  * @throws NoSuchMethodException
+	  */
 	@RequestMapping("updateFromNkb")
 	@ResponseBody
 	public Map updateFromNkb(@RequestParam("userAccount") String userAccount, @RequestParam("gene") String gene, @RequestParam("variant") String variant, @RequestParam("ori_variant") String ori_variant, @RequestParam("cosmic") String cosmic, @RequestParam("mutFreq") String mutFreq, @RequestParam("disease_id") Integer disease_id, @RequestParam("lang") Integer lang, @RequestParam("reportId") Integer reportId, @RequestParam("gender") String gender) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {

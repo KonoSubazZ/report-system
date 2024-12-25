@@ -589,7 +589,7 @@ public class ReportCrServiceImpl implements ReportCrService {
         } else {
             nkbUpdateTime = analysisReportDao.getVarDrugAnnoUpdateTime(mutationIdList, diseaseIdList);
         }
-        if (nkbUpdateTime == null) nkbUpdateTime = new Timestamp(0);
+         if (nkbUpdateTime == null) nkbUpdateTime = new Timestamp(0);
         Timestamp geneAnnoUpdateTime = analysisReportDao.getGeneAnnoUpdateTime(gene, diseaseIdList);
         Timestamp varAnnoUpdateTime = new Timestamp(0);
         Timestamp variantDescriptionUpdateTime = new Timestamp(0);
@@ -607,17 +607,35 @@ public class ReportCrServiceImpl implements ReportCrService {
         return nkbUpdateTime;
     }
 
-    //从知识库获取所有信息，并更新rp_var_drug表
-    //如果user为空，就表示只读，不修改本地库
+    /**
+     * 从知识库获取所有信息，并更新 rp_var_drug_en7 表
+     * 如果user为空，就表示只读，不修改本地库
+     * @param user
+     * @param a
+     * @param reportVarDrug
+     * @param mutationIdList
+     * @param diseaseIdList
+     * @param parentdiseaseIdList
+     * @param sonIdList
+     * @param gene
+     * @param variant
+     * @param ori_variant
+     * @param Flag
+     * @param lang
+     * @param diseaseId
+     */
     public void fetchNkbDrugInfo(String user, Map a, ReportVarDrug reportVarDrug, List<Integer> mutationIdList, List<Integer> diseaseIdList, List<Integer> parentdiseaseIdList, List<Integer> sonIdList, String gene, String variant, String ori_variant, Integer Flag, Integer lang, Integer diseaseId) {
         List<Map> drugList = new ArrayList<Map>();
+
+        // 判断mutation_type: S or G ; S ==> 体系; G ==> 胚系;
         String mutation_type = "S";
         String has_drug = a.get("has_drug") == null ? "" : a.get("has_drug").toString();
         if (!has_drug.equals("") && (has_drug.equals("true") || has_drug.equals("1"))) {
             mutation_type = "G";
         }
+
         if (!mutationIdList.isEmpty()) {
-            //drugList = analysisReportDao.getDrugListByIdList(mutationIdList, diseaseIdList,mutation_type,lang);
+            // drugList = analysisReportDao.getDrugListByIdList(mutationIdList, diseaseIdList,mutation_type,lang);
             drugList = analysisReportDao.getDrugListByIdList(mutationIdList, diseaseIdList, lang, mutation_type);
             drugList.sort((o1, o2) -> o2.get("evidence_phase_id").toString().compareTo(o1.get("evidence_phase_id").toString()));
         }
@@ -627,7 +645,9 @@ public class ReportCrServiceImpl implements ReportCrService {
             int drugLevel = getDrugLevel(b, parentdiseaseIdList);
             b.put("approve_range", String.valueOf(drugLevel));
         }
-        Map<String, Boolean> drugFlag = new HashMap<String, Boolean>(); //药物是否加#的标记
+
+        // TODO drugFlag 药物是否加#的标记 ==> 什么时候加 #
+        Map<String, Boolean> drugFlag = new HashMap<String, Boolean>();
         List<Map> clinicalList = getClinicalList(drugList, drugFlag, parentdiseaseIdList, lang); //根据drugList获取临床试验列表
         // 添加其他癌种A级证据，并输出为C级药物
         if (!mutationIdList.isEmpty()) {
@@ -1216,9 +1236,19 @@ public class ReportCrServiceImpl implements ReportCrService {
         Collections.sort(drugList, (Map h1, Map h2) -> Integer.parseInt(h1.get("approve_range").toString()) - Integer.parseInt(h2.get("approve_range").toString()));
     }
 
-    //获取药物级别：1-4为获益A，B，C，D级药物， 5-8为耐药A，B，C，D级药物， 9，其他
+
+
+    /**
+     * 获取药物级别 根据 evidence_phase_id
+     * 获取药物级别：1-4为获益A，B，C，D级药物， 5-8为耐药A，B，C，D级药物， 9，其他
+     * @param b
+     * @param parentdiseaseIdList 用来判断耐药C
+     * @return
+     */
     public int getDrugLevel(Map b, List<Integer> parentdiseaseIdList) {
         int evidence_phase_id = Integer.parseInt(b.get("evidence_phase_id").toString());
+
+        // Resistant 耐药
         if ("Resistant".equals(b.get("relationship").toString()) && evidence_phase_id >= 12) {
             if (evidence_phase_id > 22) {
                 return 5;
@@ -1262,6 +1292,13 @@ public class ReportCrServiceImpl implements ReportCrService {
         }
     }
 
+    /**
+     * 获取 Give
+     * 针对于 evidence_phase_id == 14 的特殊判断
+     * @param b
+     * @param parentdiseaseIdList
+     * @return
+     */
     public String getGive(Map b, List<Integer> parentdiseaseIdList) {
         Integer clinical_num = analysisReportDao.getClinicalNumber(Integer.parseInt(b.get("annotation_id").toString()), parentdiseaseIdList);
         if (clinical_num > 0) {

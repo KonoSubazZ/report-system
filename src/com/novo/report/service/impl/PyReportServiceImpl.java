@@ -227,6 +227,7 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> snpIndelFileAll = analysisReportDao.getSnpIndelFileAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         List<Map> cNVAll = analysisReportDao.getCNVAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         List<Map> fusionAll = analysisReportDao.getFusionAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+
         // 获取化疗癌种
         String chem_cancer = StringUtils.isEmpty(pr.getChem_cancer()) ? "" : pr.getChem_cancer();
         //获取TMB
