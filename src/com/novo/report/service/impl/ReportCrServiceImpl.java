@@ -920,7 +920,20 @@ public class ReportCrServiceImpl implements ReportCrService {
         a.put("check_date", reportVarDrug.getCheck_date());
     }
 
-    //更新本地库
+    /**
+     *  更新本地库 用药
+     *  只有从知识库获取的用药信息才更新
+     * @param user
+     * @param reportVarDrug
+     * @param drugList
+     * @param drugFlag
+     * @param clinicalList
+     * @param varDrugNote
+     * @param lang
+     * @param diseaseId
+     * @param diseaseIdList
+     * @param mutationIdList
+     */
     public void updateReportVarDrug(String user, ReportVarDrug reportVarDrug, List<Map> drugList, Map<String, Boolean> drugFlag, List<Map> clinicalList, String varDrugNote, Integer lang, Integer diseaseId, List<Integer> diseaseIdList, List<Integer> mutationIdList) {
         Set<String> drugSet = new HashSet<String>();
         Set<String> drugResistanceSet = new HashSet<String>();
@@ -945,6 +958,8 @@ public class ReportCrServiceImpl implements ReportCrService {
         }
         reportVarDrug.setParent_mutID(mutationIdStr);
         reportVarDrug.setCheck_date(null);
+
+        // 更新本地库用药信息表 rp_var_drug_en7
         if (reportVarDrug.getRecord_id() == null) {
             reportVarDrugDao.insertRpVarDrug(reportVarDrug);
         } else {

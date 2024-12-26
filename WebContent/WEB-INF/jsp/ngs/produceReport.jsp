@@ -613,7 +613,8 @@
                                     // 32-待审核
                                     let status = 32;
                                     let report_id = "${currentNgsAvailableData.report_id}";
-                                    const URL = 'http://10.1.181.174:9098';
+                                    // const URL = 'http://10.1.181.174:9098';
+                                    const URL = 'http://10.1.181.174:9099';
                                     $.ajax({
                                         type: "GET",
                                         url: URL + "/report/update_sample_report_status/" + username + "/" + upload_date + "/" + product + "/" + sample_code + "/" + status + "/" + report_id,
