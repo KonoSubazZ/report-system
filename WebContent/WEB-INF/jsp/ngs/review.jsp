@@ -154,15 +154,6 @@
 </div>
 </body>
 <script>
-    function formatDate(date) {
-        const yy = date.getFullYear().toString(); // 获取年份的最后两位
-        const mm = (date.getMonth() + 1).toString().padStart(2, '0'); // 获取月份，注意月份从0开始，所以要加1
-        const dd = date.getDate().toString().padStart(2, '0'); // 获取日期
-        const hh = date.getHours().toString().padStart(2, '0'); // 获取小时
-        const min = date.getMinutes().toString().padStart(2, '0'); // 获取分钟
-        const ss = date.getSeconds().toString().padStart(2, '0'); // 获取秒钟
-        return yy + mm + dd;
-    }
 
     // 下载文件
     function download() {
@@ -217,7 +208,11 @@
                     dataType: "json",
                     success: function (data) {
                         if (data) {
-                            layer.msg("文件更换成功！", {time: 1000});
+                            layer.msg("文件更换成功！", {
+                                icon: 0,
+                                offset: ['100px', '500px'],
+                                time: 1000
+                            });
                             $("#fileName").text(file.name);
                         } else {
                             layer.msg("文件更换失败！", {time: 1000});
@@ -239,8 +234,8 @@
     // 提交报告到新系统审核 同时更新报告系统状态
     function submitReport() {
         // 初始化参数
-        let upload_date = formatDate(new Date());
-        let username = "${analysisReport.report_checker}";
+        let upload_date ="${analysisReport.analysis_date}";
+        let username = "${analysisReport.analyzer}";
         let product = "${analysisReport.product_name}";
         let sample_code = "${analysisReport.subbarcode}";
         // 32-待审核
@@ -253,10 +248,20 @@
             url: URL + "/report/update_sample_report_status/" + username + "/" + upload_date + "/" + product + "/" + sample_code + "/" + status + "/" + report_id,
             dataType: "json",
             success: function (data) {
-                if (data) {
-                    layer.msg(sample_code + "提交报告审核成功！", {time: 1000});
+                if (data.status === "success") {
+                    layer.msg(sample_code + "提交报告审核成功！", {
+                        icon: 0,
+                        offset: ['100px', '500px'],
+                        time: 1000
+                    });
                     updateReportStatus(report_id, "待审核");
 
+                }else{
+                    layer.msg(data.message, {
+                        icon: 0,
+                        offset: ['100px', '500px'],
+                        time: 1000
+                    });
                 }
             },
             error: function (xhr, status, error) {
@@ -330,8 +335,8 @@
             });
             return;
         }
-        let upload_date = formatDate(new Date());
-        let username = "${analysisReport.analyzer}";
+        let upload_date = "${analysisReport.analysis_date}";
+        let username = "${analysisReport.report_checker}";
         let product = "${analysisReport.product_name}";
         let sample_code = "${analysisReport.subbarcode}";
         // 32-待审核
@@ -352,11 +357,7 @@
                         "status": rstatus
                     }, function (data) {
                         layer.msg("更新报告状态成功", {time: 1000, icon: 1});
-                        // if (data.flag) {
-                        //     layer.msg("更新报告状态成功", {time: 1000, icon: 1});
-                        // } else {
-                        //     layer.msg("操作失败，请重新尝试操作", {time: 1000, icon: 0});
-                        // }
+
                     });
                     $.post("${pageContext.request.contextPath}/ngs/updateComment", {
                         "report_id": "${analysisReport.report_id}",
@@ -373,13 +374,11 @@
                 } else {
                     layer.msg(data.msg, {time: 1000, icon: 1});
                 }
-
             },
             error: function (xhr, status, error) {
                 layer.msg("请求失败" + error, {time: 1000});
             }
         })
-
 
     }
 
@@ -401,7 +400,6 @@
               }
             }
         )
-
     }
 </script>
 </html>

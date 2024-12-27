@@ -36,7 +36,7 @@
 	<div class="panel admin-panel">
 		<div class="panel-head">
 			<strong class="icon-reorder">
-				NGS报告管理>审核及发送报告:${currentNgsAvailableData.report_id}:${currentNgsAvailableData.platform }>${currentNgsAvailableData.analysis_date }>${currentNgsAvailableData.subbarcode }>${currentNgsAvailableData.product_name }
+				NGS报告管理>发送报告:${currentNgsAvailableData.report_id}:${currentNgsAvailableData.platform }>${currentNgsAvailableData.analysis_date }>${currentNgsAvailableData.subbarcode }>${currentNgsAvailableData.product_name }
 			</strong>
 		</div>
 	  <div class="body-content" style="margin-left:100px">
@@ -57,8 +57,8 @@
 		     </td>
 		     <td>
 				<div class="form-group">
-					<input type="file" id="reportFile" name="reportFile">
-					<button id="updateReportFile"  style="width: 150px;" class="button bg-main icon-file-o" > 更换报告文件</button>
+<%--					<input type="file" id="reportFile" name="reportFile">--%>
+<%--					<button id="updateReportFile"  style="width: 150px;" class="button bg-main icon-file-o" > 更换报告文件</button>--%>
 				</div> 
 				<input type="hidden" name="report_id"  value="${currentNgsAvailableData.report_id}" >
 			</td> 
@@ -144,17 +144,18 @@
 			<table style="width:100%">
 				<tr>
 			     	<td style="width:708px">
-				      <div class="form-group" style="margin-right: 50px;">
+				      <div class="form-group" style="margin-right: 50px;display: flex">
 				        <div class="label" style="width:85px;float: left;margin-top: 10px;">
 				          <label>审核结果：</label>
 				        </div>
-				        <div class="field">
-				         	 <button id="review" style="width: 170px;float: left;" class="button border-main icon-check" > 审核通过</button>
-						     <button id="reviewfalse" style="width: 170px;float: left;" class="button border-red icon-times" > 审核不通过</button>
-				          <div id="message" class="tips" style="color: red;font-size: 14px"></div>
-				        </div>
-				      </div>  
-				      </td> 
+						  <div style="align-self: center;font-size: 22px;">${analysis_report.status}</div>
+<%--				        <div class="field">--%>
+<%--				         	 <button id="review" style="width: 170px;float: left;" class="button border-main icon-check" > 审核通过</button>--%>
+<%--						     <button id="reviewfalse" style="width: 170px;float: left;" class="button border-red icon-times" > 审核不通过</button>--%>
+<%--				          <div id="message" class="tips" style="color: red;font-size: 14px"></div>--%>
+<%--				        </div>--%>
+				      </div>
+				      </td>
 				      <td>
 				      	<button id="viewSite" style="float: left;" class="button border-main" >查看位点</button>
 				      </td>
@@ -287,13 +288,15 @@
 										$.myConfirm({title:'邮件发送确认',message:'确认发送邮件？',callback:function(){
 												$("#sendEmail").prop("disabled","disabled");
 												$("#sendTip").text("正在发送邮件，请稍后...");
-												$.post("${pageContext.request.contextPath}/ngs/sendEmail",
-														{"report_id":"${currentNgsAvailableData.report_id}","subbarcode":"${currentNgsAvailableData.subbarcode}",
-															"report_filename":"${analysis_report.report_filename }","report_file_path":"${analysis_report.report_file_path }"},
-														function(data){
-															$.myAlert(data.errorMessage);
-															$("#sendEmail").prop("disabled",false);
-															$("#sendTip").text("");
+												$.post("${pageContext.request.contextPath}/ngs/sendEmail",{
+													"report_id":"${currentNgsAvailableData.report_id}",
+													"subbarcode":"${currentNgsAvailableData.subbarcode}",
+													"report_filename":"${analysis_report.report_filename }",
+													"report_file_path":"${analysis_report.report_file_path }"},
+													function(data){
+														$.myAlert(data.errorMessage);
+														$("#sendEmail").prop("disabled",false);
+														$("#sendTip").text("");
 														},"json"
 												);
 											}

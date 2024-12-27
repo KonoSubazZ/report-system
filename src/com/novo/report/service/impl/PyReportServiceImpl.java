@@ -3698,10 +3698,10 @@ public class PyReportServiceImpl implements PyReportService {
         geneList.stream().forEach(gene -> somaticMutationSitesInfo.put(gene, new ArrayList<>()));
         // 过滤bodyDrugTipList，只保留包含geneList中的基因的数据
         List<Map> BodyDrugTipList = bodyDrugTipList.stream()
-                .filter(map -> geneList.contains(map.get("gene")))
+        //        .filter(map -> geneList.contains(map.get("gene")))
                 .collect(Collectors.toList());
         List<Map> unknownMutationSiteInfoList = unknownTipList.stream()
-                .filter(map -> geneList.contains(map.get("gene")))
+        //        .filter(map -> geneList.contains(map.get("gene")))
                 .collect(Collectors.toList());
 
         for (Map site : somaticMutationSiteList) {
@@ -3716,6 +3716,7 @@ public class PyReportServiceImpl implements PyReportService {
                 // NDF值展示逻辑
                 String mutFreqString = mutFreq.contains("-") ? mutFreq : mutFreq + "%";
                 String mutFreqStr = mutationType.equals("拷贝数变异") ? "  ( 拷贝数：" + mutFreq + ")" : "  ( 丰度：" + mutFreqString + ")";
+                if (mutationType.equals("融合")){ mutFreqStr = "  ( NDF：" + mutFreq + ")"; }
                 String oriVariant = (String) site.get("ori_variant");
                 String[] oriVariantArr = oriVariant.split(" ");
                 int len = oriVariantArr.length;

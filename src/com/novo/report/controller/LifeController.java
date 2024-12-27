@@ -155,7 +155,7 @@ public class LifeController {
             currentNgsAvailable.setUser(user.getUser_account());
         }
 
-        // 审核界面跳转过来,更新审核人
+        // 【审核】界面跳转过来,更新审核人
         if (checker != null && reportId != null){
             analysisReportDao.updateCheckerByReportId(checker, reportId);
         }
