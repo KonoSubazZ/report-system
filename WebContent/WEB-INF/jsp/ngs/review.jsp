@@ -234,7 +234,7 @@
     // 提交报告到新系统审核 同时更新报告系统状态
     function submitReport() {
         // 初始化参数
-        let upload_date ="${analysisReport.analysis_date}";
+        let upload_date ="${analysisReport.analysis_date}".slice(0, 10).replace(/-/g, '');
         let username = "${analysisReport.analyzer}";
         let product = "${analysisReport.product_name}";
         let sample_code = "${analysisReport.subbarcode}";
@@ -250,15 +250,14 @@
             success: function (data) {
                 if (data.status === "success") {
                     layer.msg(sample_code + "提交报告审核成功！", {
-                        icon: 0,
+                        icon: 1,
                         offset: ['100px', '500px'],
                         time: 1000
                     });
                     updateReportStatus(report_id, "待审核");
-
                 }else{
-                    layer.msg(data.message, {
-                        icon: 0,
+                    layer.msg(data.msg, {
+                        icon: 2,
                         offset: ['100px', '500px'],
                         time: 1000
                     });
@@ -282,7 +281,7 @@
             success: function (res) {
                 if (res.code === 200) {
                     layer.msg('状态更新成功', {
-                        icon: 0,
+                        icon: 1,
                         offset: ['100px', '500px'],
                         time: 1000
                     });
@@ -326,16 +325,17 @@
 
     // 审核报告 通过、未通过
     function updateCheckStatus(code) {
-
+        // 校验是否有填写审核意见
         if (code == 36 && $("#comment").val() == "") {
-            layer.msg("请填写审核意见！", {
+            layer.msg("请先备注审核意见！", {
                 icon: 0,
                 offset: ['100px', '500px'],
                 time: 1000
             });
             return;
         }
-        let upload_date = "${analysisReport.analysis_date}";
+
+        let upload_date = "${analysisReport.analysis_date}".slice(0, 10).replace(/-/g, '');
         let username = "${analysisReport.report_checker}";
         let product = "${analysisReport.product_name}";
         let sample_code = "${analysisReport.subbarcode}";
@@ -357,22 +357,24 @@
                         "status": rstatus
                     }, function (data) {
                         layer.msg("更新报告状态成功", {time: 1000, icon: 1});
-
+                        $("#status").text(status);
                     });
-                    $.post("${pageContext.request.contextPath}/ngs/updateComment", {
-                        "report_id": "${analysisReport.report_id}",
-                        "comment": $("#comment").val()
-                    }, function (res) {
-                        if (res.code === 200) {
-                            layer.msg('更新备注成功', {
-                                icon: 0,
-                                offset: ['100px', '500px'],
-                                time: 1000
-                            });
-                        }
-                    });
+                    if (code == 36){
+                        $.post("${pageContext.request.contextPath}/ngs/updateComment", {
+                            "reportId": "${analysisReport.report_id}",
+                            "comment": $("#comment").val()
+                        }, function (res) {
+                            if (res.code === 200) {
+                                layer.msg('更新备注成功', {
+                                    icon: 1,
+                                    offset: ['100px', '500px'],
+                                    time: 1000
+                                });
+                            }
+                        });
+                    }
                 } else {
-                    layer.msg(data.msg, {time: 1000, icon: 1});
+                    layer.msg(data.msg, {time: 1000, icon: 2});
                 }
             },
             error: function (xhr, status, error) {
@@ -389,13 +391,14 @@
             {"reportId": "${analysisReport.report_id}"},
             function (res) {
               if (res.code === 200){
+                  let data = res.data;
                   let index = layer.open({
                       type: 1,
                       area: ['420px', '240px'], // 宽高
                       offset: ['25%', '25%'],
-                      content: '<div style="padding: 11px;">${res.data}</div>'
+                      content: '<div style="padding: 11px;" id="dialog"></div>'
                   });
-
+                  $("#dialog").html(data);
                   layer.title('审核未通过备注', index);
               }
             }

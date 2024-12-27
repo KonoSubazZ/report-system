@@ -395,7 +395,7 @@
 
                                 function updateStatus() {
                                     let username = "${analysis_report.analyzer}";
-                                    let upload_date = "${analysis_report.analysis_date}";
+                                    let upload_date = "${analysis_report.analysis_date}".slice(0, 10).replace(/-/g, '');
                                     let product = "${analysis_report.product_name}";
                                     let sample_code = "${analysis_report.subbarcode}";
                                     // 34 - 报告完成
@@ -409,13 +409,13 @@
                                         success: function (res) {
                                             if (res.status == "success") {
                                                 layer.msg(res.msg, {
-                                                    icon: 0,
+                                                    icon: 1,
                                                     offset: ['100px', '500px'],
                                                     time: 1000
                                                 });
                                             } else {
                                                 layer.msg(res.msg, {
-                                                    icon: 0,
+                                                    icon: 2,
                                                     offset: ['100px', '500px'],
                                                     time: 1000
                                                 });
