@@ -162,7 +162,18 @@
                         <div class="label" style="width:85px;float: left;margin-top: 10px;">
                             <label>审核结果：</label>
                         </div>
-                        <div style="align-self: center;font-size: 22px;">${analysis_report.status}</div>
+                        <div style="align-self: center;font-size: 20px;"></div>
+                        <c:choose>
+                            <c:when test="${analysis_report.status == '报告审核通过'}">
+                                <span style="color: green;font-size: 20px;align-self: center;"><i class="layui-icon layui-icon-face-smile"
+                                                               style="font-size: 20px; color: #1E9FFF;"></i> ${analysis_report.status}</span>
+                            </c:when>
+                            <c:otherwise>
+                                <i class="layui-icon layui-icon-face-cry"
+                                   style="font-size: 20px; color: #1E9FFF;"></i>
+                                <span style="color: red;font-size: 20px;align-self: center;">${analysis_report.status}</span>
+                            </c:otherwise>
+                        </c:choose>
                         <%--				        <div class="field">--%>
                         <%--				         	 <button id="review" style="width: 170px;float: left;" class="button border-main icon-check" > 审核通过</button>--%>
                         <%--						     <button id="reviewfalse" style="width: 170px;float: left;" class="button border-red icon-times" > 审核不通过</button>--%>
@@ -383,13 +394,13 @@
                                 }
 
                                 function updateStatus() {
-                                    let username = "${analysisReport.analyzer}";
-                                    let upload_date = "${analysisReport.analysis_date}";
-                                    let product = "${analysisReport.product_name}";
-                                    let sample_code = "${analysisReport.subbarcode}";
+                                    let username = "${analysis_report.analyzer}";
+                                    let upload_date = "${analysis_report.analysis_date}";
+                                    let product = "${analysis_report.product_name}";
+                                    let sample_code = "${analysis_report.subbarcode}";
                                     // 34 - 报告完成
                                     let status = 34;
-                                    let report_id = "${analysisReport.report_id}";
+                                    let report_id = "${analysis_report.report_id}";
                                     const URL = 'http://10.1.181.174:9099';
                                     $.ajax({
                                         type: "GET",
