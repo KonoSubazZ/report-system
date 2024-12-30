@@ -134,7 +134,7 @@
                     </c:if></div>
             </div>
             <div class="layui-col-xs5" style="display: flex;">
-                <c:if test="${analysisReport.status=='报告生成成功'}">
+                <c:if test="${analysisReport.status=='报告生成成功' && analysisReport.analyzer == currentNgsAvailableData.user}">
                     <button type="button" class="layui-btn layui-bg-blue" onclick="submitReport()"><i
                             class="layui-icon layui-icon-ok"></i>提交审核
                     </button>
@@ -179,6 +179,12 @@
 
         // 更换报告文件
         $("#updateReport").click(function () {
+
+            // 校验报告状态
+            if ("报告生成成功" !== "${analysisReport.status}") {
+                layer.msg("报告文件已经更换！", {icon: 1});
+                return;
+            }
             layer.confirm('确定更换报告文件？', {
                 icon: 3,
                 title: '提示'
