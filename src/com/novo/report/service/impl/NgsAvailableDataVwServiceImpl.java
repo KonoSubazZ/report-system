@@ -1,5 +1,6 @@
 package com.novo.report.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,9 @@ public class NgsAvailableDataVwServiceImpl implements NgsAvailableDataVwService 
 	@Override
 	public NgsListAuto getSubbarcodeAndProductNameListByPlatform(NgsAvailableDataPageBean ngsAvailableDataPageBean) {
 		List<String> productNameList = ngsAvailableDataVwDao.getProductNameListByPlatform(ngsAvailableDataPageBean);
-		List<String> subbarcodeList = ngsAvailableDataVwDao.getSubbarcodeListByPlatform(ngsAvailableDataPageBean);
+		// 20241230 取消了 subbarcode list
+//		List<String> subbarcodeList = ngsAvailableDataVwDao.getSubbarcodeListByPlatform(ngsAvailableDataPageBean);
+		List<String> subbarcodeList = new ArrayList<>();
 		NgsListAuto ngsListAuto = new NgsListAuto();
 		ngsListAuto.setProductNameList(productNameList);
 		ngsListAuto.setSubbarcodeList(subbarcodeList);

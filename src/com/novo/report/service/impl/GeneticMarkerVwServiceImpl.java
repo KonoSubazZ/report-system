@@ -315,6 +315,24 @@ public class GeneticMarkerVwServiceImpl implements GeneticMarkerVwService {
         return a;
     }
 
+    /**
+     * 接口 - 改靶 ==> 由 vus 改为 靶向药物
+     * 删除未知位点信息
+     * @param userAccount
+     * @param gene
+     * @param variant
+     * @param ori_variant
+     * @param parent_mutID
+     * @param cosmic
+     * @param mutFreq
+     * @param disease_id
+     * @param lang
+     * @param report_id
+     * @return
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     */
     @Override
     public Map deleteUnknownVar(String userAccount, String gene, String variant, String ori_variant, String parent_mutID, String cosmic, String mutFreq, Integer disease_id, Integer lang, Integer report_id) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         reportUnknownVarDao.deleteRpUnknownVar(gene, ori_variant, disease_id, lang);

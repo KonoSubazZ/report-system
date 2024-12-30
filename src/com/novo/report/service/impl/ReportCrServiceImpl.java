@@ -318,6 +318,18 @@ public class ReportCrServiceImpl implements ReportCrService {
         }
     }
 
+    /**
+     *
+     * 获取【vus】信息
+     * @param user
+     * @param diseaseId
+     * @param diseaseIdList
+     * @param a
+     * @param gene
+     * @param variant
+     * @param ori_variant
+     * @param lang
+     */
     public void getUnknownVarInfo(String user, Integer diseaseId, List<Integer> diseaseIdList, Map a, String gene, String variant, String ori_variant, Integer lang) {
         //查询知识库
         //获取基因说明和信号通路说明
@@ -532,6 +544,11 @@ public class ReportCrServiceImpl implements ReportCrService {
         return v.substring(0, index + 1);
     }
 
+    /**
+     * list可能有多条，获取第一个元素
+     * @param queryList
+     * @return
+     */
     public Map getFirst(List<Map> queryList) {
         Map result = new HashMap<>();
         if (queryList == null || CollectionUtils.isEmpty(queryList)) {
