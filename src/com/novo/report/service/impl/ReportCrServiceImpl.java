@@ -319,7 +319,6 @@ public class ReportCrServiceImpl implements ReportCrService {
     }
 
     /**
-     *
      * 获取【vus】信息
      * @param user
      * @param diseaseId

@@ -75,21 +75,22 @@ public class LifeController {
     public String lifeMain(CurrentNgsAvailableData currentNgsAvailable, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String user_account = currentNgsAvailable.getUser();
+        String checker = currentNgsAvailable.getChecker();
+        String encoded_password = currentNgsAvailable.getPassword();
+        Integer reportId = currentNgsAvailable.getReport_id();
 
         // 从新系统【审核】跳转过来
-        if (user_account == null){
-            user_account = currentNgsAvailable.getChecker();
-        }
-        String encoded_password = currentNgsAvailable.getPassword();
-        String checker = currentNgsAvailable.getChecker();
+        if (user_account == null && checker != null){
+            user_account = checker;
 
-        // 从新系统【解读】跳转过来, 正常检查这两个字段是没有值的
-        if (user_account != null || checker != null) {
+        }
+
+        // 从新系统【解读】跳转过来 登录一次, 正常检查这两个字段是没有值的
+        if (user_account != null ) {
             loginController.login(user_account, encoded_password, request);
         }
 
         AnalysisReport analysisReport = new AnalysisReport();
-        Integer reportId = currentNgsAvailable.getReport_id();
 
         // 20241216 从新系统【解读】跳转过来,插入一条报告记录
         if (reportId == null) {
@@ -113,6 +114,15 @@ public class LifeController {
             analysisReport.setUpdate_date(DateUtil.getSystemTime());
             lifeService.addAnalysisReport(analysisReport);
             currentNgsAvailable.setReport_id(analysisReport.getReport_id());
+        }
+
+        // 20241231 对应新系统的重出报告逻辑
+        if (reportId != null && user_account != null) {
+            currentNgsAvailable.setLife("Life");
+            currentNgsAvailable.setIllumina("Illumina");
+            currentNgsAvailable.setPageNo(1);
+            currentNgsAvailable.setPlatform("Illumina");
+            currentNgsAvailable.setProduct_name_show(currentNgsAvailable.getProduct_name());
         }
 
         // 报告系统检查插入 report 的逻辑
