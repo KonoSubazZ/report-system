@@ -92,9 +92,12 @@
             </div>
         </div>
         <div class="layui-row" style="padding:12px 0;">
-            <div class="layui-col-xs5" style="display: flex;margin-top: 35px;">
-                <div style="width:100px">报告文件</div>
-                <div id="download" style="cursor: pointer;">
+            <div class="layui-col-xs5" style="display: flex;margin-top: 15px;flex-wrap: wrap;">
+                <div style="width:100px">解读备注</div>
+                <div style="width:600px">${currentNgsAvailableData.reporter_comment}</div>
+
+                <div style="width:100px;margin-top: 30px;">报告文件</div>
+                <div id="download" style="cursor: pointer;margin-top: 30px;">
                     <%--                    <i class="layui-icon layui-icon-file" style="font-size: 20px; color: #1E9FFF;"></i> --%>
                     <span id="fileName"
                           onclick="previewPdf(${analysisReport.report_id})">${analysisReport.report_filename}</span>
@@ -251,7 +254,7 @@
         const URL = 'http://10.1.181.174:9099';
         $.ajax({
             type: "GET",
-            url: URL + "/report/update_sample_report_status/" + username + "/" + upload_date + "/" + product + "/" + sample_code + "/" + status + "/" + report_id,
+            url: URL + "/report/update_sample_report_status/" + username + "/" + upload_date + "/" + product + "/" + sample_code + "/" + status + "/" + report_id + "/",
             dataType: "json",
             success: function (data) {
                 if (data.status === "success") {
@@ -332,7 +335,8 @@
     // 审核报告 通过、未通过
     function updateCheckStatus(code) {
         // 校验是否有填写审核意见
-        if (code == 36 && $("#comment").val() == "") {
+        let comment = $("#comment").val();
+        if (code == 36 && comment == '') {
             layer.msg("请先备注审核意见！", {
                 icon: 0,
                 offset: ['100px', '500px'],
@@ -353,7 +357,7 @@
 
         $.ajax({
             type: "GET",
-            url: URL + "/report/update_sample_report_status/" + username + "/" + upload_date + "/" + product + "/" + sample_code + "/" + status + "/" + report_id,
+            url: URL + "/report/update_sample_report_status/" + username + "/" + upload_date + "/" + product + "/" + sample_code + "/" + status + "/" + report_id + "/" + comment,
             dataType: "json",
             success: function (data) {
                 if (data.status == "success") {
@@ -387,7 +391,6 @@
                 layer.msg("请求失败" + error, {time: 1000});
             }
         })
-
     }
 
     // 展示审核未通过备注

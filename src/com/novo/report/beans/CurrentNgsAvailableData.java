@@ -26,6 +26,16 @@ public class CurrentNgsAvailableData {
     private String password;
 
     private String checker;
+    private String reporter_comment;
+
+    public String getReporter_comment() {
+        return reporter_comment;
+    }
+
+    public void setReporter_comment(String reporter_comment) {
+        this.reporter_comment = reporter_comment;
+    }
+
 
     public String getChecker() {
         return checker;

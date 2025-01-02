@@ -140,7 +140,7 @@
 	    		}
 				function urlRun7(){
 					var objFrm = document.getElementById('review');
-					objFrm.src = "${pageContext.request.contextPath}/geneMarkerVw/review?report_id=${currentNgsAvailable.report_id}&platform=${currentNgsAvailable.platform}&subbarcode=${currentNgsAvailable.subbarcode}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}&life=${currentNgsAvailable.life}&illumina=${currentNgsAvailable.illumina}&subbarcode_show=${currentNgsAvailable.subbarcode_show}&product_name_show=${currentNgsAvailable.product_name_show}&analysis_date_show=${currentNgsAvailable.analysis_date_show}&status=${currentNgsAvailable.status}&pageNo=${currentNgsAvailable.pageNo}&user=${currentNgsAvailable.user}&checker=${currentNgsAvailable.checker}";
+					objFrm.src = "${pageContext.request.contextPath}/geneMarkerVw/review?report_id=${currentNgsAvailable.report_id}&platform=${currentNgsAvailable.platform}&subbarcode=${currentNgsAvailable.subbarcode}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}&life=${currentNgsAvailable.life}&illumina=${currentNgsAvailable.illumina}&subbarcode_show=${currentNgsAvailable.subbarcode_show}&product_name_show=${currentNgsAvailable.product_name_show}&analysis_date_show=${currentNgsAvailable.analysis_date_show}&status=${currentNgsAvailable.status}&pageNo=${currentNgsAvailable.pageNo}&user=${currentNgsAvailable.user}&checker=${currentNgsAvailable.checker}&reporter_comment=${currentNgsAvailable.reporter_comment}";
 					objFrm.style.display = "block";
 				}
 	        	
