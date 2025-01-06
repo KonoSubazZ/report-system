@@ -17,6 +17,8 @@ public class PyAnalysisReportTemplateUtil {
 
 	public static AnalysisReport getFreeMarker(HttpServletResponse response, HttpServletRequest request,ReportTemplate rt, HttpSession session,AnalysisReport apr) throws Exception {
 		String path = session.getServletContext().getRealPath("/");
+
+		// TODO 待升级-固定目录
 		String docxPath = path +"docx/"+rt.getTemplate_name()+".docx";
 		Map<String,Object> data = new HashMap<String,Object>();
 		if (apr.getProduct_name().contains("novoivd")) {

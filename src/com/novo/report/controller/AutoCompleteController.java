@@ -84,16 +84,24 @@ public class AutoCompleteController {
         return autoCompleteService.getMsiTemplateIdAndName();
     }
 
+    /**
+     * 获取报告模板
+     * @param product_id
+     * @param subbarcode
+     * @param flag 1 匹配产品送检单位下模板，2更多按钮匹配产品下所有模板
+     * @return
+     */
     @RequestMapping("getReportTemplateIdAndName")
     @ResponseBody
     public List<AutoComplete> getReportTemplateIdAndName(Integer product_id, String subbarcode, String flag) {
-        // 更多按钮匹配产品下所有模板
+        // 默认匹配送检单位和报告模板对应关系
         if ("1".equals(flag)) {
-            // 获取送检单位和报告模板对应关系
             List<String> list = new ArrayList<>();
             boolean flag2 = false;
             String recordercode = autoCompleteService.getRecordercodeBySubbarcode(subbarcode);
             if (!StringUtils.isEmpty(recordercode)) {
+
+                // template names
                 String templateCorrespondenceByRecordercode = autoCompleteService.getTemplateCorrespondenceByRecordercode(recordercode);
                 if (!StringUtils.isEmpty(templateCorrespondenceByRecordercode)) {
                     flag2 = true;
@@ -152,6 +160,8 @@ public class AutoCompleteController {
             }
             return reportTemplateIdAndName;
         }
+
+        // 更多按钮匹配产品下所有模板
         return autoCompleteService.getReportTemplateIdAndName(product_id);
     }
 
