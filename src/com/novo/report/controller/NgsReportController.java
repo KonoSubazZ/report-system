@@ -269,6 +269,12 @@ public class NgsReportController {
                     copyto = null;
                 }
 
+                // 20250107 测试系统增加特定邮箱
+                if (ips.contains(ServerConfig.getServerTestIP())) {
+                    to = new String[]{"liushangzhi9168@novogene.com", "wangxueran7632@novogene.com","liusifan@novogene.com"};
+                    copyto = new String[]{"novomedicine-db@novogene.com", "tumor-bioinfo@novogene.com"};
+                }
+
                 Map sendMail = EmailUtil.getInstance("mail.properties").sendMail(from, to, copyto, subject, content, fileList);
                 long endTime = System.currentTimeMillis();
                 long duration = (endTime - startTime) / 1000;
