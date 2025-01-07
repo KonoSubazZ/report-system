@@ -59,7 +59,7 @@
 		    <li><a href="#tabs-5" onclick="urlRun4();" style="cursor: pointer;">报告预览</a></li>
 		    <c:if test="${ user.role_id != 8 }">
 		    	<li><a href="#tabs-6" onclick="urlRun5();" style="cursor: pointer;">产生报告</a></li>
-				<li><a href="#tabs-9" onclick="urlRun7();" style="cursor: pointer;">审核</a></li>
+				<li><a href="#tabs-9" onclick="urlRun7();" style="cursor: pointer;" id="review-tab">审核</a></li>
 				<li><a href="#tabs-7" onclick="urlRun6();" style="cursor: pointer;">发送报告</a></li>
 		    </c:if>
 		    <li style="margin-left: 300px"><a href="#tabs-8" onclick="fun_back();" id="button_back" >返回报告管理</a></li>
@@ -142,6 +142,12 @@
 					var objFrm = document.getElementById('review');
 					objFrm.src = "${pageContext.request.contextPath}/geneMarkerVw/review?report_id=${currentNgsAvailable.report_id}&platform=${currentNgsAvailable.platform}&subbarcode=${currentNgsAvailable.subbarcode}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}&life=${currentNgsAvailable.life}&illumina=${currentNgsAvailable.illumina}&subbarcode_show=${currentNgsAvailable.subbarcode_show}&product_name_show=${currentNgsAvailable.product_name_show}&analysis_date_show=${currentNgsAvailable.analysis_date_show}&status=${currentNgsAvailable.status}&pageNo=${currentNgsAvailable.pageNo}&user=${currentNgsAvailable.user}&checker=${currentNgsAvailable.checker}&reporter_comment=${currentNgsAvailable.reporter_comment}";
 					objFrm.style.display = "block";
+				}
+
+				// 如果是审核人员直接跳转审核页面-用 js 模拟
+				if(${currentNgsAvailable.checker} != null && ${currentNgsAvailable.checker} != ''){
+					let tab = $('#review-tab');
+					tab && tab.click();
 				}
 	        	
 	        </script>
