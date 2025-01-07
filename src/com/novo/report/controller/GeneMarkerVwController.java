@@ -267,6 +267,8 @@ public class GeneMarkerVwController {
 				model.addAttribute("chemoJson", "[]");
 			} else {
 				model.addAttribute("chemoJson", chemoJsonList.get(0));
+
+
 			}
 		} else {
 			model.addAttribute("chemoJson", "[]");

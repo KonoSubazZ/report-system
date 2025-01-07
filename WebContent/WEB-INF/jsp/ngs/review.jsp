@@ -42,6 +42,7 @@
     #fileName:hover {
         color: #0a84ff;
     }
+
 </style>
 <div class="panel admin-panel" style="background-color: #FFF;height: 100vh;">
     <div class="panel-head">
@@ -101,7 +102,7 @@
                     <%--                    <i class="layui-icon layui-icon-file" style="font-size: 20px; color: #1E9FFF;"></i> --%>
                     <span id="fileName"
                           onclick="previewPdf(${analysisReport.report_id})">${analysisReport.report_filename}</span>
-                    <i class="layui-icon layui-icon-link"
+                    <i class="layui-icon layui-icon-download-circle"
                        style="font-size: 20px; color: #1E9FFF;margin-left: 5px;" onclick="download()"></i>
                 </div>
             </div>
@@ -156,6 +157,11 @@
     </div>
 </div>
 </body>
+<style>
+.layui-upload-choose{
+    max-width: 500px;
+}
+</style>
 <script>
 
     // 下载文件
@@ -176,9 +182,10 @@
             done: function (res) {
                 layer.msg('上传成功');
                 $('#ID-upload-demo-preview').removeClass('layui-hide');
-
+                // $('.layui-upload-choose').
             }
         });
+
 
         // 更换报告文件
         $("#updateReport").click(function () {

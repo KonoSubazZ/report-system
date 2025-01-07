@@ -101,6 +101,7 @@ public class LifeController {
             currentNgsAvailable.setPageNo(1);
             currentNgsAvailable.setPlatform("Illumina");
             currentNgsAvailable.setProduct_name_show(currentNgsAvailable.getProduct_name());
+            currentNgsAvailable.setSubbarcode(currentNgsAvailable.getSubbarcode());
 
             String username = currentNgsAvailable.getUser();
             analysisReport.setSubbarcode(currentNgsAvailable.getSubbarcode());

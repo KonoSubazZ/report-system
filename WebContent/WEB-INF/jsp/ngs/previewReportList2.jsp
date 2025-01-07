@@ -4905,7 +4905,7 @@ tr {
 				<c:when test="${qualityType == '白细胞' || type == 'blood'}">
 					<script>
 						var tumorcellcontent = $("#tumorcellcontent").val();
-						if (tumorcellcontent.includes('%') && tumorcellcontent.replace(/%/g, '') >= 10 || tumorcellcontent == "不适用") {
+						if (tumorcellcontent.includes('%') && tumorcellcontent.replace(/%/g, '') >= 10 && tumorcellcontent.replace(/%/g, '') <= 100 || tumorcellcontent == "不适用") {
 							document.getElementById('tumorcellcontent').style.color = '';
 						}
 					</script>
@@ -4913,7 +4913,7 @@ tr {
 				<c:when test="${type == 'tissue'}">
 					<script>
 						var tumorcellcontent = $("#tumorcellcontent").val();
-						if (tumorcellcontent.includes('%') && tumorcellcontent.replace(/%/g, '') >= 10 || tumorcellcontent == "/" || tumorcellcontent == "-") {
+						if (tumorcellcontent.includes('%') && tumorcellcontent.replace(/%/g, '') >= 10 && tumorcellcontent.replace(/%/g, '') <= 100 || tumorcellcontent == "/" || tumorcellcontent == "-") {
 							document.getElementById('tumorcellcontent').style.color = '';
 						}
 					</script>
@@ -5082,7 +5082,7 @@ tr {
 				<td>≥80%</td>
 				<script>
 					var hrd_coverage_uniformity = $("#hrd_coverage_uniformity").val();
-					if (hrd_coverage_uniformity.includes('%') && hrd_coverage_uniformity.replace(/%/g, '') >= 80) {
+					if (hrd_coverage_uniformity.includes('%') && hrd_coverage_uniformity.replace(/%/g, '') >= 80 && hrd_coverage_uniformity.replace(/%/g, '') <= 100) {
 						document.getElementById('hrd_coverage_uniformity').style.color = '';
 					}
 				</script>
@@ -5093,7 +5093,7 @@ tr {
 				<td>≥95%</td>
 				<script>
 					var hrd_genome_alignment = $("#hrd_genome_alignment").val();
-					if (hrd_genome_alignment.includes('%') && hrd_genome_alignment.replace(/%/g, '') >= 95) {
+					if (hrd_genome_alignment.includes('%') && hrd_genome_alignment.replace(/%/g, '') >= 95 && hrd_genome_alignment.replace(/%/g, '') <= 100) {
 						document.getElementById('hrd_genome_alignment').style.color = '';
 					}
 				</script>
@@ -5104,7 +5104,7 @@ tr {
 				<td>≥80%</td>
 				<script>
 					var hrd_base_quality = $("#hrd_base_quality").val();
-					if (hrd_base_quality.includes('%') && hrd_base_quality.replace(/%/g, '') >= 80) {
+					if (hrd_base_quality.includes('%') && hrd_base_quality.replace(/%/g, '') >= 80 && hrd_base_quality.replace(/%/g, '') <= 100) {
 						document.getElementById('hrd_base_quality').style.color = '';
 					}
 				</script>
@@ -5149,7 +5149,7 @@ tr {
 				<td>≥90%</td>
 				<script>
 					var coverage_uniformity = $("#coverage_uniformity").val();
-					if (coverage_uniformity.includes('%') && coverage_uniformity.replace(/%/g, '') >= 90) {
+					if (coverage_uniformity.includes('%') && coverage_uniformity.replace(/%/g, '') >= 90 && coverage_uniformity.replace(/%/g, '') <= 100) {
 						document.getElementById('coverage_uniformity').style.color = '';
 					}
 				</script>
@@ -5160,7 +5160,7 @@ tr {
 				<td>≥95%</td>
 				<script>
 					var genome_alignment = $("#genome_alignment").val();
-					if (genome_alignment.includes('%') && genome_alignment.replace(/%/g, '') >= 95) {
+					if (genome_alignment.includes('%') && genome_alignment.replace(/%/g, '') >= 95 && genome_alignment.replace(/%/g, '') <= 100) {
 						document.getElementById('genome_alignment').style.color = '';
 					}
 				</script>
@@ -5171,7 +5171,7 @@ tr {
 				<td>≥80%</td>
 				<script>
 					var base_quality = $("#base_quality").val();
-					if (base_quality.includes('%') && base_quality.replace(/%/g, '') >= 80) {
+					if (base_quality.includes('%') && base_quality.replace(/%/g, '') >= 80 && base_quality.replace(/%/g, '') <= 100) {
 						document.getElementById('base_quality').style.color = '';
 					}
 				</script>
