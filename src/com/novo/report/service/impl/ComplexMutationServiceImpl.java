@@ -190,11 +190,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         // drug_var_list 来源 1. thisGeneticmarkerVwList（体系） 2. complexSet（肠癌子父级才有？） 3.crAllList（根据 has_drug 判断是否有用药）  4. hrdMap
         for (Map map : drug_var_list) {
             String gene = map.get("gene").toString();
-			/*String variant = map.get("variant").toString();
-			String k = gene+" "+variant;
-			if(simpleSet.containsKey(k)) {
-				map.put("complexIDs", simpleSet.get(k));
-			}*/
+
             try {
                 reportCrService.handleDrugList(user, diseaseId, map, diseaseIdList, parentdiseaseIdList, 0, lang, report_id);
 

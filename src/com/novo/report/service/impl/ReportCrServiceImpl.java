@@ -67,12 +67,13 @@ public class ReportCrServiceImpl implements ReportCrService {
     private final static Comparator<Object> CHINA_COMPARE = Collator.getInstance(java.util.Locale.CHINA);
 
     /**
-     * 获取用药信息（暂时理解体细胞突变都有用药 胚系只有检出才有用药 待确认）
+     * 获取用药信息（暂时理解体细胞突变都会匹配用药 胚系只有has_drug=1才会匹配用药 待确认）
+     * 根据匹配规则获取用药信息 突变list diseaseIdList 病种id列表
      * @param user
      * @param diseaseId 本癌种 id
      * @param a 位点信息（基因 突变）
      * @param diseaseIdList 病种id列表
-     * @param parentdiseaseIdList 父级癌种id列表
+     * @param parentdiseaseIdList 父级癌种id列表 这个是什么作用??
      * @param Flag 0 、1去知识库获取用药
      * @param lang
      * @param report_id
@@ -100,7 +101,9 @@ public class ReportCrServiceImpl implements ReportCrService {
         // 获取突变list
         List<Integer> mutationIdList = getMutIdList(mutationId);
 
-        // 这一块暂时没有使用到
+        // 根据本地库的数据补充父mutID ？？什么作用
+        // 如果本地记录包含父级mutID，则添加到mutationIdList中 （去重添加）
+        // TODO 待确定 这里不会出现问题吗？ 比如知识库删除了某个突变的关联父级突变，增加本地库到 突变list 不会有问题吗
         String parent_mutID = a.get("parent_mutID") == null ? "-1" : a.get("parent_mutID").toString();
         if (!parent_mutID.equals("-1")) {
             String[] split = parent_mutID.split(",");
@@ -123,6 +126,7 @@ public class ReportCrServiceImpl implements ReportCrService {
         // 查询本地库，看该位点是否有靶向药物信息、一般来说只有一条
         List<ReportVarDrug> varDrugs = reportVarDrugDao.selectRecord(gene, ori_variant, diseaseId, lang, gender);
         // 查询本地库，未知临床意义或不报告的位点 ？？
+        // TODO 待确定 为什么既查询 靶药表 ，又查询未知临床意义表（vus）
         Map varUnknown = reportUnknownVarDao.selectRpUnknownVar(gene, ori_variant, diseaseId, lang);
         ReportVarDrug reportVarDrug = null;
 
@@ -167,7 +171,7 @@ public class ReportCrServiceImpl implements ReportCrService {
             a.put("InNKB", "false");
         }
 
-        // NKB更新时间
+        // NKB更新时间 多个更新时间包括突变的描述、用药、基因描述
         Timestamp nkbUpdateTime = new Timestamp(0);
         nkbUpdateTime = getNkbUpdateTime(mutationIdList, gene, diseaseIdList);
         String has_drug = a.get("has_drug") == null ? "" : a.get("has_drug").toString();
@@ -186,6 +190,7 @@ public class ReportCrServiceImpl implements ReportCrService {
         a.put("mutDesc2", mutDesc);
         //男性不输出女性生殖器官肿瘤及子级癌种、女性不输出男性生殖器官肿瘤及子级癌种；实体瘤不输出血液肿瘤及子级癌种、血液肿瘤不输出实体瘤及子级癌种
         List<Integer> sonIdList = complexMutationService.solidTumorFiltration(gender, diseaseIdList);
+
         if (reportVarDrugUpdateTime.before(nkbUpdateTime) || Flag != 0) { //知识库新
             fetchNkbDrugInfo(user, a, reportVarDrug, mutationIdList, diseaseIdList, parentdiseaseIdList, sonIdList, gene, variant, ori_variant, Flag, lang, diseaseId);
             //知识库位点说明
@@ -597,15 +602,23 @@ public class ReportCrServiceImpl implements ReportCrService {
         return mutationIdList;
     }
 
-    //获取知识库的更新时间
+    /**
+     * 获取知识库的更新时间
+     * @param mutationIdList
+     * @param gene
+     * @param diseaseIdList
+     * @return
+     */
     public Timestamp getNkbUpdateTime(List<Integer> mutationIdList, String gene, List<Integer> diseaseIdList) {
         Timestamp nkbUpdateTime = null;
          if (mutationIdList.isEmpty()) {
             nkbUpdateTime = new Timestamp(0);
         } else {
+             // 获取知识库的突变、用药、临床信息获取 var_drug_anno 最晚更新时间更新时间
             nkbUpdateTime = analysisReportDao.getVarDrugAnnoUpdateTime(mutationIdList, diseaseIdList);
         }
          if (nkbUpdateTime == null) nkbUpdateTime = new Timestamp(0);
+         // 获取基因 gene_anno 的更新时间
         Timestamp geneAnnoUpdateTime = analysisReportDao.getGeneAnnoUpdateTime(gene, diseaseIdList);
         Timestamp varAnnoUpdateTime = new Timestamp(0);
         Timestamp variantDescriptionUpdateTime = new Timestamp(0);
@@ -651,7 +664,7 @@ public class ReportCrServiceImpl implements ReportCrService {
         }
 
         if (!mutationIdList.isEmpty()) {
-            // drugList = analysisReportDao.getDrugListByIdList(mutationIdList, diseaseIdList,mutation_type,lang);
+            // 根据 mutationIdList diseaseIdList mutation_type获取所有的药物信息
             drugList = analysisReportDao.getDrugListByIdList(mutationIdList, diseaseIdList, lang, mutation_type);
             drugList.sort((o1, o2) -> o2.get("evidence_phase_id").toString().compareTo(o1.get("evidence_phase_id").toString()));
         }
@@ -662,7 +675,7 @@ public class ReportCrServiceImpl implements ReportCrService {
             b.put("approve_range", String.valueOf(drugLevel));
         }
 
-        // TODO drugFlag 药物是否加#的标记 ==> 什么时候加 #
+        // TODO drugFlag 药物是否加#的标记 ==> 什么时候加 # ==> 有临床实验加 #
         Map<String, Boolean> drugFlag = new HashMap<String, Boolean>();
         List<Map> clinicalList = getClinicalList(drugList, drugFlag, parentdiseaseIdList, lang); //根据drugList获取临床试验列表
         // 添加其他癌种A级证据，并输出为C级药物

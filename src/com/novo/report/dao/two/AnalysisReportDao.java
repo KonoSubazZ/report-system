@@ -214,7 +214,14 @@ public interface AnalysisReportDao {
             "WHERE gene_symbol=#{gene} and lang = #{lang}")
     List<Map> getGeneDesc(@Param("gene") String gene, @Param("lang") Integer lang);
 
-    // 获取某突变的位点说明
+    /**
+     *  获取某突变的位点说明
+     *  TODO 待确认 因为传入的参数 geneVariantIdList 包括自身的id + 关联的突变id,这里不确定第一个id是否为自己的id，还是关联的id,
+     *  这里会查到多条突变描述，所以取第一条
+     * @param geneVariantIdList
+     * @param lang
+     * @return
+     */
     List<Map> getVariantDescription(@Param("list") List<Integer> geneVariantIdList, @Param("lang") Integer lang);
 
     // 基因在本癌种中的突变频率(根据id查询)
