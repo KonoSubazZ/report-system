@@ -456,6 +456,13 @@ public class LifeController {
         return pr.getReport_id();
     }
 
+    /**
+     * 匹配最新库、匹配模块化前置 似乎是更新
+     * @param pr
+     * @param cd
+     * @param httpServletRequest
+     * @return
+     */
     @RequestMapping("updateProductByProductId")
     @ResponseBody
     private Object updateProductByProductId(AnalysisReport pr, CurrentNgsAvailableData cd, HttpServletRequest httpServletRequest) {

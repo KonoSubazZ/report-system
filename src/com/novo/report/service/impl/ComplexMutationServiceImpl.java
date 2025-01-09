@@ -70,9 +70,6 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         List<Integer> parentdiseaseIdList = new ArrayList<>();
         getDiseaseList(diseaseId, diseaseIdList, parentdiseaseIdList);
 
-        // 得到所有突变的Mutlist
-        // List<Map> thisGeneticmarkerVwList = analysisReportDao.getThisGeneticmarkeren7VwList(report_id);
-
         // 体系突变
         List<Map> thisGeneticmarkerVwList = new ArrayList<>();
         if (template_name.contains("蚌埠")) {
@@ -81,7 +78,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
             thisGeneticmarkerVwList = analysisReportDao.getThisGeneticmarkeren7VwList(report_id);
         }
 
-        // 获取所有胚系突变（包括致病1、2、3 不致病 4、5）
+        // 获取所有报出胚系突变（包括致病1、2、3 不致病 4、5）
         List<Map> crAllList = analysisReportDao.getCrAll(report_id, lang);
 
 
@@ -150,13 +147,16 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
             drug_var_list.addAll(complexSet);
         }
 
-        // 简单位点总数（CR + Somatic）（暂时理解没有用药）
+        // ？？简单位点总数（CR + Somatic）（暂时理解没有用药）
         int totalMutNum = 0;
+        // 胚系位点有用药个数
         int crDrugListSize = 0;
-        Set<String> geneSet = new HashSet<String>(); //简单位点的基因集合（不报告的位点除外）
+        //简单位点的基因集合（不报告的位点除外）
+        Set<String> geneSet = new HashSet<String>();
         for (Map map : crAllList) {
             String gene = map.get("gene").toString();
             geneSet.add(gene);
+            // 获取基因描述信息，根据知识库的基因描述时间决定是否更新本地库
             update_cr_info(map, user, lang);
 
             // 判断是否有用药 有 1 或 true
@@ -170,7 +170,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         }
         // 获取hrd
         AnalysisReport analysisReport = analysisReportDao.getReportById(report_id);
-        // 这里的判断应该不会生效吧
+        // 这里的判断应该不会生效吧  在报告预览时 template_name= ""; ??
         if (analysisReport.getProduct_name().contains("hrd") && StringUtils.isEmpty(template_name)) {
             Map hrdMap = new HashMap();
             hrdMap.put("gene", "HRD");
@@ -291,44 +291,30 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         // 没有使用到
         String mutDesc = translateUtil.translate2(Gene, ori_variant, ".");
         cr_info.put("mutDesc", mutDesc);
-        //获取临床意义
-		/*Integer clnsigId = analysisReportDao.getClnsigIdByGeneAndVariant(Gene, variant);
-		clnsigId = clnsigId == null?0:clnsigId;
-		cr_info.put("Clinical_significance", clnsigId);
-		if(clnsigId == 1 || clnsigId == 2) {
-			cr_info.put("has_drug", true);
-		}*/
         // 得到基因描述
         String geneDescription = "";
+        // 知识库基因描述更新时间
         Long geneDescription_updateTime = 0L;
+
+        // 这里只会获取一条吧 什么情况会获得多条？？
         List<Map> geneDescList = analysisReportDao.getGeneDesc(Gene, lang);
         if (!CollectionUtils.isEmpty(geneDescList)) {
             Map geneDesc = geneDescList.get(0);
             geneDescription = geneDesc.get("gene_description") == null ? "" : geneDesc.get("gene_description").toString();
             geneDescription_updateTime = geneDesc.get("update_date") == null ? 0L : Long.valueOf(geneDesc.get("update_date").toString());
         }
-        //获取变异解析
-		/*Map geneDesc = analysisReportDao.getGeneDescByGeneAndVariant(Gene, variant);
-		String VarClianno = "";
-		if(geneDesc!= null) {
-			String description = geneDesc.get("description") == null ? "":geneDesc.get("description").toString();
-			String description_chinese = geneDesc.get("description_chinese") == null ? "":geneDesc.get("description_chinese").toString();
-			VarClianno = lang == 1?description_chinese:description;
-		}*/
+
+        // rp_cr 没有对应的数据
         if ("".equals(record_id)) {
             Map map = new HashMap<>();
             map.put("GeneDesc", geneDescription);
             map.put("vardesc", mutDesc);
-			/*map.put("VarClianno", VarClianno);
-			map.put("Clinical_significance", clnsigId);
-			if(clnsigId == 1 || clnsigId == 2) {
-				map.put("has_drug", true);
-			}*/
-
             // 基因翻译描述和突变描述
             cr_info.put("rpCr", map);
         } else {
+            // 根据时间决定是否更新 rp_cr 的变异描述 gene_desc
             Map rpCr = reportCrDao.selectByPrimaryKey(Integer.parseInt(record_id));
+            // 本地库 rp_cr 的更新时间
             String update_time = rpCr.get("update_time").toString();
             long update_timestamp = 0L;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -342,11 +328,6 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
                 rpCr.put("GeneDesc", geneDescription);
                 reportCrDao.updateGeneDescById(geneDescription, user, Integer.parseInt(record_id));
             }
-			/*rpCr.put("Clinical_significance", clnsigId);
-			rpCr.put("VarClianno", VarClianno);
-			if(clnsigId == 1 || clnsigId == 2) {
-				rpCr.put("has_drug", true);
-			}*/
             cr_info.put("rpCr", rpCr);
         }
     }

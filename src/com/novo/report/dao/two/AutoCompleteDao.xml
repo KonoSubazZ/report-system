@@ -101,7 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select distinct subbarcode from offline_report 
 	</select>
 	<!-- 查询getDrugNameAndDrugId -->
-	<select id="getDrugNameAndDrugId" resultType="AutoComplete">
+	  <select id="getDrugNameAndDrugId" resultType="AutoComplete">
 		SELECT drug_name name, drug_id id from nkb_approved_drug_evw WHERE lang = #{lang}
 	</select>
 	<select id="getProductNameByUserId" resultType="AutoComplete">

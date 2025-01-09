@@ -135,13 +135,22 @@ public class GeneMarkerVwController {
 			return "ngs/previewReportList2";
 		}
 	}
-	
+
+	 /**
+	  * 获取报告预览数据 【匹配模块化、匹配本地库】
+	  * @param httpServletRequest
+	  * @param currentNgsAvailable
+	  * @param model
+	  * @return
+	  * @throws Exception
+	  */
 	@RequestMapping("getGeneMarkerData")
 	public String getGeneMarkerData(HttpServletRequest httpServletRequest, CurrentNgsAvailableData currentNgsAvailable, Model model) throws Exception {
 		User user = (User) httpServletRequest.getSession().getAttribute("user");
 		String user_account = user==null ? "" : user.getUser_account();
 		Gson gson = new Gson();
 		final boolean isEnglish = isEnglish(currentNgsAvailable.getProduct_name());
+		// 1 cn, 2 en
 		Integer lang = 0;
 		if(isEnglish) {
 			lang = 2;
@@ -150,11 +159,13 @@ public class GeneMarkerVwController {
 		}
 		model.addAttribute("lang", lang);
 		AnalysisReport analysisReport = analysisReportDao.getReportById(currentNgsAvailable.getReport_id());
-		//根据report_id获取原发癌种信息
+
+		// 根据 report_id 获取原发癌种信息
 		DiseaseClass diseaseClass = lifeService.getDiseaseClass(currentNgsAvailable.getReport_id());
 		Integer diseaseId = diseaseClass.getClass_id();
 		String diseaseName = diseaseClass.getDisease_class_chinese();
-		//根据report_id获取产品信息
+
+		// 根据 report_id 获取产品信息
 		Product product = lifeService.getProduct(currentNgsAvailable.getReport_id());
 		if (product == null) {
 			product = lifeDao.getProductByPathName(currentNgsAvailable.getProduct_name());
@@ -170,11 +181,16 @@ public class GeneMarkerVwController {
 		model.addAttribute("diseaseId", diseaseId);
 		model.addAttribute("diseaseClass", diseaseClass);
 		String moduleFlag = analysisReportDao.getModuleFlagByReportId(currentNgsAvailable.getReport_id());
+
+		// moduleFlag
 		model.addAttribute("moduleFlag", moduleFlag);
 		
 		TranslateUtil translateUtil = new TranslateUtil();
+
 		//循环设置临床意义
 		Map result_map = new HashMap();
+
+		// 获取位点及用药信息
 		List<Map> list = complexMutationService.matchComplexMutation(user_account,currentNgsAvailable.getReport_id(), result_map, lang, "");
 		List<Map> crAllList = (List<Map>) result_map.get("crAllList");
 		List<Integer> parentdiseaseIdList = (List<Integer>) result_map.get("parentdiseaseIdList");

@@ -145,7 +145,11 @@ public interface AnalysisReportDao {
     // 获取疾病Disease的父疾病；
     List<Map> getParentDiseaseList2(@Param("diseaseIdList") List<Integer> diseaseIdList);
 
-    // 获取某疾病Disease的子疾病，递归查询，直到没有子为止
+    /**
+     * 获取某疾病Disease的子疾病，递归查询，直到没有子为止
+     * @param diseaseId
+     * @return
+     */
 //	@Select("select do_id, disease_name, disease_name_chinese, synonyms_chinese, parent_do_id, parent_disease_name, parent_disease_chinese,checking_status, created_by, created_date, updated_by, updated_date from nkb.disease_evw where checking_status = 'Approved' and parent_do_id=#{diseaseId}")
     @Select("SELECT do_id, disease_name, disease_name_chinese, disease_description, parent_do_id, parent_disease_name, parent_disease_chinese\r\n" +
             "FROM nkb_disease_parent_evw\r\n" +

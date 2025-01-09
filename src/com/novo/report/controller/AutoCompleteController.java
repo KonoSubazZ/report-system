@@ -185,6 +185,11 @@ public class AutoCompleteController {
         return autoCompleteService.getDiseaseClassChineseAndId();
     }
 
+    /**
+     * TODO 获取药物数据 id name,似乎是全量
+     * @param lang
+     * @return
+     */
     @RequestMapping("getDrugNameAndDrugId")
     @ResponseBody
     public List<AutoComplete> getDrugNameAndDrugId(Integer lang) {

@@ -157,11 +157,20 @@
             objFrm.style.display = "block";
         }
 
+
+        <%--if((${currentNgsAvailable.checker}) != null){--%>
+        <%--    let tab = $('#review-tab');--%>
+        <%--    tab && tab.click();--%>
+        <%--}--%>
         // 如果是审核人员直接跳转审核页面-用 js 模拟
-        if((${currentNgsAvailable.checker}) != null){
-            let tab = $('#review-tab');
-            tab && tab.click();
-        }
+        <%--function  autoToReview() {--%>
+        <%--    let checker = ${currentNgsAvailable.checker};--%>
+        <%--    if(checker != null){--%>
+        <%--        let tab = $('#review-tab');--%>
+        <%--        tab.click();--%>
+        <%--    }--%>
+        <%--}--%>
+        <%--autoToReview();--%>
 
     </script>
 
