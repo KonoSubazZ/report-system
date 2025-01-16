@@ -406,7 +406,7 @@ public class GeneMarkerVwController {
 			}
 		}
 
-		// 匹配模块化
+		// 匹配模块化,向 mm_* 表中插入数据
 		if ("1".equals(currentNgsAvailable.getModule())) {
 			// 子宫内膜癌 && 组织双样本（子宫内膜癌TCGA分子分型模块展示判断逻辑）
 			boolean endometrialCarcinoma = false;
