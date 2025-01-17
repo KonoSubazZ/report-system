@@ -2807,7 +2807,7 @@ public class PyReportServiceImpl implements PyReportService {
             }
         }
 
-        //消化道肿瘤个体化用药基因检测-50基因-银丰模板个性化需求
+        // 消化道肿瘤个体化用药基因检测-50基因-银丰模板个性化需求
         if (rt.getTemplate_name().contains("消化道肿瘤个体化用药基因检测-50基因-银丰")) {
             String ERBB2 = "";
             List<Map> ERBB2List = getHotInfo("ERBB2", thisGeneticmarkerList, crList, "allgene");
@@ -3258,11 +3258,7 @@ public class PyReportServiceImpl implements PyReportService {
         } else if (rt.getTemplate_name().contains("湘雅")) {
             target_cancer = "泛癌种";
         }
-        /*if ("novopm2_tis_99".equals(product_name) || "novopm2_blo_99".equals(product_name)) {
-            target_cancer = "泌尿系统癌症";
-        } else if (rt.getTemplate_name().contains("湘雅")) {
-            target_cancer = "泛癌种";
-        }*/
+
         rt.setImportantTargetedDiseaseName(target_cancer);
         List<Map> commonTargetedDrug1 = analysisReportDao.getCommonTargetedDrug2(target_cancer);
         // 根据产品基因过滤
@@ -3589,6 +3585,8 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setHenanPeopleCustomInfo(HenanPeopleCustomInfo);
         }
 
+        // CUSTOM 重要靶向基因汇总-检出总表
+        generateImportantTargetedGeneSummary(target_cancer);
 
         AnalysisReport analysisReport = null;
         String status = null;
@@ -3676,6 +3674,14 @@ public class PyReportServiceImpl implements PyReportService {
             executor.shutdown(); // 回收线程池
         }
         return reportId;
+    }
+
+    /**
+     * 重要靶向基因检出总表
+     * @param targetCancer
+     */
+    private void generateImportantTargetedGeneSummary(String targetCancer) {
+        
     }
 
     private Map<String, Object> geneHenanPeopleData(List<Map> somaticMutationSiteList, List<Map> bodyDrugTipList) {
