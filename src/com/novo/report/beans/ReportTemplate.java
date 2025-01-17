@@ -361,6 +361,19 @@ public class ReportTemplate {
 
     private Map<String, Object> EWSR1Info;
 
+    public Map<String, Object> getImportantTargetedGeneSummary() {
+        return importantTargetedGeneSummary;
+    }
+
+    public void setImportantTargetedGeneSummary(Map<String, Object> importantTargetedGeneSummary) {
+        this.importantTargetedGeneSummary = importantTargetedGeneSummary;
+    }
+
+    /**
+     * 重要靶向用药相关基因结果汇总-检出总表
+     */
+    private Map<String, Object> importantTargetedGeneSummary;
+
     public Map<String, Object> getTROP2Info() {
         return TROP2Info;
     }

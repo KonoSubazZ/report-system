@@ -1,6 +1,23 @@
 package com.novo.report.service.impl;
 
-import java.io.*;
+import com.google.gson.Gson;
+import com.novo.report.beans.*;
+import com.novo.report.dao.two.*;
+import com.novo.report.service.*;
+import com.novo.report.utils.*;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,24 +30,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import com.novo.report.beans.*;
-import com.novo.report.dao.two.*;
-import com.novo.report.service.*;
-import com.novo.report.utils.*;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import com.google.gson.Gson;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 @Service
 public class PyReportServiceImpl implements PyReportService {
@@ -3252,7 +3251,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 获取靶向癌种
         String target_cancer = StringUtils.isEmpty(pr.getTarget_cancer()) ? "" : pr.getTarget_cancer();
         // 泌尿系统肿瘤99产品输出泌尿系统癌症 || 188/462/550/1238/WES/WES plus的通用版
-        List<String> templates = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告","泛实体瘤1238+1166基因检测报告-佛山市第一人民医院");
+        List<String> templates = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告", "泛实体瘤1238+1166基因检测报告-佛山市第一人民医院");
         if (("novopm2_tis_99".equals(product_name) || "novopm2_blo_99".equals(product_name)) || (templates.contains(rt.getTemplate_name()) && (prostateCancerFlag || StringUtils.isNotEmpty(urinaryProstateDisease)))) {
             target_cancer = "泌尿系统癌症";
         } else if (rt.getTemplate_name().contains("湘雅")) {
@@ -3586,7 +3585,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // CUSTOM 重要靶向基因汇总-检出总表
-        generateImportantTargetedGeneSummary(target_cancer);
+        HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer);
 
         AnalysisReport analysisReport = null;
         String status = null;
@@ -3678,10 +3677,27 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 重要靶向基因检出总表
+     *
      * @param targetCancer
+     * @return
      */
-    private void generateImportantTargetedGeneSummary(String targetCancer) {
-        
+    private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer) {
+        HashMap<String, Object> res = new HashMap<>();
+        String title = "重要靶向用药相关基因结果汇总";
+        if ("泌尿系统癌症".equals(targetCancer)) {
+            title = "泌尿系统肿瘤重要靶向用药相关基因结果汇总";
+        } else if ("泛癌种".equals(targetCancer)) {
+            title = "重要靶向用药相关基因结果汇总";
+        } else if ("肺癌".equals(targetCancer)) {
+            title = "肺癌精准诊疗相关基因结果汇总";
+        } else if ("结直肠癌".equals(targetCancer)) {
+            title = "结直肠癌精准诊疗相关基因结果汇总";
+        } else if ("乳腺癌".equals(targetCancer)) {
+            title = "乳腺癌精准诊疗相关基因结果汇总";
+        }
+        res.put("title", title);
+        return res;
+
     }
 
     private Map<String, Object> geneHenanPeopleData(List<Map> somaticMutationSiteList, List<Map> bodyDrugTipList) {
