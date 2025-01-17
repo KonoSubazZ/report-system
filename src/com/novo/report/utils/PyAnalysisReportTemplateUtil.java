@@ -306,6 +306,8 @@ public class PyAnalysisReportTemplateUtil {
 		data.put("up", rt.getUp()); // 泌尿预后相关基因检测结果
 		data.put("urinaryProstateDisease", rt.getUrinaryProstateDisease());
 		data.put("cnvBe", rt.getCnvBe());
+		// 检出重要基因总表数据
+		data.put("importantTargetedGeneSummary", rt.getImportantTargetedGeneSummary());
 
 		// ===============定制个性化数据===================
 

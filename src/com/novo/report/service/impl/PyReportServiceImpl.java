@@ -3255,7 +3255,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 获取靶向癌种
         String target_cancer = StringUtils.isEmpty(pr.getTarget_cancer()) ? "" : pr.getTarget_cancer();
         // 泌尿系统肿瘤99产品输出泌尿系统癌症 || 188/462/550/1238/WES/WES plus的通用版
-        List<String> templates = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告");
+        List<String> templates = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告","NOVO泛癌种1238检测报告-佛山市第一人民医院","泛实体瘤1238+1166基因检测报告-佛山市第一人民医院","NOVO泛癌种1238检测报告-湖南省中医研","泛实体瘤188基因检测报告-湖南省中医研");
         if (("novopm2_tis_99".equals(product_name) || "novopm2_blo_99".equals(product_name)) || (templates.contains(rt.getTemplate_name()) && (prostateCancerFlag || StringUtils.isNotEmpty(urinaryProstateDisease)))) {
             target_cancer = "泌尿系统癌症";
         } else if (rt.getTemplate_name().contains("湘雅")) {
@@ -3591,6 +3591,10 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setHenanPeopleCustomInfo(HenanPeopleCustomInfo);
         }
 
+        // CUSTOM 重要靶向基因汇总-检出总表
+      
+        HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer);
+        rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
 
         AnalysisReport analysisReport = null;
         String status = null;
@@ -3682,6 +3686,24 @@ public class PyReportServiceImpl implements PyReportService {
             executor.shutdown(); // 回收线程池
         }
         return reportId;
+    }
+
+    private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer) {
+        HashMap<String, Object> res = new HashMap<>();
+        String title = "重要靶向用药相关基因结果汇总";
+        if ("泌尿系统癌症".equals(targetCancer)) {
+            title = "泌尿系统肿瘤重要靶向用药相关基因结果汇总";
+        } else if ("泛癌种".equals(targetCancer)) {
+            title = "重要靶向用药相关基因结果汇总";
+        } else if ("肺癌".equals(targetCancer)) {
+            title = "肺癌精准诊疗相关基因结果汇总";
+        } else if ("结直肠癌".equals(targetCancer)) {
+            title = "结直肠癌精准诊疗相关基因结果汇总";
+        } else if ("乳腺癌".equals(targetCancer)) {
+            title = "乳腺癌精准诊疗相关基因结果汇总";
+        }
+        res.put("title", title);
+        return res;
     }
 
     private Map<String, Object> geneHenanPeopleData(List<Map> somaticMutationSiteList, List<Map> bodyDrugTipList, List<Map> unknownTipList) {
