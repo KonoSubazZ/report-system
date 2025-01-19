@@ -10,9 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 public interface TemplateConfDao {
+    /**
+     * 获取模板配置信息
+     * @param templateName
+     * @return
+     */
+    TemplateConf get(String templateName);
 
     /**
      * 获取全部模板配置信息
      */
-//    List<TemplateConf> list(String templateName);
+    List<TemplateConf> list();
 }

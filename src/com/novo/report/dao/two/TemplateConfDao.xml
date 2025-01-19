@@ -5,10 +5,17 @@
 
 <mapper namespace="com.novo.report.dao.two.TemplateConfDao">
 
-    <select id="list">
+    <select id="get" resultType="com.novo.report.beans.TemplateConf">
         select *
         from template_conf
         where template_name = #{templateName}
           and deleted = 0
     </select>
+
+    <select id="list" resultType="com.novo.report.beans.TemplateConf">
+        select *
+        from template_conf
+        where deleted = 0
+    </select>
+
 </mapper>
