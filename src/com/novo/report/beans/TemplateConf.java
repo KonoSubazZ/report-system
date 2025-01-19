@@ -105,263 +105,263 @@ public class TemplateConf {
   }
 
 
-  public String getTemplateName() {
+  public String getTemplate_name() {
     return templateName;
   }
 
-  public void setTemplateName(String templateName) {
+  public void setTemplate_name(String templateName) {
     this.templateName = templateName;
   }
 
 
-  public String getReportName() {
+  public String getReport_name() {
     return reportName;
   }
 
-  public void setReportName(String reportName) {
+  public void setReport_name(String reportName) {
     this.reportName = reportName;
   }
 
 
-  public Boolean getSampleInfo() {
+  public Boolean getSample_info() {
     return sampleInfo;
   }
 
-  public void setSampleInfo(Boolean sampleInfo) {
+  public void setSample_info(Boolean sampleInfo) {
     this.sampleInfo = sampleInfo;
   }
 
 
-  public Boolean getBasicInfo() {
+  public Boolean getBasic_info() {
     return basicInfo;
   }
 
-  public void setBasicInfo(Boolean basicInfo) {
+  public void setBasic_info(Boolean basicInfo) {
     this.basicInfo = basicInfo;
   }
 
 
-  public Boolean getProductDesc() {
+  public Boolean getProduct_desc() {
     return productDesc;
   }
 
-  public void setProductDesc(Boolean productDesc) {
+  public void setProduct_desc(Boolean productDesc) {
     this.productDesc = productDesc;
   }
 
 
-  public Boolean getTestResultSummary() {
+  public Boolean getTest_result_summary() {
     return testResultSummary;
   }
 
-  public void setTestResultSummary(Boolean testResultSummary) {
+  public void setTest_result_summary(Boolean testResultSummary) {
     this.testResultSummary = testResultSummary;
   }
 
 
-  public Boolean getImportantTargetedGeneSummary() {
+  public Boolean getImportant_targeted_gene_summary() {
     return importantTargetedGeneSummary;
   }
 
-  public void setImportantTargetedGeneSummary(Boolean importantTargetedGeneSummary) {
+  public void setImportant_targeted_gene_summary(Boolean importantTargetedGeneSummary) {
     this.importantTargetedGeneSummary = importantTargetedGeneSummary;
   }
 
 
-  public Boolean getCancerRiskTip() {
+  public Boolean getCancer_risk_tip() {
     return cancerRiskTip;
   }
 
-  public void setCancerRiskTip(Boolean cancerRiskTip) {
+  public void setCancer_risk_tip(Boolean cancerRiskTip) {
     this.cancerRiskTip = cancerRiskTip;
   }
 
 
-  public Boolean getTotalRiskAssessment() {
+  public Boolean getTotal_risk_assessment() {
     return totalRiskAssessment;
   }
 
-  public void setTotalRiskAssessment(Boolean totalRiskAssessment) {
+  public void setTotal_risk_assessment(Boolean totalRiskAssessment) {
     this.totalRiskAssessment = totalRiskAssessment;
   }
 
 
-  public Boolean getThyroidCancerHotSpotResult() {
+  public Boolean getThyroid_cancer_hot_spot_result() {
     return thyroidCancerHotSpotResult;
   }
 
-  public void setThyroidCancerHotSpotResult(Boolean thyroidCancerHotSpotResult) {
+  public void setThyroid_cancer_hot_spot_result(Boolean thyroidCancerHotSpotResult) {
     this.thyroidCancerHotSpotResult = thyroidCancerHotSpotResult;
   }
 
 
-  public Boolean getHrdStateTip() {
+  public Boolean getHrd_state_tip() {
     return hrdStateTip;
   }
 
-  public void setHrdStateTip(Boolean hrdStateTip) {
+  public void setHrd_state_tip(Boolean hrdStateTip) {
     this.hrdStateTip = hrdStateTip;
   }
 
 
-  public Boolean getSarcomaTyping() {
+  public Boolean getSarcoma_typing() {
     return sarcomaTyping;
   }
 
-  public void setSarcomaTyping(Boolean sarcomaTyping) {
+  public void setSarcoma_typing(Boolean sarcomaTyping) {
     this.sarcomaTyping = sarcomaTyping;
   }
 
 
-  public Boolean getSarcomaTyping1() {
+  public Boolean getSarcoma_typing1() {
     return sarcomaTyping1;
   }
 
-  public void setSarcomaTyping1(Boolean sarcomaTyping1) {
+  public void setSarcoma_typing1(Boolean sarcomaTyping1) {
     this.sarcomaTyping1 = sarcomaTyping1;
   }
 
 
-  public Boolean getEndometrialCarcinomaTyping() {
+  public Boolean getEndometrial_carcinoma_typing() {
     return endometrialCarcinomaTyping;
   }
 
-  public void setEndometrialCarcinomaTyping(Boolean endometrialCarcinomaTyping) {
+  public void setEndometrial_carcinoma_typing(Boolean endometrialCarcinomaTyping) {
     this.endometrialCarcinomaTyping = endometrialCarcinomaTyping;
   }
 
 
-  public Boolean getIymphomaTyping() {
+  public Boolean getIymphoma_typing() {
     return iymphomaTyping;
   }
 
-  public void setIymphomaTyping(Boolean iymphomaTyping) {
+  public void setIymphoma_typing(Boolean iymphomaTyping) {
     this.iymphomaTyping = iymphomaTyping;
   }
 
 
-  public Boolean getIymphomaPrognosis() {
+  public Boolean getIymphoma_prognosis() {
     return iymphomaPrognosis;
   }
 
-  public void setIymphomaPrognosis(Boolean iymphomaPrognosis) {
+  public void setIymphoma_prognosis(Boolean iymphomaPrognosis) {
     this.iymphomaPrognosis = iymphomaPrognosis;
   }
 
 
-  public Boolean getBrainGlioma() {
+  public Boolean getBrain_glioma() {
     return brainGlioma;
   }
 
-  public void setBrainGlioma(Boolean brainGlioma) {
+  public void setBrain_glioma(Boolean brainGlioma) {
     this.brainGlioma = brainGlioma;
   }
 
 
-  public Boolean getMidlineCancer() {
+  public Boolean getMidline_cancer() {
     return midlineCancer;
   }
 
-  public void setMidlineCancer(Boolean midlineCancer) {
+  public void setMidline_cancer(Boolean midlineCancer) {
     this.midlineCancer = midlineCancer;
   }
 
 
-  public Boolean getKidneyCancer() {
+  public Boolean getKidney_cancer() {
     return kidneyCancer;
   }
 
-  public void setKidneyCancer(Boolean kidneyCancer) {
+  public void setKidney_cancer(Boolean kidneyCancer) {
     this.kidneyCancer = kidneyCancer;
   }
 
 
-  public Boolean getThyroidCancerPrognosis() {
+  public Boolean getThyroid_cancer_prognosis() {
     return thyroidCancerPrognosis;
   }
 
-  public void setThyroidCancerPrognosis(Boolean thyroidCancerPrognosis) {
+  public void setThyroid_cancer_prognosis(Boolean thyroidCancerPrognosis) {
     this.thyroidCancerPrognosis = thyroidCancerPrognosis;
   }
 
 
-  public Boolean getVariantList() {
+  public Boolean getVariant_list() {
     return variantList;
   }
 
-  public void setVariantList(Boolean variantList) {
+  public void setVariant_list(Boolean variantList) {
     this.variantList = variantList;
   }
 
 
-  public Boolean getSomaticDrugTip() {
+  public Boolean getSomatic_drug_tip() {
     return somaticDrugTip;
   }
 
-  public void setSomaticDrugTip(Boolean somaticDrugTip) {
+  public void setSomatic_drug_tip(Boolean somaticDrugTip) {
     this.somaticDrugTip = somaticDrugTip;
   }
 
 
-  public Boolean getCrDrugTip() {
+  public Boolean getCr_drug_tip() {
     return crDrugTip;
   }
 
-  public void setCrDrugTip(Boolean crDrugTip) {
+  public void setCr_drug_tip(Boolean crDrugTip) {
     this.crDrugTip = crDrugTip;
   }
 
 
-  public Boolean getSomaticMutationTip() {
+  public Boolean getSomatic_mutation_tip() {
     return somaticMutationTip;
   }
 
-  public void setSomaticMutationTip(Boolean somaticMutationTip) {
+  public void setSomatic_mutation_tip(Boolean somaticMutationTip) {
     this.somaticMutationTip = somaticMutationTip;
   }
 
 
-  public Boolean getCrMutationTip() {
+  public Boolean getCr_mutation_tip() {
     return crMutationTip;
   }
 
-  public void setCrMutationTip(Boolean crMutationTip) {
+  public void setCr_mutation_tip(Boolean crMutationTip) {
     this.crMutationTip = crMutationTip;
   }
 
 
-  public Boolean getSomaticMutationDrTip() {
+  public Boolean getSomatic_mutation_dr_tip() {
     return somaticMutationDrTip;
   }
 
-  public void setSomaticMutationDrTip(Boolean somaticMutationDrTip) {
+  public void setSomatic_mutation_dr_tip(Boolean somaticMutationDrTip) {
     this.somaticMutationDrTip = somaticMutationDrTip;
   }
 
 
-  public Boolean getCrMutationDrTip() {
+  public Boolean getCr_mutation_dr_tip() {
     return crMutationDrTip;
   }
 
-  public void setCrMutationDrTip(Boolean crMutationDrTip) {
+  public void setCr_mutation_dr_tip(Boolean crMutationDrTip) {
     this.crMutationDrTip = crMutationDrTip;
   }
 
 
-  public Boolean getApprovedTargetedDrugFdaNmpa() {
+  public Boolean getApproved_targeted_drug_fda_nmpa() {
     return approvedTargetedDrugFdaNmpa;
   }
 
-  public void setApprovedTargetedDrugFdaNmpa(Boolean approvedTargetedDrugFdaNmpa) {
+  public void setApproved_targeted_drug_fda_nmpa(Boolean approvedTargetedDrugFdaNmpa) {
     this.approvedTargetedDrugFdaNmpa = approvedTargetedDrugFdaNmpa;
   }
 
 
-  public Boolean getEndocrineTherapy() {
+  public Boolean getEndocrine_therapy() {
     return endocrineTherapy;
   }
 
-  public void setEndocrineTherapy(Boolean endocrineTherapy) {
+  public void setEndocrine_therapy(Boolean endocrineTherapy) {
     this.endocrineTherapy = endocrineTherapy;
   }
 
@@ -393,11 +393,11 @@ public class TemplateConf {
   }
 
 
-  public Boolean getImmunityPN() {
+  public Boolean getImmunity_PN() {
     return immunityPN;
   }
 
-  public void setImmunityPN(Boolean immunityPN) {
+  public void setImmunity_PN(Boolean immunityPN) {
     this.immunityPN = immunityPN;
   }
 
@@ -411,29 +411,29 @@ public class TemplateConf {
   }
 
 
-  public Boolean getHlaLon() {
+  public Boolean getHla_Lon() {
     return hlaLon;
   }
 
-  public void setHlaLon(Boolean hlaLon) {
+  public void setHla_Lon(Boolean hlaLon) {
     this.hlaLon = hlaLon;
   }
 
 
-  public Boolean getHlaLon1() {
+  public Boolean getHla_Lon_1() {
     return hlaLon1;
   }
 
-  public void setHlaLon1(Boolean hlaLon1) {
+  public void setHla_Lon_1(Boolean hlaLon1) {
     this.hlaLon1 = hlaLon1;
   }
 
 
-  public Boolean getTumorNeoantigen() {
+  public Boolean getTumor_neoantigen() {
     return tumorNeoantigen;
   }
 
-  public void setTumorNeoantigen(Boolean tumorNeoantigen) {
+  public void setTumor_neoantigen(Boolean tumorNeoantigen) {
     this.tumorNeoantigen = tumorNeoantigen;
   }
 
@@ -447,155 +447,155 @@ public class TemplateConf {
   }
 
 
-  public Boolean getApprovedImmunityDrug() {
+  public Boolean getApproved_immunity_drug() {
     return approvedImmunityDrug;
   }
 
-  public void setApprovedImmunityDrug(Boolean approvedImmunityDrug) {
+  public void setApproved_immunity_drug(Boolean approvedImmunityDrug) {
     this.approvedImmunityDrug = approvedImmunityDrug;
   }
 
 
-  public Boolean getCancerRiskAnal() {
+  public Boolean getCancer_risk_anal() {
     return cancerRiskAnal;
   }
 
-  public void setCancerRiskAnal(Boolean cancerRiskAnal) {
+  public void setCancer_risk_anal(Boolean cancerRiskAnal) {
     this.cancerRiskAnal = cancerRiskAnal;
   }
 
 
-  public Boolean getHrdStateAnal() {
+  public Boolean getHrd_state_anal() {
     return hrdStateAnal;
   }
 
-  public void setHrdStateAnal(Boolean hrdStateAnal) {
+  public void setHrd_state_anal(Boolean hrdStateAnal) {
     this.hrdStateAnal = hrdStateAnal;
   }
 
 
-  public Boolean getThyroidIymphomaDrugAnal() {
+  public Boolean getThyroid_iymphoma_drug_anal() {
     return thyroidIymphomaDrugAnal;
   }
 
-  public void setThyroidIymphomaDrugAnal(Boolean thyroidIymphomaDrugAnal) {
+  public void setThyroid_iymphoma_drug_anal(Boolean thyroidIymphomaDrugAnal) {
     this.thyroidIymphomaDrugAnal = thyroidIymphomaDrugAnal;
   }
 
 
-  public Boolean getVariantMutationAnal() {
+  public Boolean getVariant_mutation_anal() {
     return variantMutationAnal;
   }
 
-  public void setVariantMutationAnal(Boolean variantMutationAnal) {
+  public void setVariant_mutation_anal(Boolean variantMutationAnal) {
     this.variantMutationAnal = variantMutationAnal;
   }
 
 
-  public Boolean getSomaticMutationAnal() {
+  public Boolean getSomatic_mutation_anal() {
     return somaticMutationAnal;
   }
 
-  public void setSomaticMutationAnal(Boolean somaticMutationAnal) {
+  public void setSomatic_mutation_anal(Boolean somaticMutationAnal) {
     this.somaticMutationAnal = somaticMutationAnal;
   }
 
 
-  public Boolean getCrMutationAnal() {
+  public Boolean getCr_mutation_anal() {
     return crMutationAnal;
   }
 
-  public void setCrMutationAnal(Boolean crMutationAnal) {
+  public void setCr_mutation_anal(Boolean crMutationAnal) {
     this.crMutationAnal = crMutationAnal;
   }
 
 
-  public Boolean getVariantAnal() {
+  public Boolean getVariant_anal() {
     return variantAnal;
   }
 
-  public void setVariantAnal(Boolean variantAnal) {
+  public void setVariant_anal(Boolean variantAnal) {
     this.variantAnal = variantAnal;
   }
 
 
-  public Boolean getTmbAnal() {
+  public Boolean getTmb_anal() {
     return tmbAnal;
   }
 
-  public void setTmbAnal(Boolean tmbAnal) {
+  public void setTmb_anal(Boolean tmbAnal) {
     this.tmbAnal = tmbAnal;
   }
 
 
-  public Boolean getMsiAnal() {
+  public Boolean getMsi_anal() {
     return msiAnal;
   }
 
-  public void setMsiAnal(Boolean msiAnal) {
+  public void setMsi_anal(Boolean msiAnal) {
     this.msiAnal = msiAnal;
   }
 
 
-  public Boolean getMmrAnal() {
+  public Boolean getMmr_anal() {
     return mmrAnal;
   }
 
-  public void setMmrAnal(Boolean mmrAnal) {
+  public void setMmr_anal(Boolean mmrAnal) {
     this.mmrAnal = mmrAnal;
   }
 
 
-  public Boolean getImmunityPNAnal() {
+  public Boolean getImmunity_PN_anal() {
     return immunityPNAnal;
   }
 
-  public void setImmunityPNAnal(Boolean immunityPNAnal) {
+  public void setImmunity_PN_anal(Boolean immunityPNAnal) {
     this.immunityPNAnal = immunityPNAnal;
   }
 
 
-  public Boolean getHpdAnal() {
+  public Boolean getHpd_anal() {
     return hpdAnal;
   }
 
-  public void setHpdAnal(Boolean hpdAnal) {
+  public void setHpd_anal(Boolean hpdAnal) {
     this.hpdAnal = hpdAnal;
   }
 
 
-  public Boolean getHlaLohAnal() {
+  public Boolean getHla_Loh_anal() {
     return hlaLohAnal;
   }
 
-  public void setHlaLohAnal(Boolean hlaLohAnal) {
+  public void setHla_Loh_anal(Boolean hlaLohAnal) {
     this.hlaLohAnal = hlaLohAnal;
   }
 
 
-  public Boolean getTumorNeoantigenAnal() {
+  public Boolean getTumor_neoantigen_anal() {
     return tumorNeoantigenAnal;
   }
 
-  public void setTumorNeoantigenAnal(Boolean tumorNeoantigenAnal) {
+  public void setTumor_neoantigen_anal(Boolean tumorNeoantigenAnal) {
     this.tumorNeoantigenAnal = tumorNeoantigenAnal;
   }
 
 
-  public Boolean getPrognosticAnal() {
+  public Boolean getPrognostic_anal() {
     return prognosticAnal;
   }
 
-  public void setPrognosticAnal(Boolean prognosticAnal) {
+  public void setPrognostic_anal(Boolean prognosticAnal) {
     this.prognosticAnal = prognosticAnal;
   }
 
 
-  public Boolean getChemoAnal() {
+  public Boolean getChemo_anal() {
     return chemoAnal;
   }
 
-  public void setChemoAnal(Boolean chemoAnal) {
+  public void setChemo_anal(Boolean chemoAnal) {
     this.chemoAnal = chemoAnal;
   }
 
@@ -618,200 +618,200 @@ public class TemplateConf {
   }
 
 
-  public Boolean getSarcomaGene() {
+  public Boolean getSarcoma_gene() {
     return sarcomaGene;
   }
 
-  public void setSarcomaGene(Boolean sarcomaGene) {
+  public void setSarcoma_gene(Boolean sarcomaGene) {
     this.sarcomaGene = sarcomaGene;
   }
 
 
-  public Boolean getBrainGliomaGene() {
+  public Boolean getBrain_glioma_gene() {
     return brainGliomaGene;
   }
 
-  public void setBrainGliomaGene(Boolean brainGliomaGene) {
+  public void setBrain_glioma_gene(Boolean brainGliomaGene) {
     this.brainGliomaGene = brainGliomaGene;
   }
 
 
-  public Boolean getMidlineCancerSignificance() {
+  public Boolean getMidline_cancer_significance() {
     return midlineCancerSignificance;
   }
 
-  public void setMidlineCancerSignificance(Boolean midlineCancerSignificance) {
+  public void setMidline_cancer_significance(Boolean midlineCancerSignificance) {
     this.midlineCancerSignificance = midlineCancerSignificance;
   }
 
 
-  public Boolean getRccFeatures() {
+  public Boolean getRcc_features() {
     return rccFeatures;
   }
 
-  public void setRccFeatures(Boolean rccFeatures) {
+  public void setRcc_features(Boolean rccFeatures) {
     this.rccFeatures = rccFeatures;
   }
 
 
-  public Boolean getSalivaryGlandTumorGene() {
+  public Boolean getSalivary_gland_tumor_gene() {
     return salivaryGlandTumorGene;
   }
 
-  public void setSalivaryGlandTumorGene(Boolean salivaryGlandTumorGene) {
+  public void setSalivary_gland_tumor_gene(Boolean salivaryGlandTumorGene) {
     this.salivaryGlandTumorGene = salivaryGlandTumorGene;
   }
 
 
-  public Boolean getEndometrialPrognosis() {
+  public Boolean getEndometrial_prognosis() {
     return endometrialPrognosis;
   }
 
-  public void setEndometrialPrognosis(Boolean endometrialPrognosis) {
+  public void setEndometrial_prognosis(Boolean endometrialPrognosis) {
     this.endometrialPrognosis = endometrialPrognosis;
   }
 
 
-  public Boolean getHrr45Brca45HrdGenebgIntro() {
+  public Boolean getHrr45_brca45_hrd_genebg_intro() {
     return hrr45Brca45HrdGenebgIntro;
   }
 
-  public void setHrr45Brca45HrdGenebgIntro(Boolean hrr45Brca45HrdGenebgIntro) {
+  public void setHrr45_brca45_hrd_genebg_intro(Boolean hrr45Brca45HrdGenebgIntro) {
     this.hrr45Brca45HrdGenebgIntro = hrr45Brca45HrdGenebgIntro;
   }
 
 
-  public Boolean getHrr45Brca45GeneIntro() {
+  public Boolean getHrr45_brca45_gene_intro() {
     return hrr45Brca45GeneIntro;
   }
 
-  public void setHrr45Brca45GeneIntro(Boolean hrr45Brca45GeneIntro) {
+  public void setHrr45_brca45_gene_intro(Boolean hrr45Brca45GeneIntro) {
     this.hrr45Brca45GeneIntro = hrr45Brca45GeneIntro;
   }
 
 
-  public Boolean getHrr45Brca45HrdPeopleFeat() {
+  public Boolean getHrr45_brca45_hrd_people_feat() {
     return hrr45Brca45HrdPeopleFeat;
   }
 
-  public void setHrr45Brca45HrdPeopleFeat(Boolean hrr45Brca45HrdPeopleFeat) {
+  public void setHrr45_brca45_hrd_people_feat(Boolean hrr45Brca45HrdPeopleFeat) {
     this.hrr45Brca45HrdPeopleFeat = hrr45Brca45HrdPeopleFeat;
   }
 
 
-  public Boolean getGeneInstabilityIntroHrd() {
+  public Boolean getGene_instability_intro_hrd() {
     return geneInstabilityIntroHrd;
   }
 
-  public void setGeneInstabilityIntroHrd(Boolean geneInstabilityIntroHrd) {
+  public void setGene_instability_intro_hrd(Boolean geneInstabilityIntroHrd) {
     this.geneInstabilityIntroHrd = geneInstabilityIntroHrd;
   }
 
 
-  public Boolean getHrdAndTumorTherapy() {
+  public Boolean getHrd_and_tumor_therapy() {
     return hrdAndTumorTherapy;
   }
 
-  public void setHrdAndTumorTherapy(Boolean hrdAndTumorTherapy) {
+  public void setHrd_and_tumor_therapy(Boolean hrdAndTumorTherapy) {
     this.hrdAndTumorTherapy = hrdAndTumorTherapy;
   }
 
 
-  public Boolean getCommonDrugGeneList() {
+  public Boolean getCommon_drug_gene_list() {
     return commonDrugGeneList;
   }
 
-  public void setCommonDrugGeneList(Boolean commonDrugGeneList) {
+  public void setCommon_drug_gene_list(Boolean commonDrugGeneList) {
     this.commonDrugGeneList = commonDrugGeneList;
   }
 
 
-  public Boolean getGeneIntro() {
+  public Boolean getGene_intro() {
     return geneIntro;
   }
 
-  public void setGeneIntro(Boolean geneIntro) {
+  public void setGene_intro(Boolean geneIntro) {
     this.geneIntro = geneIntro;
   }
 
 
-  public Boolean getCancerBgIntro() {
+  public Boolean getCancer_bg_intro() {
     return cancerBgIntro;
   }
 
-  public void setCancerBgIntro(Boolean cancerBgIntro) {
+  public void setCancer_bg_intro(Boolean cancerBgIntro) {
     this.cancerBgIntro = cancerBgIntro;
   }
 
 
-  public Boolean getCancerImprotantGene() {
+  public Boolean getCancer_improtant_gene() {
     return cancerImprotantGene;
   }
 
-  public void setCancerImprotantGene(Boolean cancerImprotantGene) {
+  public void setCancer_improtant_gene(Boolean cancerImprotantGene) {
     this.cancerImprotantGene = cancerImprotantGene;
   }
 
 
-  public Boolean getTestCancerGenePanel() {
+  public Boolean getTest_cancer_gene_panel() {
     return testCancerGenePanel;
   }
 
-  public void setTestCancerGenePanel(Boolean testCancerGenePanel) {
+  public void setTest_cancer_gene_panel(Boolean testCancerGenePanel) {
     this.testCancerGenePanel = testCancerGenePanel;
   }
 
 
-  public Boolean getCancerGenePathogenicity() {
+  public Boolean getCancer_gene_pathogenicity() {
     return cancerGenePathogenicity;
   }
 
-  public void setCancerGenePathogenicity(Boolean cancerGenePathogenicity) {
+  public void setCancer_gene_pathogenicity(Boolean cancerGenePathogenicity) {
     this.cancerGenePathogenicity = cancerGenePathogenicity;
   }
 
 
-  public Boolean getMethodLimit() {
+  public Boolean getMethod_limit() {
     return methodLimit;
   }
 
-  public void setMethodLimit(Boolean methodLimit) {
+  public void setMethod_limit(Boolean methodLimit) {
     this.methodLimit = methodLimit;
   }
 
 
-  public Boolean getTestMethod() {
+  public Boolean getTest_method() {
     return testMethod;
   }
 
-  public void setTestMethod(Boolean testMethod) {
+  public void setTest_method(Boolean testMethod) {
     this.testMethod = testMethod;
   }
 
 
-  public Boolean getGeneticInterpretation() {
+  public Boolean getGenetic_interpretation() {
     return geneticInterpretation;
   }
 
-  public void setGeneticInterpretation(Boolean geneticInterpretation) {
+  public void setGenetic_interpretation(Boolean geneticInterpretation) {
     this.geneticInterpretation = geneticInterpretation;
   }
 
 
-  public Boolean getVariantInterpretationStatement() {
+  public Boolean getVariant_interpretation_statement() {
     return variantInterpretationStatement;
   }
 
-  public void setVariantInterpretationStatement(Boolean variantInterpretationStatement) {
+  public void setVariant_interpretation_statement(Boolean variantInterpretationStatement) {
     this.variantInterpretationStatement = variantInterpretationStatement;
   }
 
 
-  public Boolean getVariantTestSummary() {
+  public Boolean getVariant_test_summary() {
     return variantTestSummary;
   }
 
-  public void setVariantTestSummary(Boolean variantTestSummary) {
+  public void setVariant_test_summary(Boolean variantTestSummary) {
     this.variantTestSummary = variantTestSummary;
   }
 
@@ -825,29 +825,29 @@ public class TemplateConf {
   }
 
 
-  public Boolean getScreeningMethodsExcludingGenetic() {
+  public Boolean getScreening_methods_excluding_genetic() {
     return screeningMethodsExcludingGenetic;
   }
 
-  public void setScreeningMethodsExcludingGenetic(Boolean screeningMethodsExcludingGenetic) {
+  public void setScreening_methods_excluding_genetic(Boolean screeningMethodsExcludingGenetic) {
     this.screeningMethodsExcludingGenetic = screeningMethodsExcludingGenetic;
   }
 
 
-  public Boolean getGliomaMarkerSignificance() {
+  public Boolean getGlioma_marker_significance() {
     return gliomaMarkerSignificance;
   }
 
-  public void setGliomaMarkerSignificance(Boolean gliomaMarkerSignificance) {
+  public void setGlioma_marker_significance(Boolean gliomaMarkerSignificance) {
     this.gliomaMarkerSignificance = gliomaMarkerSignificance;
   }
 
 
-  public Boolean getGliomaGeneticRiskGene() {
+  public Boolean getGlioma_genetic_risk_gene() {
     return gliomaGeneticRiskGene;
   }
 
-  public void setGliomaGeneticRiskGene(Boolean gliomaGeneticRiskGene) {
+  public void setGlioma_genetic_risk_gene(Boolean gliomaGeneticRiskGene) {
     this.gliomaGeneticRiskGene = gliomaGeneticRiskGene;
   }
 
@@ -879,11 +879,11 @@ public class TemplateConf {
   }
 
 
-  public java.sql.Timestamp getCreateTime() {
+  public java.sql.Timestamp getCreate_time() {
     return createTime;
   }
 
-  public void setCreateTime(java.sql.Timestamp createTime) {
+  public void setCreate_time(java.sql.Timestamp createTime) {
     this.createTime = createTime;
   }
 
@@ -897,11 +897,11 @@ public class TemplateConf {
   }
 
 
-  public java.sql.Timestamp getUpdateTime() {
+  public java.sql.Timestamp getUpdate_time() {
     return updateTime;
   }
 
-  public void setUpdateTime(java.sql.Timestamp updateTime) {
+  public void setUpdate_time(java.sql.Timestamp updateTime) {
     this.updateTime = updateTime;
   }
 

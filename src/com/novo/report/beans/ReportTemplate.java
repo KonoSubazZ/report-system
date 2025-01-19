@@ -351,6 +351,20 @@ public class ReportTemplate {
     private Map<String, Object> JingsaiCustomInfo;
     private Map<String, Object> HenanPeopleCustomInfo;
 
+
+    public Map<String, Object> getReportInfo() {
+        return ReportInfo;
+    }
+
+    public void setReportInfo(Map<String, Object> reportInfo) {
+        ReportInfo = reportInfo;
+    }
+
+    /**
+     * docs: 报告的一些基础数据
+     */
+    private Map<String, Object> ReportInfo;
+
     public Map<String, Object> getImportantTargetedGeneSummary() {
         return importantTargetedGeneSummary;
     }

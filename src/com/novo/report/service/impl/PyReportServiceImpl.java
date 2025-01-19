@@ -74,6 +74,9 @@ public class PyReportServiceImpl implements PyReportService {
     @Autowired
     private ModuleModificationAllDao moduleModificationAllDao;
 
+    @Autowired
+    private TemplateConfService templateConfService;
+
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
         boolean flag = false;
@@ -115,6 +118,8 @@ public class PyReportServiceImpl implements PyReportService {
         Integer lang = 1;
         Gson gson = new Gson();
 
+        // 获取模板配置项
+        TemplateConf templateConf = templateConfService.get(rt.getTemplate_name());
         // 获取产品名称
         String productName = lifeDao.getProductByProductId(currentNgsAvailable.getProduct_id());
         currentNgsAvailable.setProduct_name(productName);
@@ -3592,9 +3597,11 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // CUSTOM 重要靶向基因汇总-检出总表
-      
         HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer);
         rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
+
+        // CUSTOM 报告一些基础数据
+        HashMap<String, Object> reportInfo = generateReportInfoData(templateConf,pd);
 
         AnalysisReport analysisReport = null;
         String status = null;
@@ -3686,6 +3693,16 @@ public class PyReportServiceImpl implements PyReportService {
             executor.shutdown(); // 回收线程池
         }
         return reportId;
+    }
+
+    private HashMap<String, Object> generateReportInfoData(TemplateConf templateConf, Map pd) {
+        HashMap<String, Object> res = new HashMap<>();
+        String reportName = templateConf.getReport_name();
+        if (pd != null) {
+            reportName = reportName.replace("检测报告", "+PD-L1检测报告");
+        }
+        res.put(reportName, reportName);
+        return res;
     }
 
     private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer) {
