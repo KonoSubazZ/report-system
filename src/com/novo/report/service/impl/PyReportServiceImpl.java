@@ -3701,7 +3701,8 @@ public class PyReportServiceImpl implements PyReportService {
         if (pd != null) {
             reportName = reportName.replace("检测报告", "+PD-L1检测报告");
         }
-        res.put(reportName, reportName);
+        res.put("reportName", reportName);
+        res.put("conf",templateConf);
         return res;
     }
 

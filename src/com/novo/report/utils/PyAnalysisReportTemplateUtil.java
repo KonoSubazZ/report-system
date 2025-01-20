@@ -308,8 +308,10 @@ public class PyAnalysisReportTemplateUtil {
 		data.put("cnvBe", rt.getCnvBe());
 		// 检出重要基因总表数据
 		data.put("importantTargetedGeneSummary", rt.getImportantTargetedGeneSummary());
-		// 报告一些基础信息
+		// 报告-基础信息
 		data.put("reportInfo", rt.getReportInfo());
+		// 报告-模块配置
+//		data.put("templateConf", rt.getTemplateConf());
 
 		// ===============定制个性化数据===================
 
