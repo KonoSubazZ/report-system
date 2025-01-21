@@ -1,5 +1,7 @@
 package com.novo.report.dao.two;
 
-public interface ModuleDao {
+import com.novo.report.mod.ModProductDesc;
 
+public interface ModuleDao {
+   ModProductDesc getProductDesc(String templateName);
 }

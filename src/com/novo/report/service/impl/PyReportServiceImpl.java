@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSession;
 
 import com.novo.report.beans.*;
 import com.novo.report.dao.two.*;
+import com.novo.report.mod.ModProductDesc;
 import com.novo.report.service.*;
 import com.novo.report.utils.*;
 import org.apache.commons.lang3.StringUtils;
@@ -76,6 +77,9 @@ public class PyReportServiceImpl implements PyReportService {
 
     @Autowired
     private TemplateConfService templateConfService;
+
+    @Autowired
+    private ModuleService moduleService;
 
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
@@ -3595,13 +3599,21 @@ public class PyReportServiceImpl implements PyReportService {
             Map<String, Object> HenanPeopleCustomInfo = geneHenanPeopleData(thisGeneticmarkerVwList, bodyDrugTipLineStr, unknownTipLineStr);
             rt.setHenanPeopleCustomInfo(HenanPeopleCustomInfo);
         }
-
+        String templateName = rt.getTemplate_name();
         // CUSTOM 重要靶向基因汇总-检出总表
         HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer);
         rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
 
         // CUSTOM 报告一些基础数据
         HashMap<String, Object> reportInfo = generateReportInfoData(templateConf,pd);
+
+        // CUSTOM 关于癌种判断的一些展示逻辑,生成检测项目信息
+        Map<String, Object> cancerInfo = new HashMap<>();
+        cancerInfo.put("urinaryProstateDisease", urinaryProstateDisease);
+        cancerInfo.put("endometrialCarcinoma", endometrialCarcinoma);
+        cancerInfo.put("gastrointestinalStromalTumor", gastrointestinalStromalTumor);
+        Map<String, Object> product_desc = generateProductDesc(cancerInfo,pd,templateName);
+
 
         AnalysisReport analysisReport = null;
         String status = null;
@@ -3693,6 +3705,19 @@ public class PyReportServiceImpl implements PyReportService {
             executor.shutdown(); // 回收线程池
         }
         return reportId;
+    }
+
+    private Map<String, Object> generateProductDesc(Map<String, Object> cancerInfo, Map pd, String template) {
+        Map<String, Object> res = new HashMap<>();
+        ModProductDesc productDesc = moduleService.getProductDesc(template);
+        String productDescStr = productDesc.getProduct_desc();
+        List<String> productDescList = new ArrayList();
+        if (pd != null){
+            productDescStr = productDescStr + "通过免疫组化检测 PD-L1 表达。";
+        }
+        productDescList.add(productDescStr);
+        res.put("productDescList", productDescList);
+        return  res;
     }
 
     private HashMap<String, Object> generateReportInfoData(TemplateConf templateConf, Map pd) {
