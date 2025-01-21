@@ -59,8 +59,8 @@
 		    <li><a href="#tabs-5" onclick="urlRun4();" style="cursor: pointer;">报告预览</a></li>
 		    <c:if test="${ user.role_id != 8 }">
 		    	<li><a href="#tabs-6" onclick="urlRun5();" style="cursor: pointer;">产生报告</a></li>
-				<li><a href="#tabs-8" onclick="urlRun7();" style="cursor: pointer;">审核</a></li>
-				<li><a href="#tabs-7" onclick="urlRun6();" style="cursor: pointer;">发送报告</a></li>
+<%--				<li><a href="#tabs-8" onclick="urlRun7();" style="cursor: pointer;">审核</a></li>--%>
+				<li><a href="#tabs-7" onclick="urlRun6();" style="cursor: pointer;">审核及发送报告</a></li>
 		    </c:if>
 		    <li style="margin-left: 300px"><a href="#tabs-8" onclick="fun_back();" id="button_back" >返回报告管理</a></li>
 		  </ul>
