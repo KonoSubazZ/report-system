@@ -206,7 +206,17 @@
                     return;
                 }
 
+                // 校验文件名与样本号是否一致
                 let file = fileInput.files[0];
+                let reportName = "${analysisReport.report_filename}";
+                reportName = reportName.slice(0, reportName.lastIndexOf("."));
+                let fileName = file.name.slice(0, file.name.lastIndexOf("."));
+                console.log(fileName, reportName);
+                if (fileName !== reportName) {
+                    layer.alert("文件名和样本号不一致，请重新检查后上传！", {icon: 2});
+                    return;
+                }
+
                 let formData = new FormData();
                 formData.append("report_id", "${analysisReport.report_id}"); // 替换为后端变量
                 formData.append("reportFile", file);
