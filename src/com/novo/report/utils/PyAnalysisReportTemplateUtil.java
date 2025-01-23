@@ -311,7 +311,9 @@ public class PyAnalysisReportTemplateUtil {
 		// 报告-基础信息
 		data.put("reportInfo", rt.getReportInfo());
 		// 报告-模块配置
-//		data.put("templateConf", rt.getTemplateConf());
+		// data.put("templateConf", rt.getTemplateConf());
+		// 检测结果小结
+		data.put("testResultSummary", rt.getTestResultSummary());
 
 		// ===============定制个性化数据===================
 

@@ -376,6 +376,21 @@ public class ReportTemplate {
      */
     private Map<String, Object> importantTargetedGeneSummary;
 
+    public Map<String, Object> getTestResultSummary() {
+        return testResultSummary;
+    }
+
+    public void setTestResultSummary(Map<String, Object> testResultSummary) {
+        this.testResultSummary = testResultSummary;
+    }
+
+    /**
+     * 检测结果小结
+     */
+    private Map<String, Object> testResultSummary;
+
+
+
     public Map<String, Object> getEWSR1Info() {
         return EWSR1Info;
     }

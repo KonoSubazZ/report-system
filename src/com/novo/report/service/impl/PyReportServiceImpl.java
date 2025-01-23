@@ -3615,6 +3615,10 @@ public class PyReportServiceImpl implements PyReportService {
         cancerInfo.put("gastrointestinalStromalTumor", gastrointestinalStromalTumor);
         Map<String, Object> product_desc = generateProductDesc(cancerInfo, pd, templateName);
 
+        // CUSTOM 生成检测小结信息
+        Map<String, Object> testResultSummary = generateTestResultSummary(templateName);
+        rt.setTestResultSummary(testResultSummary);
+
 
         AnalysisReport analysisReport = null;
         String status = null;
@@ -3706,6 +3710,15 @@ public class PyReportServiceImpl implements PyReportService {
             executor.shutdown(); // 回收线程池
         }
         return reportId;
+    }
+
+    private Map<String, Object> generateTestResultSummary(String templateName) {
+        Map<String, Object> res = new HashMap<>();
+
+        List<String> testResultSummaryNote = moduleService.getTestResultSummaryNote(templateName);
+        res.put("noteList", testResultSummaryNote);
+
+        return res;
     }
 
     private Map<String, Object> generateProductDesc(Map<String, Object> cancerInfo, Map pd, String template) {
