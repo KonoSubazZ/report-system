@@ -17,9 +17,14 @@ public class PyAnalysisReportTemplateUtil {
 
 	public static AnalysisReport getFreeMarker(HttpServletResponse response, HttpServletRequest request,ReportTemplate rt, HttpSession session,AnalysisReport apr) throws Exception {
 		String path = session.getServletContext().getRealPath("/");
+		List<String> advancedTemplates = Arrays.asList("泛实体瘤188基因检测报告","泛实体瘤188基因检测报告","泛实体瘤188基因检测报告");
 
 		// TODO 待升级-固定目录
 		String docxPath = path +"docx/"+rt.getTemplate_name()+".docx";
+
+		if (advancedTemplates.contains(rt.getTemplate_name())){
+			docxPath = path + "docx/" + "NOVO检测报告-通用双样本" + ".docx";
+		}
 		Map<String,Object> data = new HashMap<String,Object>();
 		if (apr.getProduct_name().contains("novoivd")) {
 			data.put("age", StringUtils.isEmpty(rt.getAge()) ? "/" : rt.getAge());
