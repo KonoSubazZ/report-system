@@ -3601,7 +3601,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
         String templateName = rt.getTemplate_name();
         // CUSTOM 重要靶向基因汇总-检出总表
-        HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer);
+        HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer,templateName);
         rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
 
         // CUSTOM 报告一些基础数据
@@ -3731,7 +3731,7 @@ public class PyReportServiceImpl implements PyReportService {
         return res;
     }
 
-    private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer) {
+    private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer, String templateName) {
         HashMap<String, Object> res = new HashMap<>();
         String title = "重要靶向用药相关基因结果汇总";
         if ("泌尿系统癌症".equals(targetCancer)) {
