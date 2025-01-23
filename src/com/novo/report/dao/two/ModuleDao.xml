@@ -6,10 +6,51 @@
 <mapper namespace="com.novo.report.dao.two.ModuleDao">
 
     <select id="getProductDesc" resultType="com.novo.report.mod.ModProductDesc">
-        select
+        SELECT
             product_desc
-        from mod_product_desc
-        where template_name = #{templateName}
-          and deleted = 1
+        FROM mod_product_desc
+        WHERE template_name = #{templateName}
+          AND deleted = 1
+    </select>
+
+    <select id="getCancerNote" resultType="com.novo.report.mod.ModCancerNoteSummary">
+        SELECT
+            note
+        FROM mod_cancer_note_summary
+        WHERE template_name = #{templateName}
+          AND module = #{module}
+          AND cancer = #{cancer}
+          AND note is not null
+          AND note != ''
+          AND deleted = 1
+    </select>
+
+    <select id="getCancerTitle" resultType="com.novo.report.mod.ModCancerNoteSummary">
+        SELECT
+            title
+        FROM mod_cancer_note_summary
+        WHERE template_name = #{templateName}
+          AND module = #{module}
+          AND cancer = #{cancer}
+          AND title is not null
+          AND title != ''
+          AND deleted = 1
+    </select>
+
+    <select id="getImportantTargetedGeneSummaryNote"
+            resultType="com.novo.report.mod.ModImportantTargetedGeneSummaryNote">
+        SELECT
+            note
+        FROM mod_important_targeted_gene_summary_note
+        WHERE template_name = #{templateName}
+          AND deleted = 1
+    </select>
+
+    <select id="getTestResultSummaryNote" resultType="com.novo.report.mod.ModTestResultSummaryNote">
+        SELECT
+            note
+        FROM mod_test_result_summary_note
+        WHERE template_name = #{templateName}
+          AND deleted = 1
     </select>
 </mapper>

@@ -1,6 +1,26 @@
 package com.novo.report.service.impl;
 
-import java.io.*;
+import com.google.gson.Gson;
+import com.novo.report.beans.*;
+import com.novo.report.dao.two.*;
+import com.novo.report.mod.ModCancerNoteSummary;
+import com.novo.report.mod.ModImportantTargetedGeneSummaryNote;
+import com.novo.report.mod.ModProductDesc;
+import com.novo.report.service.*;
+import com.novo.report.utils.*;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,25 +33,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import com.novo.report.beans.*;
-import com.novo.report.dao.two.*;
-import com.novo.report.mod.ModProductDesc;
-import com.novo.report.service.*;
-import com.novo.report.utils.*;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import com.google.gson.Gson;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 @Service
 public class PyReportServiceImpl implements PyReportService {
@@ -3264,7 +3265,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 获取靶向癌种
         String target_cancer = StringUtils.isEmpty(pr.getTarget_cancer()) ? "" : pr.getTarget_cancer();
         // 泌尿系统肿瘤99产品输出泌尿系统癌症 || 188/462/550/1238/WES/WES plus的通用版
-        List<String> templates = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告","NOVO泛癌种1238检测报告-佛山市第一人民医院","泛实体瘤1238+1166基因检测报告-佛山市第一人民医院","NOVO泛癌种1238检测报告-湖南省中医研","泛实体瘤188基因检测报告-湖南省中医研");
+        List<String> templates = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告", "NOVO泛癌种1238检测报告-佛山市第一人民医院", "泛实体瘤1238+1166基因检测报告-佛山市第一人民医院", "NOVO泛癌种1238检测报告-湖南省中医研", "泛实体瘤188基因检测报告-湖南省中医研");
         if (("novopm2_tis_99".equals(product_name) || "novopm2_blo_99".equals(product_name)) || (templates.contains(rt.getTemplate_name()) && (prostateCancerFlag || StringUtils.isNotEmpty(urinaryProstateDisease)))) {
             target_cancer = "泌尿系统癌症";
         } else if (rt.getTemplate_name().contains("湘雅")) {
@@ -3601,18 +3602,18 @@ public class PyReportServiceImpl implements PyReportService {
         }
         String templateName = rt.getTemplate_name();
         // CUSTOM 重要靶向基因汇总-检出总表
-        HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer,templateName);
+        HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer, templateName);
         rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
 
         // CUSTOM 报告一些基础数据
-        HashMap<String, Object> reportInfo = generateReportInfoData(templateConf,pd);
+        HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd);
 
         // CUSTOM 关于癌种判断的一些展示逻辑,生成检测项目信息
         Map<String, Object> cancerInfo = new HashMap<>();
         cancerInfo.put("urinaryProstateDisease", urinaryProstateDisease);
         cancerInfo.put("endometrialCarcinoma", endometrialCarcinoma);
         cancerInfo.put("gastrointestinalStromalTumor", gastrointestinalStromalTumor);
-        Map<String, Object> product_desc = generateProductDesc(cancerInfo,pd,templateName);
+        Map<String, Object> product_desc = generateProductDesc(cancerInfo, pd, templateName);
 
 
         AnalysisReport analysisReport = null;
@@ -3712,12 +3713,12 @@ public class PyReportServiceImpl implements PyReportService {
         ModProductDesc productDesc = moduleService.getProductDesc(template);
         String productDescStr = productDesc.getProduct_desc();
         List<String> productDescList = new ArrayList();
-        if (pd != null){
+        if (pd != null) {
             productDescStr = productDescStr + "通过免疫组化检测 PD-L1 表达。";
         }
         productDescList.add(productDescStr);
         res.put("productDescList", productDescList);
-        return  res;
+        return res;
     }
 
     private HashMap<String, Object> generateReportInfoData(TemplateConf templateConf, Map pd) {
@@ -3727,25 +3728,33 @@ public class PyReportServiceImpl implements PyReportService {
             reportName = reportName.replace("检测报告", "+PD-L1检测报告");
         }
         res.put("reportName", reportName);
-        res.put("conf",templateConf);
+        res.put("conf", templateConf);
         return res;
     }
 
     private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer, String templateName) {
         HashMap<String, Object> res = new HashMap<>();
-        String title = "重要靶向用药相关基因结果汇总";
-        if ("泌尿系统癌症".equals(targetCancer)) {
-            title = "泌尿系统肿瘤重要靶向用药相关基因结果汇总";
-        } else if ("泛癌种".equals(targetCancer)) {
-            title = "重要靶向用药相关基因结果汇总";
-        } else if ("肺癌".equals(targetCancer)) {
-            title = "肺癌精准诊疗相关基因结果汇总";
-        } else if ("结直肠癌".equals(targetCancer)) {
-            title = "结直肠癌精准诊疗相关基因结果汇总";
-        } else if ("乳腺癌".equals(targetCancer)) {
-            title = "乳腺癌精准诊疗相关基因结果汇总";
+        ModCancerNoteSummary modCancerNoteSummary = new ModCancerNoteSummary();
+        modCancerNoteSummary.setCancer(targetCancer);
+        modCancerNoteSummary.setTemplate_name(templateName);
+        modCancerNoteSummary.setModule("important_targeted_gene_summary");
+
+        ModCancerNoteSummary title = moduleService.getCancerTitle(modCancerNoteSummary);
+
+        List<String> noteList = new ArrayList<>();
+        ModCancerNoteSummary note = moduleService.getCancerNote(modCancerNoteSummary);
+        if (note != null){
+            noteList.add(note.getNote());
         }
-        res.put("title", title);
+
+        List<String> notes = moduleService.getImportantTargetedGeneSummaryNote(templateName);
+        if (notes != null){
+            noteList.addAll(notes);
+        }
+
+        res.put("title", title.getTitle());
+        res.put("noteList", noteList);
+
         return res;
     }
 
@@ -3763,10 +3772,10 @@ public class PyReportServiceImpl implements PyReportService {
         geneList.stream().forEach(gene -> somaticMutationSitesInfo.put(gene, new ArrayList<>()));
         // 过滤bodyDrugTipList，只保留包含geneList中的基因的数据
         List<Map> BodyDrugTipList = bodyDrugTipList.stream()
-        //        .filter(map -> geneList.contains(map.get("gene")))
+                //        .filter(map -> geneList.contains(map.get("gene")))
                 .collect(Collectors.toList());
         List<Map> unknownMutationSiteInfoList = unknownTipList.stream()
-        //        .filter(map -> geneList.contains(map.get("gene")))
+                //        .filter(map -> geneList.contains(map.get("gene")))
                 .collect(Collectors.toList());
 
         for (Map site : somaticMutationSiteList) {
@@ -3776,12 +3785,14 @@ public class PyReportServiceImpl implements PyReportService {
                 String mutation = "";
                 String exon = (String) site.get("exon");
                 String mutationType = (String) site.get("mut_type");
-                String ExonicFunc = translateMutType((String ) site.get("ExonicFunc"));
+                String ExonicFunc = translateMutType((String) site.get("ExonicFunc"));
                 String mutFreq = (String) site.get("mutFreq");
                 // NDF值展示逻辑
                 String mutFreqString = mutFreq.contains("-") ? mutFreq : mutFreq + "%";
                 String mutFreqStr = mutationType.equals("拷贝数变异") ? "  ( 拷贝数：" + mutFreq + ")" : "  ( 丰度：" + mutFreqString + ")";
-                if (mutationType.equals("融合")){ mutFreqStr = "  ( NDF：" + mutFreq + ")"; }
+                if (mutationType.equals("融合")) {
+                    mutFreqStr = "  ( NDF：" + mutFreq + ")";
+                }
                 String oriVariant = (String) site.get("ori_variant");
                 String[] oriVariantArr = oriVariant.split(" ");
                 int len = oriVariantArr.length;
