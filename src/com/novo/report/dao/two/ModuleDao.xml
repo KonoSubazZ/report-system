@@ -55,7 +55,8 @@
     </select>
 
     <select id="getReferences" resultType="com.novo.report.mod.ModReferences">
-        SELECT b.references
+        SELECT
+            b.references
         FROM references_product_map a
           JOIN mod_references b ON a.references_id = b.id
         WHERE a.product_name = #{productName}
@@ -63,5 +64,22 @@
             AND b.references_name = #{module}
         </if>
         AND b.deleted = 1
+    </select>
+
+    <select id="getCommonNote" resultType="com.novo.report.mod.ModCommonNote">
+        SELECT
+            note
+        FROM mod_common_note
+        WHERE module = #{module}
+        <if test="type != null and type != '' ">
+            AND type = #{type}
+        </if>
+        <if test="type == null or type == '' ">
+            AND type = '通用'
+        </if>
+        <if test="sampleType != null and sampleType != '' ">
+            AND sample_type = #{sampleType}
+        </if>
+        AND deleted = 1
     </select>
 </mapper>

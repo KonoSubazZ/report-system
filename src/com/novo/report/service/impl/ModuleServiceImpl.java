@@ -68,4 +68,76 @@ public class ModuleServiceImpl implements ModuleService {
        }
         return Collections.emptyList();
     }
+
+    @Override
+    public String getTMB1(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+
+        return commonNote.getNote();
+    }
+
+    @Override
+    public String getTMB2(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+
+        return commonNote.getNote();
+    }
+
+    @Override
+    public List<String> getTMB3(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+        List<String> noteList = new ArrayList<>();
+        String[] notes = commonNote.getNote().split("\r\n");
+        noteList.addAll(Arrays.asList(notes));
+
+        return noteList;
+    }
+
+    @Override
+    public String getMSI1(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+
+        return commonNote.getNote();
+    }
+
+    @Override
+    public String getMSI2(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+
+        return commonNote.getNote();
+    }
+
+    @Override
+    public List<String> getMSI3(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+        List<String> noteList = new ArrayList<>();
+        String[] notes = commonNote.getNote().split("\r\n");
+        noteList.addAll(Arrays.asList(notes));
+
+        return noteList;
+    }
+
+    @Override
+    public String getMMR1(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+
+        return commonNote.getNote();
+    }
+
+    @Override
+    public String getMMR2(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+
+        return commonNote.getNote();
+    }
+
+    @Override
+    public List<String> getMMR3(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+        List<String> noteList = new ArrayList<>();
+        String[] notes = commonNote.getNote().split("\r\n");
+        noteList.addAll(Arrays.asList(notes));
+
+        return noteList;
+    }
 }

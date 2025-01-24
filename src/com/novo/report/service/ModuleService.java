@@ -1,11 +1,8 @@
 package com.novo.report.service;
 
-import com.novo.report.beans.ChemicalMarkerVw;
-import com.novo.report.beans.CurrentNgsAvailableData;
 import com.novo.report.mod.ModCancerNoteSummary;
-import com.novo.report.mod.ModImportantTargetedGeneSummaryNote;
+import com.novo.report.mod.ModCommonNote;
 import com.novo.report.mod.ModProductDesc;
-import com.novo.report.mod.ModTestResultSummaryNote;
 
 import java.util.List;
 
@@ -14,51 +11,139 @@ import java.util.List;
  */
 public interface ModuleService {
 
-	/**
-	 * 根据模板名称获取产品检测项目描述
-	 * @param templateName
-	 * @return
-	 */
-	ModProductDesc getProductDesc(String templateName);
+    /**
+     * 根据模板名称获取产品检测项目描述
+     *
+     * @param templateName
+     * @return
+     */
+    ModProductDesc getProductDesc(String templateName);
 
-	/**
-	 * 根据模板名称获取癌症模块的 附录1
-	 * @note 可能为 List<ModCancerNoteSummary> 不止一条附录， 暂时不考虑这种情况，只考虑一条附录的情况
-	 * @param templateName
-	 * @param module important_targeted_gene_summary
-	 * @return
-	 *
-	 */
-	ModCancerNoteSummary getCancerNote(ModCancerNoteSummary modCancerNoteSummary);
+    /**
+     * 根据模板名称获取癌症模块的 附录1
+     *
+     * @param templateName
+     * @param module       important_targeted_gene_summary
+     * @return
+     * @note 可能为 List<ModCancerNoteSummary> 不止一条附录， 暂时不考虑这种情况，只考虑一条附录的情况
+     */
+    ModCancerNoteSummary getCancerNote(ModCancerNoteSummary modCancerNoteSummary);
 
-	/**
-	 * 根据模板名称获取癌症模块的 标题
-	 * @param templateName
-	 * @param module important_targeted_gene_summary
-	 * @return
-	 */
-	ModCancerNoteSummary getCancerTitle(ModCancerNoteSummary modCancerNoteSummary);
+    /**
+     * 根据模板名称获取癌症模块的 标题
+     *
+     * @param templateName
+     * @param module       important_targeted_gene_summary
+     * @return
+     */
+    ModCancerNoteSummary getCancerTitle(ModCancerNoteSummary modCancerNoteSummary);
 
-	/**
-	 * 根据模板名称获取 important_targeted_gene_summary 重要靶向基因的附录
-	 * @param modImportantTargetedGeneSummaryNote
-	 * @return
-	 */
-	List<String> getImportantTargetedGeneSummaryNote(String templateName);
+    /**
+     * 根据模板名称获取 important_targeted_gene_summary 重要靶向基因的附录
+     *
+     * @param modImportantTargetedGeneSummaryNote
+     * @return
+     */
+    List<String> getImportantTargetedGeneSummaryNote(String templateName);
 
-	/**
-	 * 根据模板名称获取 检测小姐的附录
-	 * @param templateName
-	 * @return
-	 */
-	List<String> getTestResultSummaryNote(String templateName);
+    /**
+     * 根据模板名称获取 检测小姐的附录
+     *
+     * @param templateName
+     * @return
+     */
+    List<String> getTestResultSummaryNote(String templateName);
 
-	/**
-	 * 根据产品名称和模块获取参考文献
-	 * @param productName
-	 * @param module
-	 * @return
-	 */
-	List<String> getReferences(String productName, String module);
+    /**
+     * 根据产品名称和模块获取参考文献
+     *
+     * @param productName
+     * @param module
+     * @return
+     */
+    List<String> getReferences(String productName, String module);
+
+    /**
+     * 根据模块TMB1和类型获取 TMB指标解析
+     *
+     * @param module
+     * @param type
+     * @return
+     */
+    String getTMB1(ModCommonNote modCommonNote);
+
+    /**
+     * 根据模块TMB2和类型获取 TMB临床意义
+     *
+     * @param module
+     * @param type
+     * @return
+     */
+    String getTMB2(ModCommonNote modCommonNote);
+
+    /**
+     * 根据模块TMB3和类型获取 TMB附录
+     *
+     * @param module
+     * @param type
+     * @return
+     */
+    List<String> getTMB3(ModCommonNote modCommonNote);
+
+    /**
+     * 根据模块 MSI1 和类型获取 MSI指标解析
+     *
+     * @param module
+     * @param type
+     * @return
+     */
+    String getMSI1(ModCommonNote modCommonNote);
+
+    /**
+     * 根据模块 MSI2 和类型获取 MSI临床意义
+     *
+     * @param module
+     * @param type
+     * @return
+     */
+    String getMSI2(ModCommonNote modCommonNote);
+
+    /**
+     * 根据模块 MSI3 和类型获取 MSI3附录
+     *
+     * @param module
+     * @param type
+     * @return
+     */
+    List<String> getMSI3(ModCommonNote modCommonNote);
+
+    /**
+     * 根据模块 MMR1 和类型获取 MMR指标解析
+     *
+     * @param module
+     * @param type
+     * @return
+     */
+    String getMMR1(ModCommonNote modCommonNote);
+
+    /**
+     * 根据模块 MMR2 和类型获取 MMR临床意义
+     *
+     * @param module
+     * @param type
+     * @return
+     */
+    String getMMR2(ModCommonNote modCommonNote);
+
+    /**
+     * 根据模块 MMR3 和类型获取 MMR3附录
+     *
+     * @param module
+     * @param type
+     * @return
+     */
+    List<String> getMMR3(ModCommonNote modCommonNote);
+
+
 
 }

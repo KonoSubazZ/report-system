@@ -14,4 +14,6 @@ public interface ModuleDao {
     ModTestResultSummaryNote getTestResultSummaryNote(String templateName);
 
     ModReferences getReferences(String productName, String module);
+
+    ModCommonNote getCommonNote(ModCommonNote modCommonNote);
 }
