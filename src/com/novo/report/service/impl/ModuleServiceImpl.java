@@ -2,16 +2,14 @@ package com.novo.report.service.impl;
 
 
 import com.novo.report.dao.two.ModuleDao;
-import com.novo.report.mod.ModCancerNoteSummary;
-import com.novo.report.mod.ModImportantTargetedGeneSummaryNote;
-import com.novo.report.mod.ModProductDesc;
-import com.novo.report.mod.ModTestResultSummaryNote;
+import com.novo.report.mod.*;
 import com.novo.report.service.ModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -59,5 +57,15 @@ public class ModuleServiceImpl implements ModuleService {
             noteList.addAll(Arrays.asList(notes));
         }
         return noteList;
+    }
+
+    @Override
+    public List<String> getReferences(String productName, String module) {
+       ModReferences references = moduleDao.getReferences(productName, module);
+       if (references != null) {
+           String[] referencesList = references.getReferences().split("\r\n");
+           return Arrays.asList(referencesList);
+       }
+        return Collections.emptyList();
     }
 }

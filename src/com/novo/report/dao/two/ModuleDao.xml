@@ -53,4 +53,15 @@
         WHERE template_name = #{templateName}
           AND deleted = 1
     </select>
+
+    <select id="getReferences" resultType="com.novo.report.mod.ModReferences">
+        SELECT b.references
+        FROM references_product_map a
+          JOIN mod_references b ON a.references_id = b.id
+        WHERE a.product_name = #{productName}
+        <if test="module != null and module != '' ">
+            AND b.references_name = #{module}
+        </if>
+        AND b.deleted = 1
+    </select>
 </mapper>

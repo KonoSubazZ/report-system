@@ -320,6 +320,9 @@ public class PyAnalysisReportTemplateUtil {
 		// 检测结果小结
 		data.put("testResultSummary", rt.getTestResultSummary());
 
+		// 参考文献
+		data.put("references", rt.getReferences());
+
 		// ===============定制个性化数据===================
 
 		// 晶赛 188、550 定制化数据

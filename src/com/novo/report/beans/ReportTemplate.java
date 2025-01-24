@@ -389,6 +389,19 @@ public class ReportTemplate {
      */
     private Map<String, Object> testResultSummary;
 
+    public Map<String, Object> getReferences() {
+        return references;
+    }
+
+    public void setReferences(Map<String, Object> references) {
+        this.references = references;
+    }
+
+    /**
+     * 参考文献
+     */
+    private Map<String, Object> references;
+
 
 
     public Map<String, Object> getEWSR1Info() {

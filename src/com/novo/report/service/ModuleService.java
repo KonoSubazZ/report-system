@@ -53,4 +53,12 @@ public interface ModuleService {
 	 */
 	List<String> getTestResultSummaryNote(String templateName);
 
+	/**
+	 * 根据产品名称和模块获取参考文献
+	 * @param productName
+	 * @param module
+	 * @return
+	 */
+	List<String> getReferences(String productName, String module);
+
 }

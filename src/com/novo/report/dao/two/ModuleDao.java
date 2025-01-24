@@ -1,9 +1,6 @@
 package com.novo.report.dao.two;
 
-import com.novo.report.mod.ModCancerNoteSummary;
-import com.novo.report.mod.ModImportantTargetedGeneSummaryNote;
-import com.novo.report.mod.ModProductDesc;
-import com.novo.report.mod.ModTestResultSummaryNote;
+import com.novo.report.mod.*;
 
 public interface ModuleDao {
    ModProductDesc getProductDesc(String templateName);
@@ -15,4 +12,6 @@ public interface ModuleDao {
     ModImportantTargetedGeneSummaryNote getImportantTargetedGeneSummaryNote(String templateName);
 
     ModTestResultSummaryNote getTestResultSummaryNote(String templateName);
+
+    ModReferences getReferences(String productName, String module);
 }

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.novo.report.beans.*;
 import com.novo.report.dao.two.*;
 import com.novo.report.mod.ModCancerNoteSummary;
-import com.novo.report.mod.ModImportantTargetedGeneSummaryNote;
 import com.novo.report.mod.ModProductDesc;
 import com.novo.report.service.*;
 import com.novo.report.utils.*;
@@ -3619,6 +3618,10 @@ public class PyReportServiceImpl implements PyReportService {
         Map<String, Object> testResultSummary = generateTestResultSummary(templateName);
         rt.setTestResultSummary(testResultSummary);
 
+        // CUSTOM 生成参考文献信息
+        Map<String, Object> references = generateReferences(productName, urinaryProstateDisease);
+        rt.setReferences(references);
+
 
         AnalysisReport analysisReport = null;
         String status = null;
@@ -3712,6 +3715,25 @@ public class PyReportServiceImpl implements PyReportService {
         return reportId;
     }
 
+    private Map<String, Object> generateReferences(String productName, String urinaryProstateDisease) {
+        Map<String, Object> res = new HashMap<>();
+
+        // TODO 暂时这样判断文献的模块
+        List<String> productList = Arrays.asList("novopm2_tis_188", "novopm2_blo_188", "novopm1_tis_550", "novopm1_blo_550", "novopm1_tis_1238", "novopm1_blo_1238");
+        String module = "";
+        if (productList.contains(productName)) {
+            module = "通用实体瘤";
+            if (urinaryProstateDisease != null && !"".equals(urinaryProstateDisease)) {
+                module = "通用泌尿";
+            }
+        }
+
+        List<String> referenceList = moduleService.getReferences(productName, module);
+        res.put("referenceList", referenceList);
+
+        return res;
+    }
+
     private Map<String, Object> generateTestResultSummary(String templateName) {
         Map<String, Object> res = new HashMap<>();
 
@@ -3756,12 +3778,12 @@ public class PyReportServiceImpl implements PyReportService {
 
         List<String> noteList = new ArrayList<>();
         ModCancerNoteSummary note = moduleService.getCancerNote(modCancerNoteSummary);
-        if (note != null){
+        if (note != null) {
             noteList.add(note.getNote());
         }
 
         List<String> notes = moduleService.getImportantTargetedGeneSummaryNote(templateName);
-        if (notes != null){
+        if (notes != null) {
             noteList.addAll(notes);
         }
 
