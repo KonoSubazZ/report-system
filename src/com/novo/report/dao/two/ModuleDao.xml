@@ -61,7 +61,7 @@
           JOIN mod_references b ON a.references_id = b.id
         WHERE a.product_name = #{productName}
         <if test="module != null and module != '' ">
-            AND b.references_name = #{module}
+            AND a.references_name = #{module}
         </if>
         AND b.deleted = 1
     </select>

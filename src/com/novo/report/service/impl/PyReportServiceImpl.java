@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.novo.report.beans.*;
 import com.novo.report.dao.two.*;
 import com.novo.report.mod.ModCancerNoteSummary;
+import com.novo.report.mod.ModCommonNote;
 import com.novo.report.mod.ModProductDesc;
 import com.novo.report.service.*;
 import com.novo.report.utils.*;
@@ -3622,7 +3623,10 @@ public class PyReportServiceImpl implements PyReportService {
         Map<String, Object> references = generateReferences(productName, urinaryProstateDisease);
         rt.setReferences(references);
 
-
+        // CUSTOM 生成静态解析、附录信息 msi tmb mmr
+        Map<String, Object> commonNote = generateCommonNote(templateConf, productName, sf.getSample_type());
+        rt.setReferences(references);
+        
         AnalysisReport analysisReport = null;
         String status = null;
         try {
@@ -3713,6 +3717,28 @@ public class PyReportServiceImpl implements PyReportService {
             executor.shutdown(); // 回收线程池
         }
         return reportId;
+    }
+
+    private Map<String, Object> generateCommonNote(TemplateConf templateConf, String productName, String sampleType) {
+        Map<String, Object> res = new HashMap<>();
+
+        if (templateConf != null && templateConf.getMsi()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("MSI1");
+            String MSI1 = moduleService.getMSI1(commonNote);
+            commonNote.setModule("MSI2");
+            String MSI2 = moduleService.getMSI2(commonNote);
+            commonNote.setModule("MSI3");
+            List<String> MSI3List = moduleService.getMSI3(commonNote);
+
+            res.put("MSI1", MSI1);
+            res.put("MSI2", MSI2);
+            res.put("MSI3List", MSI3List);
+        }
+
+//        if (productName)
+//        }
+        return res;
     }
 
     private Map<String, Object> generateReferences(String productName, String urinaryProstateDisease) {
