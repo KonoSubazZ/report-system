@@ -757,5 +757,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE
 			report_id = #{report_id}
 	</select>
+    <select id="getReports" resultType="com.novo.report.beans.AnalysisReport">
+		SELECT
+			a.report_id,
+			a.product_id,
+			a.product_name,
+			a.product_name_chinese,
+			a.subbarcode,
+			a.tested_date,
+			a.tested_by,
+			a.analysis_date,
+			a.analyzer,
+			a.checked_date,
+			a.checked_by,
+			a.report_date,
+			a.report_filename,
+			a.report_file_path,
+			a.small_report_file_path
+		FROM
+			analysis_report a
+		WHERE
+			a.subbarcode = #{subbarcode}
+	</select>
 
 </mapper>

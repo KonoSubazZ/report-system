@@ -26,6 +26,8 @@
 <script src="${pageContext.request.contextPath}/js/previewImage.js"></script>
 <script src="${pageContext.request.contextPath}/js/tools.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/myAlert.js"></script>
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/lib/layui/css/layui.css"/>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/lib/layui/layui.js"></script>
 <style type="text/css">
 	td{vertical-align: middle;}
 </style>
@@ -278,12 +280,52 @@
 				        							if(data){
 														$.myAlert(data.errorMessage);
 				        							}
+													if (data.flag == true) {
+														updateStatus();
+													}
 					        		    		},"json"
 					        		    	);
 			        					}
 				        			})
 				        		});
-				        	});
+
+								// 提交报告到新系统审核 同时更新报告系统状态
+								function updateStatus() {
+									let username = "${analysis_report.analyzer}";
+									let upload_date = "${analysis_report.analysis_date}".slice(0, 10).replace(/-/g, '');
+									let product = "${analysis_report.product_name}";
+									let sample_code = "${analysis_report.subbarcode}";
+									// 34 - 报告完成
+									let status = 34;
+									let report_id = "11111";
+									const URL = 'http://10.1.181.174:9099';
+									$.ajax({
+										type: "GET",
+										url: URL + "/report/update_sample_report_status/" + username + "/" + upload_date + "/" + product + "/" + sample_code + "/" + status + "/" + report_id + "/",
+										dataType: "json",
+										success: function (res) {
+											if (res.status == "success") {
+												layer.msg(res.msg, {
+													icon: 1,
+													offset: ['100px', '500px'],
+													time: 1000
+												});
+											} else {
+												layer.msg(res.msg, {
+													icon: 2,
+													offset: ['100px', '500px'],
+													time: 1000
+												});
+											}
+										},
+										error: function (xhr, status, error) {
+											layer.msg("请求失败" + error, {time: 1000});
+										}
+									})
+								}
+
+
+							});
 					        </script>
 				          <div class="tips"></div>
 				        </div>

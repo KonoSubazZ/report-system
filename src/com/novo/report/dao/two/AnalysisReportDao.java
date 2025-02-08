@@ -674,4 +674,11 @@ public interface AnalysisReportDao {
      * @return
      */
     String getComment(@Param("report_id")Integer reportId);
+
+    /**
+     * 特殊处理 根据subbarcode获取报告 线下发送管理
+     * @param subbarcode
+     * @return
+     */
+    List<AnalysisReport> getReports(@Param("subbarcode")String subbarcode);
 }
