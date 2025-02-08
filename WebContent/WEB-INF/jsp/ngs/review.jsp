@@ -189,9 +189,9 @@
 
         // 更换报告文件
         $("#updateReport").click(function () {
-
-            // 校验报告状态
-            if ("报告生成成功" !== "${analysisReport.status}") {
+            let arr = ["待审核","报告审核通过","报告发送成功"]
+            // 校验报告状态, 报告审核未通过，可以重新更换报告文件
+            if (arr.includes("${analysisReport.status}")) {
                 layer.msg("报告文件已经更换！", {icon: 1});
                 return;
             }
