@@ -760,9 +760,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getReports" resultType="com.novo.report.beans.AnalysisReport">
 		SELECT
 			a.report_id,
-			a.product_id,
 			a.product_name,
-			a.product_name_chinese,
 			a.subbarcode,
 			a.tested_date,
 			a.tested_by,

@@ -793,8 +793,8 @@ public class NgsReportController {
         String path = report.getReport_file_path();
         String webappsSubpath = path.substring(path.indexOf("webapps") + "webapps".length() + 1);
 
-//        String BASE_URL = "http://172.20.1.34:8088/";
-        String BASE_URL = "http://192.168.51.60 :8088/";
+        // String BASE_URL = "http://172.20.1.34:8088/";
+        String BASE_URL = "http://192.168.51.60:8088/";
         String previewUrl = BASE_URL + webappsSubpath + report.getReport_filename();
         return Result.success(previewUrl);
     }
