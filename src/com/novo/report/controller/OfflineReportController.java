@@ -176,7 +176,6 @@ public class OfflineReportController {
 
         }
         model.addAttribute("offlineReportIframeBean", offlineReportIframeBean);
-        model.addAttribute("offlineReportIframeBean", offlineReportIframeBean);
         model.addAttribute("offlineReport", offlineReport);
         return "offlineReport/reviewAndSendReport";
     }
