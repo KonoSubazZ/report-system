@@ -156,6 +156,12 @@ public class NgsReportController {
         }
     }
 
+    /**
+     * 报告发送邮件
+     * @param analysisReport
+     * @param httpServletRequest
+     * @return
+     */
     @RequestMapping("sendEmail")
     @ResponseBody
     private Map sendEmail(AnalysisReport analysisReport, HttpServletRequest httpServletRequest) {

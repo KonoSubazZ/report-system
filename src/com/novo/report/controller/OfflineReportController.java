@@ -264,6 +264,11 @@ public class OfflineReportController {
         }
     }
 
+    /**
+     * 线下报告管理
+     * @param report_id
+     * @return
+     */
     @RequestMapping("sendEmail")
     @ResponseBody
     private Map sendEmail(Integer report_id) {

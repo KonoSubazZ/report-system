@@ -353,7 +353,7 @@
                                                             $("#sendTip").text("");
 
                                                             // 更新新系统报告状态
-                                                            if (data.errorMessage === "邮件发送成功!") {
+                                                            if (data.flag == true) {
                                                                 updateStatus();
                                                             }
                                                         }, "json"
