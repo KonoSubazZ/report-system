@@ -353,7 +353,7 @@
                                                             $("#sendTip").text("");
 
                                                             // 更新新系统报告状态
-                                                            if (data.flag == true) {
+                                                            if (data.flag) {
                                                                 updateStatus();
                                                             }
                                                         }, "json"

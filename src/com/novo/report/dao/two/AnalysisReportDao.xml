@@ -62,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="getReportFileNameByReportId" resultType="AnalysisReport">
-		select report_filename,report_file_path,send_way,filename91360,file_path91360,status from analysis_report where report_id=#{report_id}
+		select subbarcode,product_name,analysis_date,analyzer,report_id,report_filename,report_file_path,send_way,filename91360,file_path91360,status from analysis_report where report_id=#{report_id}
 	</select>
 	
 	<select id="getAnalysisReportById" resultType="AnalysisReport">

@@ -171,7 +171,7 @@ public class OfflineReportController {
     public Object reviewAndSendReport(OfflineReportIframeBean offlineReportIframeBean, Model model) {
         OfflineReport offlineReport = offlineReportService.getOfflineReportById(offlineReportIframeBean.getReport_id());
         List<AnalysisReport> reports = analysisReportDao.getReports(offlineReport.getSubbarcode());
-        if (reports != null) {
+        if (reports != null && !reports.isEmpty()) {
             model.addAttribute("analysis_report", reports.get(0));
 
         }

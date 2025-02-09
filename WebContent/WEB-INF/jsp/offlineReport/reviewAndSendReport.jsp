@@ -280,7 +280,7 @@
 				        							if(data){
 														$.myAlert(data.errorMessage);
 				        							}
-													if (data.flag == true) {
+													if (data.flag) {
 														updateStatus();
 													}
 					        		    		},"json"
