@@ -334,7 +334,7 @@
                                     function updateStatus() {
                                         // 检验是否有符合条件的报告
                                         if (!"${analysis_report}") {
-                                            layer.alert('未查询到此样本编号有审核通过的报告记录，请审核通过后发送邮件');
+                                            layer.alert('更新状态失败，未查询到此样本编号有审核通过的报告记录！');
                                             return;
                                         }
                                         let username = "${analysis_report.analyzer}";
