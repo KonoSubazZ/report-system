@@ -1,6 +1,7 @@
 package com.novo.report.controller;
 
 import com.novo.report.beans.*;
+import com.novo.report.common.Result;
 import com.novo.report.dao.two.AnalysisReportDao;
 import com.novo.report.service.OfflineReportService;
 import com.novo.report.service.SampleFileService;
@@ -172,8 +173,12 @@ public class OfflineReportController {
         OfflineReport offlineReport = offlineReportService.getOfflineReportById(offlineReportIframeBean.getReport_id());
         List<AnalysisReport> reports = analysisReportDao.getReports(offlineReport.getSubbarcode());
         if (reports != null && !reports.isEmpty()) {
-            model.addAttribute("analysis_report", reports.get(0));
-
+            // 同一个条码对应多份报告，过滤出审核通过的报告
+            AnalysisReport analysisReport = reports.stream()
+                    .filter(report -> "报告审核通过".equals(report.getStatus())) // 过滤符合条件的数据
+                    .findFirst()
+                    .orElse(null);; // 获取第一个符合条件的对象
+            model.addAttribute("analysis_report", analysisReport);
         }
         model.addAttribute("offlineReportIframeBean", offlineReportIframeBean);
         model.addAttribute("offlineReport", offlineReport);
@@ -246,7 +251,20 @@ public class OfflineReportController {
         String status = offlineReportService.getStatus(report_id);
         return status;
     }
-
+    @ResponseBody
+    @RequestMapping("getReport")
+    public Result<AnalysisReport> getReport(String subbarcode) {
+        List<AnalysisReport> reports = analysisReportDao.getReports(subbarcode);
+        if (reports != null && !reports.isEmpty()) {
+            // 同一个条码对应多份报告，过滤出审核通过的报告
+            AnalysisReport analysisReport = reports.stream()
+                    .filter(report -> "报告审核通过".equals(report.getStatus())) // 过滤符合条件的数据
+                    .findFirst()
+                    .orElse(null);; // 获取第一个符合条件的对象
+            return Result.success(analysisReport);
+        }
+        return Result.failure(500, "未找到对应报告");
+    }
     @RequestMapping("editStatus")
     @ResponseBody
     private void editStatus(OfflineReport offlineReport, HttpSession session) {

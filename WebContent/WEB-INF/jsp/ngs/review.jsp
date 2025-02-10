@@ -12,10 +12,7 @@
     <base href="${pageContext.request.scheme }://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/">
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/lib/layui/css/layui.css"/>
-    <%--    <!-- 引入 layui.css -->--%>
-    <%--    <link href="//unpkg.com/layui@2.9.20/dist/css/layui.css" rel="stylesheet">--%>
-    <%--    <!-- 引入 layui.js -->--%>
-    <%--    <script src="//unpkg.com/layui@2.9.20/dist/layui.js"></script>--%>
+
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.form.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.validate.min.js"></script>
