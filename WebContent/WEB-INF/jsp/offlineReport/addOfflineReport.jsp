@@ -251,7 +251,10 @@
                                 </button>
                             </div>
                             <script type="text/javascript">
-                                var layer = layui.layer;
+                                layui.use(['layer'], function () {
+                                    window.layer = layui.layer; // 赋值给全局变量
+                                });
+
                                 $(function () {
                                     $("#reportBtn").click(function () {
                                         $("#sendEmail").prop("disabled", "disabled");

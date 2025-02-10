@@ -260,7 +260,9 @@
                                     class="button bg-main icon-send"> 发送邮件
                             </button>
                             <script type="text/javascript">
-                                var layer = layui.layer;
+                                layui.use(['layer'], function () {
+                                    window.layer = layui.layer; // 赋值给全局变量
+                                });
 
                                 $(function () {
                                     $.post("${pageContext.request.contextPath}/offlineReport/getStatus", {"report_id": "${offlineReportIframeBean.report_id}"},
