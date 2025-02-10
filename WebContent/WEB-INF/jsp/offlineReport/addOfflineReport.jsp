@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.autocomplete.css"></link>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/myAlert.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/lib/layui/css/layui.css"/>
+
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.form.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.validate.min.js"></script>
@@ -25,6 +27,7 @@
     <script src="${pageContext.request.contextPath}/js/pintuer.js" role='reload'></script>
     <script src="${pageContext.request.contextPath}/js/My97DatePicker/WdatePicker.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/js/myAlert.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/lib/layui/layui.js"></script>
     <script type="text/javascript">
 
     </script>
