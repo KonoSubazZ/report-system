@@ -177,7 +177,8 @@ public class OfflineReportController {
             AnalysisReport analysisReport = reports.stream()
                     .filter(report -> "报告审核通过".equals(report.getStatus())) // 过滤符合条件的数据
                     .findFirst()
-                    .orElse(null);; // 获取第一个符合条件的对象
+                    .orElse(null);
+            ; // 获取第一个符合条件的对象
             model.addAttribute("analysis_report", analysisReport);
         }
         model.addAttribute("offlineReportIframeBean", offlineReportIframeBean);
@@ -251,6 +252,7 @@ public class OfflineReportController {
         String status = offlineReportService.getStatus(report_id);
         return status;
     }
+
     @ResponseBody
     @RequestMapping("getReport")
     public Result<AnalysisReport> getReport(String subbarcode) {
@@ -260,11 +262,13 @@ public class OfflineReportController {
             AnalysisReport analysisReport = reports.stream()
                     .filter(report -> "报告审核通过".equals(report.getStatus())) // 过滤符合条件的数据
                     .findFirst()
-                    .orElse(null);; // 获取第一个符合条件的对象
+                    .orElse(reports.get(reports.size() - 1));
+
             return Result.success(analysisReport);
         }
         return Result.failure(500, "未找到对应报告");
     }
+
     @RequestMapping("editStatus")
     @ResponseBody
     private void editStatus(OfflineReport offlineReport, HttpSession session) {

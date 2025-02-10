@@ -161,6 +161,7 @@
 </style>
 <script>
 
+    let isUpdated = false;
     // 下载文件
     function download() {
         window.location.href = "${pageContext.request.contextPath}/ngs/download?report_id=${analysisReport.report_id}";
@@ -236,6 +237,7 @@
                                 time: 1000
                             });
                             $("#fileName").text(file.name);
+                            isUpdated = true;
                         } else {
                             layer.msg("文件更换失败！", {time: 1000});
                         }
@@ -257,6 +259,14 @@
 
     // 提交报告到新系统审核 同时更新报告系统状态
     function submitReport() {
+        if (!isUpdated){
+            layer.msg('请先更换报告文件！', {
+                icon: 2,
+                offset: ['150px', '500px'],
+                time: 3000
+            });
+            return;
+        }
         // 初始化参数
         let upload_date ="${analysisReport.analysis_date}".slice(0, 10).replace(/-/g, '');
         let username = "${analysisReport.analyzer}";
