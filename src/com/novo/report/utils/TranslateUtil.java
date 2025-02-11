@@ -8,12 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -180,6 +175,7 @@ public class TranslateUtil {
 	public String translate2(String gene, String mutation, String freq) {
 		String dir = this.getClass().getResource("").getPath();
 		String[] cmd = new String[] {"perl", String.format("%stranslate_hgvs.pl", dir), gene, mutation, freq};
+		System.out.println("perl输出结果："+ Arrays.toString(cmd));
 		String msg = "";
 		try {
 			Process pro = Runtime.getRuntime().exec(cmd);
@@ -192,6 +188,7 @@ public class TranslateUtil {
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("perlmsg输出结果：" + msg);
 		return msg;
 	}
 	
