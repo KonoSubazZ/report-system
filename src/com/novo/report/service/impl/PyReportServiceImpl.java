@@ -3149,7 +3149,13 @@ public class PyReportServiceImpl implements PyReportService {
                         } else if (rt.getTemplate_name().contains("KRAS基因报告模板")) {
                             templateKRAS(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
                         } else if (rt.getTemplate_name().contains("KRAS_NRAS_BRAF基因报告模板")) {
-                            templateKRAS_NRAS_BRAF(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
+                            // templateKRAS_NRAS_BRAF(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
+                            // 20250212 增加
+                            List<String> exonKRAS = Arrays.asList("2", "3", "4");
+                            List<String> exonNRAS = Arrays.asList("2", "3", "4");
+                            if ("KRAS".equals(gene) && exonKRAS.contains(exon) || "NRAS".equals(gene) && exonNRAS.contains(exon) || "BRAF".equals(gene) && "V600E".equals(variant)) {
+                                singleMoreTipLineStr.add(singleMoreTipLine);
+                            }
                         } else if (rt.getTemplate_name().contains("KIT_PDGFRA基因报告模板")) {
                             List<String> exonKIT = Arrays.asList("9", "11", "13", "14", "17", "18");
                             List<String> exonPDGFRA = Arrays.asList("12", "14", "18");

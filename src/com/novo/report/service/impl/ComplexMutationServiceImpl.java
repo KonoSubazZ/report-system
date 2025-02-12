@@ -234,6 +234,9 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
     }
 
     public boolean panel_contains(String variant, List<String> panel_genes) {
+        // 使用正则表达式 [\\(\\)\\|\\&\\!]+ 来分割字符串，分割符包括 (、)、|、&、!。
+        // variant = "BRCA1 (pathway1) WildType | TP53 & EGFR";
+        // split = ["BRCA1", "pathway1", "WildType", "TP53", "EGFR"]
         String[] split = variant.split("[\\(\\)\\|\\&\\!]+");
         String pathwayRegex = "\\$\\{([^}]+)\\}";
         for (String var : split) {
