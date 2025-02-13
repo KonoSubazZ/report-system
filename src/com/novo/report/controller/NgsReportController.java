@@ -1,22 +1,12 @@
 package com.novo.report.controller;
 
-import java.io.*;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import com.novo.report.beans.*;
 import com.novo.report.common.Result;
+import com.novo.report.dao.two.AnalysisReportDao;
+import com.novo.report.service.LifeService;
+import com.novo.report.service.NgsReportService;
+import com.novo.report.service.PyReportService;
+import com.novo.report.service.SampleFileService;
 import com.novo.report.utils.*;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
@@ -26,17 +16,24 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.novo.report.dao.two.AnalysisReportDao;
-import com.novo.report.service.LifeService;
-import com.novo.report.service.NgsReportService;
-import com.novo.report.service.PyReportService;
-import com.novo.report.service.SampleFileService;
 import sun.misc.BASE64Encoder;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Controller
 @RequestMapping("ngs")
@@ -158,6 +155,7 @@ public class NgsReportController {
 
     /**
      * 报告发送邮件
+     *
      * @param analysisReport
      * @param httpServletRequest
      * @return
@@ -215,7 +213,7 @@ public class NgsReportController {
             //技术服务部报告邮箱
             ccSet.add("novomedicine-om@novogene.com");
             ccSet.add("novomedicine-db@novogene.com");
-			// ccSet.add("report-zhongliu@novogene.com");
+            // ccSet.add("report-zhongliu@novogene.com");
             ccSet.add("operation-oncology@novogene.com");
             ccSet.add("marketing-zhongliu@novogene.com");
             ccSet.add("product-zhongliu@novogene.com");
@@ -253,7 +251,7 @@ public class NgsReportController {
                     success[0] = false;
                     map.put("errorMessage", "生成小报告失败！");
                 }
-                JSONObject object= JSONObject.fromObject(json);
+                JSONObject object = JSONObject.fromObject(json);
                 String small_report_file_path = object.get("file_path").toString();
                 analysisReportDao.updateSmallReportFilePathById(analysisReport.getReport_id(), small_report_file_path);
                 System.out.println("小报告文件路径：" + small_report_file_path);
@@ -271,13 +269,13 @@ public class NgsReportController {
                 long startTime = System.currentTimeMillis();
 
                 // 20241105 需求去除收件人 cdyyjyjczx@163.com 的抄送邮箱
-                if (sf.getEmailaddress().contains("cdyyjyjczx@163.com")){
+                if (sf.getEmailaddress().contains("cdyyjyjczx@163.com")) {
                     copyto = null;
                 }
 
                 // 20250107 测试系统增加特定邮箱
                 if (ips.contains(ServerConfig.getServerTestIP())) {
-                    to = new String[]{"liushangzhi9168@novogene.com", "wangxueran7632@novogene.com","liusifan@novogene.com"};
+                    to = new String[]{"liushangzhi9168@novogene.com", "wangxueran7632@novogene.com", "liusifan@novogene.com"};
                     copyto = new String[]{"novomedicine-db@novogene.com", "tumor-bioinfo@novogene.com"};
                 }
 
@@ -399,14 +397,14 @@ public class NgsReportController {
         String filename = "";
         String filepath = "";
         if (flag == 2) {
-            AnalysisReport analysisReport= analysisReportDao.getReportFileNameByReportId(report_id);
+            AnalysisReport analysisReport = analysisReportDao.getReportFileNameByReportId(report_id);
             if (analysisReport != null) {
                 filepath = analysisReport.getFile_path91360();
                 filename = analysisReport.getFilename91360();
             }
         }
         if (StringUtils.isEmpty(filename)) {
-            filename = flag+"_"+runid+"_"+subbarcode+".xls";
+            filename = flag + "_" + runid + "_" + subbarcode + ".xls";
             filepath = "/data/soft/execl";
             try {
                 List<String> cmd = new ArrayList<String>();
@@ -444,14 +442,14 @@ public class NgsReportController {
             String agent = request.getHeader("User-Agent");
             //根据不同浏览器进行不同的编码
             String filenameEncoder = "";
-            if (agent.contains("MSIE")||agent.contains("Trident")) {
+            if (agent.contains("MSIE") || agent.contains("Trident")) {
                 // IE浏览器
                 filenameEncoder = URLEncoder.encode(filename, "utf-8");
                 filenameEncoder = filenameEncoder.replace("+", " ");
             } else if (agent.contains("Firefox")) {
                 // 火狐浏览器
                 BASE64Encoder base64Encoder = new BASE64Encoder();
-                filenameEncoder = "=?utf-8?B?"+ base64Encoder.encode(filename.getBytes("utf-8")) + "?=";
+                filenameEncoder = "=?utf-8?B?" + base64Encoder.encode(filename.getBytes("utf-8")) + "?=";
 //			filenameEncoder = new String((filename).getBytes("GBK"),"iso8859-1");
             } else {
                 // 其它浏览器
@@ -462,9 +460,9 @@ public class NgsReportController {
             //要下载的这个文件的类型-----客户端通过文件的MIME类型去区分类型
             response.setContentType(request.getServletContext().getMimeType(filename));
             //告诉客户端该文件不是直接解析 而是以附件形式打开(下载)
-            response.setHeader("Content-Disposition", "attachment;filename="+filenameEncoder);
+            response.setHeader("Content-Disposition", "attachment;filename=" + filenameEncoder);
             //根据路径读取文件
-            InputStream in = new FileInputStream(filepath+"/"+filename);
+            InputStream in = new FileInputStream(filepath + "/" + filename);
             //将文件写入到response缓冲区
             response.getOutputStream();
             //获得输出流---通过response获得的输出流 用于向客户端写内容
@@ -483,7 +481,7 @@ public class NgsReportController {
     @ResponseBody
     public void downloadHNZLRunData(String d_type, String qc_date, String p_type, HttpServletRequest request, HttpServletResponse response) {
         try {
-            String filename = qc_date+"_"+d_type+"_"+p_type+".zip";
+            String filename = qc_date + "_" + d_type + "_" + p_type + ".zip";
             String filepath = "/data/soft/execl";
             List<String> cmd = new ArrayList<String>();
             cmd.add("python3");
@@ -515,14 +513,14 @@ public class NgsReportController {
             String agent = request.getHeader("User-Agent");
             //根据不同浏览器进行不同的编码
             String filenameEncoder = "";
-            if (agent.contains("MSIE")||agent.contains("Trident")) {
+            if (agent.contains("MSIE") || agent.contains("Trident")) {
                 // IE浏览器
                 filenameEncoder = URLEncoder.encode(filename, "utf-8");
                 filenameEncoder = filenameEncoder.replace("+", " ");
             } else if (agent.contains("Firefox")) {
                 // 火狐浏览器
                 BASE64Encoder base64Encoder = new BASE64Encoder();
-                filenameEncoder = "=?utf-8?B?"+ base64Encoder.encode(filename.getBytes("utf-8")) + "?=";
+                filenameEncoder = "=?utf-8?B?" + base64Encoder.encode(filename.getBytes("utf-8")) + "?=";
 //			filenameEncoder = new String((filename).getBytes("GBK"),"iso8859-1");
             } else {
                 // 其它浏览器
@@ -533,9 +531,9 @@ public class NgsReportController {
             //要下载的这个文件的类型-----客户端通过文件的MIME类型去区分类型
             response.setContentType(request.getServletContext().getMimeType(filename));
             //告诉客户端该文件不是直接解析 而是以附件形式打开(下载)
-            response.setHeader("Content-Disposition", "attachment;filename="+filenameEncoder);
+            response.setHeader("Content-Disposition", "attachment;filename=" + filenameEncoder);
             //根据路径读取文件
-            InputStream in = new FileInputStream(filepath+"/"+filename);
+            InputStream in = new FileInputStream(filepath + "/" + filename);
             //将文件写入到response缓冲区
             response.getOutputStream();
             //获得输出流---通过response获得的输出流 用于向客户端写内容
@@ -552,13 +550,13 @@ public class NgsReportController {
     //获取文件
     @RequestMapping("downloadHNZLManyData")
     @ResponseBody
-    public void downloadHNZLManyData(@RequestParam("d_type")String d_type, @RequestParam("usek[]") List<String> usek, HttpServletRequest request, HttpServletResponse response) {
+    public void downloadHNZLManyData(@RequestParam("d_type") String d_type, @RequestParam("usek[]") List<String> usek, HttpServletRequest request, HttpServletResponse response) {
         try {
             Date date = new Date();
-            SimpleDateFormat dateFormat= new SimpleDateFormat("yyyyMMddhhmmss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
             Random random = new Random();
             int randomNumber = random.nextInt(99 - 10 + 1) + 10;
-            String filename = dateFormat.format(date)+"_"+randomNumber+".zip";
+            String filename = dateFormat.format(date) + "_" + randomNumber + ".zip";
             String filepath = "/data/soft/execl";
             List<String> cmd = new ArrayList<String>();
             cmd.add("python3");
@@ -595,14 +593,14 @@ public class NgsReportController {
             String agent = request.getHeader("User-Agent");
             //根据不同浏览器进行不同的编码
             String filenameEncoder = "";
-            if (agent.contains("MSIE")||agent.contains("Trident")) {
+            if (agent.contains("MSIE") || agent.contains("Trident")) {
                 // IE浏览器
                 filenameEncoder = URLEncoder.encode(filename, "utf-8");
                 filenameEncoder = filenameEncoder.replace("+", " ");
             } else if (agent.contains("Firefox")) {
                 // 火狐浏览器
                 BASE64Encoder base64Encoder = new BASE64Encoder();
-                filenameEncoder = "=?utf-8?B?"+ base64Encoder.encode(filename.getBytes("utf-8")) + "?=";
+                filenameEncoder = "=?utf-8?B?" + base64Encoder.encode(filename.getBytes("utf-8")) + "?=";
 //			filenameEncoder = new String((filename).getBytes("GBK"),"iso8859-1");
             } else {
                 // 其它浏览器
@@ -613,9 +611,9 @@ public class NgsReportController {
             //要下载的这个文件的类型-----客户端通过文件的MIME类型去区分类型
             response.setContentType(request.getServletContext().getMimeType(filename));
             //告诉客户端该文件不是直接解析 而是以附件形式打开(下载)
-            response.setHeader("Content-Disposition", "attachment;filename="+filenameEncoder);
+            response.setHeader("Content-Disposition", "attachment;filename=" + filenameEncoder);
             //根据路径读取文件
-            InputStream in = new FileInputStream(filepath+"/"+filename);
+            InputStream in = new FileInputStream(filepath + "/" + filename);
             //将文件写入到response缓冲区
             response.getOutputStream();
             //获得输出流---通过response获得的输出流 用于向客户端写内容
@@ -686,9 +684,9 @@ public class NgsReportController {
             if (sendReport != null) {
                 String filepath = sendReport.getReport_file_path();
                 String filename = sendReport.getReport_filename();
-                paths.add(filepath+filename);
+                paths.add(filepath + filename);
             } else {
-                writer.write(columnData.get(i) +"   "+columnData1.get(i) + "\n");
+                writer.write(columnData.get(i) + "   " + columnData1.get(i) + "\n");
             }
         }
         writer.close();
@@ -699,7 +697,7 @@ public class NgsReportController {
         }
         zipOut.close();
         String filename = new String(("报告.zip").getBytes(), "ISO-8859-1");
-        response.setHeader("Content-Disposition", "attachment;filename="+filename);
+        response.setHeader("Content-Disposition", "attachment;filename=" + filename);
         ServletOutputStream out = response.getOutputStream();
         FileInputStream fileInputStream = new FileInputStream(zipFile);
         IOUtils.copy(fileInputStream, out);
@@ -724,6 +722,7 @@ public class NgsReportController {
 
     /**
      * 预览pdf
+     *
      * @param reportId
      * @param response
      * @throws IOException
@@ -763,18 +762,24 @@ public class NgsReportController {
 
     /**
      * 更新报告状态及审核人、审核时间
+     *
      * @param analysisReport
      */
-    @RequestMapping("updateStatus")
+    @RequestMapping(value = "updateStatus", method = RequestMethod.POST)
     @ResponseBody
-    public Result<String> updateStatus(AnalysisReport analysisReport) {
+    public Result<String> updateStatus(@RequestBody AnalysisReport analysisReport) {
 
-        analysisReportDao.updateStatusByReportId(analysisReport);
-        return Result.success();
+        int count = analysisReportDao.updateStatusByReportId(analysisReport);
+        int id = analysisReport.getReport_id();
+        if (count == 0) {
+            return Result.failure(500, "更新失败，未找到id为" + id + "的报告记录。");
+        }
+        return Result.success("更新id为" + id + "的报告成功。",null);
     }
 
     /**
      * 获取pdf报告预览url
+     *
      * @param reportId
      * @return
      */
@@ -784,7 +789,7 @@ public class NgsReportController {
 
         // 查询报告
         AnalysisReport report = analysisReportDao.getReportById(reportId);
-        if (report == null){
+        if (report == null) {
             return Result.failure(500, "报告不存在");
         }
 
@@ -801,26 +806,28 @@ public class NgsReportController {
 
     /**
      * 更新报告备注 (审核未通过添加)
+     *
      * @param reportId
      * @param comment
      * @return
      */
     @RequestMapping("/updateComment")
     @ResponseBody
-    public Result<String> updateComment(@RequestParam("reportId") Integer reportId, String comment){
+    public Result<String> updateComment(@RequestParam("reportId") Integer reportId, String comment) {
 
-            analysisReportDao.updateComment(comment, reportId);
-            return Result.success();
+        analysisReportDao.updateComment(comment, reportId);
+        return Result.success();
     }
 
     /**
      * 获取报告审核未通过备注
+     *
      * @param reportId
      * @return
      */
     @RequestMapping("/getComment")
     @ResponseBody
-    public Result<String> getComment(@RequestParam("reportId") Integer reportId){
+    public Result<String> getComment(@RequestParam("reportId") Integer reportId) {
 
         String comment = analysisReportDao.getComment(reportId);
         return Result.success(comment);

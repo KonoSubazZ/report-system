@@ -653,7 +653,7 @@ public interface AnalysisReportDao {
      *
      * @param analysisReport
      */
-    void updateStatusByReportId(AnalysisReport analysisReport);
+    int updateStatusByReportId(AnalysisReport analysisReport);
 
     /**
      * 20241223 更新审核人
