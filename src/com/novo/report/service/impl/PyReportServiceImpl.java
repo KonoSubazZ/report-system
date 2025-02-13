@@ -550,6 +550,7 @@ public class PyReportServiceImpl implements PyReportService {
             }
         }
 
+
         /*if (pr.getProduct_name().contains("novoivd") && pr.getProduct_name().contains("Crc")) {
             allGeneSet.add("UGT1A1");
         }*/
@@ -3030,9 +3031,13 @@ public class PyReportServiceImpl implements PyReportService {
                     bg.put(mmBrainGlioma.getGene(), mmBrainGlioma.getOutput());
                     if ("阳性".equals(mmBrainGlioma.getOutput()) || "检出".equals(mmBrainGlioma.getOutput())) {
                         brainGliomaSize++;
+                        // 20250213 脑胶质瘤200模板基因检出 list 增加脑胶质瘤200的基因
+                        // allGeneSet.add(mmBrainGlioma.getGene());
                     }
                 }
                 rt.setBg(bg);
+                // 20250213 脑胶质瘤200模板基因检出 list 增加脑胶质瘤200的基因
+                // rt.setAllGeneSet(allGeneSet);
                 summaryOfRresults.put("brainGliomaSize", brainGliomaSize);
             }
         }
