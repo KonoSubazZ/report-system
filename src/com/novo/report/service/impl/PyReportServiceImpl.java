@@ -3038,17 +3038,17 @@ public class PyReportServiceImpl implements PyReportService {
                         // 20250213 脑胶质瘤200模板基因检出 list 增加脑胶质瘤200的基因
                         if (mmBrainGlioma.getGene().equals("pq")) {
                             allGeneSet.add("1p/19q");
-                        }
-                        if (mmBrainGlioma.getGene().equals("chr")) {
+                        } else if (mmBrainGlioma.getGene().equals("chr")) {
                             allGeneSet.add("Chr7/10");
-                        }
-                        if (mmBrainGlioma.getGene().equals("CDKN2")) {
+                        } else if (mmBrainGlioma.getGene().equals("CDKN2")) {
                             allGeneSet.add("CDKN2A");
                             allGeneSet.add("CDKN2B");
-                        }
-                        if (mmBrainGlioma.getGene().equals("H33A")) {
+                        } else if (mmBrainGlioma.getGene().equals("H33A")) {
                             allGeneSet.add("H3-3A");
+                        } else {
+                            allGeneSet.add(mmBrainGlioma.getGene());
                         }
+
                     }
                 }
                 rt.setBg(bg);
