@@ -3048,7 +3048,6 @@ public class PyReportServiceImpl implements PyReportService {
                         } else {
                             allGeneSet.add(mmBrainGlioma.getGene());
                         }
-
                     }
                 }
                 rt.setBg(bg);
