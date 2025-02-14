@@ -3042,6 +3042,13 @@ public class PyReportServiceImpl implements PyReportService {
                         if (mmBrainGlioma.getGene().equals("chr")) {
                             allGeneSet.add("Chr7/10");
                         }
+                        if (mmBrainGlioma.getGene().equals("CDKN2")) {
+                            allGeneSet.add("CDKN2A");
+                            allGeneSet.add("CDKN2B");
+                        }
+                        if (mmBrainGlioma.getGene().equals("H33A")) {
+                            allGeneSet.add("H3-3A");
+                        }
                     }
                 }
                 rt.setBg(bg);
