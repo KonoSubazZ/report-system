@@ -3764,7 +3764,8 @@ public class PyReportServiceImpl implements PyReportService {
         }
         // 体细胞变异分级提示
         ModCommonNote commonNote = new ModCommonNote();
-        commonNote.setModule("saomatic_mutation_tip");
+        commonNote.setType("双样本");
+        commonNote.setModule("somatic_mutation_tip");
         List<String> somaticMutationTipNote = moduleService.getSomaticMutationTipNote(commonNote, rt.isReadsFlag(), rt.isComplex());
         res.put("somaticMutationTipNote", somaticMutationTipNote);
 
