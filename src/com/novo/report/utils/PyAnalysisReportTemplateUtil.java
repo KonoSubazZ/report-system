@@ -321,6 +321,10 @@ public class PyAnalysisReportTemplateUtil {
 		// 参考文献
 		data.put("references", rt.getReferences());
 
+		// msi mmr tmb chmeo tip ana 模块附录
+		data.put("note", rt.getCommonNote());
+
+
 		// ===============定制个性化数据===================
 
 		// 晶赛 188、550 定制化数据

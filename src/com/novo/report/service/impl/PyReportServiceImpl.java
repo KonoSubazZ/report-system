@@ -3651,7 +3651,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setReferences(references);
 
         // CUSTOM 生成静态解析、附录信息 msi tmb mmr
-        Map<String, Object> commonNote = generateCommonNote(templateConf, productName, sf.getSample_type());
+        Map<String, Object> commonNote = generateCommonNote(templateConf, productName, sf.getSample_type(), rt);
         rt.setCommonNote(commonNote);
 
         AnalysisReport analysisReport = null;
@@ -3746,7 +3746,7 @@ public class PyReportServiceImpl implements PyReportService {
         return reportId;
     }
 
-    private Map<String, Object> generateCommonNote(TemplateConf templateConf, String productName, String sampleType) {
+    private Map<String, Object> generateCommonNote(TemplateConf templateConf, String productName, String sampleType, ReportTemplate rt) {
         Map<String, Object> res = new HashMap<>();
 
         if (templateConf != null && templateConf.getMsi()) {
@@ -3762,6 +3762,16 @@ public class PyReportServiceImpl implements PyReportService {
             res.put("MSI2", MSI2);
             res.put("MSI3List", MSI3List);
         }
+        // 体细胞变异分级提示
+        ModCommonNote commonNote = new ModCommonNote();
+        commonNote.setModule("saomatic_mutation_tip");
+        List<String> somaticMutationTipNote = moduleService.getSomaticMutationTipNote(commonNote, rt.isReadsFlag(), rt.isComplex());
+        res.put("somaticMutationTipNote", somaticMutationTipNote);
+
+        // 肿瘤遗传风险检测
+        commonNote.setModule("cr_mutation_tip");
+        List<String> crMutationTipNote = moduleService.getcrMutationTipNote(commonNote);
+        res.put("crMutationTipNote", somaticMutationTipNote);
 
 //        if (productName)
 //        }

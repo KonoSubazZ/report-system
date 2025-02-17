@@ -144,6 +144,19 @@ public interface ModuleService {
      */
     List<String> getMMR3(ModCommonNote modCommonNote);
 
+    /**
+     * 根据模块 somatic_mutation_tip_note 和类型获取 体细胞变异分级提示
+     * 根据reads complex 决定后两句是否展示
+     * @param modCommonNote
+     * @return
+     */
+    List<String> getSomaticMutationTipNote(ModCommonNote modCommonNote, Boolean reads, Boolean complex);
 
 
+    /**
+     * 根据模块 cr_mutation_tip_note 和类型获取  cr_mutation_tip_note
+     * @param commonNote
+     * @return
+     */
+    List<String> getcrMutationTipNote(ModCommonNote commonNote);
 }
