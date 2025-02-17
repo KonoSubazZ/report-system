@@ -685,6 +685,11 @@ public class PyReportServiceImpl implements PyReportService {
         List<String> geneSymbols = analysisReportDao.getGeneSymbols(currentNgsAvailable.getProduct_id());
         Map<String, Object> geneClassification = new HashMap<String, Object>();
         Map<String, Object> geneMap = getGeneClassification(geneSymbols, geneClassification);
+        // 20250214 脑胶质瘤200增加基因list
+        if (pr.getProduct_name().equals("novopm2_tis_200")) {
+            Object genes = geneMap.get("genes") + ",1p/19q,Chr7/10";
+            geneMap.put("genes", genes);
+        }
         rt.setGene(geneMap);
 
         // 变异分级(60基因重肿)
@@ -3040,9 +3045,24 @@ public class PyReportServiceImpl implements PyReportService {
                     bg.put(mmBrainGlioma.getGene(), mmBrainGlioma.getOutput());
                     if ("阳性".equals(mmBrainGlioma.getOutput()) || "检出".equals(mmBrainGlioma.getOutput())) {
                         brainGliomaSize++;
+                        // 20250213 脑胶质瘤200模板基因检出 list 增加脑胶质瘤200的基因
+                        if (mmBrainGlioma.getGene().equals("pq")) {
+                            allGeneSet.add("1p/19q");
+                        } else if (mmBrainGlioma.getGene().equals("chr")) {
+                            allGeneSet.add("Chr7/10");
+                        } else if (mmBrainGlioma.getGene().equals("CDKN2")) {
+                            allGeneSet.add("CDKN2A");
+                            allGeneSet.add("CDKN2B");
+                        } else if (mmBrainGlioma.getGene().equals("H33A")) {
+                            allGeneSet.add("H3-3A");
+                        } else {
+                            allGeneSet.add(mmBrainGlioma.getGene());
+                        }
                     }
                 }
                 rt.setBg(bg);
+                // 20250213 脑胶质瘤200模板基因检出 list 增加脑胶质瘤200的基因
+                rt.setAllGeneSet(allGeneSet);
                 summaryOfRresults.put("brainGliomaSize", brainGliomaSize);
             }
         }
@@ -3159,7 +3179,13 @@ public class PyReportServiceImpl implements PyReportService {
                         } else if (rt.getTemplate_name().contains("KRAS基因报告模板")) {
                             templateKRAS(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
                         } else if (rt.getTemplate_name().contains("KRAS_NRAS_BRAF基因报告模板")) {
-                            templateKRAS_NRAS_BRAF(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
+                            // templateKRAS_NRAS_BRAF(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
+                            // 20250212 增加
+                            List<String> exonKRAS = Arrays.asList("2", "3", "4");
+                            List<String> exonNRAS = Arrays.asList("2", "3", "4");
+                            if ("KRAS".equals(gene) && exonKRAS.contains(exon) || "NRAS".equals(gene) && exonNRAS.contains(exon) || "BRAF".equals(gene) && "V600E".equals(variant)) {
+                                singleMoreTipLineStr.add(singleMoreTipLine);
+                            }
                         } else if (rt.getTemplate_name().contains("KIT_PDGFRA基因报告模板")) {
                             List<String> exonKIT = Arrays.asList("9", "11", "13", "14", "17", "18");
                             List<String> exonPDGFRA = Arrays.asList("12", "14", "18");
@@ -3626,7 +3652,7 @@ public class PyReportServiceImpl implements PyReportService {
         // CUSTOM 生成静态解析、附录信息 msi tmb mmr
         Map<String, Object> commonNote = generateCommonNote(templateConf, productName, sf.getSample_type());
         rt.setReferences(references);
-        
+
         AnalysisReport analysisReport = null;
         String status = null;
         try {
