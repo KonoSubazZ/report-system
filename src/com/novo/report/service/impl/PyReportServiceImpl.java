@@ -3,9 +3,6 @@ package com.novo.report.service.impl;
 import com.google.gson.Gson;
 import com.novo.report.beans.*;
 import com.novo.report.dao.two.*;
-import com.novo.report.mod.ModCancerNoteSummary;
-import com.novo.report.mod.ModCommonNote;
-import com.novo.report.mod.ModProductDesc;
 import com.novo.report.service.*;
 import com.novo.report.utils.*;
 import net.sf.json.JSONArray;
@@ -76,12 +73,6 @@ public class PyReportServiceImpl implements PyReportService {
     @Autowired
     private ModuleModificationAllDao moduleModificationAllDao;
 
-    @Autowired
-    private TemplateConfService templateConfService;
-
-    @Autowired
-    private ModuleService moduleService;
-
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
         boolean flag = false;
@@ -119,12 +110,11 @@ public class PyReportServiceImpl implements PyReportService {
                                  HttpSession session,
                                  CurrentNgsAvailableData currentNgsAvailable,
                                  User user) throws Exception {
+
         // 设置当前语言-此时代表中文
         Integer lang = 1;
         Gson gson = new Gson();
 
-        // 获取模板配置项
-        TemplateConf templateConf = templateConfService.get(rt.getTemplate_name());
         // 获取产品名称
         String productName = lifeDao.getProductByProductId(currentNgsAvailable.getProduct_id());
         currentNgsAvailable.setProduct_name(productName);
@@ -560,6 +550,7 @@ public class PyReportServiceImpl implements PyReportService {
             }
         }
 
+
         /*if (pr.getProduct_name().contains("novoivd") && pr.getProduct_name().contains("Crc")) {
             allGeneSet.add("UGT1A1");
         }*/
@@ -685,6 +676,11 @@ public class PyReportServiceImpl implements PyReportService {
         List<String> geneSymbols = analysisReportDao.getGeneSymbols(currentNgsAvailable.getProduct_id());
         Map<String, Object> geneClassification = new HashMap<String, Object>();
         Map<String, Object> geneMap = getGeneClassification(geneSymbols, geneClassification);
+        // 20250214 脑胶质瘤200增加基因list
+        if (pr.getProduct_name().equals("novopm2_tis_200")) {
+            Object genes = geneMap.get("genes") + ",1p/19q,Chr7/10";
+            geneMap.put("genes", genes);
+        }
         rt.setGene(geneMap);
 
         // 变异分级(60基因重肿)
@@ -3040,9 +3036,24 @@ public class PyReportServiceImpl implements PyReportService {
                     bg.put(mmBrainGlioma.getGene(), mmBrainGlioma.getOutput());
                     if ("阳性".equals(mmBrainGlioma.getOutput()) || "检出".equals(mmBrainGlioma.getOutput())) {
                         brainGliomaSize++;
+                        // 20250213 脑胶质瘤200模板基因检出 list 增加脑胶质瘤200的基因
+                        if (mmBrainGlioma.getGene().equals("pq")) {
+                            allGeneSet.add("1p/19q");
+                        } else if (mmBrainGlioma.getGene().equals("chr")) {
+                            allGeneSet.add("Chr7/10");
+                        } else if (mmBrainGlioma.getGene().equals("CDKN2")) {
+                            allGeneSet.add("CDKN2A");
+                            allGeneSet.add("CDKN2B");
+                        } else if (mmBrainGlioma.getGene().equals("H33A")) {
+                            allGeneSet.add("H3-3A");
+                        } else {
+                            allGeneSet.add(mmBrainGlioma.getGene());
+                        }
                     }
                 }
                 rt.setBg(bg);
+                // 20250213 脑胶质瘤200模板基因检出 list 增加脑胶质瘤200的基因
+                rt.setAllGeneSet(allGeneSet);
                 summaryOfRresults.put("brainGliomaSize", brainGliomaSize);
             }
         }
@@ -3159,7 +3170,13 @@ public class PyReportServiceImpl implements PyReportService {
                         } else if (rt.getTemplate_name().contains("KRAS基因报告模板")) {
                             templateKRAS(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
                         } else if (rt.getTemplate_name().contains("KRAS_NRAS_BRAF基因报告模板")) {
-                            templateKRAS_NRAS_BRAF(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
+                            // templateKRAS_NRAS_BRAF(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
+                            // 20250212 增加
+                            List<String> exonKRAS = Arrays.asList("2", "3", "4");
+                            List<String> exonNRAS = Arrays.asList("2", "3", "4");
+                            if ("KRAS".equals(gene) && exonKRAS.contains(exon) || "NRAS".equals(gene) && exonNRAS.contains(exon) || "BRAF".equals(gene) && "V600E".equals(variant)) {
+                                singleMoreTipLineStr.add(singleMoreTipLine);
+                            }
                         } else if (rt.getTemplate_name().contains("KIT_PDGFRA基因报告模板")) {
                             List<String> exonKIT = Arrays.asList("9", "11", "13", "14", "17", "18");
                             List<String> exonPDGFRA = Arrays.asList("12", "14", "18");
@@ -3600,33 +3617,12 @@ public class PyReportServiceImpl implements PyReportService {
             Map<String, Object> HenanPeopleCustomInfo = geneHenanPeopleData(thisGeneticmarkerVwList, bodyDrugTipLineStr, unknownTipLineStr);
             rt.setHenanPeopleCustomInfo(HenanPeopleCustomInfo);
         }
-        String templateName = rt.getTemplate_name();
+
         // CUSTOM 重要靶向基因汇总-检出总表
-        HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer, templateName);
+
+        HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer);
         rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
 
-        // CUSTOM 报告一些基础数据
-        HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd);
-
-        // CUSTOM 关于癌种判断的一些展示逻辑,生成检测项目信息
-        Map<String, Object> cancerInfo = new HashMap<>();
-        cancerInfo.put("urinaryProstateDisease", urinaryProstateDisease);
-        cancerInfo.put("endometrialCarcinoma", endometrialCarcinoma);
-        cancerInfo.put("gastrointestinalStromalTumor", gastrointestinalStromalTumor);
-        Map<String, Object> product_desc = generateProductDesc(cancerInfo, pd, templateName);
-
-        // CUSTOM 生成检测小结信息
-        Map<String, Object> testResultSummary = generateTestResultSummary(templateName);
-        rt.setTestResultSummary(testResultSummary);
-
-        // CUSTOM 生成参考文献信息
-        Map<String, Object> references = generateReferences(productName, urinaryProstateDisease);
-        rt.setReferences(references);
-
-        // CUSTOM 生成静态解析、附录信息 msi tmb mmr
-        Map<String, Object> commonNote = generateCommonNote(templateConf, productName, sf.getSample_type());
-        rt.setReferences(references);
-        
         AnalysisReport analysisReport = null;
         String status = null;
         try {
@@ -3719,103 +3715,21 @@ public class PyReportServiceImpl implements PyReportService {
         return reportId;
     }
 
-    private Map<String, Object> generateCommonNote(TemplateConf templateConf, String productName, String sampleType) {
-        Map<String, Object> res = new HashMap<>();
-
-        if (templateConf != null && templateConf.getMsi()) {
-            ModCommonNote commonNote = new ModCommonNote();
-            commonNote.setModule("MSI1");
-            String MSI1 = moduleService.getMSI1(commonNote);
-            commonNote.setModule("MSI2");
-            String MSI2 = moduleService.getMSI2(commonNote);
-            commonNote.setModule("MSI3");
-            List<String> MSI3List = moduleService.getMSI3(commonNote);
-
-            res.put("MSI1", MSI1);
-            res.put("MSI2", MSI2);
-            res.put("MSI3List", MSI3List);
-        }
-
-//        if (productName)
-//        }
-        return res;
-    }
-
-    private Map<String, Object> generateReferences(String productName, String urinaryProstateDisease) {
-        Map<String, Object> res = new HashMap<>();
-
-        // TODO 暂时这样判断文献的模块
-        List<String> productList = Arrays.asList("novopm2_tis_188", "novopm2_blo_188", "novopm1_tis_550", "novopm1_blo_550", "novopm1_tis_1238", "novopm1_blo_1238");
-        String module = "";
-        if (productList.contains(productName)) {
-            module = "通用实体瘤";
-            if (urinaryProstateDisease != null && !"".equals(urinaryProstateDisease)) {
-                module = "通用泌尿";
-            }
-        }
-
-        List<String> referenceList = moduleService.getReferences(productName, module);
-        res.put("referenceList", referenceList);
-
-        return res;
-    }
-
-    private Map<String, Object> generateTestResultSummary(String templateName) {
-        Map<String, Object> res = new HashMap<>();
-
-        List<String> testResultSummaryNote = moduleService.getTestResultSummaryNote(templateName);
-        res.put("noteList", testResultSummaryNote);
-
-        return res;
-    }
-
-    private Map<String, Object> generateProductDesc(Map<String, Object> cancerInfo, Map pd, String template) {
-        Map<String, Object> res = new HashMap<>();
-        ModProductDesc productDesc = moduleService.getProductDesc(template);
-        String productDescStr = productDesc.getProduct_desc();
-        List<String> productDescList = new ArrayList();
-        if (pd != null) {
-            productDescStr = productDescStr + "通过免疫组化检测 PD-L1 表达。";
-        }
-        productDescList.add(productDescStr);
-        res.put("productDescList", productDescList);
-        return res;
-    }
-
-    private HashMap<String, Object> generateReportInfoData(TemplateConf templateConf, Map pd) {
+    private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer) {
         HashMap<String, Object> res = new HashMap<>();
-        String reportName = templateConf.getReport_name();
-        if (pd != null) {
-            reportName = reportName.replace("检测报告", "+PD-L1检测报告");
+        String title = "重要靶向用药相关基因结果汇总";
+        if ("泌尿系统癌症".equals(targetCancer)) {
+            title = "泌尿系统肿瘤重要靶向用药相关基因结果汇总";
+        } else if ("泛癌种".equals(targetCancer)) {
+            title = "重要靶向用药相关基因结果汇总";
+        } else if ("肺癌".equals(targetCancer)) {
+            title = "肺癌精准诊疗相关基因结果汇总";
+        } else if ("结直肠癌".equals(targetCancer)) {
+            title = "结直肠癌精准诊疗相关基因结果汇总";
+        } else if ("乳腺癌".equals(targetCancer)) {
+            title = "乳腺癌精准诊疗相关基因结果汇总";
         }
-        res.put("reportName", reportName);
-        res.put("conf", templateConf);
-        return res;
-    }
-
-    private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer, String templateName) {
-        HashMap<String, Object> res = new HashMap<>();
-        ModCancerNoteSummary modCancerNoteSummary = new ModCancerNoteSummary();
-        modCancerNoteSummary.setCancer(targetCancer);
-        modCancerNoteSummary.setTemplate_name(templateName);
-        modCancerNoteSummary.setModule("important_targeted_gene_summary");
-
-        ModCancerNoteSummary title = moduleService.getCancerTitle(modCancerNoteSummary);
-
-        List<String> noteList = new ArrayList<>();
-        ModCancerNoteSummary note = moduleService.getCancerNote(modCancerNoteSummary);
-        if (note != null) {
-            noteList.add(note.getNote());
-        }
-
-        List<String> notes = moduleService.getImportantTargetedGeneSummaryNote(templateName);
-        if (notes != null) {
-            noteList.addAll(notes);
-        }
-
-        res.put("title", title.getTitle());
-        res.put("noteList", noteList);
-
+        res.put("title", title);
         return res;
     }
 

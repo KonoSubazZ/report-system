@@ -2,10 +2,7 @@ package com.novo.report.utils;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -109,6 +106,14 @@ public class EmailUtil {
 		Map map = new HashMap();
 		boolean success = true;
 		String errorMessage = "";
+		List<Object> ips = Arrays.asList(IpUtil.getLocalIp4Address().toArray());
+		// 20250107 测试系统增加特定邮箱
+		if (ips.contains(ServerConfig.getServerTestIP())) {
+			to = new String[]{"liushangzhi9168@novogene.com"};
+			copyto = new String[]{"wangxueran7632@novogene.com", "tumor-bioinfo@novogene.com"};
+			subject = "【测试邮件】";
+			content = "【系统测试邮件】";
+		}
 		try {
 			mimeMsg = new MimeMessage(session);
 			mp = new MimeMultipart();

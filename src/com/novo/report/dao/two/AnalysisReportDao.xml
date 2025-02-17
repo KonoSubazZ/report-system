@@ -62,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="getReportFileNameByReportId" resultType="AnalysisReport">
-		select report_filename,report_file_path,send_way,filename91360,file_path91360,status from analysis_report where report_id=#{report_id}
+		select subbarcode,product_name,analysis_date,analyzer,report_id,report_filename,report_file_path,send_way,filename91360,file_path91360,status from analysis_report where report_id=#{report_id}
 	</select>
 	
 	<select id="getAnalysisReportById" resultType="AnalysisReport">
@@ -756,6 +756,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			analysis_report
 		WHERE
 			report_id = #{report_id}
+	</select>
+    <select id="getReports" resultType="com.novo.report.beans.AnalysisReport">
+		SELECT
+			a.report_id,
+			a.product_name,
+			a.subbarcode,
+			a.tested_date,
+			a.tested_by,
+			a.analysis_date,
+			a.analyzer,
+			a.checked_date,
+			a.checked_by,
+			a.report_date,
+			a.report_filename,
+			a.report_file_path,
+			a.small_report_file_path,
+			a.status
+		FROM
+			analysis_report a
+		WHERE
+			a.subbarcode = #{subbarcode}
 	</select>
 
 </mapper>

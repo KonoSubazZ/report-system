@@ -66,6 +66,7 @@
             <li><a href="#tabs-7" onclick="urlRun6();" style="cursor: pointer;">发送报告</a></li>
         </c:if>
         <li style="margin-left: 300px"><a href="#tabs-8" onclick="fun_back();" id="button_back">返回报告管理</a></li>
+        <li style="margin-left: 100px;cursor: pointer;"   class="ui-state-default ui-corner-top"><a  onclick="returnReport();" >返回报告系统首页</a></li>
     </ul>
     <form id="form_back" method="post" action="${pageContext.request.contextPath}/NgsAvailableDataVw/lifeList1">
         <input type="hidden" name="life" value="${currentNgsAvailable.life}" id="life-input">
@@ -79,6 +80,11 @@
     </form>
 
     <script type="text/javascript">
+
+        // 返回报告系统首页
+        function returnReport() {
+            window.location.href = "${pageContext.request.contextPath}/index";
+        }
 
         function fun_back() {
             $("#form_back").submit();

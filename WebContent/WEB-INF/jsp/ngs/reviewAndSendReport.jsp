@@ -353,8 +353,8 @@
                                                             $("#sendTip").text("");
 
                                                             // 更新新系统报告状态
-                                                            if (data.errorMessage === "邮件发送成功!") {
-
+                                                            if (data.flag) {
+                                                                updateStatus();
                                                             }
                                                         }, "json"
                                                     );
@@ -404,7 +404,7 @@
                                     const URL = 'http://10.1.181.174:9099';
                                     $.ajax({
                                         type: "GET",
-                                        url: URL + "/report/update_sample_report_status/" + username + "/" + upload_date + "/" + product + "/" + sample_code + "/" + status + "/" + report_id,
+                                        url: URL + "/report/update_sample_report_status/" + username + "/" + upload_date + "/" + product + "/" + sample_code + "/" + status + "/" + report_id + "/",
                                         dataType: "json",
                                         success: function (res) {
                                             if (res.status == "success") {
