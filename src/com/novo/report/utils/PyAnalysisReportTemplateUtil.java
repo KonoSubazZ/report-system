@@ -6,12 +6,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.novo.report.dao.two.AnalysisReportDao;
 import org.apache.commons.lang3.StringUtils;
 import com.google.gson.Gson;
 import com.novo.report.beans.AnalysisReport;
 import com.novo.report.beans.ReportTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class PyAnalysisReportTemplateUtil {
 

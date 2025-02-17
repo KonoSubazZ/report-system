@@ -1,9 +1,6 @@
 package com.novo.report.beans;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ReportTemplate {
     private String client; // 委 托人
@@ -351,13 +348,31 @@ public class ReportTemplate {
     private Map<String, Object> JingsaiCustomInfo;
     private Map<String, Object> HenanPeopleCustomInfo;
 
+    /**
+     * 报告基础信息配置
+     */
+    private Map<String, Object> reportInfo;
+
 
     public Map<String, Object> getReportInfo() {
-        return ReportInfo;
+        return reportInfo;
     }
 
     public void setReportInfo(Map<String, Object> reportInfo) {
-        ReportInfo = reportInfo;
+        this.reportInfo = reportInfo;
+    }
+
+    /**
+     * 静态信息附录、包括 胚体系提示、胚体系解析、msi、mmr、tmb
+     */
+    private Map<String, Object> commonNote;
+
+    public Map<String, Object> getCommonNote() {
+        return commonNote;
+    }
+
+    public void setCommonNote(Map<String, Object> commonNote) {
+        this.commonNote = commonNote;
     }
 
     /**

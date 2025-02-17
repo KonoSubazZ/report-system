@@ -3633,6 +3633,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // CUSTOM 报告一些基础数据
         HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd);
+        rt.setReportInfo(reportInfo);
 
         // CUSTOM 关于癌种判断的一些展示逻辑,生成检测项目信息
         Map<String, Object> cancerInfo = new HashMap<>();
@@ -3651,7 +3652,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // CUSTOM 生成静态解析、附录信息 msi tmb mmr
         Map<String, Object> commonNote = generateCommonNote(templateConf, productName, sf.getSample_type());
-        rt.setReferences(references);
+        rt.setCommonNote(commonNote);
 
         AnalysisReport analysisReport = null;
         String status = null;
@@ -3814,7 +3815,7 @@ public class PyReportServiceImpl implements PyReportService {
         if (pd != null) {
             reportName = reportName.replace("检测报告", "+PD-L1检测报告");
         }
-        res.put("reportName", reportName);
+        res.put("name", reportName);
         res.put("conf", templateConf);
         return res;
     }
