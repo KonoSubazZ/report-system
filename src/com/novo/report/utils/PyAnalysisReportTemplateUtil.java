@@ -372,8 +372,11 @@ public class PyAnalysisReportTemplateUtil {
 		} else if ("泛实体瘤化疗33基因+PDL1检测报告-三峡".equals(rt.getTemplate_name()) && rt.getPDInfo() == null) {
 			fileName = rt.getBarcode()+rt.getClient()+rt.getTemplate_name().replace("+PDL1","")+apr.getReport_id()+".docx";
 		} else if (rt.getTemplate_name().contains("广附一")) {
-			String type = "非小细胞肺癌-报告模板-广附一".equals(rt.getTemplate_name()) ? "完整版" : "";
-			fileName = rt.getClient()+"-"+apr.getAnalysis_date()+"-"+rt.getBarcode()+type+apr.getReport_id()+".docx";
+			fileName = rt.getBarcode()+rt.getClient()+rt.getTemplate_name().replace("+PDL1","")+apr.getReport_id()+".docx";
+		}else if (rt.getTemplate_name().contains("同济")) {
+			// 20250212 同济报告名称替换 诺禾编号替换为病理编号
+			fileName = rt.getTemplate_subbarcode() + rt.getClient() + rt.getTemplate_name() + apr.getReport_id()+".docx";
+
 		} else {
 //			fileName = rt.getBarcode()+rt.getClient()+rt.getTemplate_name()+apr.getReport_id()+".docx";
 			fileName = rt.getBarcode()+rt.getClient()+rt.getTemplate_name().replaceAll("-湖肿|-药企|-维基生物|-格微|-病理科|-检验科|-无化疗","")+apr.getReport_id()+".docx";

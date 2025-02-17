@@ -1,19 +1,10 @@
 package com.novo.report.controller;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.novo.report.beans.*;
+import com.novo.report.common.Result;
 import com.novo.report.dao.two.AnalysisReportDao;
+import com.novo.report.service.OfflineReportService;
+import com.novo.report.service.SampleFileService;
 import com.novo.report.utils.*;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -24,14 +15,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.novo.report.beans.OfflineReport;
-import com.novo.report.beans.OfflineReportIframeBean;
-import com.novo.report.beans.ReprotPageBean;
-import com.novo.report.beans.SampleFile;
-import com.novo.report.beans.User;
-import com.novo.report.service.OfflineReportService;
-import com.novo.report.service.SampleFileService;
-import com.novo.report.webservices.GenericServicesSoap;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping("offlineReport")
@@ -177,6 +171,16 @@ public class OfflineReportController {
     @RequestMapping("reviewAndSendReport")
     public Object reviewAndSendReport(OfflineReportIframeBean offlineReportIframeBean, Model model) {
         OfflineReport offlineReport = offlineReportService.getOfflineReportById(offlineReportIframeBean.getReport_id());
+        List<AnalysisReport> reports = analysisReportDao.getReports(offlineReport.getSubbarcode());
+        if (reports != null && !reports.isEmpty()) {
+            // 同一个条码对应多份报告，过滤出审核通过的报告
+            AnalysisReport analysisReport = reports.stream()
+                    .filter(report -> "报告审核通过".equals(report.getStatus())) // 过滤符合条件的数据
+                    .findFirst()
+                    .orElse(null);
+            ; // 获取第一个符合条件的对象
+            model.addAttribute("analysis_report", analysisReport);
+        }
         model.addAttribute("offlineReportIframeBean", offlineReportIframeBean);
         model.addAttribute("offlineReport", offlineReport);
         return "offlineReport/reviewAndSendReport";
@@ -249,6 +253,22 @@ public class OfflineReportController {
         return status;
     }
 
+    @ResponseBody
+    @RequestMapping("getReport")
+    public Result<AnalysisReport> getReport(String subbarcode) {
+        List<AnalysisReport> reports = analysisReportDao.getReports(subbarcode);
+        if (reports != null && !reports.isEmpty()) {
+            // 同一个条码对应多份报告，过滤出审核通过的报告
+            AnalysisReport analysisReport = reports.stream()
+                    .filter(report -> "报告审核通过".equals(report.getStatus())) // 过滤符合条件的数据
+                    .findFirst()
+                    .orElse(reports.get(reports.size() - 1));
+
+            return Result.success(analysisReport);
+        }
+        return Result.failure(500, "未找到对应报告");
+    }
+
     @RequestMapping("editStatus")
     @ResponseBody
     private void editStatus(OfflineReport offlineReport, HttpSession session) {
@@ -264,6 +284,12 @@ public class OfflineReportController {
         }
     }
 
+    /**
+     * 线下报告管理
+     *
+     * @param report_id
+     * @return
+     */
     @RequestMapping("sendEmail")
     @ResponseBody
     private Map sendEmail(Integer report_id) {
@@ -327,7 +353,7 @@ public class OfflineReportController {
             ccSet.toArray(copyto);
 
             // 20241105 需求去除收件人 cdyyjyjczx@163.com 的抄送邮箱
-            if (sf.getEmailaddress().contains("cdyyjyjczx@163.com")){
+            if (sf.getEmailaddress().contains("cdyyjyjczx@163.com")) {
                 copyto = null;
             }
             //主题
@@ -444,7 +470,7 @@ public class OfflineReportController {
                     success[0] = false;
                     map.put("errorMessage", "生成小报告失败！");
                 }
-                JSONObject object= JSONObject.fromObject(json);
+                JSONObject object = JSONObject.fromObject(json);
                 String small_report_file_path = object.get("file_path").toString();
                 System.out.println("小报告文件路径：" + small_report_file_path);
                 if (StringUtils.isNotEmpty(small_report_file_path)) {
@@ -463,7 +489,7 @@ public class OfflineReportController {
         Map map = new HashMap();
         // 上传信息
         Object o = addOfflineReport(offlineReport, filenameone, filenametwo, filenamethree, session);
-        if ((boolean)o) {
+        if ((boolean) o) {
             // 发送邮箱
             map = sendEmail(offlineReport.getReport_id());
         } else {

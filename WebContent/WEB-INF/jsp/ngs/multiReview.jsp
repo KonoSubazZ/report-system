@@ -8,17 +8,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta name="renderer" content="webkit">
-    <%--    <meta http-equiv="Access-Control-Allow-Origin" content="*">--%>
     <base href="${pageContext.request.scheme }://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/">
-
     <link rel="stylesheet" href="${pageContext.request.contextPath}/lib/layui/css/layui.css"/>
-
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.form.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/jquery.validate.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/autocomplete/autoinput.js"></script>
-    <script type="text/javascript"
-            src="${pageContext.request.contextPath}/jquery/autocomplete/autocomplete.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/autocomplete/autocomplete.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jquery/autocomplete/getDate.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/lib/layui/layui.js"></script>
 </head>
@@ -161,7 +157,6 @@
 </style>
 <script>
 
-    let isUpdated = false;
     // 下载文件
     function download() {
         window.location.href = "${pageContext.request.contextPath}/ngs/download?report_id=${analysisReport.report_id}";
@@ -237,7 +232,6 @@
                                 time: 1000
                             });
                             $("#fileName").text(file.name);
-                            isUpdated = true;
                         } else {
                             layer.msg("文件更换失败！", {time: 1000});
                         }
@@ -259,14 +253,6 @@
 
     // 提交报告到新系统审核 同时更新报告系统状态
     function submitReport() {
-        if (!isUpdated){
-            layer.msg('请先更换报告文件！', {
-                icon: 2,
-                offset: ['150px', '500px'],
-                time: 3000
-            });
-            return;
-        }
         // 初始化参数
         let upload_date ="${analysisReport.analysis_date}".slice(0, 10).replace(/-/g, '');
         let username = "${analysisReport.analyzer}";

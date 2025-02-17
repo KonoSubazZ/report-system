@@ -20,6 +20,9 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * 文件发送管理
+ */
 @Controller
 @RequestMapping("sendEmail")
 public class    SendEmailController {
