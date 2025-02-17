@@ -32,12 +32,17 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Controller
 @RequestMapping("ngs")
 public class NgsReportController {
+    // 创建一个 Logger 实例
+    private static final Logger logger = Logger.getLogger(NgsReportController.class.getName());
 
 //    @Value("${server.base.url}")
 //    private Integer BASE_URL;
@@ -67,6 +72,26 @@ public class NgsReportController {
             }
             return reportId;
         } catch (Exception e) {
+
+            // 记录 report 生成错误日志
+            FileHandler fileHandler = null;
+            try {
+                // 创建 FileHandler，将日志写入指定文件
+                fileHandler = new FileHandler("/data/soft/apache-tomcat-8.5.43/report.log", true);
+                fileHandler.setFormatter(new SimpleFormatter()); // 设置日志格式
+                logger.addHandler(fileHandler); // 将文件处理器添加到 Logger 中
+
+                // 记录异常信息
+                logger.severe("Error occurred while generating report: " + rt.toString() + e.getMessage());
+                e.printStackTrace();  // 输出异常的堆栈信息
+
+            } catch (IOException ioException) {
+                ioException.printStackTrace(); // 如果创建日志文件失败，输出异常堆栈信息
+            } finally {
+                if (fileHandler != null) {
+                    fileHandler.close(); // 关闭文件处理器，释放资源
+                }
+            }
             e.printStackTrace();
             return -1;
         }
@@ -774,7 +799,7 @@ public class NgsReportController {
         if (count == 0) {
             return Result.failure(500, "更新失败，未找到id为" + id + "的报告记录。");
         }
-        return Result.success("更新id为" + id + "的报告成功。",null);
+        return Result.success("更新id为" + id + "的报告成功。", null);
     }
 
     /**

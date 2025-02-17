@@ -110,6 +110,7 @@ public class PyReportServiceImpl implements PyReportService {
                                  HttpSession session,
                                  CurrentNgsAvailableData currentNgsAvailable,
                                  User user) throws Exception {
+
         // 设置当前语言-此时代表中文
         Integer lang = 1;
         Gson gson = new Gson();

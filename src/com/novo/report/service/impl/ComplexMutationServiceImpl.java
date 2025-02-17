@@ -287,8 +287,10 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         String check_date = cr_info.get("check_date") == null ? "" : cr_info.get("check_date").toString();
         cr_info.put("check_date", conversionTime(check_date));
 
-        // 没有使用到
-        String mutDesc = translateUtil.translate2(Gene, ori_variant, ".");
+        // 20250217 修复位点突变描述，未输出杂合
+        // String mutDesc = translateUtil.translate2(Gene, ori_variant, ".");
+        String mutDesc = translateUtil.translate2(Gene, ori_variant, Zygosity);
+        System.out.println("胚系mutDesc: " + mutDesc);
         cr_info.put("mutDesc", mutDesc);
         // 得到基因描述
         String geneDescription = "";
