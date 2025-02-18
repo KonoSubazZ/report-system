@@ -3749,6 +3749,7 @@ public class PyReportServiceImpl implements PyReportService {
     private Map<String, Object> generateCommonNote(TemplateConf templateConf, String productName, String sampleType, ReportTemplate rt) {
         Map<String, Object> res = new HashMap<>();
 
+        // MSI
         if (templateConf != null && templateConf.getMsi()) {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("MSI1");
@@ -3762,20 +3763,69 @@ public class PyReportServiceImpl implements PyReportService {
             res.put("MSI2", MSI2);
             res.put("MSI3List", MSI3List);
         }
-        // 体细胞变异分级提示
-        ModCommonNote commonNote = new ModCommonNote();
-        commonNote.setType("双样本");
-        commonNote.setModule("somatic_mutation_tip");
-        List<String> somaticMutationTipNote = moduleService.getSomaticMutationTipNote(commonNote, rt.isReadsFlag(), rt.isComplex());
-        res.put("somaticMutationTipNote", somaticMutationTipNote);
 
-        // 肿瘤遗传风险检测
-        commonNote.setModule("cr_mutation_tip");
-        List<String> crMutationTipNote = moduleService.getcrMutationTipNote(commonNote);
-        res.put("crMutationTipNote", somaticMutationTipNote);
+        // MMR
+        if (templateConf != null && templateConf.getMmr()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("MMR1");
+            String MMR1 = moduleService.getMMR1(commonNote);
+            commonNote.setModule("MMR2");
+            String MMR2 = moduleService.getMMR2(commonNote);
+            commonNote.setModule("MMR3");
+            List<String> MMR3List = moduleService.getMMR3(commonNote);
 
-//        if (productName)
-//        }
+            res.put("MMR1", MMR1);
+            res.put("MMR2", MMR2);
+            res.put("MMR3List", MMR3List);
+        }
+
+        // TMB
+        if (templateConf != null && templateConf.getTmb()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("TMB1");
+            String TMB1 = moduleService.getTMB1(commonNote);
+            commonNote.setModule("TMB3");
+            List<String> TMB3List = moduleService.getTMB3(commonNote);
+            // 区分组织血液
+            commonNote.setModule("TMB2");
+            commonNote.setSample_type(rt.getSample_type());
+            String TMB2 = moduleService.getTMB2(commonNote);
+
+            res.put("TMB1", TMB1);
+            res.put("TMB2", TMB2);
+            res.put("TMB3List", TMB3List);
+        }
+
+        // chemo 化疗解析
+        if (templateConf != null && templateConf.getChemo_anal()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("chemo1");
+            List<String> Chemo1List = moduleService.getChemo1List(commonNote);
+            commonNote.setModule("chemo2");
+            List<String> Chemo2List = moduleService.getChemo2List(commonNote);
+
+            res.put("chemo1List", Chemo1List);
+            res.put("chemo2List", Chemo2List);
+
+        }
+
+        // 双样本 somatic_mutation_tip 体细胞变异分级提示
+        if (templateConf != null && templateConf.getSomatic_mutation_tip()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setType("双样本");
+            commonNote.setModule("somatic_mutation_tip");
+            List<String> somaticMutationTipNote = moduleService.getSomaticMutationTipNote(commonNote, rt.isReadsFlag(), rt.isComplex());
+            res.put("somaticMutationTipNote", somaticMutationTipNote);
+        }
+
+        // 双样本 cr_mutation_tip 肿瘤遗传风险检测
+        if (templateConf != null && templateConf.getCr_mutation_tip()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("cr_mutation_tip");
+            List<String> crMutationTipNote = moduleService.getcrMutationTipNote(commonNote);
+            res.put("crMutationTipNote", crMutationTipNote);
+        }
+
         return res;
     }
 

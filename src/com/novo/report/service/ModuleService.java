@@ -118,6 +118,20 @@ public interface ModuleService {
     List<String> getMSI3(ModCommonNote modCommonNote);
 
     /**
+     * 根据模块 chemo1 和类型获取 chemo1 附录
+     * @param modCommonNote
+     * @return
+     */
+    List<String> getChemo1List(ModCommonNote modCommonNote);
+
+    /**
+     * 根据模块 chemo2 和类型获取 chemo2 附录
+     * @param modCommonNote
+     * @return
+     */
+    List<String> getChemo2List(ModCommonNote modCommonNote);
+
+    /**
      * 根据模块 MMR1 和类型获取 MMR指标解析
      *
      * @param module

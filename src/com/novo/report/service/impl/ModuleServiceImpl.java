@@ -118,6 +118,26 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
+    public List<String> getChemo1List(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+        List<String> noteList = new ArrayList<>();
+        String[] notes = commonNote.getNote().split("\r\n");
+        noteList.addAll(Arrays.asList(notes));
+
+        return noteList;
+    }
+
+    @Override
+    public List<String> getChemo2List(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+        List<String> noteList = new ArrayList<>();
+        String[] notes = commonNote.getNote().split("\r\n");
+        noteList.addAll(Arrays.asList(notes));
+
+        return noteList;
+    }
+
+    @Override
     public String getMMR1(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
 
