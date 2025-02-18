@@ -61,11 +61,11 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public List<String> getReferences(String productName, String module) {
-       ModReferences references = moduleDao.getReferences(productName, module);
-       if (references != null) {
-           String[] referencesList = references.getReferences().split("\r\n");
-           return Arrays.asList(referencesList);
-       }
+        ModReferences references = moduleDao.getReferences(productName, module);
+        if (references != null) {
+            String[] referencesList = references.getReferences().split("\r\n");
+            return Arrays.asList(referencesList);
+        }
         return Collections.emptyList();
     }
 
@@ -117,25 +117,6 @@ public class ModuleServiceImpl implements ModuleService {
         return noteList;
     }
 
-    @Override
-    public List<String> getChemo1List(ModCommonNote modCommonNote) {
-        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
-        List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        noteList.addAll(Arrays.asList(notes));
-
-        return noteList;
-    }
-
-    @Override
-    public List<String> getChemo2List(ModCommonNote modCommonNote) {
-        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
-        List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        noteList.addAll(Arrays.asList(notes));
-
-        return noteList;
-    }
 
     @Override
     public String getMMR1(ModCommonNote modCommonNote) {
@@ -162,17 +143,37 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
+    public List<String> getChemo1List(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+        List<String> noteList = new ArrayList<>();
+        String[] notes = commonNote.getNote().split("\r\n");
+        noteList.addAll(Arrays.asList(notes));
+
+        return noteList;
+    }
+
+    @Override
+    public List<String> getChemo2List(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+        List<String> noteList = new ArrayList<>();
+        String[] notes = commonNote.getNote().split("\r\n");
+        noteList.addAll(Arrays.asList(notes));
+
+        return noteList;
+    }
+
+    @Override
     public List<String> getSomaticMutationTipNote(ModCommonNote modCommonNote, Boolean reads, Boolean complex) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
         String[] notes = commonNote.getNote().split("\r\n");
         // 所有的提示，根据 reads complex 筛选删除最后一条数据
         List<String> notesList = new ArrayList<>(Arrays.asList(notes));
-        if (!reads){
+        if (!reads) {
             notesList.remove(notesList.size() - 2);
             notesList.get(notesList.size() - 1).replace("13.", "12.");
         }
-        if (!complex){
+        if (!complex) {
             notesList.remove(notesList.size() - 1);
         }
         noteList.addAll(notesList);
