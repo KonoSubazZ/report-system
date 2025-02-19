@@ -150,7 +150,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 用于记录与 "CR" 基因相关的药物列表数量。
         int crDrugList = 0;
 
-        // 记录所有检出基因（胚体系）
+        // 记录所有检出基因（胚体系 123）
         HashSet<Object> allGeneSet = new HashSet<>();
         // 胚系检出基因（所有）
         HashSet<Object> crGeneSet = new HashSet<>();
@@ -158,7 +158,7 @@ public class PyReportServiceImpl implements PyReportService {
         HashSet<Object> embryonalGeneSet = new HashSet<>();
         // 体系检出基因
         HashSet<Object> bodyGeneSet = new HashSet<>();
-        // 汇总
+        // 记录所有位点基因 包括胚系12345
         HashSet<Object> GeneSet = new HashSet<>();
 
         //循环设置临床意义
@@ -560,9 +560,7 @@ public class PyReportServiceImpl implements PyReportService {
             }
         }
 
-        /*if (pr.getProduct_name().contains("novoivd") && pr.getProduct_name().contains("Crc")) {
-            allGeneSet.add("UGT1A1");
-        }*/
+        // 蚌埠 体细胞geneSet 特殊逻辑
         if (rt.getTemplate_name().contains("蚌埠")) {
             Set<String> bengbu = new HashSet();
             for (Map map : thisGeneticmarkerList) {
@@ -575,6 +573,7 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setBengbu(bengbu);
         }
 
+        // 关于报告中位点展示的排序逻辑
         list.sort((Map map1, Map map2) -> Float.valueOf(map2.get("orderNum").toString()).compareTo(Float.valueOf(map1.get("orderNum").toString())));
         List<RpVatiantOrder> selectOrderByAnalysisReportId = reportClinicalTrialDao.selectOrderByAnalysisReportId(currentNgsAvailable.getReport_id());
         if (selectOrderByAnalysisReportId.isEmpty()) {
@@ -600,12 +599,13 @@ public class PyReportServiceImpl implements PyReportService {
         if (rt.getTemplate_name().contains("安徽胸科") || rt.getTemplate_name().contains("泛实体瘤182+6基因报告")) {
             output = "未检测到与用药相关突变";
         }
+        // 肺癌11基因报告-重庆分子 肺癌26基因报告模板-重庆分子 特殊模板需求
         List<Map> hotallgenedrugs = analysisReportDao.gethotGeneDrug("hotallgenedrug", rt.getTemplate_name());
         if (!hotallgenedrugs.isEmpty()) {
             List<Map> hotAllGeneDrugTipLineStr = getHotgeneData(hotallgenedrugs, thisGeneticmarkerList, crList, "allgene", output, rt.getTemplate_name());
             rt.setHotAllGeneDrugTipLineStr(hotAllGeneDrugTipLineStr);
         }
-        //靶向基因检测结果小结热点基因
+        // 靶向基因检测结果小结热点基因 -湖南肿瘤肺癌49模板 湖南肿瘤胃肠癌49模板 实体瘤54+6基因报告-安徽胸科 泛实体瘤182+6基因报告 泛实体瘤182+6基因报告-单样本
         List<Map> hotgenedrugs = analysisReportDao.gethotGeneDrug("hotgenedrug", rt.getTemplate_name());
         if (!hotgenedrugs.isEmpty()) {
             List<Map> hotGeneDrugTipLineStr = getHotgeneData(hotgenedrugs, thisGeneticmarkerList, crList, "snp_indel", output, rt.getTemplate_name());
@@ -632,13 +632,13 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setHotGeneDrugSet(hotGeneDrugSet);
         }
 
-        // 肿瘤遗传风险检测结果小结
+        // 肿瘤遗传风险检测结果小结 湖南肿瘤胃肠癌49模板
         List<Map> hotcrgenedrugs = analysisReportDao.gethotGeneDrug("hotcrgenedrug", rt.getTemplate_name());
         if (!hotcrgenedrugs.isEmpty()) {
             List<Map> hotCrGeneDrugTipLineStr = getHotgeneData(hotcrgenedrugs, thisGeneticmarkerList, crList, "CR", output, rt.getTemplate_name());
             rt.setHotCrGeneDrugTipLineStr(hotCrGeneDrugTipLineStr);
         }
-        //(银丰-华西)
+        // (银丰-华西)
         HashSet<Object> promoteGeneSet = new HashSet<>(); //可能促进药物效果标志物
         HashSet<Object> reducedGeneSet = new HashSet<>(); //可能导致药物效果降低标志物
         HashSet<Object> progressionGeneSet = new HashSet<>(); //可能导致疾病发生超进展标志物
@@ -681,7 +681,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setImmunopositiveGeneSet(immunopositiveGeneSet);
         rt.setImmunonegativeGeneSet(immunonegativeGeneSet);
 
-        // 获取基因列表
+        // 获取基因列表-基因检测列表
         List<String> geneSymbols = analysisReportDao.getGeneSymbols(currentNgsAvailable.getProduct_id());
         Map<String, Object> geneClassification = new HashMap<String, Object>();
         Map<String, Object> geneMap = getGeneClassification(geneSymbols, geneClassification);
@@ -792,12 +792,15 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> bodyDrugTipLineStr = new ArrayList<Map>();
         List<Map> complexDrugTipLineStr = new ArrayList<Map>();
         List<Map> bodyAndComplexDrugTipLineStr = new ArrayList<Map>();
+
+        // 54+6和182+6的模板 需要把这6个基因和其他基因分两部分展示 安徽胸科和北京胸科
+        // 检测基因：EGFR、KRAS、ALK、PIK3CA、BRAF、ROS1
+        List<String> gene6 = Arrays.asList("EGFR", "KRAS", "ALK", "PIK3CA", "BRAF", "ROS1");
         List<Map> targetDrugTipLineGene6Str = new ArrayList<Map>();
         List<Map> targetDrugTipLineExceptGene6Str = new ArrayList<Map>();
         List<Map> bodyDrugTipLineGene6Str = new ArrayList<Map>();
         List<Map> bodyDrugTipLineExceptGene6Str = new ArrayList<Map>();
-        //检测基因：EGFR、KRAS、ALK、PIK3CA、BRAF、ROS1
-        List<String> gene6 = Arrays.asList("EGFR", "KRAS", "ALK", "PIK3CA", "BRAF", "ROS1");
+
         boolean redFlag = false;
         boolean complex = false;
         String bodyDrugStr = "";
@@ -805,6 +808,8 @@ public class PyReportServiceImpl implements PyReportService {
         String embryonalDrugStr = "";
         String somaticMutationStr = "";
         rt.setBengbuComplex("未见变异"); // 蚌埠肠癌共突变逻辑
+
+        // 靶向药物提示输出逻辑
         if (allDrugMutNum != 0) {
             // *****************靶向药物提示表格***************
             for (Map map : list) {
@@ -819,8 +824,8 @@ public class PyReportServiceImpl implements PyReportService {
                     if (mutFreq.equals(".")) {
                         mutFreq = "-";
                     }
-                    //判断是否是融合突变
-                    List<String> templates = lifeNoNDFTemplate(); //life报告模板融合不输出突变丰度和NDF值
+                    // 判断是否是融合突变、life报告模板融合不输出突变丰度和NDF值
+                    List<String> templates = lifeNoNDFTemplate();
                     if (templates.contains(rt.getTemplate_name())) {
                         if (ori_variant.indexOf("Fusion") != -1) {
                             mutFreq = "/";
@@ -1092,11 +1097,6 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setTargetDrugTipLineStr(targetDrugTipLineStr);
         rt.setEmbryonalDrugTipLineStr(embryonalDrugTipLineStr);
         rt.setUnknownDrugTipLineStr(unknownDrugTipLineStr);
-        /*if (rt.getTemplate_name().contains("同济")) {
-            rt.setBodyDrugTipLineStr(listSort2(bodyDrugTipLineStr));
-        } else {
-            rt.setBodyDrugTipLineStr(listSort(bodyDrugTipLineStr));
-        }*/
         rt.setBodyDrugTipLineStr(listSort2(bodyDrugTipLineStr));
         rt.setComplexDrugTipLineStr(listSort(complexDrugTipLineStr));
         rt.setBodyAndComplexDrugTipLineStr(listSort(bodyAndComplexDrugTipLineStr));
