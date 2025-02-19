@@ -697,6 +697,8 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> variationGrading1 = new ArrayList<Map>();
         List<Map> variationGrading2 = new ArrayList<Map>();
         List<Map> variationGrading3 = new ArrayList<Map>();
+
+        // TODO 待优化 list 整合到一个遍历里
         for (Map map : list) {
             String gene = map.get("gene").toString();
             String has_drug = map.get("has_drug") == null ? "" : map.get("has_drug").toString();
@@ -934,7 +936,7 @@ public class PyReportServiceImpl implements PyReportService {
                         targetDrugTipLine.put("variationClass", "II类");
                     }
 
-                    //胚系靶向药物提示和体系靶向药物提示
+                    // embryonalDrugTipLineStr 胚系靶向药物提示 和 targetDrugTipLineStr 体系靶向药物提示
                     String has_drug = map.get("has_drug") == null ? "" : map.get("has_drug").toString();
                     if (!has_drug.equals("") && (has_drug.equals("true") || has_drug.equals("1"))) {
                         if (!targetDrugTipLine.isEmpty()) {
@@ -1074,6 +1076,7 @@ public class PyReportServiceImpl implements PyReportService {
                         }
                         bodyAndComplexDrugTipLineStr.add(targetDrugTipLine);
                     }
+                    // 这里为什么要检查 map 是否为空
                     if (!targetDrugTipLine.isEmpty()) {
                         targetDrugTipLineStr.add(targetDrugTipLine);
                         if (gene6.contains(gene)) {
@@ -1138,6 +1141,7 @@ public class PyReportServiceImpl implements PyReportService {
                         rt.setBengbuComplex("");
                     }
                     String ori_varian_split = removeMutations(transferOriVariant(ori_variant));
+                    // 判断 点突变 扩增 融合 snp cnv fusion 的 逻辑，具体涉及到 mutation 的展示
                     if (!ori_varian_split.equals("Amplification") && ori_varian_split != null && !ori_varian_split.contains("Fusion")) {
                         String[] splits = ori_varian_split.split(" ");
                         unknownTipLine.put("Transcript", splits[0]);
@@ -4318,8 +4322,12 @@ public class PyReportServiceImpl implements PyReportService {
             String drugName = map2.get("drug_name").toString();
             String evidence_phase = map2.get("evidence_phase") == null ? "" : map2.get("evidence_phase").toString();
             map.put("evidence_phase", evidence_phase);
+
+            // 获取是否获批药物
             Integer approvedDrugNum = reportUnknownVarDao.getApprovedDrugNum(drugName, 1);
+            // cfda 是否获批 0 未获批 1 获批
             String cfda = reportUnknownVarDao.getApprovedCFDANum(drugName, 1) == null ? "0" : reportUnknownVarDao.getApprovedCFDANum(drugName, 1);
+            // 药物展示形式-具体逻辑为获取药物 + *，临床实验 + #
             drug_name = isAddSymbol(drug_name, cfda, clinicalList);
             String approve_range = map2.get("approve_range") == null ? "" : map2.get("approve_range").toString();
             String approval_desc = map2.get("approval_desc") == null ? "" : map2.get("approval_desc").toString();
