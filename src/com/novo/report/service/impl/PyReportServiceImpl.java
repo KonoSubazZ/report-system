@@ -150,13 +150,13 @@ public class PyReportServiceImpl implements PyReportService {
         // 用于记录与 "CR" 基因相关的药物列表数量。
         int crDrugList = 0;
 
-        // 用于记录所有基因 - 暂时不清楚
+        // 记录所有检出基因（胚体系）
         HashSet<Object> allGeneSet = new HashSet<>();
-        // 胚系（所有）
+        // 胚系检出基因（所有）
         HashSet<Object> crGeneSet = new HashSet<>();
-        // 胚系 只包含（1、2、3）
+        // 胚系检出基因 只包含（1、2、3）
         HashSet<Object> embryonalGeneSet = new HashSet<>();
-        // 体系
+        // 体系检出基因
         HashSet<Object> bodyGeneSet = new HashSet<>();
         // 汇总
         HashSet<Object> GeneSet = new HashSet<>();
@@ -3821,6 +3821,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 双样本 cr_mutation_tip 肿瘤遗传风险检测
         if (templateConf != null && templateConf.getCr_mutation_tip()) {
             ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setType("双样本");
             commonNote.setModule("cr_mutation_tip");
             List<String> crMutationTipNote = moduleService.getcrMutationTipNote(commonNote);
             res.put("crMutationTipNote", crMutationTipNote);
