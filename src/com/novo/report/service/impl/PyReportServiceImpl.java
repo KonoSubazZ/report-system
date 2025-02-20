@@ -805,6 +805,8 @@ public class PyReportServiceImpl implements PyReportService {
                 if (!CollectionUtils.isEmpty(drugList)) {
                     String gene = map.get("gene").toString();
                     String ori_variant = map.get("ori_variant").toString();
+
+
                     String ExonicFunc = map.get("ExonicFunc") == null ? "-" : map.get("ExonicFunc").toString();
                     String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
                     if (mutFreq.equals(".")) {
@@ -920,7 +922,7 @@ public class PyReportServiceImpl implements PyReportService {
                         targetDrugTipLine.put("variationClass", "II类");
                     }
 
-                    //胚系靶向药物提示和体系靶向药物提示
+                    // 胚系靶向药物提示
                     String has_drug = map.get("has_drug") == null ? "" : map.get("has_drug").toString();
                     if (!has_drug.equals("") && (has_drug.equals("true") || has_drug.equals("1"))) {
                         if (!targetDrugTipLine.isEmpty()) {
@@ -942,6 +944,7 @@ public class PyReportServiceImpl implements PyReportService {
                             embryonalDrugTipLineStr.add(targetDrugTipLine);
                         }
                     } else {
+                        // 体系靶向药物提示
                         if (!gene.equals("多靶点循证")) {
                             String ori_variant_split = removeMutations(transferOriVariant(ori_variant));
                             // 体系包点突变
@@ -1324,6 +1327,7 @@ public class PyReportServiceImpl implements PyReportService {
         for (Map map : list) {
             Map targetedDrugDetection = new HashMap();
             List<Map> drugInformationStr = new ArrayList<Map>(); // 药物信息,旧逻辑暂不使用
+
             String gene = map.get("gene").toString();
             String ori_variant = map.get("ori_variant").toString();
             String check_date = map.get("check_date") == null ? "" : map.get("check_date").toString();
