@@ -77,7 +77,7 @@ public class NgsReportController {
             FileHandler fileHandler = null;
             try {
                 // 创建 FileHandler，将日志写入指定文件
-                fileHandler = new FileHandler("/data/soft/apache-tomcat-8.5.43/report.log", true);
+                fileHandler = new FileHandler("/data/soft/apache-tomcat-8.5.43/logs/report.log", true);
                 fileHandler.setFormatter(new SimpleFormatter()); // 设置日志格式
                 logger.addHandler(fileHandler); // 将文件处理器添加到 Logger 中
 
