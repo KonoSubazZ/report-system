@@ -393,11 +393,11 @@ public class TemplateConf {
   }
 
 
-  public Boolean getImmunity_PN() {
+  public Boolean getImmunity_P_N() {
     return immunityPN;
   }
 
-  public void setImmunity_PN(Boolean immunityPN) {
+  public void setImmunity_P_N(Boolean immunityPN) {
     this.immunityPN = immunityPN;
   }
 
@@ -546,11 +546,11 @@ public class TemplateConf {
   }
 
 
-  public Boolean getImmunity_PN_anal() {
+  public Boolean getImmunity_P_N_anal() {
     return immunityPNAnal;
   }
 
-  public void setImmunity_PN_anal(Boolean immunityPNAnal) {
+  public void setImmunity_P_N_anal(Boolean immunityPNAnal) {
     this.immunityPNAnal = immunityPNAnal;
   }
 
