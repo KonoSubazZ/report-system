@@ -106,7 +106,7 @@ public interface ModuleService {
      * @param type
      * @return
      */
-    String getMSI2(ModCommonNote modCommonNote);
+    List<String>  getMSI2(ModCommonNote modCommonNote);
 
     /**
      * 根据模块 MSI3 和类型获取 MSI3附录

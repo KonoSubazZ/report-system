@@ -3759,12 +3759,12 @@ public class PyReportServiceImpl implements PyReportService {
             commonNote.setModule("MSI1");
             String MSI1 = moduleService.getMSI1(commonNote);
             commonNote.setModule("MSI2");
-            String MSI2 = moduleService.getMSI2(commonNote);
+            List<String> MSI2List = moduleService.getMSI2(commonNote);
             commonNote.setModule("MSI3");
             List<String> MSI3List = moduleService.getMSI3(commonNote);
 
             res.put("MSI1", MSI1);
-            res.put("MSI2", MSI2);
+            res.put("MSI2", MSI2List);
             res.put("MSI3List", MSI3List);
         }
 

@@ -101,10 +101,13 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public String getMSI2(ModCommonNote modCommonNote) {
+    public List<String> getMSI2(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+        List<String> noteList = new ArrayList<>();
+        String[] notes = commonNote.getNote().split("\r\n");
+        noteList.addAll(Arrays.asList(notes));
 
-        return commonNote.getNote();
+        return noteList;
     }
 
     @Override
