@@ -174,4 +174,11 @@ public interface ModuleService {
      * @return
      */
     List<String> getChemo2List(ModCommonNote modCommonNote);
+
+    /**
+     * 根据模块 immunity 和获取 免疫用药检测结果 附录
+     * @param commonNote
+     * @return
+     */
+    List<String> getImmunityNote(ModCommonNote commonNote);
 }

@@ -3831,6 +3831,21 @@ public class PyReportServiceImpl implements PyReportService {
             res.put("crMutationTipNote", crMutationTipNote);
         }
 
+        // TODO immunity 免疫提示解析，暂时用免疫正负解析来代替模块
+        if (templateConf != null && templateConf.getImmunity_P_N_anal()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            if (templateConf.getTmb() && templateConf.getMsi() && templateConf.getMmr()  && templateConf.getHpd()) {
+                commonNote.setModule("immunity1");
+            } else if (templateConf.getMsi() && templateConf.getMmr()) {
+                commonNote.setModule("immunity2");
+            } else if (templateConf.getMsi()) {
+                commonNote.setModule("immunity3");
+            }
+
+            List<String> immunityNote = moduleService.getImmunityNote(commonNote);
+            res.put("immunityNote", immunityNote);
+        }
+
         return res;
     }
 

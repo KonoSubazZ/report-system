@@ -192,4 +192,13 @@ public class ModuleServiceImpl implements ModuleService {
         noteList.addAll(Arrays.asList(notes));
         return noteList;
     }
+    @Override
+    public List<String> getImmunityNote(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+        List<String> noteList = new ArrayList<>();
+        String[] notes = commonNote.getNote().split("\r\n");
+        noteList.addAll(Arrays.asList(notes));
+
+        return noteList;
+    }
 }
