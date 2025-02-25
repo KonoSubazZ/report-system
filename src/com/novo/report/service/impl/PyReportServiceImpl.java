@@ -1383,130 +1383,9 @@ public class PyReportServiceImpl implements PyReportService {
             List<Map> drugList = map.get("drugList") == null ? null : (List<Map>) map.get("drugList");
 
             // 20250220 同济60需求
-            // 文献 PMID 引用
             if (rt.getTemplate_name().contains("同济") && !"未知临床意义".equals(map.get("resultTypeDesc").toString())) {
-
-                String ExonicFunc = translateMutType(map.get("ExonicFunc").toString());
-                targetedDrugDetection.put("ExonicFunc", ExonicFunc);
-                Set referenceSet = new HashSet<String>();
-                Set referenceSet1 = new HashSet<String>();
-                // 同济60特殊规则 提取参考文献
-                // 受益&耐药
-                if (drugResearchList != null) {
-                    for (DrugResearch drugResearch : drugResearchList) {
-                        if (drugResearch.getEvidence_phase_chinese().equals("获批上市")) {
-                            referenceSet.add("FDA/NMPA");
-                        } else if (drugResearch.getEvidence_phase_chinese().equals("指南推荐")) {
-                            referenceSet.add("NCCN/CSCO");
-                        } else {
-                            String desc = drugResearch.getAnnotation_chinese();
-                            // 找到最后一个 "[" 和 "]" 的位置,截取PMID
-                            int startIndex = desc.lastIndexOf("[") + 1;
-                            int endIndex = desc.lastIndexOf("]");
-
-                            if (startIndex > 0 && endIndex > startIndex) {
-                                String PMID = desc.substring(startIndex, endIndex);
-                                referenceSet.add(PMID);
-                            }
-                        }
-                    }
-                }
-                if (potentialDrugList != null) {
-                    for (PotentialDrug potentialDrug : potentialDrugList) {
-                        String desc = potentialDrug.getAnnotation_chinese();
-                        // 找到最后一个 "[" 和 "]" 的位置,截取PMID
-                        int startIndex = desc.lastIndexOf("[") + 1;
-                        int endIndex = desc.lastIndexOf("]");
-
-                        if (startIndex > 0 && endIndex > startIndex) {
-                            String PMID = desc.substring(startIndex, endIndex);
-                            referenceSet1.add(PMID);
-                        }
-                    }
-                }
-                String references = StringUtils.join(referenceSet, ";");
-                String references1 = StringUtils.join(referenceSet1, ";");
-                String oriVariant = map.get("ori_variant").toString();
-
-                // 20250220 同济60变异解析
-                String TJmutation = "";
-                String TJdesc = "";
-                String TJdesc1 = "";
-                String drugs = "";
-                String drugs1 = "";
-                String type = "";
-                int ind = Math.min(2, drugResearchList.size());
-                int ind1 = Math.min(2, potentialDrugList.size());
-                for (int i = 0; i < ind; i++) {
-                    if (i > 0) {
-                        drugs += "、";
-                    }
-                    drugs += drugResearchList.get(i).getDrug_name_chinese();
-                }
-                for (int i = 0; i < ind1; i++) {
-                    if (i > 0) {
-                        drugs1 += "、";
-                    }
-                    drugs1 += potentialDrugList.get(i).getDrug_name_chinese();
-                }
-                if (ExonicFunc.contains("扩增")) {
-                    TJmutation = "基因扩增";
-                    type = "扩增";
-                } else if (ExonicFunc.contains("融合")) {
-                    type = "融合";
-                    TJmutation = "融合突变";
-                    String[] genes = oriVariant.split("-");
-                    List<Map> fusionRes = fusionAll.stream()
-                            .filter(fusion -> fusion.get("my_ori_variant").equals(map.get("ori_variant")))
-                            .collect(Collectors.toList());
-                    String sclip1_info = fusionRes.get(0).get("sclip1_info").toString();
-                    String[] sclip1Split = sclip1_info.split(":");
-                    String num1 = "";
-                    if (sclip1Split[3].contains("exon")) {
-                        num1 = sclip1Split[3].substring(4);
-                    } else {
-                        num1 = sclip1Split[3].split("_")[1].substring(1);
-                    }
-                    String sclip2_info = fusionRes.get(0).get("sclip2_info").toString();
-                    String[] sclip2Split = sclip1_info.split(":");
-                    String num2 = "";
-                    if (sclip2Split[3].contains("exon")) {
-                        num2 = sclip1Split[3].substring(4);
-                    } else {
-                        num2 = sclip2Split[3].split("_")[1].substring(1);
-                    }
-                    TJmutation = TJmutation + " " + genes[0] + "(" + sclip1Split[0] + ":" + "EX" + num1 + ")" + "-" + sclip1Split[1] + "(" + sclip2Split[0] + ":" + "EX" + num2 + ")";
-
-                } else {
-                    int index = oriVariant.indexOf("p.") >= 0 ? oriVariant.indexOf("p.") : oriVariant.indexOf("c.");
-                    type = oriVariant.substring(index + 2);
-                    String[] split = oriVariant.split(" ");
-                    String exon = "";
-                    String m = "";
-                    if (split[1].indexOf("exon") >= 0) {
-                        exon = split[1].substring(split[1].indexOf("exon") + 4);
-                        m = exon + "号外显子";
-                    } else {
-                        exon = split[1].substring(split[1].indexOf("intron") + 6);
-                        m = exon + "号内含子";
-
-                    }
-                    TJmutation = m + ExonicFunc + " " + split[0] + ":" + split[2];
-                    if (oriVariant.indexOf("p.") >= 0) {
-                        TJmutation += "p." + "(" + type + ")";
-                    }
-
-                }
-                if (!drugs.equals("")) {
-                    TJdesc = gene + type + "对" + drugs + "敏感" + "(" + references + ")";
-                }
-                if (!drugs1.equals("")) {
-                    TJdesc1 = gene + type + "对" + drugs1 + "耐药" + "(" + references + ")";
-                }
-                targetedDrugDetection.put("TJmutation", TJmutation);
-                targetedDrugDetection.put("TJdesc", TJdesc);
-                targetedDrugDetection.put("TJdesc1", TJdesc1);
-
+                String type = "hasDrug";
+                generateTongJiData(map, targetedDrugDetection, fusionAll, type);
             }
             if (!CollectionUtils.isEmpty(drugList)) {
                 List<Map> clinicalList = map.get("clinicalList") == null ? null : (List<Map>) map.get("clinicalList");
@@ -1922,69 +1801,11 @@ public class PyReportServiceImpl implements PyReportService {
                         continue;
                     }
                     // 20250220 同济60需求
-                    // 文献 PMID 引用
                     if (rt.getTemplate_name().contains("同济")) {
-                        String ExonicFunc = translateMutType(map.get("ExonicFunc").toString());
-                        unknownVarAnalysis.put("ExonicFunc", ExonicFunc);
-
-                        // 20250220 同济60变异解析
-                        String oriVariant = map.get("ori_variant").toString();
-                        String TJmutation = "";
-                        String TJdesc = "";
-                        String TJdesc1 = "";
-                        String drugs = "";
-                        String drugs1 = "";
-                        String type = "";
-                        if (ExonicFunc.contains("扩增")) {
-                            TJmutation = "基因扩增";
-                            type = "扩增";
-                        } else if (ExonicFunc.contains("融合")) {
-                            type = "融合";
-                            TJmutation = "融合突变";
-                            String[] genes = oriVariant.split("-");
-                            List<Map> fusionRes = fusionAll.stream()
-                                    .filter(fusion -> fusion.get("my_ori_variant").equals(map.get("ori_variant")))
-                                    .collect(Collectors.toList());
-                            String sclip1_info = fusionRes.get(0).get("sclip1_info").toString();
-                            String[] sclip1Split = sclip1_info.split(":");
-                            String num1 = "";
-                            if (sclip1Split[3].contains("exon")) {
-                                num1 = sclip1Split[3].substring(4);
-                            } else {
-                                num1 = sclip1Split[3].split("_")[1].substring(1);
-                            }
-                            String sclip2_info = fusionRes.get(0).get("sclip2_info").toString();
-                            String[] sclip2Split = sclip1_info.split(":");
-                            String num2 = "";
-                            if (sclip2Split[3].contains("exon")) {
-                                num2 = sclip1Split[3].substring(4);
-                            } else {
-                                num2 = sclip2Split[3].split("_")[1].substring(1);
-                            }
-                            TJmutation = TJmutation + " " + genes[0] + "(" + sclip1Split[0] + ":" + "EX" + num1 + ")" + "-" + sclip1Split[1] + "(" + sclip2Split[0] + ":" + "EX" + num2 + ")";
-
-                        } else {
-                            int index = oriVariant.indexOf("p.") >= 0 ? oriVariant.indexOf("p.") : oriVariant.indexOf("c.");
-                            type = oriVariant.substring(index + 2);
-                            String[] split = oriVariant.split(" ");
-                            String exon = "";
-                            String m = "";
-                            if (split[1].indexOf("exon") >= 0) {
-                                exon = split[1].substring(split[1].indexOf("exon") + 4);
-                                m = exon + "号外显子";
-                            } else {
-                                exon = split[1].substring(split[1].indexOf("intron") + 6);
-                                m = exon + "号内含子";
-
-                            }
-                            TJmutation = m + ExonicFunc + " " + split[0] + ":" + split[2];
-                            if (oriVariant.indexOf("p.") >= 0) {
-                                TJmutation += "p." + "(" + type + ")";
-                            }
-                        }
-                        unknownVarAnalysis.put("TJmutation", TJmutation);
-
+                        String type = "unknown";
+                        generateTongJiData(map, unknownVarAnalysis, fusionAll, type);
                     }
+
                     if (rt.getTemplate_name().contains("银丰-华西")) {
                         String mutDesc = map.get("mutDesc") == null ? "" : map.get("mutDesc").toString();
                         if (ori_variant.indexOf("Fusion") != -1) {
@@ -3910,6 +3731,153 @@ public class PyReportServiceImpl implements PyReportService {
             executor.shutdown(); // 回收线程池
         }
         return reportId;
+    }
+
+    /**
+     * 统计数据的特殊需求，处理特殊格式
+     *
+     * @param map allMutation
+     * @param map targetedDrugDetection
+     * @return List<Map> fusionAll 融合列表
+     */
+    private void generateTongJiData(Map mutation, Map targetedDrugDetection, List<Map> fusionAll, String mutationType) {
+
+        String ExonicFunc = translateMutType(mutation.get("ExonicFunc").toString());
+        targetedDrugDetection.put("ExonicFunc", ExonicFunc);
+        String oriVariant = mutation.get("ori_variant").toString();
+        String type = "";
+        // 同济mutation的特殊展示逻辑
+        String TJmutation = "";
+        // 处理用药提示信息，hasDrug 一二类，vus 没有用药
+        if (mutationType.equals("hasDrug")){
+            String drugs = "";
+            String drugs1 = "";
+            // desc受益提示 desc1耐药提示
+            String TJdesc = "";
+            String TJdesc1 = "";
+
+            List<DrugResearch> drugResearchList = (List<DrugResearch>) mutation.get("drugResearchList");
+            List<PotentialDrug> potentialDrugList = (List<PotentialDrug>) mutation.get("potentialDrugList");
+            // 同济60特殊规则 提取参考文献 受益&耐药
+            Set<String> referenceSet = new LinkedHashSet<>();
+            Set<String> referenceSet1 = new LinkedHashSet<>();
+            Set<String> drugSet = new LinkedHashSet<>();
+            Set<String> drug1Set = new LinkedHashSet<>();
+            if (drugResearchList != null) {
+                for (DrugResearch drugResearch : drugResearchList) {
+                    drugSet.add(drugResearch.getDrug_name_chinese());
+                    if (drugResearch.getEvidence_phase_chinese().equals("获批上市")) {
+                        referenceSet.add("FDA/NMPA");
+                    } else if (drugResearch.getEvidence_phase_chinese().equals("指南推荐")) {
+                        referenceSet.add("NCCN/CSCO");
+                    } else {
+                        String desc = drugResearch.getAnnotation_chinese();
+                        // 找到最后一个 "[" 和 "]" 的位置,截取PMID
+                        int startIndex = desc.lastIndexOf("[") + 1;
+                        int endIndex = desc.lastIndexOf("]");
+
+                        if (startIndex > 0 && endIndex > startIndex) {
+                            String PMID = desc.substring(startIndex, endIndex);
+                            referenceSet.add(PMID);
+                        }
+                    }
+                }
+            }
+            if (potentialDrugList != null) {
+                for (PotentialDrug potentialDrug : potentialDrugList) {
+                    drug1Set.add(potentialDrug.getDrug_name_chinese());
+                    String desc = potentialDrug.getAnnotation_chinese();
+                    // 找到最后一个 "[" 和 "]" 的位置,截取PMID
+                    int startIndex = desc.lastIndexOf("[") + 1;
+                    int endIndex = desc.lastIndexOf("]");
+
+                    if (startIndex > 0 && endIndex > startIndex) {
+                        String PMID = desc.substring(startIndex, endIndex);
+                        referenceSet1.add(PMID);
+                    }
+                }
+            }
+
+            String references = StringUtils.join(referenceSet, ";");
+            String references1 = StringUtils.join(referenceSet1, ";");
+
+            Iterator<String> drugIterator = drugSet.iterator();
+            if (drugIterator.hasNext()) {
+                drugs = drugIterator.next();
+            }
+            if (drugIterator.hasNext()) {
+                drugs += "、" + drugIterator.next();
+            }
+
+            Iterator<String> drug1Iterator = drug1Set.iterator();
+            if (drug1Iterator.hasNext()) {
+                drugs1 = drug1Iterator.next();
+            }
+            if (drug1Iterator.hasNext()) {
+                drugs1 += "、" + drug1Iterator.next();
+            }
+
+            if (!drugs.isEmpty()) {
+                TJdesc = mutation.get("gene").toString() + type + "对" + drugs + "敏感" + "(" + references + ")。";
+            }
+            if (!drugs1.isEmpty()) {
+                TJdesc1 = mutation.get("gene").toString() + type + "对" + drugs1 + "耐药" + "(" + references1 + ")。";
+            }
+            targetedDrugDetection.put("TJdesc", TJdesc);
+            targetedDrugDetection.put("TJdesc1", TJdesc1);
+        }
+
+        // 同济突变的特殊展示逻辑
+        if (ExonicFunc.contains("扩增")) {
+            TJmutation = "拷贝数扩增";
+            type = "扩增";
+        } else if (ExonicFunc.contains("融合")) {
+            type = "融合";
+            TJmutation = "融合突变";
+            String[] genes = oriVariant.split("-");
+            List<Map> fusionRes = fusionAll.stream()
+                    .filter(fusion -> fusion.get("my_ori_variant").equals(oriVariant))
+                    .collect(Collectors.toList());
+            String sclip1_info = fusionRes.get(0).get("sclip1_info").toString();
+            String[] sclip1Split = sclip1_info.split(":");
+            String num1 = "";
+            if (sclip1Split[3].contains("exon")) {
+                num1 = sclip1Split[3].substring(4);
+            } else {
+                num1 = sclip1Split[3].split("_")[1].substring(1);
+            }
+            String sclip2_info = fusionRes.get(0).get("sclip2_info").toString();
+            String[] sclip2Split = sclip1_info.split(":");
+            String num2 = "";
+            if (sclip2Split[3].contains("exon")) {
+                num2 = sclip1Split[3].substring(4);
+            } else {
+                num2 = sclip2Split[3].split("_")[1].substring(1);
+            }
+            TJmutation = TJmutation + " " + genes[0] + "(" + sclip1Split[0] + ":" + "EX" + num1 + ")" + "-" + sclip1Split[1] + "(" + sclip2Split[0] + ":" + "EX" + num2 + ")";
+
+        } else {
+            int index = oriVariant.indexOf("p.") >= 0 ? oriVariant.indexOf("p.") : oriVariant.indexOf("c.");
+            type = oriVariant.substring(index + 2);
+            String[] split = oriVariant.split(" ");
+            String exon = "";
+            String m = "";
+            if (split[1].indexOf("exon") >= 0) {
+                exon = split[1].substring(split[1].indexOf("exon") + 4);
+                m = exon + "号外显子";
+            } else {
+                exon = split[1].substring(split[1].indexOf("intron") + 6);
+                m = exon + "号内含子";
+
+            }
+            TJmutation = m + ExonicFunc + " " + split[0] + ": " + split[2];
+            if (oriVariant.indexOf("p.") >= 0) {
+                TJmutation += " p." + "(" + type + ")";
+            }
+
+        }
+
+        targetedDrugDetection.put("TJmutation", TJmutation);
     }
 
     private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer) {
