@@ -430,7 +430,7 @@ public class GeneMarkerVwController {
 						boolean tcga3 = false;
 
                         // NODE: 20241027 重要更新：子宫内膜癌分子分型判断POLE型的位点新增3个：POLE Y458N；POLE Y458C；POLE Y458H，辛苦及时更新判断代码
-						List<String> poleList = Arrays.asList("Y458H","Y458C","Y458N","P286R", "V411L", "S297F", "A456P", "S459F", "M444K", "L424I", "P286H", "P286S", "L424V", "F367V", "F367S", "M295R", "P436R", "D368Y", "R705W", "N363K", "D275V", "A288V");
+						List<String> poleList = Arrays.asList("Y458H","Y458C","Y458N","P286R", "V411L", "S297F", "A456P", "S459F", "M444K", "L424I", "P286H", "P286S", "L424V", "F367V", "F367S", "M295R", "P436R", "D368Y", "R705W", "N363K", "D275V", "A288V","T278K", "A465V", "L424V", "T278M", "A428T");
 						for (Map map : bodyDrugTipLineStr) {
 							String gene = map.get("gene").toString();
 							String pHGVS = map.get("pHGVS") == null ? "" : map.get("pHGVS").toString().replace("p.", "");
