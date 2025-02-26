@@ -1383,7 +1383,7 @@ public class PyReportServiceImpl implements PyReportService {
             List<Map> drugList = map.get("drugList") == null ? null : (List<Map>) map.get("drugList");
 
             // 20250220 同济60需求
-            if (rt.getTemplate_name().contains("同济") && !CollectionUtils.isEmpty(drugList)) {
+            if (rt.getTemplate_name().contains("同济") && !CollectionUtils.isEmpty(drugList) && !gene.equals("Complex")) {
                 String type = "hasDrug";
                 generateTongJiData(map, targetedDrugDetection, fusionAll, type);
             }
