@@ -391,6 +391,19 @@ public class ReportTemplate {
      */
     private Map<String, Object> importantTargetedGeneSummary;
 
+    public Map<String, Object> getProductDesc() {
+        return productDesc;
+    }
+
+    public void setProductDesc(Map<String, Object> productDesc) {
+        this.productDesc = productDesc;
+    }
+
+    /**
+     * 产品描述
+     */
+    private Map<String, Object> productDesc;
+
     public Map<String, Object> getTestResultSummary() {
         return testResultSummary;
     }

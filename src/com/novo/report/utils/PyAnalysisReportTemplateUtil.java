@@ -324,6 +324,9 @@ public class PyAnalysisReportTemplateUtil {
 		// msi mmr tmb chmeo tip ana 模块附录
 		data.put("note", rt.getCommonNote());
 
+		// 产品描述信息
+		data.put("product", rt.getProductDesc());
+
 
 		// ===============定制个性化数据===================
 
