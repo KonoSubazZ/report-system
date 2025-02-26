@@ -3854,7 +3854,7 @@ public class PyReportServiceImpl implements PyReportService {
             } else {
                 num2 = sclip2Split[3].split("_")[1].substring(1);
             }
-            TJmutation = TJmutation + " " + genes[0] + "(" + sclip1Split[0] + ":" + "EX" + num1.replaceAll("[^0-9]", "") + ")" + "-" + sclip2Split[1] + "(" + sclip2Split[0] + ":" + "EX" + num2.replaceAll("[^0-9]", "") + ")";
+            TJmutation = TJmutation + " " + sclip1Split[1] + "(" + sclip1Split[0] + ":" + "EX" + num1.replaceAll("[^0-9]", "") + ")" + "-" + sclip2Split[1] + "(" + sclip2Split[0] + ":" + "EX" + num2.replaceAll("[^0-9]", "") + ")";
 
         } else {
             int index = oriVariant.indexOf("p.") >= 0 ? oriVariant.indexOf("p.") : oriVariant.indexOf("c.");
