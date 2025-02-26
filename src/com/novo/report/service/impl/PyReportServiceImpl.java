@@ -3834,7 +3834,7 @@ public class PyReportServiceImpl implements PyReportService {
         // TODO immunity 免疫提示解析，暂时用免疫正负解析来代替模块
         if (templateConf != null && templateConf.getImmunity_P_N_anal()) {
             ModCommonNote commonNote = new ModCommonNote();
-            if (templateConf.getTmb() && templateConf.getMsi() && templateConf.getMmr()  && templateConf.getHpd()) {
+            if (templateConf.getTmb() && templateConf.getMsi() && templateConf.getMmr() && templateConf.getHpd()) {
                 commonNote.setModule("immunity1");
             } else if (templateConf.getMsi() && templateConf.getMmr()) {
                 commonNote.setModule("immunity2");
@@ -3886,6 +3886,17 @@ public class PyReportServiceImpl implements PyReportService {
             productDescStr = productDescStr + "通过免疫组化检测 PD-L1 表达。";
         }
         productDescList.add(productDescStr);
+        // 获取产品描述第二句，根据癌种判断调整展示内容
+        ModProductDesc productDesc1 = moduleService.getProductDesc("通用");
+        String toRemove = "";
+        if (StringUtils.isEmpty(cancerInfo.get("urinaryProstateDisease").toString())) {
+            toRemove = "内分泌治疗和神经内分泌分化分型以及疾病预后、";
+            productDesc1.getProduct_desc().replace(toRemove, "");
+        }
+        if (!(boolean) cancerInfo.get("endometrialCarcinoma")) {
+            toRemove = "内分泌治疗和神经内分泌分化分型以及疾病预后、";
+            productDesc1.getProduct_desc().replace(toRemove, "");
+        }
         res.put("productDescList", productDescList);
         return res;
     }
