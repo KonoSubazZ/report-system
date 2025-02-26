@@ -3850,7 +3850,7 @@ public class PyReportServiceImpl implements PyReportService {
             String[] sclip2Split = sclip1_info.split(":");
             String num2 = "";
             if (sclip2Split[3].contains("exon")) {
-                num2 = sclip1Split[3].substring(4);
+                num2 = sclip2Split[3].substring(4);
             } else {
                 num2 = sclip2Split[3].split("_")[1].substring(1);
             }
