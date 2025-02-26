@@ -3847,14 +3847,14 @@ public class PyReportServiceImpl implements PyReportService {
                 num1 = sclip1Split[3].split("_")[1].substring(1);
             }
             String sclip2_info = fusionRes.get(0).get("sclip2_info").toString();
-            String[] sclip2Split = sclip1_info.split(":");
+            String[] sclip2Split = sclip2_info.split(":");
             String num2 = "";
             if (sclip2Split[3].contains("exon")) {
                 num2 = sclip2Split[3].substring(4);
             } else {
                 num2 = sclip2Split[3].split("_")[1].substring(1);
             }
-            TJmutation = TJmutation + " " + genes[0] + "(" + sclip1Split[0] + ":" + "EX" + num1 + ")" + "-" + sclip1Split[1] + "(" + sclip2Split[0] + ":" + "EX" + num2 + ")";
+            TJmutation = TJmutation + " " + genes[0] + "(" + sclip1Split[0] + ":" + "EX" + num1.replaceAll("[^0-9]", "") + ")" + "-" + sclip2Split[1] + "(" + sclip2Split[0] + ":" + "EX" + num2.replaceAll("[^0-9]", "") + ")";
 
         } else {
             int index = oriVariant.indexOf("p.") >= 0 ? oriVariant.indexOf("p.") : oriVariant.indexOf("c.");
