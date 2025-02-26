@@ -3748,8 +3748,57 @@ public class PyReportServiceImpl implements PyReportService {
         String type = "";
         // 同济mutation的特殊展示逻辑
         String TJmutation = "";
+
+        // 同济突变的特殊展示逻辑
+        if (ExonicFunc.contains("扩增")) {
+            TJmutation = "拷贝数扩增";
+            type = "扩增";
+        } else if (ExonicFunc.contains("融合")) {
+            type = "融合";
+            TJmutation = "融合突变";
+            String[] genes = oriVariant.split("-");
+            List<Map> fusionRes = fusionAll.stream()
+                    .filter(fusion -> fusion.get("my_ori_variant").equals(oriVariant))
+                    .collect(Collectors.toList());
+            String sclip1_info = fusionRes.get(0).get("sclip1_info").toString();
+            String[] sclip1Split = sclip1_info.split(":");
+            String num1 = "";
+            if (sclip1Split[3].contains("exon")) {
+                num1 = sclip1Split[3].substring(4);
+            } else {
+                num1 = sclip1Split[3].split("_")[1].substring(1);
+            }
+            String sclip2_info = fusionRes.get(0).get("sclip2_info").toString();
+            String[] sclip2Split = sclip2_info.split(":");
+            String num2 = "";
+            if (sclip2Split[3].contains("exon")) {
+                num2 = sclip2Split[3].substring(4);
+            } else {
+                num2 = sclip2Split[3].split("_")[1].substring(1);
+            }
+            TJmutation = TJmutation + " " + sclip1Split[1] + "(" + sclip1Split[0] + ":" + "EX" + num1.replaceAll("[^0-9]", "") + ")" + "-" + sclip2Split[1] + "(" + sclip2Split[0] + ":" + "EX" + num2.replaceAll("[^0-9]", "") + ")";
+        } else {
+            int index = oriVariant.indexOf("p.") >= 0 ? oriVariant.indexOf("p.") : oriVariant.indexOf("c.");
+            type = oriVariant.substring(index + 2);
+            String[] split = oriVariant.split(" ");
+            String exon = "";
+            String m = "";
+            if (split[1].indexOf("exon") >= 0) {
+                exon = split[1].substring(split[1].indexOf("exon") + 4);
+                m = exon + "号外显子";
+            } else {
+                exon = split[1].substring(split[1].indexOf("intron") + 6);
+                m = exon + "号内含子";
+
+            }
+            TJmutation = m + ExonicFunc + " " + split[0] + ": " + split[2];
+            if (oriVariant.indexOf("p.") >= 0) {
+                TJmutation += " p." + "(" + type + ")";
+            }
+        }
+
         // 处理用药提示信息，hasDrug 一二类，vus 没有用药
-        if (mutationType.equals("hasDrug")){
+        if (mutationType.equals("hasDrug")) {
             String drugs = "";
             String drugs1 = "";
             // desc受益提示 desc1耐药提示
@@ -3826,57 +3875,6 @@ public class PyReportServiceImpl implements PyReportService {
             targetedDrugDetection.put("TJdesc", TJdesc);
             targetedDrugDetection.put("TJdesc1", TJdesc1);
         }
-
-        // 同济突变的特殊展示逻辑
-        if (ExonicFunc.contains("扩增")) {
-            TJmutation = "拷贝数扩增";
-            type = "扩增";
-        } else if (ExonicFunc.contains("融合")) {
-            type = "融合";
-            TJmutation = "融合突变";
-            String[] genes = oriVariant.split("-");
-            List<Map> fusionRes = fusionAll.stream()
-                    .filter(fusion -> fusion.get("my_ori_variant").equals(oriVariant))
-                    .collect(Collectors.toList());
-            String sclip1_info = fusionRes.get(0).get("sclip1_info").toString();
-            String[] sclip1Split = sclip1_info.split(":");
-            String num1 = "";
-            if (sclip1Split[3].contains("exon")) {
-                num1 = sclip1Split[3].substring(4);
-            } else {
-                num1 = sclip1Split[3].split("_")[1].substring(1);
-            }
-            String sclip2_info = fusionRes.get(0).get("sclip2_info").toString();
-            String[] sclip2Split = sclip2_info.split(":");
-            String num2 = "";
-            if (sclip2Split[3].contains("exon")) {
-                num2 = sclip2Split[3].substring(4);
-            } else {
-                num2 = sclip2Split[3].split("_")[1].substring(1);
-            }
-            TJmutation = TJmutation + " " + genes[0] + "(" + sclip1Split[0] + ":" + "EX" + num1.replaceAll("[^0-9]", "") + ")" + "-" + sclip2Split[1] + "(" + sclip2Split[0] + ":" + "EX" + num2.replaceAll("[^0-9]", "") + ")";
-
-        } else {
-            int index = oriVariant.indexOf("p.") >= 0 ? oriVariant.indexOf("p.") : oriVariant.indexOf("c.");
-            type = oriVariant.substring(index + 2);
-            String[] split = oriVariant.split(" ");
-            String exon = "";
-            String m = "";
-            if (split[1].indexOf("exon") >= 0) {
-                exon = split[1].substring(split[1].indexOf("exon") + 4);
-                m = exon + "号外显子";
-            } else {
-                exon = split[1].substring(split[1].indexOf("intron") + 6);
-                m = exon + "号内含子";
-
-            }
-            TJmutation = m + ExonicFunc + " " + split[0] + ": " + split[2];
-            if (oriVariant.indexOf("p.") >= 0) {
-                TJmutation += " p." + "(" + type + ")";
-            }
-
-        }
-
         targetedDrugDetection.put("TJmutation", TJmutation);
     }
 
