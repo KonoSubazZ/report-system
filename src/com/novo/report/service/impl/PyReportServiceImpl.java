@@ -3867,7 +3867,7 @@ public class PyReportServiceImpl implements PyReportService {
             }
 
             if (!drugs.isEmpty()) {
-                TJdesc = mutation.get("gene").toString() + type + "对" + drugs + "敏感" + "(" + references + ")。";
+                TJdesc = mutation.get("gene").toString() + " " + type + "对" + drugs + "敏感" + "(" + references + ")。";
             }
             if (!drugs1.isEmpty()) {
                 TJdesc1 = mutation.get("gene").toString() + " " + type + "对" + drugs1 + "耐药" + "(" + references1 + ")。";
