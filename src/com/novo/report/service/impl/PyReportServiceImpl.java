@@ -3870,7 +3870,7 @@ public class PyReportServiceImpl implements PyReportService {
                 TJdesc = mutation.get("gene").toString() + type + "对" + drugs + "敏感" + "(" + references + ")。";
             }
             if (!drugs1.isEmpty()) {
-                TJdesc1 = mutation.get("gene").toString() + type + "对" + drugs1 + "耐药" + "(" + references1 + ")。";
+                TJdesc1 = mutation.get("gene").toString() + " " + type + "对" + drugs1 + "耐药" + "(" + references1 + ")。";
             }
             targetedDrugDetection.put("TJdesc", TJdesc);
             targetedDrugDetection.put("TJdesc1", TJdesc1);
