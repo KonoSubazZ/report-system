@@ -1546,9 +1546,26 @@ public class PyReportServiceImpl implements PyReportService {
 
                     // 20250228 广附一敏感耐药增加药物排序
                     if ("EGFR".equals(gene)) {
-                        List<String> order = Arrays.asList("奥希替尼", "阿美替尼", "伏美替尼", "贝福替尼", "瑞齐替尼", "利厄替尼", "阿法替尼", "达克替尼", "吉非替尼", "厄洛替尼", "埃克替尼", "瑞厄替尼");
-                        drugaStr.sort(Comparator.comparingInt((Map m) -> order.indexOf(m.get("nameLevel").toString().replace("*", ""))));
-                        resistantaStr.sort(Comparator.comparingInt((Map m) -> order.indexOf(m.get("nameLevel").toString().replace("*", ""))));
+                        List<String> order = Arrays.asList("奥希替尼", "阿美替尼", "伏美替尼", "贝福替尼", "瑞齐替尼", "利厄替尼", "阿法替尼", "达可替尼", "吉非替尼", "厄洛替尼", "埃克替尼", "瑞厄替尼");
+
+                        Comparator<Map> orderComparator = (m1, m2) -> {
+                            String drug1 = m1.get("nameLevel").toString().replace("*", "");
+                            String drug2 = m2.get("nameLevel").toString().replace("*", "");
+
+                            boolean isInOrder1 = order.contains(drug1);
+                            boolean isInOrder2 = order.contains(drug2);
+                            if (isInOrder1 && !isInOrder2) {
+                                return -1; // drug1 should come first if it is in the order list
+                            } else if (!isInOrder1 && isInOrder2) {
+                                return 1; // drug2 should come first if it is in the order list
+                            } else {
+                                // If both are in the order list, compare their indices in the order list
+                                return Integer.compare(order.indexOf(drug1), order.indexOf(drug2));
+                            }
+                        };
+
+                        drugaStr.sort(orderComparator);
+                        resistantaStr.sort(orderComparator);
                     }
                     gfyDrugStr.addAll(drugaStr.stream().filter(s -> (boolean) s.get("isbold")).collect(Collectors.toList()));
                     gfyDrugStr.addAll(drugbStr.stream().filter(s -> (boolean) s.get("isbold")).collect(Collectors.toList()));
