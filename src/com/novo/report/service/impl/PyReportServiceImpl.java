@@ -3892,11 +3892,11 @@ public class PyReportServiceImpl implements PyReportService {
         String productDesc1Str = productDesc1.getProduct_desc();
         String toRemove = "";
         if (StringUtils.isEmpty(cancerInfo.get("urinaryProstateDisease").toString())) {
-            toRemove = "内分泌治疗和神经内分泌分化分型以及疾病预后靶向药物、";
+            toRemove = "内分泌治疗和神经内分泌分化分型以及疾病预后、";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
         if (!(boolean) cancerInfo.get("endometrialCarcinoma")) {
-            toRemove = "子宫内膜癌 TCGA 分子分型、";
+            toRemove = "子宫内膜癌TCGA分子分型、";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
         if (!(boolean) cancerInfo.get("gastrointestinalStromalTumor")) {
