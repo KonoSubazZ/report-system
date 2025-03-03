@@ -3853,7 +3853,7 @@ public class PyReportServiceImpl implements PyReportService {
     private Map<String, Object> generateReferences(String productName, String urinaryProstateDisease) {
         Map<String, Object> res = new HashMap<>();
 
-        // TODO 暂时这样判断文献的模块
+        // TODO 暂时这样判断文献的模块，做张关联表
         List<String> productList = Arrays.asList("novopm2_tis_188", "novopm2_blo_188", "novopm1_tis_550", "novopm1_blo_550", "novopm2_tis_1238", "novopm2_blo_1238");
         String module = "";
         if (productList.contains(productName)) {
