@@ -181,4 +181,11 @@ public interface ModuleService {
      * @return
      */
     List<String> getImmunityNote(ModCommonNote commonNote);
+
+    /**
+     * 根据模块 qc 和获取 QC 质控附录
+     * @param commonNote
+     * @return
+     */
+    List<String> getQcNote(ModCommonNote commonNote);
 }

@@ -3847,6 +3847,15 @@ public class PyReportServiceImpl implements PyReportService {
             res.put("immunityNote", immunityNote);
         }
 
+        // qc质控附录
+        if (templateConf != null && templateConf.getQc()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setType("通用");
+            commonNote.setModule("qc");
+            List<String> qcNoteList = moduleService.getQcNote(commonNote);
+            res.put("qcList", qcNoteList);
+        }
+
         return res;
     }
 
