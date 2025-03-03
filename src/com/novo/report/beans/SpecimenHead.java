@@ -69,6 +69,19 @@ public class SpecimenHead {
 	private String receivertelephone;	//接收电话
 	private String customertype;	//客户类别
 
+	/**
+	 * 是否为健康人群，否为健康人群
+	 */
+	private String patientinfoisacancer;
+
+	public String getPatientinfoisacancer() {
+		return patientinfoisacancer;
+	}
+
+	public void setPatientinfoisacancer(String patientinfoisacancer) {
+		this.patientinfoisacancer = patientinfoisacancer;
+	}
+
 	public String getCustomedesc() {
 		return customedesc;
 	}

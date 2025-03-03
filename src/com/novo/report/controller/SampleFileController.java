@@ -145,6 +145,12 @@ public class SampleFileController {
 					}else {
 						sf.setDisease_type(sh.getClinicalremark());
 					}
+
+					// 20250303 新增健康人群判断
+					if ("否".equals(sh.getPatientinfoisacancer())) {
+						sf.setDisease_type("健康人群");
+					}
+
 					sf.setReport_receiver(sh.getReportreceiver());
 					sf.setSpecimen_type(StringUtils.isEmpty(sh.getSampletype())?(StringUtils.isEmpty(sh.getShsampletype())?(StringUtils.isEmpty(sh.getSrsampletype())?sh.getSrsampletype():sh.getSrsampletype().trim()):sh.getShsampletype().trim()):sh.getSampletype());
 					String specimen_type = sf.getSpecimen_type();
