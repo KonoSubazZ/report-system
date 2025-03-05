@@ -3783,13 +3783,12 @@ public class PyReportServiceImpl implements PyReportService {
      */
     private List<Map> geneGFYdata(List<Map> bodyDrugNoComplexStr, List<Map> snpIndelFileAll) {
         Map<String, String> snpIndelFileAllMap = snpIndelFileAll.stream()
-                .collect(Collectors.toMap(map -> map.get("my_ori_variant").toString(), map -> map.get("mapped_variant_id").toString()));
+                .collect(Collectors.toMap(map -> map.get("my_ori_variant").toString(), map ->  map.get("mapped_variant_id") == null ? null : map.get("mapped_variant_id").toString()));
 
-        StringBuilder oriVariant1 = new StringBuilder();
-        StringBuilder mutFreq1 = new StringBuilder();
+        List<String> oriVariant1 = new ArrayList<>();
+        List<String> mutFreq1 = new ArrayList<>();
 
         List<Map> bodyDrugNoComplexGFYStr = bodyDrugNoComplexStr.stream()
-                .map(originalMap -> new HashMap<>(originalMap))
                 .filter(map -> {
                     String ori_variant = map.get("ori_variant").toString();
                     String mutFreq = map.get("mutFreq").toString();
@@ -3799,8 +3798,8 @@ public class PyReportServiceImpl implements PyReportService {
                         if (mutId != null) {
                             List<Integer> parentVariant = analysisReportDao.getParentMutationId(Integer.valueOf(mutId));
                             if (parentVariant.contains(2936)) {
-                                oriVariant1.append(ori_variant).append(" ");
-                                mutFreq1.append(mutFreq).append(" ");
+                                oriVariant1.add(ori_variant);
+                                mutFreq1.add(mutFreq);
 
                                 return false;
                             }
@@ -3812,8 +3811,10 @@ public class PyReportServiceImpl implements PyReportService {
             String ori_variant = map.get("ori_variant").toString();
 
             if (ori_variant.equals("MET-MET Fusion M13:M15")) {
-                map.put("ori_variant", "外显子14跳跃突变" + " " + oriVariant1);
-                map.put("mutFreq", "-" + " " + mutFreq1);
+                oriVariant1.add(0, "外显子14跳跃突变");
+                mutFreq1.add(0, "-");
+                map.put("ori_variant3", oriVariant1);
+                map.put("mutFreq3", mutFreq1);
             }
         });
         return bodyDrugNoComplexGFYStr;
