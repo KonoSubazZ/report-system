@@ -3783,6 +3783,7 @@ public class PyReportServiceImpl implements PyReportService {
      */
     private List<Map> geneGFYdata(List<Map> bodyDrugNoComplexStr, List<Map> snpIndelFileAll) {
         Map<String, String> snpIndelFileAllMap = snpIndelFileAll.stream()
+                .filter(map -> map.get("my_ori_variant") != null && map.get("mapped_variant_id") != null)
                 .collect(Collectors.toMap(map -> map.get("my_ori_variant").toString(), map ->  map.get("mapped_variant_id") == null ? null : map.get("mapped_variant_id").toString()));
 
         List<String> oriVariant1 = new ArrayList<>();
