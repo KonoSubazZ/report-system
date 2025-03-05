@@ -3789,6 +3789,7 @@ public class PyReportServiceImpl implements PyReportService {
         StringBuilder mutFreq1 = new StringBuilder();
 
         List<Map> bodyDrugNoComplexGFYStr = bodyDrugNoComplexStr.stream()
+                .map(originalMap -> new HashMap<>(originalMap))
                 .filter(map -> {
                     String ori_variant = map.get("ori_variant").toString();
                     String mutFreq = map.get("mutFreq").toString();
@@ -3811,9 +3812,8 @@ public class PyReportServiceImpl implements PyReportService {
             String ori_variant = map.get("ori_variant").toString();
 
             if (ori_variant.equals("MET-MET Fusion M13:M15")) {
-                ori_variant += " " + oriVariant1.toString();
                 map.put("ori_variant", "外显子14跳跃突变" + " " + oriVariant1);
-                map.put("mutFreq", "-" + " " + oriVariant1);
+                map.put("mutFreq", "-" + " " + mutFreq1);
             }
         });
         return bodyDrugNoComplexGFYStr;
