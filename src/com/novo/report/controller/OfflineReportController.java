@@ -465,7 +465,9 @@ public class OfflineReportController {
             if (ips.contains(ServerConfig.getServerFormalIP())) {
                 String json = "";
                 try {
-                    json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9999/create_xiao_report_test/" + report_id + "/" + 1);
+                    // json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9999/create_xiao_report_test/" + report_id + "/" + 1);
+                    // 更新小报告端口
+                    json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/create_xiao_report_test/" + report_id + "/" + 1);
                 } catch (Exception e) {
                     success[0] = false;
                     map.put("errorMessage", "生成小报告失败！");

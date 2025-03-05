@@ -265,7 +265,9 @@ public class NgsReportController {
                 String json = "";
                 try {
                     long startTime = System.currentTimeMillis();
-                    json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9999/create_xiao_report_test/" + analysisReport.getReport_id() + "/" + 1);
+//                    json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9999/create_xiao_report_test/" + analysisReport.getReport_id() + "/" + 1);
+                    // 20250305更新小报告端口
+                    json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/create_xiao_report_test/" + analysisReport.getReport_id() + "/" + 1);
                     long endTime = System.currentTimeMillis();
                     long duration = (endTime - startTime) / 1000;
                     Date currentDate = new Date();
