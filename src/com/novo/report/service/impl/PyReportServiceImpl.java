@@ -1782,12 +1782,8 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setTargetedDrugDetectionStr(targetedDrugDetectionStr);
         rt.setEmbryonalDrugDetectionStr(embryonalDrugDetectionStr);
         rt.setBodyDrugDrugDetectionStr(listSort(bodyDrugDrugDetectionStr));
-        /*if (rt.getTemplate_name().contains("同济")) {
-            rt.setBodyDrugNoComplexStr(listSort2(bodyDrugNoComplexStr));
-        } else {
-            rt.setBodyDrugNoComplexStr(listSort(bodyDrugNoComplexStr));
-        }*/
         rt.setBodyDrugNoComplexStr(listSort2(bodyDrugNoComplexStr));
+
         rt.setComplexDrugStr(listSort(complexDrugStr));
         rt.setTargetedDrugDetectionGene6Str(targetedDrugDetectionGene6Str);
         rt.setTargetedDrugDetectionExceptGene6Str(targetedDrugDetectionExceptGene6Str);
@@ -1884,6 +1880,10 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setUnknownVarAnalysisStr(listSort(unknownVarAnalysisStr));
         rt.setUnknownVarAnalysisGene6Str(listSort(unknownVarAnalysisGene6Str));
         rt.setUnknownVarAnalysisExceptGene6Str(listSort(unknownVarAnalysisExceptGene6Str));
+        // 20250304广附一关于MET14跳突变合并的需求
+        if (rt.getTemplate_name().contains("广附一")) {
+            geneGFYdata(rt.getBodyDrugNoComplexStr(), snpIndelFileAll);
+        }
 
         Integer reportId = pr.getReport_id();
         //PM2.0错配修复基因缺陷 (dMMR) 检测结果
@@ -3601,6 +3601,21 @@ public class PyReportServiceImpl implements PyReportService {
                     sameKeyCombinationList(gfy_mutFreq, "gfy" + gene, mutFreq);
                 }
             }
+            // 20250304 广附一 MET14跳突变置顶
+            if (gfy_ori_variant.containsKey("gfyMET")) {
+                List<String> gfyMETList = (List<String>) gfy_ori_variant.get("gfyMET");
+                List<String> gfyMET1List = (List<String>) gfy_mutFreq.get("gfyMET");
+                String target = "MET-MET Fusion M13:M15";
+                int index = gfyMETList.indexOf(target);
+                String target1 = gfyMET1List.get(index);
+
+                if (index != -1) {
+                    gfyMETList.remove(index);
+                    gfyMETList.add(0, target);
+                    gfyMET1List.remove(index);
+                    gfyMET1List.add(0, target1);
+                }
+            }
             rt.setGfy_ori_variant(gfy_ori_variant);
             rt.setGfy_mutFreq(gfy_mutFreq);
         }
@@ -3755,6 +3770,51 @@ public class PyReportServiceImpl implements PyReportService {
             executor.shutdown(); // 回收线程池
         }
         return reportId;
+    }
+
+    /**
+     * 合并广附一 MET14跳
+     * 具体逻辑为把位点父级 variant 包含 [Exon14 Skipping Mutation]的位点的orivariant mutFreq合并到位点variant [MET-MET Fusion M13:M15]
+     * 具体信息以 MET-MET Fusion M13:M15 来展示
+     * @param unknownVarAnalysisStr
+     * @param bodyDrugNoComplexStr
+     * @param snpIndelFileAll
+     */
+    private void geneGFYdata(List<Map> bodyDrugNoComplexStr, List<Map> snpIndelFileAll) {
+        Map<String, String> snpIndelFileAllMap = snpIndelFileAll.stream()
+                .collect(Collectors.toMap(map -> map.get("my_ori_variant").toString(), map -> map.get("mapped_variant_id").toString()));
+
+        StringBuilder oriVariant1 = new StringBuilder();
+        StringBuilder mutFreq1 = new StringBuilder();
+
+        List<Map> bodyDrugNoComplexGFYStr = bodyDrugNoComplexStr.stream()
+                .filter(map -> {
+                    String ori_variant = map.get("ori_variant").toString();
+                    String mutFreq = map.get("mutFreq").toString();
+
+                    if (!ori_variant.equals("MET-MET Fusion M13:M15")) {
+                        String mutId = snpIndelFileAllMap.get(ori_variant);
+                        if (mutId != null) {
+                            List<Integer> parentVariant = analysisReportDao.getParentMutationId(Integer.valueOf(mutId));
+                            if (parentVariant.contains(2936)) {
+                                oriVariant1.append(ori_variant).append(" ");
+                                mutFreq1.append(mutFreq).append(" ");
+
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                }).collect(Collectors.toList());
+        bodyDrugNoComplexGFYStr.forEach(map -> {
+            String ori_variant = map.get("ori_variant").toString();
+
+            if (ori_variant.equals("MET-MET Fusion M13:M15")) {
+                ori_variant += " " + oriVariant1.toString();
+                map.put("ori_variant", "外显子14跳跃突变" + " " + oriVariant1);
+                map.put("mutFreq", "-" + " " + oriVariant1);
+            }
+        });
     }
 
     /**
