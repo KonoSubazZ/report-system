@@ -305,6 +305,20 @@ public class ReportTemplate {
     private boolean readsFlag;
     private List<Map> commonTargetedDrug; // 常见靶向药物相关基因检测列表
     private List<Map> importantTargetedGeneFilter; // 重要靶向用药相关基因结果汇总
+
+    public List<Map> getBodyDrugNoComplexGFYStr() {
+        return bodyDrugNoComplexGFYStr;
+    }
+
+    public void setBodyDrugNoComplexGFYStr(List<Map> bodyDrugNoComplexGFYStr) {
+        this.bodyDrugNoComplexGFYStr = bodyDrugNoComplexGFYStr;
+    }
+
+    /**
+     * 广附一合并met14跳数据
+     */
+    private List<Map> bodyDrugNoComplexGFYStr;
+
     private String importantTargetedDiseaseName;
     private Map<String, Object> chemoSummary;
     private Map<String, Object> chemoSummaryCY;
@@ -3125,4 +3139,6 @@ public class ReportTemplate {
     public void setMGMTInfo(Map<String, Object> mgmtInfo) {
         this.MGMTInfo = mgmtInfo;
     }
+
+
 }

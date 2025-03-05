@@ -1882,7 +1882,8 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setUnknownVarAnalysisExceptGene6Str(listSort(unknownVarAnalysisExceptGene6Str));
         // 20250304广附一关于MET14跳突变合并的需求
         if (rt.getTemplate_name().contains("广附一")) {
-            geneGFYdata(rt.getBodyDrugNoComplexStr(), snpIndelFileAll);
+           List<Map> bodyDrugNoComplexGFYStr = geneGFYdata(rt.getBodyDrugNoComplexStr(), snpIndelFileAll);
+           rt.setBodyDrugNoComplexGFYStr(bodyDrugNoComplexGFYStr);
         }
 
         Integer reportId = pr.getReport_id();
@@ -3780,7 +3781,7 @@ public class PyReportServiceImpl implements PyReportService {
      * @param bodyDrugNoComplexStr
      * @param snpIndelFileAll
      */
-    private void geneGFYdata(List<Map> bodyDrugNoComplexStr, List<Map> snpIndelFileAll) {
+    private List<Map> geneGFYdata(List<Map> bodyDrugNoComplexStr, List<Map> snpIndelFileAll) {
         Map<String, String> snpIndelFileAllMap = snpIndelFileAll.stream()
                 .collect(Collectors.toMap(map -> map.get("my_ori_variant").toString(), map -> map.get("mapped_variant_id").toString()));
 
@@ -3815,6 +3816,7 @@ public class PyReportServiceImpl implements PyReportService {
                 map.put("mutFreq", "-" + " " + oriVariant1);
             }
         });
+        return bodyDrugNoComplexGFYStr;
     }
 
     /**

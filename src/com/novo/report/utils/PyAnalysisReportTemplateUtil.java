@@ -335,6 +335,11 @@ public class PyAnalysisReportTemplateUtil {
 			data.put("MGMTInfo", rt.getMGMTInfo());
 		}
 
+		// 广附一合并met14跳数据
+		if (rt.getTemplate_name().contains("广附一")){
+			data.put("bodyDrugNoComplexGFYStr", rt.getBodyDrugNoComplexGFYStr());
+		}
+
 		//data.put("FrequencySinglePageData", rt.getFrequencySinglePageData());
 		//7、创建一个Writer对象，指定输出文件的路径及文件名。
 //		FileSystemView fsv = FileSystemView.getFileSystemView();
