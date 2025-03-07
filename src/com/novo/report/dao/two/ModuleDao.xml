@@ -68,6 +68,7 @@
 
     <select id="getCommonNote" resultType="com.novo.report.mod.ModCommonNote">
         SELECT
+            cancer_title,
             note
         FROM mod_common_note
         WHERE module = #{module}
@@ -79,6 +80,9 @@
         </if>
         <if test="sampleType != null and sampleType != '' ">
             AND sample_type = #{sampleType}
+        </if>
+        <if test="cancer != null and cancer != '' ">
+            AND cancer = #{cancer}
         </if>
         AND deleted = 1
     </select>
