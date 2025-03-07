@@ -3644,6 +3644,7 @@ public class PyReportServiceImpl implements PyReportService {
         cancerInfo.put("urinaryProstateDisease", urinaryProstateDisease);
         cancerInfo.put("endometrialCarcinoma", endometrialCarcinoma);
         cancerInfo.put("gastrointestinalStromalTumor", gastrointestinalStromalTumor);
+        cancerInfo.put("targetCancer", target_cancer);
         Map<String, Object> productDesc = generateProductDesc(cancerInfo, pd, templateName);
         rt.setProductDesc(productDesc);
 
