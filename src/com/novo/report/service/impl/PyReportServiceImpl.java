@@ -3907,10 +3907,10 @@ public class PyReportServiceImpl implements PyReportService {
             List<ModCancer> sarcomaTypingNote4 = moduleService.getSarcomaTypingNote1(cancer);
 
             res.put("sarcomaTypingNoteList", sarcomaTypingNoteList);
-            res.put("sarcomaTypingNote1List", sarcomaTypingNote1);
-            res.put("sarcomaTypingNote2List", sarcomaTypingNote2);
-            res.put("sarcomaTypingNote3List", sarcomaTypingNote3);
-            res.put("sarcomaTypingNote4List", sarcomaTypingNote4);
+            res.put("sarcomaTypingList1", sarcomaTypingNote1);
+            res.put("sarcomaTypingList2", sarcomaTypingNote2);
+            res.put("sarcomaTypingList3", sarcomaTypingNote3);
+            res.put("sarcomaTypingList4", sarcomaTypingNote4);
         }
 
         return res;
