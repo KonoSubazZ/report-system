@@ -3890,6 +3890,8 @@ public class PyReportServiceImpl implements PyReportService {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("sarcoma_typing");
             List<String> sarcomaTypingNoteList = moduleService.getSarcomaTypingNote(commonNote);
+
+            res.put("sarcomaTypingNoteList", sarcomaTypingNoteList);
         }
 
         return res;
