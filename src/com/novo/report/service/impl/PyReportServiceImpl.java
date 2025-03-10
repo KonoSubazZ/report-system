@@ -3881,7 +3881,7 @@ public class PyReportServiceImpl implements PyReportService {
 
             importantTargetedGeneSummaryNoteList.add(0, importantTargetedGeneSummary.getNote());
 
-            res.put("importantTargetedGeneSummaryNoteList", importantTargetedGeneSummary);
+            res.put("importantTargetedGeneSummaryNoteList", importantTargetedGeneSummaryNoteList);
             res.put("cancerTitle", importantTargetedGeneSummary.getCancer_title());
         }
 
