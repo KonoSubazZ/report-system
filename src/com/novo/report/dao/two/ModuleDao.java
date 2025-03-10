@@ -1,7 +1,10 @@
 package com.novo.report.dao.two;
 
+import com.novo.report.beans.ModCancer;
 import com.novo.report.mod.*;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface ModuleDao {
    ModProductDesc getProductDesc(String templateName);
@@ -17,4 +20,6 @@ public interface ModuleDao {
     ModReferences getReferences(@Param("templateName")String templateName, @Param("module") String module);
 
     ModCommonNote getCommonNote(ModCommonNote modCommonNote);
+
+    List<ModCancer> getCommonCancerNote(ModCancer cancer);
 }

@@ -86,4 +86,15 @@
         </if>
         AND deleted = 1
     </select>
+
+    <select id="getCommonCancerNote" resultType="com.novo.report.beans.ModCancer">
+        SELECT
+            cancer,
+            desc1,
+            desc2
+        FROM mod_cancer
+        WHERE module = #{module}
+          AND cancer = #{cancer}
+          AND deleted = 1
+    </select>
 </mapper>

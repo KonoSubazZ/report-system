@@ -3891,7 +3891,26 @@ public class PyReportServiceImpl implements PyReportService {
             commonNote.setModule("sarcoma_typing");
             List<String> sarcomaTypingNoteList = moduleService.getSarcomaTypingNote(commonNote);
 
+            ModCancer cancer = new ModCancer();
+            cancer.setModule("sarcoma_typing");
+
+            cancer.setCancer("sarcoma1");
+            List<ModCancer> sarcomaTypingNote1 = moduleService.getSarcomaTypingNote1(cancer);
+
+            cancer.setCancer("sarcoma2");
+            List<ModCancer> sarcomaTypingNote2 = moduleService.getSarcomaTypingNote1(cancer);
+
+            cancer.setCancer("sarcoma3");
+            List<ModCancer> sarcomaTypingNote3 = moduleService.getSarcomaTypingNote1(cancer);
+
+            cancer.setCancer("sarcoma4");
+            List<ModCancer> sarcomaTypingNote4 = moduleService.getSarcomaTypingNote1(cancer);
+
             res.put("sarcomaTypingNoteList", sarcomaTypingNoteList);
+            res.put("sarcomaTypingNote1List", sarcomaTypingNote1);
+            res.put("sarcomaTypingNote2List", sarcomaTypingNote2);
+            res.put("sarcomaTypingNote3List", sarcomaTypingNote3);
+            res.put("sarcomaTypingNote4List", sarcomaTypingNote4);
         }
 
         return res;

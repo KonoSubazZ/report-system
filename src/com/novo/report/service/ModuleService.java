@@ -1,5 +1,6 @@
 package com.novo.report.service;
 
+import com.novo.report.beans.ModCancer;
 import com.novo.report.mod.ModCancerNoteSummary;
 import com.novo.report.mod.ModCommonNote;
 import com.novo.report.mod.ModProductDesc;
@@ -202,4 +203,11 @@ public interface ModuleService {
      * @return
      */
     List<String> getSarcomaTypingNote(ModCommonNote commonNote);
+
+    /**
+     * 根据模块获取 肉瘤辅助诊断提示 表格
+     * @param cancer
+     * @return
+     */
+    List<ModCancer> getSarcomaTypingNote1(ModCancer cancer);
 }

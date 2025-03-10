@@ -1,6 +1,7 @@
 package com.novo.report.service.impl;
 
 
+import com.novo.report.beans.ModCancer;
 import com.novo.report.dao.two.ModuleDao;
 import com.novo.report.mod.ModCancerNoteSummary;
 import com.novo.report.mod.ModCommonNote;
@@ -228,5 +229,10 @@ public class ModuleServiceImpl implements ModuleService {
         noteList.addAll(Arrays.asList(notes));
 
         return noteList;
+    }
+
+    @Override
+    public List<ModCancer> getSarcomaTypingNote1(ModCancer cancer) {
+        return  moduleDao.getCommonCancerNote(cancer);
     }
 }
