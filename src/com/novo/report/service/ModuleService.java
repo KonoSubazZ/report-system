@@ -195,4 +195,11 @@ public interface ModuleService {
      * @return
      */
     ModCommonNote getImportantTargetedGeneSummaryNoteAndTitle(ModCommonNote commonNote);
+
+    /**
+     * 根据模块获取 肉瘤辅助诊断提示 附录
+     * @param commonNote
+     * @return
+     */
+    List<String> getSarcomaTypingNote(ModCommonNote commonNote);
 }

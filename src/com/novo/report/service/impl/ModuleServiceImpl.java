@@ -2,7 +2,10 @@ package com.novo.report.service.impl;
 
 
 import com.novo.report.dao.two.ModuleDao;
-import com.novo.report.mod.*;
+import com.novo.report.mod.ModCancerNoteSummary;
+import com.novo.report.mod.ModCommonNote;
+import com.novo.report.mod.ModProductDesc;
+import com.novo.report.mod.ModReferences;
 import com.novo.report.service.ModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -191,6 +194,7 @@ public class ModuleServiceImpl implements ModuleService {
         noteList.addAll(Arrays.asList(notes));
         return noteList;
     }
+
     @Override
     public List<String> getImmunityNote(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
@@ -214,5 +218,15 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public ModCommonNote getImportantTargetedGeneSummaryNoteAndTitle(ModCommonNote modCommonNote) {
         return moduleDao.getCommonNote(modCommonNote);
+    }
+
+    @Override
+    public List<String> getSarcomaTypingNote(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
+        List<String> noteList = new ArrayList<>();
+        String[] notes = commonNote.getNote().split("\r\n");
+        noteList.addAll(Arrays.asList(notes));
+
+        return noteList;
     }
 }

@@ -3885,6 +3885,13 @@ public class PyReportServiceImpl implements PyReportService {
             res.put("cancerTitle", importantTargetedGeneSummary.getCancer_title());
         }
 
+        // 肉瘤辅助诊断提示-肉瘤分型
+        if (templateConf != null && templateConf.getSarcoma_typing()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("sarcoma_typing");
+            List<String> sarcomaTypingNoteList = moduleService.getSarcomaTypingNote(commonNote);
+        }
+
         return res;
     }
 
