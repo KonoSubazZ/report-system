@@ -39,20 +39,20 @@ public interface ModuleService {
     ModCancerNoteSummary getCancerTitle(ModCancerNoteSummary modCancerNoteSummary);
 
     /**
-     * 根据模板名称获取 important_targeted_gene_summary 重要靶向基因的附录
+     * 根据模块名称获取 important_targeted_gene_summary 重要靶向基因的附录
      *
-     * @param modImportantTargetedGeneSummaryNote
+     * @param modCommonNote
      * @return
      */
-    List<String> getImportantTargetedGeneSummaryNote(String templateName);
+    List<String> getImportantTargetedGeneSummaryNote(ModCommonNote modCommonNote);
 
     /**
-     * 根据模板名称获取 检测小姐的附录
+     * 根据模块获取 检测小结的附录
      *
-     * @param templateName
+     * @param modCommonNote
      * @return
      */
-    List<String> getTestResultSummaryNote(String templateName);
+    List<String> getTestResultSummaryNote(ModCommonNote modCommonNote);
 
     /**
      * 根据产品名称和模块获取参考文献
@@ -188,4 +188,11 @@ public interface ModuleService {
      * @return
      */
     List<String> getQcNote(ModCommonNote commonNote);
+
+    /**
+     * 根据模块 获取 重要靶向用药相关基因结果汇总 附录1 (需要癌种判断) 和 标题
+     * @param commonNote
+     * @return
+     */
+    ModCommonNote getImportantTargetedGeneSummaryNoteAndTitle(ModCommonNote commonNote);
 }

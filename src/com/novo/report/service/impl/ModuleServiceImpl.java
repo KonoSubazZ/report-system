@@ -37,23 +37,22 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public List<String> getImportantTargetedGeneSummaryNote(String templateName) {
-        ModImportantTargetedGeneSummaryNote modImportantTargetedGeneSummaryNote = moduleDao.getImportantTargetedGeneSummaryNote(templateName);
+    public List<String> getImportantTargetedGeneSummaryNote(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        if (modImportantTargetedGeneSummaryNote != null) {
-            String[] notes = modImportantTargetedGeneSummaryNote.getNote().split("\r\n");
+        if (commonNote != null) {
+            String[] notes = commonNote.getNote().split("\r\n");
             noteList.addAll(Arrays.asList(notes));
         }
-
         return noteList;
     }
 
     @Override
-    public List<String> getTestResultSummaryNote(String templateName) {
-        ModTestResultSummaryNote modTestResultSummaryNote = moduleDao.getTestResultSummaryNote(templateName);
+    public List<String> getTestResultSummaryNote(ModCommonNote modCommonNote) {
+        ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        if (modTestResultSummaryNote != null) {
-            String[] notes = modTestResultSummaryNote.getNote().split("\r\n");
+        if (commonNote != null) {
+            String[] notes = commonNote.getNote().split("\r\n");
             noteList.addAll(Arrays.asList(notes));
         }
         return noteList;
@@ -210,5 +209,10 @@ public class ModuleServiceImpl implements ModuleService {
         noteList.addAll(Arrays.asList(notes));
 
         return noteList;
+    }
+
+    @Override
+    public ModCommonNote getImportantTargetedGeneSummaryNoteAndTitle(ModCommonNote modCommonNote) {
+        return moduleDao.getCommonNote(modCommonNote);
     }
 }

@@ -3648,16 +3648,16 @@ public class PyReportServiceImpl implements PyReportService {
         Map<String, Object> productDesc = generateProductDesc(cancerInfo, pd, templateName);
         rt.setProductDesc(productDesc);
 
-        // CUSTOM 生成检测小结信息
-        Map<String, Object> testResultSummary = generateTestResultSummary(templateName);
-        rt.setTestResultSummary(testResultSummary);
+        // CUSTOM 生成检测小结信息, 暂时不用合并到 commonNote 中
+        // Map<String, Object> testResultSummary = generateTestResultSummary(templateName);
+        // rt.setTestResultSummary(testResultSummary);
 
         // CUSTOM 生成参考文献信息
         Map<String, Object> references = generateReferences(productName, urinaryProstateDisease);
         rt.setReferences(references);
 
-        // CUSTOM 生成静态解析、附录信息 msi tmb mmr
-        Map<String, Object> commonNote = generateCommonNote(templateConf, productName, sf.getSample_type(), rt);
+        // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结
+        Map<String, Object> commonNote = generateCommonNote(templateConf, productName, sf.getSample_type(), rt, cancerInfo);
         rt.setCommonNote(commonNote);
 
         AnalysisReport analysisReport = null;
@@ -3752,8 +3752,16 @@ public class PyReportServiceImpl implements PyReportService {
         return reportId;
     }
 
-    private Map<String, Object> generateCommonNote(TemplateConf templateConf, String productName, String sampleType, ReportTemplate rt) {
+    private Map<String, Object> generateCommonNote(TemplateConf templateConf, String productName, String sampleType, ReportTemplate rt, Map cancerInfo) {
         Map<String, Object> res = new HashMap<>();
+
+        // 检测结果小结
+        if (templateConf != null && templateConf.getTest_result_summary()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("test_result_summary");
+            List<String> testResultSummaryNoteList = moduleService.getTestResultSummaryNote(commonNote);
+            res.put("testResultSummaryNoteList", testResultSummaryNoteList);
+        }
 
         // MSI
         if (templateConf != null && templateConf.getMsi()) {
@@ -3763,11 +3771,11 @@ public class PyReportServiceImpl implements PyReportService {
             commonNote.setModule("MSI2");
             List<String> MSI2List = moduleService.getMSI2(commonNote);
             commonNote.setModule("MSI3");
-            List<String> MSI3List = moduleService.getMSI3(commonNote);
+            List<String> MSI3NoteList = moduleService.getMSI3(commonNote);
 
             res.put("MSI1", MSI1);
             res.put("MSI2", MSI2List);
-            res.put("MSI3List", MSI3List);
+            res.put("MSI3NoteList", MSI3NoteList);
         }
 
         // MMR
@@ -3778,11 +3786,11 @@ public class PyReportServiceImpl implements PyReportService {
             commonNote.setModule("MMR2");
             String MMR2 = moduleService.getMMR2(commonNote);
             commonNote.setModule("MMR3");
-            List<String> MMR3List = moduleService.getMMR3(commonNote);
+            List<String> MMR3NoteList = moduleService.getMMR3(commonNote);
 
             res.put("MMR1", MMR1);
             res.put("MMR2", MMR2);
-            res.put("MMR3List", MMR3List);
+            res.put("MMR3NoteList", MMR3NoteList);
         }
 
         // TMB
@@ -3791,7 +3799,7 @@ public class PyReportServiceImpl implements PyReportService {
             commonNote.setModule("TMB1");
             String TMB1 = moduleService.getTMB1(commonNote);
             commonNote.setModule("TMB3");
-            List<String> TMB3List = moduleService.getTMB3(commonNote);
+            List<String> TMB3NoteList = moduleService.getTMB3(commonNote);
             // 区分组织血液
             commonNote.setModule("TMB2");
             commonNote.setSample_type(rt.getSample_type());
@@ -3799,19 +3807,19 @@ public class PyReportServiceImpl implements PyReportService {
 
             res.put("TMB1", TMB1);
             res.put("TMB2", TMB2);
-            res.put("TMB3List", TMB3List);
+            res.put("TMB3NoteList", TMB3NoteList);
         }
 
         // chemo 化疗解析
         if (templateConf != null && templateConf.getChemo_anal()) {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("chemo1");
-            List<String> Chemo1List = moduleService.getChemo1List(commonNote);
+            List<String> Chemo1NoteList = moduleService.getChemo1List(commonNote);
             commonNote.setModule("chemo2");
-            List<String> Chemo2List = moduleService.getChemo2List(commonNote);
+            List<String> Chemo2NoteList = moduleService.getChemo2List(commonNote);
 
-            res.put("chemo1List", Chemo1List);
-            res.put("chemo2List", Chemo2List);
+            res.put("chemo1NoteList", Chemo1NoteList);
+            res.put("chemo2NoteList", Chemo2NoteList);
 
         }
 
@@ -3820,8 +3828,8 @@ public class PyReportServiceImpl implements PyReportService {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setType("双样本");
             commonNote.setModule("somatic_mutation_tip");
-            List<String> somaticMutationTipNote = moduleService.getSomaticMutationTipNote(commonNote, rt.isReadsFlag(), rt.isComplex());
-            res.put("somaticMutationTipNote", somaticMutationTipNote);
+            List<String> somaticMutationTipNoteList = moduleService.getSomaticMutationTipNote(commonNote, rt.isReadsFlag(), rt.isComplex());
+            res.put("somaticMutationTipNoteList", somaticMutationTipNoteList);
         }
 
         // 双样本 cr_mutation_tip 肿瘤遗传风险检测
@@ -3829,32 +3837,47 @@ public class PyReportServiceImpl implements PyReportService {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setType("双样本");
             commonNote.setModule("cr_mutation_tip");
-            List<String> crMutationTipNote = moduleService.getcrMutationTipNote(commonNote);
-            res.put("crMutationTipNote", crMutationTipNote);
+            List<String> crMutationTipNoteList = moduleService.getcrMutationTipNote(commonNote);
+            res.put("crMutationTipNoteList", crMutationTipNoteList);
         }
 
         // TODO immunity 免疫提示解析，暂时用免疫正负解析来代替模块
         if (templateConf != null && templateConf.getImmunity_P_N_anal()) {
             ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("immunity1");
             if (templateConf.getTmb() && templateConf.getMsi() && templateConf.getMmr() && templateConf.getHpd()) {
-                commonNote.setModule("immunity1");
+                commonNote.setType("HPD");
             } else if (templateConf.getMsi() && templateConf.getMmr()) {
-                commonNote.setModule("immunity2");
+                commonNote.setType("MMR");
             } else if (templateConf.getMsi()) {
-                commonNote.setModule("immunity3");
+                commonNote.setType("MSI");
             }
 
-            List<String> immunityNote = moduleService.getImmunityNote(commonNote);
-            res.put("immunityNote", immunityNote);
+            List<String> immunityNoteList = moduleService.getImmunityNote(commonNote);
+            res.put("immunityNoteList", immunityNoteList);
         }
 
-        // qc质控附录
+        // qc 质控附录
         if (templateConf != null && templateConf.getQc()) {
             ModCommonNote commonNote = new ModCommonNote();
-            commonNote.setType("通用");
             commonNote.setModule("qc");
+            commonNote.setType("通用");
             List<String> qcNoteList = moduleService.getQcNote(commonNote);
-            res.put("qcList", qcNoteList);
+            res.put("qcNoteList", qcNoteList);
+        }
+
+        // 重要靶向用药相关基因结果汇总
+        if (templateConf != null && templateConf.getImportant_targeted_gene_summary()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("important_targeted_gene_summary");
+            List<String> importantTargetedGeneSummaryNoteList = moduleService.getImportantTargetedGeneSummaryNote(commonNote);
+
+            commonNote.setCancer(cancerInfo.get("targetCancer").toString());
+            ModCommonNote importantTargetedGeneSummary = moduleService.getImportantTargetedGeneSummaryNoteAndTitle(commonNote);
+
+            res.put("importantTargetedGeneSummaryNoteList", importantTargetedGeneSummary);
+
+            res.put("cancerTitle", importantTargetedGeneSummary.getCancer_title());
         }
 
         return res;
@@ -3882,8 +3905,8 @@ public class PyReportServiceImpl implements PyReportService {
     private Map<String, Object> generateTestResultSummary(String templateName) {
         Map<String, Object> res = new HashMap<>();
 
-        List<String> testResultSummaryNote = moduleService.getTestResultSummaryNote(templateName);
-        res.put("noteList", testResultSummaryNote);
+//        List<String> testResultSummaryNote = moduleService.getTestResultSummaryNote(templateName);
+//        res.put("noteList", testResultSummaryNote);
 
         return res;
     }
@@ -3945,13 +3968,13 @@ public class PyReportServiceImpl implements PyReportService {
             noteList.add(note.getNote());
         }
 
-        List<String> notes = moduleService.getImportantTargetedGeneSummaryNote(templateName);
-        if (notes != null) {
-            noteList.addAll(notes);
-        }
-
-        res.put("title", title.getTitle());
-        res.put("noteList", noteList);
+//        List<String> notes = moduleService.getImportantTargetedGeneSummaryNote(templateName);
+//        if (notes != null) {
+//            noteList.addAll(notes);
+//        }
+//
+//        res.put("title", title.getTitle());
+//        res.put("noteList", noteList);
 
         return res;
     }
