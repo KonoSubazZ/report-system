@@ -3656,7 +3656,7 @@ public class PyReportServiceImpl implements PyReportService {
         Map<String, Object> references = generateReferences(templateName, urinaryProstateDisease);
         rt.setReferences(references);
 
-        // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结
+        // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结、重要靶向基因汇总
         Map<String, Object> commonNote = generateCommonNote(templateConf, productName, sf.getSample_type(), rt, cancerInfo);
         rt.setCommonNote(commonNote);
 
@@ -3869,13 +3869,15 @@ public class PyReportServiceImpl implements PyReportService {
         // 重要靶向用药相关基因结果汇总
         if (templateConf != null && templateConf.getImportant_targeted_gene_summary()) {
             ModCommonNote commonNote = new ModCommonNote();
+
+            // 通用重要靶向用药相关基因结果
+            commonNote.setModule("important_targeted_gene_summary1");
+            List<String> importantTargetedGeneSummaryNoteList = moduleService.getImportantTargetedGeneSummaryNote(commonNote);
+
             commonNote.setCancer(cancerInfo.get("targetCancer").toString());
             commonNote.setType("通用-" + cancerInfo.get("targetCancer").toString());
             commonNote.setModule("important_targeted_gene_summary");
             ModCommonNote importantTargetedGeneSummary = moduleService.getImportantTargetedGeneSummaryNoteAndTitle(commonNote);
-
-            commonNote.setModule("important_targeted_gene_summary1");
-            List<String> importantTargetedGeneSummaryNoteList = moduleService.getImportantTargetedGeneSummaryNote(commonNote);
 
             importantTargetedGeneSummaryNoteList.add(0, importantTargetedGeneSummary.getNote());
 
