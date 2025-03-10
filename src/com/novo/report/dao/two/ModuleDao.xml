@@ -57,9 +57,9 @@
     <select id="getReferences" resultType="com.novo.report.mod.ModReferences">
         SELECT
             b.references
-        FROM references_product_map a
+        FROM references_template_mapping a
           JOIN mod_references b ON a.references_id = b.id
-        WHERE a.product_name = #{productName}
+        WHERE a.template_name = #{templateName}
         <if test="module != null and module != '' ">
             AND a.references_name = #{module}
         </if>

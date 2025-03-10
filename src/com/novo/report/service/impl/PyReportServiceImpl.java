@@ -3653,7 +3653,7 @@ public class PyReportServiceImpl implements PyReportService {
         // rt.setTestResultSummary(testResultSummary);
 
         // CUSTOM 生成参考文献信息
-        Map<String, Object> references = generateReferences(productName, urinaryProstateDisease);
+        Map<String, Object> references = generateReferences(templateName, urinaryProstateDisease);
         rt.setReferences(references);
 
         // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结
@@ -3844,7 +3844,7 @@ public class PyReportServiceImpl implements PyReportService {
         // TODO immunity 免疫提示解析，暂时用免疫正负解析来代替模块
         if (templateConf != null && templateConf.getImmunity_P_N_anal()) {
             ModCommonNote commonNote = new ModCommonNote();
-            commonNote.setModule("immunity1");
+            commonNote.setModule("immunity");
             if (templateConf.getTmb() && templateConf.getMsi() && templateConf.getMmr() && templateConf.getHpd()) {
                 commonNote.setType("HPD");
             } else if (templateConf.getMsi() && templateConf.getMmr()) {
@@ -3869,34 +3869,37 @@ public class PyReportServiceImpl implements PyReportService {
         // 重要靶向用药相关基因结果汇总
         if (templateConf != null && templateConf.getImportant_targeted_gene_summary()) {
             ModCommonNote commonNote = new ModCommonNote();
-            commonNote.setModule("important_targeted_gene_summary");
-            List<String> importantTargetedGeneSummaryNoteList = moduleService.getImportantTargetedGeneSummaryNote(commonNote);
-
             commonNote.setCancer(cancerInfo.get("targetCancer").toString());
+            commonNote.setType("通用-" + cancerInfo.get("targetCancer").toString());
+            commonNote.setModule("important_targeted_gene_summary");
             ModCommonNote importantTargetedGeneSummary = moduleService.getImportantTargetedGeneSummaryNoteAndTitle(commonNote);
 
-            res.put("importantTargetedGeneSummaryNoteList", importantTargetedGeneSummary);
+            commonNote.setModule("important_targeted_gene_summary1");
+            List<String> importantTargetedGeneSummaryNoteList = moduleService.getImportantTargetedGeneSummaryNote(commonNote);
 
+            importantTargetedGeneSummaryNoteList.add(0, importantTargetedGeneSummary.getNote());
+
+            res.put("importantTargetedGeneSummaryNoteList", importantTargetedGeneSummary);
             res.put("cancerTitle", importantTargetedGeneSummary.getCancer_title());
         }
 
         return res;
     }
 
-    private Map<String, Object> generateReferences(String productName, String urinaryProstateDisease) {
+    private Map<String, Object> generateReferences(String templateName, String urinaryProstateDisease) {
         Map<String, Object> res = new HashMap<>();
 
         // TODO 暂时这样判断文献的模块，做张关联表
-        List<String> productList = Arrays.asList("novopm2_tis_188", "novopm2_blo_188", "novopm1_tis_550", "novopm1_blo_550", "novopm2_tis_1238", "novopm2_blo_1238");
+        List<String> templateList = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告", "NOVO泛癌种1238检测报告-佛山市第一人民医院", "泛实体瘤1238+1166基因检测报告-佛山市第一人民医院", "NOVO泛癌种1238检测报告-湖南省中医研", "泛实体瘤188基因检测报告-湖南省中医研");
         String module = "";
-        if (productList.contains(productName)) {
+        if (templateList.contains(templateName)) {
             module = "通用实体瘤";
-            if (urinaryProstateDisease != null && !"".equals(urinaryProstateDisease)) {
+            if (StringUtils.isNotBlank(urinaryProstateDisease)) {
                 module = "通用泌尿";
             }
         }
 
-        List<String> referenceList = moduleService.getReferences(productName, module);
+        List<String> referenceList = moduleService.getReferences(templateName, module);
         res.put("referenceList", referenceList);
 
         return res;

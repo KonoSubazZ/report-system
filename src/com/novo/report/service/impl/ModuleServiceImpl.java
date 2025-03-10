@@ -59,8 +59,8 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public List<String> getReferences(String productName, String module) {
-        ModReferences references = moduleDao.getReferences(productName, module);
+    public List<String> getReferences(String templateName, String module) {
+        ModReferences references = moduleDao.getReferences(templateName, module);
         if (references != null) {
             String[] referencesList = references.getReferences().split("\r\n");
             return Arrays.asList(referencesList);

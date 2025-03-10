@@ -55,13 +55,13 @@ public interface ModuleService {
     List<String> getTestResultSummaryNote(ModCommonNote modCommonNote);
 
     /**
-     * 根据产品名称和模块获取参考文献
+     * 根据模板名称和模块获取参考文献
      *
-     * @param productName
+     * @param templateName
      * @param module
      * @return
      */
-    List<String> getReferences(String productName, String module);
+    List<String> getReferences(String templateName, String module);
 
     /**
      * 根据模块TMB1和类型获取 TMB指标解析
