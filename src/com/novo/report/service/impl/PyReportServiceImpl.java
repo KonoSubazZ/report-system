@@ -3802,7 +3802,7 @@ public class PyReportServiceImpl implements PyReportService {
             List<String> TMB3NoteList = moduleService.getTMB3(commonNote);
             // 区分组织血液
             commonNote.setModule("TMB2");
-            commonNote.setSample_type(rt.getSample_type());
+            commonNote.setSample_type(sampleType);
             String TMB2 = moduleService.getTMB2(commonNote);
 
             res.put("TMB1", TMB1);
