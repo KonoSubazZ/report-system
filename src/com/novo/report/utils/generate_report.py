@@ -379,15 +379,13 @@ def set_updatefields_true(docx_path):
     element_updatefields.set(namespace+"val", "true")
     doc.save(docx_path)
 
-# 20241029-1238贵医 在检测小结去重
-def unique_genes(genes):
-    seen = set()
-    unique = []
-    for gene in genes:
-        if gene not in seen:  # 假设 tdd 对象有 gene 属性
-            unique.append(gene)
-            seen.add(gene.gene)
-    return unique
+# 20250310 扁平化数据
+def flatten_data(data):
+    result = []
+    for item in data:
+        desc2s = item['desc2'].split(',')
+        result.append({'desc1': item['desc1'], 'desc2': desc2s})
+    return result
 
 # jinja_env = jinja2.Environment()
 # jinja_env.filters['ms'] = mystyle
@@ -425,6 +423,13 @@ if __name__ == '__main__':
         PredictorGene_LIST = info_json['predictorGeneSet'] if info_json['predictorGeneSet'] else []
         ImmunopositiveGene_LIST = info_json['immunopositiveGeneSet'] if info_json['immunopositiveGeneSet'] else []
         ImmunonegativeGene_LIST = info_json['immunonegativeGeneSet'] if info_json['immunonegativeGeneSet'] else []
+        if 'sarcomaTypingList1' in info_json.get('note', {}) and info_json['note']['sarcomaTypingList1']:
+            info_json['note']['sarcomaTypingList1'] = flatten_data(info_json['note']['sarcomaTypingList1'])
+            info_json['note']['sarcomaTypingList2'] = flatten_data(info_json['note']['sarcomaTypingList2'])
+            info_json['note']['sarcomaTypingList3'] = flatten_data(info_json['note']['sarcomaTypingList3'])
+            info_json['note']['sarcomaTypingList4'] = flatten_data(info_json['note']['sarcomaTypingList4'])
+
+
         jinja_env = jinja2.Environment()
         jinja_env.filters['ms'] = mystyle
         jinja_env.filters['ms2'] = mystyle2
@@ -453,7 +458,7 @@ if __name__ == '__main__':
         jinja_env.filters['nb'] = newBold
         jinja_env.filters['split'] = split
         jinja_env.filters['mr'] = markInRed
-        jinja_env.filters['unique_genes'] = unique_genes
+
         #tpl.add_page_break()
         tpl.render(info_json, jinja_env,autoescape=True)
         tpl.save(sys.argv[3])
