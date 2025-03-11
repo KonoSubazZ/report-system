@@ -3862,6 +3862,10 @@ public class PyReportServiceImpl implements PyReportService {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("qc");
             commonNote.setType("通用");
+            // 判断是否为 D+R 产品
+            if (rt.isReadsFlag()){
+                commonNote.setType("RNA");
+            }
             List<String> qcNoteList = moduleService.getQcNote(commonNote);
             res.put("qcNoteList", qcNoteList);
         }
