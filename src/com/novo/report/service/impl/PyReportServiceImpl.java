@@ -501,12 +501,14 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setBase_quality(qc.get("base_quality").toString());
         }
         // DNA-Panel 判定合格标准 平均测序深度（X）  合格：组织≥500，cfDNA≥3000;  警戒：500＞组织≥400，3000＞cfDNA≥2500;  不合格：组织<400，cfDNA<2500。
+        String dnaAssessment = "";
         if (!StringUtils.isEmpty(rt.getSequencing_depth()) && !"-".equals(rt.getSequencing_depth())) {
             String sequencing_depth1 = rt.getSequencing_depth();
             if (sequencing_depth1.charAt(sequencing_depth1.length() - 1) == 'X') {
                 sequencing_depth1 = sequencing_depth1.substring(0, sequencing_depth1.length() - 1);
             }
             Double sequencing_depth = Double.valueOf(sequencing_depth1);
+
             if (!isblood) {
                 if (sequencing_depth >= 500) {
                     rt.setOverall_quality_assessment("合格");
@@ -525,6 +527,7 @@ public class PyReportServiceImpl implements PyReportService {
                 }
             }
         }
+        dnaAssessment = rt.getOverall_quality_assessment();
         // 实验QC以样本模板上传的样本信息为主
         if (!StringUtils.isEmpty(sf.getTumorcellcontent())) {
             rt.setTumorcellcontent(sf.getTumorcellcontent());
@@ -544,6 +547,22 @@ public class PyReportServiceImpl implements PyReportService {
         //QC HRD质控信息
         Map hrd = analysisReportDao.getQCHRD(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
         rt.setHrd(hrd);
+        // 20250311 样本质量评估
+        if (rna != null && rna.size() > 0) {
+            String totalReadsStr = rna.get("total_reads").toString();
+            Double totalReads = Double.valueOf(totalReadsStr);
+            String rnaAssessment = "";
+            if (totalReads >= 12000000) {
+                rnaAssessment = "合格";
+            } else if (totalReads < 12000000 && totalReads >= 10000000) {
+                rnaAssessment = "警戒";
+            } else {
+                rnaAssessment = "不合格";
+            }
+            // 判断 D+R 样本综合质量
+            String assessment = getWorstAssessment(dnaAssessment, rnaAssessment);
+            rt.setOverall_quality_assessment(assessment);
+        }
 
         StringBuilder sb = new StringBuilder();
         Set<String> geneSet = new HashSet<>();
@@ -3863,7 +3882,7 @@ public class PyReportServiceImpl implements PyReportService {
             commonNote.setModule("qc");
             commonNote.setType("通用");
             // 判断是否为 D+R 产品
-            if (rt.isReadsFlag()){
+            if (rt.isReadsFlag()) {
                 commonNote.setType("RNA");
             }
             List<String> qcNoteList = moduleService.getQcNote(commonNote);
@@ -6176,6 +6195,22 @@ public class PyReportServiceImpl implements PyReportService {
                 Map map = drugAStr.remove(index);
                 drugAStr.add(0, map);
             }
+        }
+    }
+
+    /**
+     * 获取RNA和DNA的 worstAssessment, 取最低的评估结果
+     * @param rnaAssessment
+     * @param dnaAssessment
+     * @return
+     */
+    private static String getWorstAssessment(String rnaAssessment, String dnaAssessment) {
+        if ("不合格".equals(rnaAssessment) || "不合格".equals(dnaAssessment)) {
+            return "不合格";
+        } else if ("警戒".equals(rnaAssessment) || "警戒".equals(dnaAssessment)) {
+            return "警戒";
+        } else {
+            return "合格";
         }
     }
 }
