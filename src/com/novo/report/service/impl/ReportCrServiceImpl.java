@@ -72,7 +72,7 @@ public class ReportCrServiceImpl implements ReportCrService {
      * @param user
      * @param diseaseId 本癌种 id
      * @param a 位点信息（基因 突变）
-     * @param diseaseIdList 病种id列表
+     * @param diseaseIdList 病种id列表-子父
      * @param parentdiseaseIdList 父级癌种id列表 这个是什么作用??
      * @param Flag 0 、1去知识库获取用药
      * @param lang
