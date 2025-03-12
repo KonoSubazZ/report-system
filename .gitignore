@@ -33,7 +33,7 @@ Desktop.ini
 
 # IntelliJ IDEA 生成的配置文件
 .idea/
-*.iml
+# *.iml
 
 # Eclipse IDE 生成的配置文件
 .settings/
@@ -42,7 +42,7 @@ Desktop.ini
 
 # Java 相关的编译文件
 *.class
-*.jar
+# *.jar
 *.war
 *.ear
 
