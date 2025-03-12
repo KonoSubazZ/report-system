@@ -696,6 +696,7 @@ public class ReportCrServiceImpl implements ReportCrService {
             }
             drugList.addAll(otherADrugListFilter);
         }
+        // TODO 过滤药物信息，同一点可能会有多个用药信息（癌种不同），保留最高药物等级信息
         filterDrugList(drugList);
 
         String varDrugNote = getVarDrugNote(diseaseIdList, mutationIdList, drugList, gene, !clinicalList.isEmpty(), lang);
