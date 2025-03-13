@@ -227,8 +227,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE drug_id = #{DrugID} and lang =#{lang} and disease_id = #{anno_disease_id}
 	</select>
   	<select id="getDrugListByIdList" resultType="java.util.Map">
-  		SELECT annotation_id, gene_variant_id, gene_symbol, gene_variant, drug_id, drug_name, anno_disease_id, anno_disease_name, relationship, annotation,evidence_phase_id,evidence_phase,has_previous_clinical_result, give, unix_timestamp(str_to_date(update_date, '%Y-%m-%d %H:%i:%s')) as update_date,other_test_required
-			FROM nkb_var_drug_anno_view
+  		SELECT annotation_id, gene_variant_id, gene_symbol, gene_variant, a.drug_id, drug_name, anno_disease_id, anno_disease_name, relationship, annotation,evidence_phase_id,evidence_phase,has_previous_clinical_result, give, unix_timestamp(str_to_date(a.update_date, '%Y-%m-%d %H:%i:%s')) as update_date,other_test_required, b.approving_agency
+			FROM nkb_var_drug_anno_view a
+			LEFT JOIN nkb.approved_drug b ON a.drug_id = b.drug_id AND a.anno_disease_id = b.disease_id
 			WHERE gene_variant_id in
 			<foreach collection="list1" item="item1" index="index1" open="(" close=")" separator=",">
 				#{item1}

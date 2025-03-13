@@ -163,7 +163,7 @@ public class ReportCrServiceImpl implements ReportCrService {
                 reportVarDrugUpdateTime = tempTime;
             }
         }
-        //  InNKB ？？
+        //  InNKB 位点是否存在知识库
         if (mutationId != null) {
             a.put("InNKB", "true");
             a.put("mapped_variant_id", mutationId);
@@ -471,6 +471,7 @@ public class ReportCrServiceImpl implements ReportCrService {
         for (Map map : list) {
             String drug_name = map.get("drug_name").toString();
             String disease_name = map.get("anno_disease_name").toString();
+            String approveRange = map.get("approve_range").toString();
             String evidence_phase = map.get("evidence_phase").toString();
             String other_test_required = map.get("other_test_required") == null ? "0" : map.get("other_test_required").toString();
             // 根据药物名称和癌种名称作为过滤条件
@@ -483,7 +484,15 @@ public class ReportCrServiceImpl implements ReportCrService {
             if (other_test_required.equals("1")) {
                 drug_name = drug_name + "%";
             }
-            drugs.add(drug_name + "&" + disease_name + "&" + evidence_phase);
+            String durgStr = drug_name + "&" + disease_name + "&" + evidence_phase;
+            // 20250313 如果approveRange为1或者5（敏感A、耐药A），则添加approving_agency（获批机构）
+             if (approveRange.equals("1") || approveRange.equals("5")) {
+                 String approvingAgency = map.get("approving_agency") == null ? null : map.get("approving_agency").toString();
+
+                 durgStr = durgStr + "&" + approvingAgency;
+            }
+
+            drugs.add(durgStr);
         }
 //        Collections.sort(drugs, CHINA_COMPARE);
         String sb = "";
@@ -672,7 +681,7 @@ public class ReportCrServiceImpl implements ReportCrService {
         while (iterator.hasNext()) {
             Map b = iterator.next();
             int drugLevel = getDrugLevel(b, parentdiseaseIdList);
-            b.put("approve_range", String.valueOf(drugLevel));
+             b.put("approve_range", String.valueOf(drugLevel));
         }
 
         // TODO drugFlag 药物是否加#的标记 ==> 什么时候加 # ==> 有临床实验加 #
@@ -749,7 +758,6 @@ public class ReportCrServiceImpl implements ReportCrService {
     public List<Map> getDrugListFromStr(String drugNameStr, Integer level, Integer lang, Integer diseaseId, List<Integer> diseaseIdList) {
         List<Map> drugList = new ArrayList<Map>();
         if (drugNameStr == null || "".equals(drugNameStr)) return drugList;
-        System.out.println("========drugNameStr:===========" + drugNameStr);
         List<String> groupList = Arrays.asList(drugNameStr.split(";"));
         for (String group : groupList) {
             List<String> list = Arrays.asList(group.split("&"));
@@ -763,6 +771,18 @@ public class ReportCrServiceImpl implements ReportCrService {
             Integer disease_id = Integer.valueOf(disease.get("do_id").toString());
             String evidencePhase = list.get(2);
             Map map = new HashMap<>();
+
+            // 20250313 A级药物耐药敏感增加获批机构
+            if ((level == 1 ||  level == 5) ){
+                String approvingAgency = "";
+                if (list.size() == 4){
+                    approvingAgency = list.get(3);
+                }else {
+                  approvingAgency = reportDrugInfoDao.getApprovingAgency(disease_id, drugName);
+                }
+                map.put("approvingAgency", approvingAgency);
+            }
+
             if (drugName.endsWith("%")) {
                 map.put("other_test_required", "1");
                 drugName = drugName.substring(0, drugName.length() - 1);
@@ -776,7 +796,7 @@ public class ReportCrServiceImpl implements ReportCrService {
                 map.put("recruiting", "0");
             }
 
-            // 更新本地用药信息，使用较新的药物信息
+            // 更新本地A级获批用药信息，使用较新的药物信息
             Map drugInfo1 = null;
             List<Map> drugs = reportDrugInfoDao.selectOneApprovedByDrugChineseName(drugName, lang, disease_id);
             if (!drugs.isEmpty()) {

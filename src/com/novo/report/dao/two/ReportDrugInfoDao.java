@@ -44,4 +44,11 @@ public interface ReportDrugInfoDao {
 
 	@Delete("delete from rp_drug_info where drug_name = #{drug_name} and lang = #{lang} and disease_id = #{disease_id}")
 	void deleteRpDrugInfo2(@Param("drug_name") String drug_name,@Param("lang") Integer lang,@Param("disease_id") Integer disease_id);
+
+	/**
+	 * 根据 do_id 和 drug_name 查询 A级药物 的 approving_agency
+	 * @param disease_id
+	 * @return
+	 */
+	String getApprovingAgency(@Param("disease_id") Integer disease_id,@Param("drug_name") String drug_name);
 }
