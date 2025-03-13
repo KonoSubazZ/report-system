@@ -1398,12 +1398,17 @@ public class PyReportServiceImpl implements PyReportService {
                     drug_name_chinese = isAddSymbol(drug_name_chinese, cfda, clinicalList);
                     // 2023年10月升级 去掉#
                     drugNameMap.put("nameLevel", StringUtils.remove(drug_name_chinese, '#'));
+                    drugNameMap.put("oriName", StringUtils.replaceChars(drug_name_chinese, "#*", ""));
                     String approve_range = map2.get("approve_range") == null ? "" : map2.get("approve_range").toString();
                     drugNameMap.put("level", approve_range);
                     String evidence_phase = map2.get("evidence_phase") == null ? "" : map2.get("evidence_phase").toString();
                     String approval_desc_chinese = map2.get("approval_desc") == null ? "" : map2.get("approval_desc").toString();
                     String[] approval_desc_list = approval_desc_chinese.split("\r\n");
                     String other_test_required = map2.get("other_test_required").toString();
+
+                    if (Integer.valueOf(approve_range) == 1 || Integer.valueOf(approve_range) == 5) {
+                        String approvingAgency = map2.get("approving_agency") == null ? "" : map2.get("approving_agency").toString();
+                    }
                     if (Integer.valueOf(approve_range) < 5 && (StringUtils.isNotEmpty(approval_desc_chinese) || approvedDrugNum != 0)) {
                         Map drugInformation = new HashMap();
                         drugInformation.put("isbold", false);
