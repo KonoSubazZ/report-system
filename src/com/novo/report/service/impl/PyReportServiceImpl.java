@@ -1408,6 +1408,7 @@ public class PyReportServiceImpl implements PyReportService {
 
                     if (Integer.valueOf(approve_range) == 1 || Integer.valueOf(approve_range) == 5) {
                         String approvingAgency = map2.get("approving_agency") == null ? "" : map2.get("approving_agency").toString();
+                        drugNameMap.put("approvingAgency", approvingAgency);
                     }
                     if (Integer.valueOf(approve_range) < 5 && (StringUtils.isNotEmpty(approval_desc_chinese) || approvedDrugNum != 0)) {
                         Map drugInformation = new HashMap();
