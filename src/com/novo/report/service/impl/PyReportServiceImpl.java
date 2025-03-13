@@ -1882,8 +1882,8 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setUnknownVarAnalysisExceptGene6Str(listSort(unknownVarAnalysisExceptGene6Str));
         // 20250304广附一关于MET14跳突变合并的需求
         if (rt.getTemplate_name().contains("广附一")) {
-           List<Map> bodyDrugNoComplexGFYStr = geneGFYdata(rt.getBodyDrugNoComplexStr(), snpIndelFileAll);
-           rt.setBodyDrugNoComplexGFYStr(bodyDrugNoComplexGFYStr);
+            List<Map> bodyDrugNoComplexGFYStr = geneGFYdata(rt.getBodyDrugNoComplexStr(), snpIndelFileAll);
+            rt.setBodyDrugNoComplexGFYStr(bodyDrugNoComplexGFYStr);
         }
 
         Integer reportId = pr.getReport_id();
@@ -3777,6 +3777,7 @@ public class PyReportServiceImpl implements PyReportService {
      * 合并广附一 MET14跳
      * 具体逻辑为把位点父级 variant 包含 [Exon14 Skipping Mutation]的位点的orivariant mutFreq合并到位点variant [MET-MET Fusion M13:M15]
      * 具体信息以 MET-MET Fusion M13:M15 来展示
+     *
      * @param unknownVarAnalysisStr
      * @param bodyDrugNoComplexStr
      * @param snpIndelFileAll
@@ -3784,7 +3785,7 @@ public class PyReportServiceImpl implements PyReportService {
     private List<Map> geneGFYdata(List<Map> bodyDrugNoComplexStr, List<Map> snpIndelFileAll) {
         Map<String, String> snpIndelFileAllMap = snpIndelFileAll.stream()
                 .filter(map -> map.get("my_ori_variant") != null && map.get("mapped_variant_id") != null)
-                .collect(Collectors.toMap(map -> map.get("my_ori_variant").toString(), map ->  map.get("mapped_variant_id") == null ? null : map.get("mapped_variant_id").toString()));
+                .collect(Collectors.toMap(map -> map.get("my_ori_variant").toString(), map -> map.get("mapped_variant_id") == null ? null : map.get("mapped_variant_id").toString()));
 
         List<String> oriVariant1 = new ArrayList<>();
         List<String> mutFreq1 = new ArrayList<>();
@@ -4403,6 +4404,12 @@ public class PyReportServiceImpl implements PyReportService {
             String approval_desc = map2.get("approval_desc") == null ? "" : map2.get("approval_desc").toString();
             String other_test_required = map2.get("other_test_required") == null ? "" : map2.get("other_test_required").toString();
             if (DrugType.equals(approve_range)) {
+
+                // 20250313 A级药物增加获批机构
+                if (approve_range.equals("1") || approve_range.equals("5")) {
+                    String approvingAgency = map2.get("approvingAgency") == null ? "" : map2.get("approvingAgency").toString();
+                    map.put("approvingAgency", approvingAgency);
+                }
                 map.put("name", drug_name);
                 map.put("level", DrugType);
                 if ((StringUtils.isNotEmpty(approval_desc) || approvedDrugNum != 0)) {
