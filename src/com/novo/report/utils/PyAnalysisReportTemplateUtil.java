@@ -366,7 +366,7 @@ public class PyAnalysisReportTemplateUtil {
             fileName = rt.getClient() + "-" + apr.getAnalysis_date() + "-" + rt.getBarcode() + type + apr.getReport_id() + ".docx";
         } else if (rt.getTemplate_name().contains("同济")) {
             // 20250212 同济报告名称替换 诺禾编号替换为病理编号
-            fileName = rt.getTemplate_subbarcode() + rt.getClient() + rt.getTemplate_name() + apr.getReport_id() + ".docx";
+            fileName = rt.getTemplate_subbarcode() + "_" + rt.getClient() + rt.getTemplate_name() + apr.getReport_id() + ".docx";
 
         } else if (rt.getTemplate_name().contains("湘雅三")) {
             // 20250311 湘雅三报告名称不展示样本号

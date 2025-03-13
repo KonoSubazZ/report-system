@@ -744,7 +744,7 @@ public class PyReportServiceImpl implements PyReportService {
 //                        List<Map> DrugCStr = getDrugName("3", drugList, clinicalList, drugNameGroup);
                         // 耐药药物列
                         List<Map> ResistantDrug = getDrugName("5", drugList, clinicalList, drugNameGroup);
-                        List<Map> mapList = ResistantDrug.stream().filter(s -> Arrays.asList("1", "2").contains(s.get("level"))).collect(Collectors.toList());
+                        List<Map> mapList = ResistantDrug.stream().filter(s -> Arrays.asList("5", "6").contains(s.get("level"))).collect(Collectors.toList());
                         if (!DrugAStr.isEmpty() || !DrugBStr.isEmpty() || !mapList.isEmpty()) {
                             variationGrading1.add(variation);
                         } else {
