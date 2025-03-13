@@ -53,7 +53,7 @@ if ($mutation =~ /Amplification/i) {
 	if ($info[2] =~ /p\./){
 		$site_description = $hgvs->chgvs($info[0],$info[1])."，导致相应蛋白序列中";
 		$site_description .= $hgvs->phgvs($info[2]);
-	} elsif ($mutation =~/intron/ || $mutation =~/promoter/) {
+	} elsif ($mutation =~/intron/ || $mutation =~/promoter/ || $mutation =~/IVS/) {
 		$site_description = $hgvs->chgvs($info[0],$info[1]);
 	}
 	if ($freq =~ /合/) {
