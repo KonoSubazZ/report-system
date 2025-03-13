@@ -143,7 +143,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getApprovingAgency" resultType="java.lang.String">
 		select
 		    b.approving_agency
-		from drug a join approved_drug b on a.drug_id = b.drug_id
+		from nkb.drug a join nkb.approved_drug b on a.drug_id = b.drug_id
 		where
 		    a.drug_name_chinese = #{drug_name}
 		  and b.disease_id = #{disease_id}
