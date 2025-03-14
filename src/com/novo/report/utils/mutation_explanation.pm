@@ -79,7 +79,9 @@ sub exon {
 		return "$1号外显子上";
 	} elsif ($exon=~/intron(\d+)/) {
 		return "$1号内含子上";
-	} elsif ($exon=~/promoter/) {
+	} elsif ($exon=~/IVS(\d+)/) {
+        return "$1号内含子上";
+    } elsif ($exon=~/promoter/) {
         return "启动子区";
     }
 }
