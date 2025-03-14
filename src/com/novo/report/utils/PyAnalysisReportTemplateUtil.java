@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class PyAnalysisReportTemplateUtil {
 
@@ -374,7 +375,7 @@ public class PyAnalysisReportTemplateUtil {
         } else if (rt.getTemplate_name().contains("结直肠癌粪便DNA甲基化检测报告") && rt.getTemplate_name().contains("佛山市第一人民医院")) {
             // 20250314 佛山甲基化报告区分粪便血液
             String templateName = rt.getTemplate_name();
-            if ("blood".equals(rt.getSample_type())) {
+            if ("blood".equals(Objects.toString(rt.getSummaryOfRresults().get("type"), ""))) {
                 templateName = templateName.replace("粪便", "血液");
             }
             fileName = rt.getBarcode() + rt.getClient() + templateName + apr.getReport_id() + ".docx";
