@@ -371,6 +371,13 @@ public class PyAnalysisReportTemplateUtil {
         } else if (rt.getTemplate_name().contains("湘雅三")) {
             // 20250311 湘雅三报告名称不展示样本号
             fileName = rt.getClient() + rt.getTemplate_name() + apr.getReport_id() + ".docx";
+        } else if (rt.getTemplate_name().contains("结直肠癌粪便DNA甲基化检测报告") && rt.getTemplate_name().contains("佛山市第一人民医院")) {
+            // 20250314 佛山甲基化报告区分粪便血液
+            String templateName = rt.getTemplate_name();
+            if ("blood".equals(rt.getSample_type())) {
+                templateName = templateName.replace("粪便", "血液");
+            }
+            fileName = rt.getBarcode() + rt.getClient() + templateName + apr.getReport_id() + ".docx";
         } else {
 //			fileName = rt.getBarcode()+rt.getClient()+rt.getTemplate_name()+apr.getReport_id()+".docx";
             fileName = rt.getBarcode() + rt.getClient() + rt.getTemplate_name().replaceAll("-湖肿|-药企|-维基生物|-格微|-病理科|-检验科|-无化疗", "") + apr.getReport_id() + ".docx";
