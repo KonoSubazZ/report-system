@@ -15,7 +15,7 @@ public class PyAnalysisReportTemplateUtil {
 
 	public static AnalysisReport getFreeMarker(HttpServletResponse response, HttpServletRequest request,ReportTemplate rt, HttpSession session,AnalysisReport apr) throws Exception {
 		String path = session.getServletContext().getRealPath("/");
-		List<String> advancedTemplates = Arrays.asList("泛实体瘤188基因检测报告","NOVO泛癌种1238检测报告","NovoPM1.0检测报告","NOVO检测报告-通用单样本","肉瘤1238+1166基因检测报告","泛实体瘤1238+1166基因检测报告");
+		List<String> advancedTemplates = Arrays.asList("泛实体瘤188基因检测报告","NOVO泛癌种1238检测报告","NovoPM1.0检测报告","NOVO检测报告-通用单样本","肉瘤1238+1166基因检测报告","泛实体瘤1238+1166基因检测报告","泛实体瘤550+596基因检测报告","肉瘤550+596基因检测报告","全外显子组升级版（WES Plus）基因检测报告","1238_HRDscore基因检测报告","泛实体瘤550+HRD基因检测报告","泛实体瘤188基因+HRDscore检测报告");
 
 		// TODO 待升级-固定目录
 		String docxPath = path +"docx/"+rt.getTemplate_name()+".docx";

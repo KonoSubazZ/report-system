@@ -9,36 +9,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 更新肉瘤模板静态">
-      <change afterPath="$PROJECT_DIR$/.idea/GrepConsole.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/JavaSceneConfigState.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/report_en7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/report_en7_Web_exploded.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/309be44a-9bad-4b6e-ac9a-fa8e1d66627f.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/309be44a-9bad-4b6e-ac9a-fa8e1d66627f/storage_v2/_src_/schema/omics.-1NPBg.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/309be44a-9bad-4b6e-ac9a-fa8e1d66627f/storage_v2/_src_/schema/omics.-1NPBg.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_blame.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Java_EE_6_Java_EE_6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Java_EE_6_Java_EE_6__2_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/omics__1NPBg.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/omics__1NPBg1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/report_en7.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/webContexts.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 更新 .ignore">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/novo/report/utils/PyAnalysisReportTemplateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/utils/PyAnalysisReportTemplateUtil.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1782,15 +1755,7 @@
       <workItem from="1741752935561" duration="6937000" />
       <workItem from="1741760561158" duration="58775000" />
       <workItem from="1742000159863" duration="1953000" />
-      <workItem from="1742096864835" duration="709000" />
-    </task>
-    <task id="LOCAL-00185" summary="template: 更新通用双样本模板">
-      <option name="closed" value="true" />
-      <created>1740972310800</created>
-      <option name="number" value="00185" />
-      <option name="presentableId" value="LOCAL-00185" />
-      <option name="project" value="LOCAL" />
-      <updated>1740972310800</updated>
+      <workItem from="1742096864835" duration="1066000" />
     </task>
     <task id="LOCAL-00186" summary="feat: 新增健康人群判断">
       <option name="closed" value="true" />
@@ -2176,7 +2141,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742035322359</updated>
     </task>
-    <option name="localTasksCounter" value="234" />
+    <task id="LOCAL-00234" summary="feat: 更新 .ignore">
+      <option name="closed" value="true" />
+      <created>1742097862784</created>
+      <option name="number" value="00234" />
+      <option name="presentableId" value="LOCAL-00234" />
+      <option name="project" value="LOCAL" />
+      <updated>1742097862784</updated>
+    </task>
+    <option name="localTasksCounter" value="235" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2312,7 +2285,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: 增加肉瘤模板生成逻辑" />
     <MESSAGE value="feat: 更新扁平化处理肉瘤表格逻辑" />
     <MESSAGE value="feat: QC质控增加 rna 附录判断" />
     <MESSAGE value="feat: 增加 D+R 样本综合质量逻辑" />
@@ -2337,7 +2309,8 @@
     <MESSAGE value="feat: 佛山甲基化报告增加粪便组织判断" />
     <MESSAGE value="fix: 佛山甲基化报告文件修复不正确" />
     <MESSAGE value="feat: 更新肉瘤模板静态" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 更新肉瘤模板静态" />
+    <MESSAGE value="feat: 更新 .ignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 更新 .ignore" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
