@@ -1,3 +1,74 @@
-.settings
-bin/*
-build/*
+# 编译输出目录
+/bin/
+/target/
+/build/
+/classes/
+
+# 临时文件和IDE生成的文件
+*.class
+*.log
+*.swp
+*.swo
+*.bak
+*.tmp
+*.idea/
+*.vscode/
+*.classpath
+*.project
+*.settings/
+.DS_Store
+Thumbs.db
+
+# 操作系统生成的文件
+ehthumbs.db
+Desktop.ini
+
+# Maven、Gradle 相关
+/.mvn/
+/.gradle/
+/target/
+/.idea/
+/*.iml
+/.settings/
+
+# IntelliJ IDEA 生成的配置文件
+.idea/
+# *.iml
+
+# Eclipse IDE 生成的配置文件
+.settings/
+.project
+.classpath
+
+# Java 相关的编译文件
+*.class
+# *.jar
+*.war
+*.ear
+
+# 日志文件
+*.log
+
+# 包管理相关
+/node_modules/
+npm-debug.log
+yarn-error.log
+
+# MacOS 和 Windows 操作系统生成的文件
+.DS_Store
+Thumbs.db
+
+# 环境配置文件（如果有不需要提交的配置文件）
+.env
+
+# 如果使用 Docker
+.docker/
+
+# 如果使用 JetBrains 的项目文件
+.idea/
+
+# 如果使用 JRebel
+rebel.xml
+
+# 如果有数据库相关的文件（如 SQLite 数据库）
+*.db

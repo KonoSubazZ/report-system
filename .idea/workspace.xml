@@ -1,0 +1,2828 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="report_en7" />
+    </artifacts-to-build>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 更新肉瘤模板静态">
+      <change afterPath="$PROJECT_DIR$/.idea/GrepConsole.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/JavaSceneConfigState.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/report_en7.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/report_en7_Web_exploded.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/309be44a-9bad-4b6e-ac9a-fa8e1d66627f.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/309be44a-9bad-4b6e-ac9a-fa8e1d66627f/storage_v2/_src_/schema/omics.-1NPBg.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/309be44a-9bad-4b6e-ac9a-fa8e1d66627f/storage_v2/_src_/schema/omics.-1NPBg.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_blame.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Java_EE_6_Java_EE_6.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Java_EE_6_Java_EE_6__2_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/omics__1NPBg.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/omics__1NPBg1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/report_en7.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/webContexts.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+      <option value="module" />
+    </option>
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/novo/report/controller/GeneMarkerVwController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="189">
+              <caret line="190" column="76" lean-forward="true" selection-start-line="190" selection-start-column="76" selection-end-line="190" selection-end-column="76" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/novo/report/dao/two/AnalysisReportDao.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="210">
+              <caret line="170" column="14" selection-start-line="170" selection-start-column="14" selection-end-line="170" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/novo/report/service/impl/ReportCrServiceImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="267">
+              <caret line="592" column="40" lean-forward="true" selection-start-line="592" selection-start-column="40" selection-end-line="592" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/novo/report/service/impl/ComplexMutationServiceImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="259">
+              <caret line="166" column="42" selection-start-line="166" selection-start-column="42" selection-end-line="166" selection-end-column="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/novo/report/service/ReportCrService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="108">
+              <caret line="9" column="16" selection-start-line="9" selection-start-column="16" selection-end-line="9" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/novo/report/dao/two/AnalysisReportDao.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="246">
+              <caret line="543" column="33" selection-start-line="543" selection-start-column="17" selection-end-line="543" selection-end-column="33" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/novo/report/dao/two/ReportVarDrugDao.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="18" column="9" selection-start-line="18" selection-start-column="9" selection-end-line="18" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/novo/report/dao/two/ReportVarDrugDao.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="54">
+              <caret line="12" column="4" selection-start-line="12" selection-start-column="4" selection-end-line="12" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/novo/report/dao/two/ReportClinicalTrialDao.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="407">
+              <caret line="42" column="152" selection-start-line="42" selection-start-column="141" selection-end-line="42" selection-end-column="152" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/novo/report/dao/two/ReportClinicalTrialDao.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="218">
+              <caret line="128" column="4" selection-start-line="128" selection-start-column="4" selection-end-line="128" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Jsp File" />
+        <option value="FxmlFile" />
+        <option value="Tag Library Descriptor" />
+        <option value="spring-beans.schema" />
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Mybatis Mapper" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>前列腺癌</find>
+      <find>14</find>
+      <find>14号外显子跳跃</find>
+      <find>PDInfo</find>
+      <find>排序</find>
+      <find>templetes</find>
+      <find>templates</find>
+      <find>同济</find>
+      <find>variationClass</find>
+      <find>red_gene</find>
+      <find>scanUpload</find>
+      <find>drugResearch</find>
+      <find>map</find>
+      <find>drugList</find>
+      <find>reportVarDrug</find>
+      <find>updateFromNkb</find>
+      <find>获益A</find>
+      <find>99</find>
+      <find>产品</find>
+      <find>immuneAll</find>
+      <find>bodyDrugTipLineStr</find>
+      <find>targetDrugTipLine</find>
+      <find>1</find>
+      <find>rk</find>
+      <find>Rk</find>
+      <find>json</find>
+      <find>prostateCancerFlag</find>
+      <find>E</find>
+      <find>crCheckLine</find>
+      <find>Exon</find>
+    </findStrings>
+    <replaceStrings>
+      <replace />
+      <replace>sendReport</replace>
+      <replace>SendReport</replace>
+      <replace>send_Email</replace>
+      <replace>sendEmail</replace>
+      <replace>Email</replace>
+      <replace>SendEmail</replace>
+      <replace>send_email</replace>
+      <replace>CCemail</replace>
+      <replace>customer</replace>
+      <replace>rp_var_drug_en7</replace>
+      <replace>genetic_marker_en7_vw2</replace>
+      <replace>&quot;</replace>
+      <replace>}</replace>
+      <replace>flag</replace>
+      <replace>@RequestParam\(\&quot;userAccount\&quot;\)</replace>
+      <replace>@RequestParam(name = &quot;userAccount&quot;, defaultValue = &quot;&quot;)</replace>
+      <replace>ServerConfig.getServerTestIP()</replace>
+      <replace>ServerConfig.getServerFormalIP()</replace>
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;KonoSubazZ&quot;
+  }
+}</component>
+  <component name="GitLabMergeRequestFiltersHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPENED&quot;,
+    &quot;assignee&quot;: {
+      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,
+      &quot;username&quot;: &quot;liushangzhi&quot;,
+      &quot;fullname&quot;: &quot;Shangzhi Liu&quot;
+    }
+  }
+}</component>
+  <component name="GitLabMergeRequestsSettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;first&quot;: &quot;http://172.20.1.148:9090/liushangzhi/report-system.git&quot;,
+    &quot;second&quot;: &quot;4b8fd567-4f21-46d1-84ce-f095cf795081&quot;
+  }
+}</component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="main" />
+                    <option name="lastUsedInstant" value="1740998056" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$/WebContent/docx" />
+            </RecentBranchesForRepo>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="feature-module1" />
+                    <option name="lastUsedInstant" value="1742096885" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="master" />
+                    <option name="lastUsedInstant" value="1741760262" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="master0311" />
+                    <option name="lastUsedInstant" value="1741687004" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feature-check" />
+                    <option name="lastUsedInstant" value="1741686975" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/KonoSubazZ/report-system.git&quot;,
+    &quot;accountId&quot;: &quot;6c5d4d2c-929d-4f17-b3c7-071cb698281e&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/com/novo/report/controller/FilterFusionController.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/dao/two/FilterFusionDao.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/dao/two/FilterFusionDao.xml" />
+        <option value="$PROJECT_DIR$/WebContent/WEB-INF/jsp/ngs/addLife.jsp" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/controller/FilterPdController.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/controller/OfflineReportController.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/utils/ChemoJsonUtil2.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/service/FilterQcService.java" />
+        <option value="$PROJECT_DIR$/WebContent/WEB-INF/jsp/ngs/illuminaPd.jsp" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/beans/FilterQc.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/service/impl/FilterSnpIndelServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/beans/FilterIlluminaSnpIndel.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/beans/FilterIlluminaCrSnpIndelFile.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/service/impl/FilterCrServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/dao/two/FilterQcDao.xml" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/dao/two/FilterQcDao.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/service/impl/FilterQcServiceIpml.java" />
+        <option value="$PROJECT_DIR$/src/mail.properties" />
+        <option value="$PROJECT_DIR$/WebContent/WEB-INF/jsp/ngs/illuminaQc.jsp" />
+        <option value="$PROJECT_DIR$/WebContent/WEB-INF/jsp/ngs/iframe.jsp" />
+        <option value="$PROJECT_DIR$/src/spring/applicationContext-dao.xml" />
+        <option value="$PROJECT_DIR$/WebContent/WEB-INF/jsp/ngs/filterIframe.jsp" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/dao/three/NewLimsSampleDao.xml" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/beans/SpecimenHead.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/beans/SampleFile.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/dao/two/SampleFileDao.xml" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/service/impl/FilterFusionServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/dao/two/AutoCompleteDao.xml" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/dao/two/AutoCompleteDao.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/service/AutoCompleteService.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/service/ReportCrService.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/service/impl/AutoCompleteServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/controller/AutoCompleteController.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/controller/SampleFileController.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/service/ComplexMutationService.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/service/PyReportService.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/service/impl/GeneticMarkerVwServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/service/impl/ComplexMutationServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/dao/two/AnalysisReportDao.xml" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/controller/NgsReportController.java" />
+        <option value="$PROJECT_DIR$/WebContent/WEB-INF/jsp/ngs/previewReportList2.jsp" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/controller/FilterQcController.java" />
+        <option value="$PROJECT_DIR$/WebContent/WEB-INF/jsp/ngs/previewReportList3.jsp" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/beans/ReportTemplate.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/dao/two/AnalysisReportDao.java" />
+        <option value="$PROJECT_DIR$/src/jdbc.properties" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/dao/two/ReportVarDrugDao.xml" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/controller/GeneMarkerVwController.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/utils/PyAnalysisReportTemplateUtil.java" />
+        <option value="$PROJECT_DIR$/src/com/novo/report/service/impl/ReportCrServiceImpl.java" />
+      </list>
+    </option>
+  </component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="LogFilters">
+    <option name="FILTER_ERRORS" value="false" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="true" />
+    <option name="FILTER_DEBUG" value="true" />
+    <option name="CUSTOM_FILTER" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="customMavenHome" value="$PROJECT_DIR$/../../../../work/maven_work/apache-maven-3.5.4" />
+        <option name="localRepository" value="D:\work\maven_work\maven_repository" />
+        <option name="mavenHomeTypeForPersistence" value="CUSTOM" />
+        <option name="userSettingsFile" value="D:\work\maven_work\apache-maven-3.5.4\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="MavenProjectNavigator">
+    <treeState>
+      <expand />
+      <select />
+    </treeState>
+  </component>
+  <component name="MavenRunner">
+    <option name="jreName" value="1.8.0_191" />
+    <option name="vmOptions" value="-DarchetypeCatalog=internal" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="-10" />
+    <option name="y" value="-10" />
+    <option name="width" value="980" />
+    <option name="height" value="1050" />
+  </component>
+  <component name="ProjectId" id="2UeOpcxOSjEBfEg0af7Hs0veBxs" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="classes" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="classes" type="462c0819:PsiDirectoryNode" />
+              <item name="artifacts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="classes" type="462c0819:PsiDirectoryNode" />
+              <item name="artifacts" type="462c0819:PsiDirectoryNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="report" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="report" type="462c0819:PsiDirectoryNode" />
+              <item name="controller" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="report" type="462c0819:PsiDirectoryNode" />
+              <item name="service" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="report" type="462c0819:PsiDirectoryNode" />
+              <item name="service" type="462c0819:PsiDirectoryNode" />
+              <item name="impl" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="report" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="report" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="spring" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="WebContent" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="WebContent" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="WebContent" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+              <item name="jsp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="report_en7" type="462c0819:PsiDirectoryNode" />
+              <item name="WebContent" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+              <item name="jsp" type="462c0819:PsiDirectoryNode" />
+              <item name="ngs" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="report_en7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Downloaded.Files.Path.Enabled": "false",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Tomcat Server.Tomcat 8.5.43.executor": "Debug",
+    "git-widget-placeholder": "feature-module1",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/workspace/enterprise/report_en7/report_en7.iml",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "Settings.JavaScript",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.novo.report.beans" />
+      <recent name="com.novo.report.dao.two" />
+      <recent name="com.novo.report.service.impl" />
+      <recent name="com.novo.report.service" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\workspace\enterprise\report_en7\WebContent\WEB-INF\jsp\ngs" />
+      <recent name="D:\workspace\enterprise\report_en7\src\com\novo\report\dao\two" />
+      <recent name="D:\workspace\enterprise\report_en7\WebContent\lib" />
+      <recent name="D:\workspace\enterprise\report_en7\WebContent" />
+      <recent name="D:\Novogene\report_en7\WebContent\WEB-INF\jsp\ngs" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\workspace\enterprise\report_en7" />
+      <recent name="D:\workspace\enterprise\report_en7\src\main\resources" />
+      <recent name="D:\workspace\enterprise\report_en7\src" />
+      <recent name="D:\workspace\enterprise\report_en7\WebContent\lib\pdfjs-4.9.155-dist\web" />
+      <recent name="D:\workspace\enterprise\report_en7\WebContent\lib\pdfjs-4.9.155-dist\web\standard_fonts" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.novo.report.service.impl" />
+      <recent name="com.novo.report.service" />
+      <recent name="com.novo.report.dao.two" />
+      <recent name="com.novo.report.beans" />
+      <recent name="com.novo.report.controller" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Tomcat Server.Tomcat 8.5.43">
+    <configuration name="Jdbc" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.novo.report.utils.Jdbc" />
+      <module name="report_en7" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.novo.report.utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Jsch" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.novo.report.utils.Jsch" />
+      <module name="report_en7" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.novo.report.utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SFTPUploader" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.novo.report.utils.SFTPUploader" />
+      <module name="report_en7" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.novo.report.utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServerConfig" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.novo.report.utils.ServerConfig" />
+      <module name="report_en7" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.novo.report.utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Tomcat 8.5.43" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 8.5.43" ALTERNATIVE_JRE_ENABLED="true" ALTERNATIVE_JRE_PATH="$PROJECT_DIR$/../../../../soft/support/openjdk8" nameIsGenerated="true">
+      <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8080/report_en7" />
+      <option name="BROWSER_ID" value="98ca6316-2f89-46d9-a9e5-fa9e2b0625b3" />
+      <option name="COMMON_VM_ARGUMENTS" value="-Dfile.encoding=UTF-8" />
+      <option name="UPDATE_ON_FRAME_DEACTIVATION" value="true" />
+      <option name="UPDATE_CLASSES_ON_FRAME_DEACTIVATION" value="true" />
+      <option name="UPDATING_POLICY" value="restart-server" />
+      <deployment>
+        <artifact name="report_en7:Web exploded">
+          <settings>
+            <option name="CONTEXT_PATH" value="/report_en7" />
+          </settings>
+        </artifact>
+      </deployment>
+      <server-settings>
+        <option name="BASE_DIRECTORY_NAME" value="Tomcat_8_5_43_report_en2_2" />
+        <option name="JNDI_PORT" value="1199" />
+      </server-settings>
+      <predefined_log_file enabled="true" id="Tomcat" />
+      <predefined_log_file enabled="true" id="Tomcat Catalina" />
+      <predefined_log_file id="Tomcat Manager" />
+      <predefined_log_file id="Tomcat Host Manager" />
+      <predefined_log_file id="Tomcat Localhost Access" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="7433" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Profile">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="report_en7:Web exploded" />
+        </option>
+      </method>
+    </configuration>
+    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 8.5.43" ALTERNATIVE_JRE_ENABLED="true" ALTERNATIVE_JRE_PATH="1.8">
+      <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8080/" />
+      <option name="UPDATING_POLICY" value="restart-server" />
+      <deployment />
+      <server-settings>
+        <option name="BASE_DIRECTORY_NAME" value="_report_en2" />
+      </server-settings>
+      <predefined_log_file enabled="true" id="Tomcat" />
+      <predefined_log_file enabled="true" id="Tomcat Catalina" />
+      <predefined_log_file id="Tomcat Manager" />
+      <predefined_log_file id="Tomcat Host Manager" />
+      <predefined_log_file id="Tomcat Localhost Access" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="7433" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="report_en7:Web exploded" />
+          <artifact name="report_en7" />
+        </option>
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Jdbc" />
+      <item itemvalue="Application.Jsch" />
+      <item itemvalue="Application.SFTPUploader" />
+      <item itemvalue="Application.ServerConfig" />
+      <item itemvalue="Tomcat Server.Tomcat 8.5.43" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.ServerConfig" />
+        <item itemvalue="Application.SFTPUploader" />
+        <item itemvalue="Application.Jsch" />
+        <item itemvalue="Application.Jdbc" />
+        <item itemvalue="Application.ServerConfig" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.19416.15" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.19416.15" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="" />
+      <created>1631519972500</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1631519972500</updated>
+      <workItem from="1631519973984" duration="5329000" />
+      <workItem from="1632304108167" duration="710000" />
+      <workItem from="1632649565692" duration="782000" />
+      <workItem from="1632726034102" duration="7038000" />
+      <workItem from="1632806960148" duration="32229000" />
+      <workItem from="1632967060864" duration="10290000" />
+      <workItem from="1633658047157" duration="8855000" />
+      <workItem from="1633745111263" duration="123000" />
+      <workItem from="1633931765166" duration="996000" />
+      <workItem from="1634623981853" duration="597000" />
+      <workItem from="1634800321961" duration="709000" />
+      <workItem from="1635218598849" duration="2746000" />
+      <workItem from="1635306284255" duration="4059000" />
+      <workItem from="1635316753800" duration="4152000" />
+      <workItem from="1635396925539" duration="7347000" />
+      <workItem from="1635404503944" duration="4885000" />
+      <workItem from="1635471238976" duration="19940000" />
+      <workItem from="1635746174368" duration="5862000" />
+      <workItem from="1635756647876" duration="1501000" />
+      <workItem from="1635823741038" duration="57000" />
+      <workItem from="1635831500317" duration="6920000" />
+      <workItem from="1635841948237" duration="8000" />
+      <workItem from="1635843672242" duration="2001000" />
+      <workItem from="1635906273007" duration="10145000" />
+      <workItem from="1635922132742" duration="5131000" />
+      <workItem from="1635998480071" duration="9711000" />
+      <workItem from="1636020357845" duration="308000" />
+      <workItem from="1636020687781" duration="675000" />
+      <workItem from="1636079768801" duration="4539000" />
+      <workItem from="1636090370099" duration="953000" />
+      <workItem from="1636097308798" duration="471000" />
+      <workItem from="1636097829934" duration="21000" />
+      <workItem from="1636102940862" duration="612000" />
+      <workItem from="1636338480155" duration="826000" />
+      <workItem from="1636438307920" duration="9650000" />
+      <workItem from="1636509103437" duration="37000" />
+      <workItem from="1636511250710" duration="22165000" />
+      <workItem from="1636596818967" duration="16704000" />
+      <workItem from="1636680968820" duration="13159000" />
+      <workItem from="1636772215798" duration="802000" />
+      <workItem from="1636780324719" duration="1152000" />
+      <workItem from="1636794002706" duration="7210000" />
+      <workItem from="1636802588129" duration="1210000" />
+      <workItem from="1636942543037" duration="8412000" />
+      <workItem from="1637027214532" duration="17394000" />
+      <workItem from="1637113078553" duration="7798000" />
+      <workItem from="1637202316279" duration="4353000" />
+      <workItem from="1637220213468" duration="9372000" />
+      <workItem from="1637286045545" duration="13870000" />
+      <workItem from="1637546515224" duration="33000" />
+      <workItem from="1637555897089" duration="504000" />
+      <workItem from="1637557140002" duration="15783000" />
+      <workItem from="1637631870377" duration="23746000" />
+      <workItem from="1637722145190" duration="5749000" />
+      <workItem from="1637812439069" duration="11053000" />
+      <workItem from="1637895724495" duration="13705000" />
+      <workItem from="1638156467477" duration="14545000" />
+      <workItem from="1638237987317" duration="8519000" />
+      <workItem from="1638253963477" duration="247000" />
+      <workItem from="1638257432835" duration="1354000" />
+      <workItem from="1638259127258" duration="18000" />
+      <workItem from="1638266204412" duration="722000" />
+      <workItem from="1638322893599" duration="30000" />
+      <workItem from="1638416460013" duration="2024000" />
+      <workItem from="1638426088869" duration="606000" />
+      <workItem from="1638433599759" duration="682000" />
+      <workItem from="1638518901218" duration="932000" />
+      <workItem from="1638769716748" duration="2551000" />
+      <workItem from="1638854905275" duration="12672000" />
+      <workItem from="1638870127401" duration="1602000" />
+      <workItem from="1638933390119" duration="19000" />
+      <workItem from="1638945146562" duration="4660000" />
+      <workItem from="1639016872057" duration="10997000" />
+      <workItem from="1639034490439" duration="9951000" />
+      <workItem from="1639101357410" duration="18246000" />
+      <workItem from="1639302935063" duration="529000" />
+      <workItem from="1639360054840" duration="19824000" />
+      <workItem from="1639446082125" duration="21769000" />
+      <workItem from="1639534423997" duration="1894000" />
+      <workItem from="1639548731404" duration="10052000" />
+      <workItem from="1639620323049" duration="21425000" />
+      <workItem from="1639706481697" duration="19777000" />
+      <workItem from="1639966093450" duration="25651000" />
+      <workItem from="1640050969800" duration="8145000" />
+      <workItem from="1640069255480" duration="10664000" />
+      <workItem from="1640141182478" duration="19628000" />
+      <workItem from="1640224099531" duration="20620000" />
+      <workItem from="1640316141838" duration="157000" />
+      <workItem from="1640318008340" duration="8670000" />
+      <workItem from="1640570595329" duration="12997000" />
+      <workItem from="1640594805842" duration="5130000" />
+      <workItem from="1640656686631" duration="7611000" />
+      <workItem from="1640665011028" duration="2849000" />
+      <workItem from="1640684454594" duration="646000" />
+      <workItem from="1640745487572" duration="9404000" />
+      <workItem from="1640766219978" duration="4771000" />
+      <workItem from="1640829431640" duration="4950000" />
+      <workItem from="1640845910041" duration="8800000" />
+      <workItem from="1640916209457" duration="79000" />
+      <workItem from="1640940435530" duration="1881000" />
+      <workItem from="1641264689657" duration="2767000" />
+      <workItem from="1641277581113" duration="10098000" />
+      <workItem from="1641347672930" duration="18694000" />
+      <workItem from="1641434821866" duration="21940000" />
+      <workItem from="1641520208685" duration="15718000" />
+      <workItem from="1641606720243" duration="279000" />
+      <workItem from="1641626560369" duration="50000" />
+      <workItem from="1641627733727" duration="201000" />
+      <workItem from="1641782504755" duration="12954000" />
+      <workItem from="1641866547034" duration="14702000" />
+      <workItem from="1641953086771" duration="615000" />
+      <workItem from="1641953902402" duration="14395000" />
+      <workItem from="1642040269149" duration="4343000" />
+      <workItem from="1642052892137" duration="1422000" />
+      <workItem from="1642056648017" duration="2271000" />
+      <workItem from="1642060726229" duration="5302000" />
+      <workItem from="1642134450857" duration="8555000" />
+      <workItem from="1642391195877" duration="15975000" />
+      <workItem from="1642477764142" duration="5302000" />
+      <workItem from="1642560193021" duration="14948000" />
+      <workItem from="1642643767739" duration="25140000" />
+      <workItem from="1642730401113" duration="14691000" />
+      <workItem from="1642989774068" duration="14507000" />
+      <workItem from="1643075565348" duration="13838000" />
+      <workItem from="1643163094398" duration="24756000" />
+      <workItem from="1643245280006" duration="6030000" />
+      <workItem from="1643252134624" duration="16330000" />
+      <workItem from="1644371166460" duration="22519000" />
+      <workItem from="1644457155911" duration="7827000" />
+      <workItem from="1644547123527" duration="25000" />
+      <workItem from="1644550580695" duration="12080000" />
+      <workItem from="1644889592748" duration="23743000" />
+      <workItem from="1644975675461" duration="17875000" />
+      <workItem from="1645063658021" duration="16900000" />
+      <workItem from="1645150182562" duration="8145000" />
+      <workItem from="1645168368740" duration="6487000" />
+      <workItem from="1645407197462" duration="8300000" />
+      <workItem from="1645435281738" duration="1678000" />
+      <workItem from="1645494698124" duration="23268000" />
+      <workItem from="1645581582048" duration="3236000" />
+      <workItem from="1645594679642" duration="6210000" />
+      <workItem from="1645608563531" duration="2504000" />
+      <workItem from="1645668170215" duration="23870000" />
+      <workItem from="1645754250993" duration="24054000" />
+      <workItem from="1645783898658" duration="427000" />
+      <workItem from="1646012760600" duration="25806000" />
+      <workItem from="1646099234564" duration="17796000" />
+      <workItem from="1646186391287" duration="13808000" />
+      <workItem from="1646273242574" duration="26896000" />
+      <workItem from="1646360141131" duration="298000" />
+      <workItem from="1646360953975" duration="9332000" />
+      <workItem from="1646618409922" duration="21362000" />
+      <workItem from="1646704250525" duration="21031000" />
+      <workItem from="1646790935646" duration="21008000" />
+      <workItem from="1646823654051" duration="3262000" />
+      <workItem from="1646877379079" duration="14140000" />
+      <workItem from="1646964591223" duration="14764000" />
+      <workItem from="1647223440392" duration="9345000" />
+      <workItem from="1647309382983" duration="13322000" />
+      <workItem from="1647395994956" duration="7232000" />
+      <workItem from="1647483410338" duration="18992000" />
+      <workItem from="1647569081919" duration="946000" />
+      <workItem from="1647580113914" duration="10395000" />
+      <workItem from="1647605747511" duration="1886000" />
+      <workItem from="1647834864036" duration="6200000" />
+      <workItem from="1647914354322" duration="1505000" />
+      <workItem from="1647934805716" duration="5849000" />
+      <workItem from="1647945483098" duration="625000" />
+      <workItem from="1648005165333" duration="9915000" />
+      <workItem from="1648087034993" duration="19158000" />
+      <workItem from="1648173315415" duration="24985000" />
+      <workItem from="1648434218718" duration="20373000" />
+      <workItem from="1648518580301" duration="19653000" />
+      <workItem from="1648610475151" duration="4760000" />
+      <workItem from="1648693809163" duration="14577000" />
+      <workItem from="1648777865487" duration="16360000" />
+      <workItem from="1648866902539" duration="9216000" />
+      <workItem from="1649210118309" duration="14881000" />
+      <workItem from="1649296700466" duration="19115000" />
+      <workItem from="1649389638331" duration="8621000" />
+      <workItem from="1649411112356" duration="2506000" />
+      <workItem from="1649642503389" duration="12090000" />
+      <workItem from="1649728631067" duration="24583000" />
+      <workItem from="1649815302381" duration="25697000" />
+      <workItem from="1649901597883" duration="13835000" />
+      <workItem from="1649988510393" duration="15965000" />
+      <workItem from="1650247783644" duration="18214000" />
+      <workItem from="1650334553293" duration="19104000" />
+      <workItem from="1650419948049" duration="12451000" />
+      <workItem from="1650510018986" duration="9838000" />
+      <workItem from="1650592501977" duration="12361000" />
+      <workItem from="1650765739554" duration="12114000" />
+      <workItem from="1650851935400" duration="11193000" />
+      <workItem from="1650938071074" duration="14370000" />
+      <workItem from="1651023724993" duration="24078000" />
+      <workItem from="1651110666221" duration="21120000" />
+      <workItem from="1651197675753" duration="20913000" />
+      <workItem from="1651474778263" duration="276000" />
+      <workItem from="1651730894438" duration="6971000" />
+      <workItem from="1651826466787" duration="9120000" />
+      <workItem from="1651904023343" duration="591000" />
+      <workItem from="1652061466282" duration="35000" />
+      <workItem from="1652070265914" duration="14043000" />
+      <workItem from="1652176887132" duration="777000" />
+      <workItem from="1652250991008" duration="7385000" />
+      <workItem from="1652329114404" duration="6634000" />
+      <workItem from="1652427138586" duration="2349000" />
+      <workItem from="1652667076153" duration="4332000" />
+      <workItem from="1652768744835" duration="5021000" />
+      <workItem from="1652845025540" duration="7584000" />
+      <workItem from="1652925985239" duration="353000" />
+      <workItem from="1652938512179" duration="2290000" />
+      <workItem from="1652952823160" duration="837000" />
+      <workItem from="1653013876050" duration="5304000" />
+      <workItem from="1653105136563" duration="10043000" />
+      <workItem from="1653150751381" duration="612000" />
+      <workItem from="1653312382265" duration="2337000" />
+      <workItem from="1653378151384" duration="1019000" />
+      <workItem from="1653470190762" duration="3370000" />
+      <workItem from="1653532128795" duration="3539000" />
+      <workItem from="1653617917962" duration="3284000" />
+      <workItem from="1653724846528" duration="1060000" />
+      <workItem from="1653891252679" duration="12618000" />
+      <workItem from="1653959971717" duration="24237000" />
+      <workItem from="1654050656942" duration="13323000" />
+      <workItem from="1654133092082" duration="18119000" />
+      <workItem from="1654479065072" duration="15508000" />
+      <workItem from="1654567125306" duration="14765000" />
+      <workItem from="1654654064820" duration="7777000" />
+      <workItem from="1654755589145" duration="4238000" />
+      <workItem from="1654833287513" duration="18445000" />
+      <workItem from="1655085964979" duration="10683000" />
+      <workItem from="1655170854899" duration="1430000" />
+      <workItem from="1655174109667" duration="24575000" />
+      <workItem from="1655257363219" duration="10096000" />
+      <workItem from="1655279650938" duration="4634000" />
+      <workItem from="1655344950573" duration="17950000" />
+      <workItem from="1655435690321" duration="12478000" />
+      <workItem from="1655690081628" duration="26622000" />
+      <workItem from="1655776591106" duration="13501000" />
+      <workItem from="1655863577454" duration="10279000" />
+      <workItem from="1655949215047" duration="13872000" />
+      <workItem from="1655969493892" duration="6029000" />
+      <workItem from="1656035342012" duration="9176000" />
+      <workItem from="1656295473315" duration="19029000" />
+      <workItem from="1656379807206" duration="22030000" />
+      <workItem from="1656469188920" duration="23006000" />
+      <workItem from="1656557134291" duration="16788000" />
+      <workItem from="1656640984359" duration="15019000" />
+      <workItem from="1656903843576" duration="16381000" />
+      <workItem from="1656985799630" duration="9803000" />
+      <workItem from="1656998825851" duration="14702000" />
+      <workItem from="1657073309521" duration="10139000" />
+      <workItem from="1657161163969" duration="12000" />
+      <workItem from="1657162620546" duration="11874000" />
+      <workItem from="1657247407113" duration="7883000" />
+      <workItem from="1657512069983" duration="11697000" />
+      <workItem from="1657591105482" duration="10051000" />
+      <workItem from="1657676947997" duration="21967000" />
+      <workItem from="1657766262244" duration="11181000" />
+      <workItem from="1657794557703" duration="1538000" />
+      <workItem from="1657851282996" duration="12583000" />
+      <workItem from="1657886730622" duration="101000" />
+      <workItem from="1658111921788" duration="19579000" />
+      <workItem from="1658139602620" duration="218000" />
+      <workItem from="1658196250258" duration="8943000" />
+      <workItem from="1658284927321" duration="23044000" />
+      <workItem from="1658368842359" duration="25583000" />
+      <workItem from="1658456489708" duration="8841000" />
+      <workItem from="1658735534563" duration="5495000" />
+      <workItem from="1658801155481" duration="9016000" />
+      <workItem from="1658825711502" duration="4451000" />
+      <workItem from="1658887137459" duration="8670000" />
+      <workItem from="1658974700139" duration="12459000" />
+      <workItem from="1659065074907" duration="5212000" />
+      <workItem from="1659319210632" duration="9646000" />
+      <workItem from="1659405339079" duration="4592000" />
+      <workItem from="1659491696422" duration="17547000" />
+      <workItem from="1659579339179" duration="9837000" />
+      <workItem from="1659662674392" duration="6893000" />
+      <workItem from="1659924375118" duration="12868000" />
+      <workItem from="1660011336067" duration="524000" />
+      <workItem from="1660012489247" duration="13294000" />
+      <workItem from="1660097187028" duration="31379000" />
+      <workItem from="1660184861004" duration="9058000" />
+      <workItem from="1660271201510" duration="8983000" />
+      <workItem from="1660280715484" duration="19578000" />
+      <workItem from="1660528157924" duration="2839000" />
+      <workItem from="1660535172066" duration="11302000" />
+      <workItem from="1660616039427" duration="18383000" />
+      <workItem from="1660703150444" duration="18497000" />
+      <workItem from="1660787788944" duration="15924000" />
+      <workItem from="1660875548404" duration="7638000" />
+      <workItem from="1661134163091" duration="17464000" />
+      <workItem from="1661216165669" duration="12913000" />
+      <workItem from="1661308558355" duration="7358000" />
+      <workItem from="1661393548937" duration="8084000" />
+      <workItem from="1661478866646" duration="12221000" />
+      <workItem from="1661738486040" duration="19022000" />
+      <workItem from="1661825187534" duration="18213000" />
+      <workItem from="1661913552116" duration="7317000" />
+      <workItem from="1662009014112" duration="3025000" />
+      <workItem from="1662085539400" duration="16475000" />
+      <workItem from="1662343607002" duration="11853000" />
+      <workItem from="1662430574011" duration="16060000" />
+      <workItem from="1662519696111" duration="12226000" />
+      <workItem from="1662700646555" duration="7254000" />
+      <workItem from="1663034233670" duration="5956000" />
+      <workItem from="1663046712664" duration="8476000" />
+      <workItem from="1663121131505" duration="16314000" />
+      <workItem from="1663232710564" duration="3354000" />
+      <workItem from="1663296498156" duration="9236000" />
+      <workItem from="1663554223232" duration="8003000" />
+      <workItem from="1663639394079" duration="5360000" />
+      <workItem from="1663725493917" duration="9386000" />
+      <workItem from="1663810688523" duration="17898000" />
+      <workItem from="1663897792963" duration="17975000" />
+      <workItem from="1664159326756" duration="19323000" />
+      <workItem from="1664189964480" duration="716000" />
+      <workItem from="1664245429003" duration="5636000" />
+      <workItem from="1664333526255" duration="10543000" />
+      <workItem from="1664416554842" duration="13491000" />
+      <workItem from="1664509433810" duration="6217000" />
+      <workItem from="1665192257537" duration="14289000" />
+      <workItem from="1665279972795" duration="5584000" />
+      <workItem from="1665367278292" duration="12664000" />
+      <workItem from="1665454439713" duration="10971000" />
+      <workItem from="1665540691242" duration="7223000" />
+      <workItem from="1665627778548" duration="8981000" />
+      <workItem from="1665712926169" duration="12152000" />
+      <workItem from="1665982140013" duration="5203000" />
+      <workItem from="1666058285593" duration="10441000" />
+      <workItem from="1666145684651" duration="12369000" />
+      <workItem from="1666231742364" duration="8239000" />
+      <workItem from="1666319573113" duration="934000" />
+      <workItem from="1666324131318" duration="4736000" />
+      <workItem from="1666578771898" duration="17263000" />
+      <workItem from="1666663801969" duration="11644000" />
+      <workItem from="1666750384271" duration="8185000" />
+      <workItem from="1666836266023" duration="6410000" />
+      <workItem from="1666925989095" duration="8956000" />
+      <workItem from="1667013671368" duration="1874000" />
+      <workItem from="1667116777155" duration="1328000" />
+      <workItem from="1667181815105" duration="21659000" />
+      <workItem from="1667269484348" duration="2609000" />
+      <workItem from="1667273453083" duration="11080000" />
+      <workItem from="1667356029924" duration="11589000" />
+      <workItem from="1667449176153" duration="3092000" />
+      <workItem from="1667530928373" duration="5522000" />
+      <workItem from="1667788540516" duration="12227000" />
+      <workItem from="1667873108621" duration="4482000" />
+      <workItem from="1667888798495" duration="13158000" />
+      <workItem from="1667975921898" duration="3356000" />
+      <workItem from="1668049546436" duration="1780000" />
+      <workItem from="1668138600407" duration="3167000" />
+      <workItem from="1668393084327" duration="12020000" />
+      <workItem from="1668478268988" duration="5640000" />
+      <workItem from="1668565192070" duration="4677000" />
+      <workItem from="1668650729109" duration="6464000" />
+      <workItem from="1668742682250" duration="8887000" />
+      <workItem from="1669014592516" duration="3321000" />
+      <workItem from="1669105730526" duration="1531000" />
+      <workItem from="1669198021760" duration="1728000" />
+      <workItem from="1669269962592" duration="8524000" />
+      <workItem from="1669360769085" duration="1948000" />
+      <workItem from="1669553840553" duration="1112000" />
+      <workItem from="1669622522097" duration="2130000" />
+      <workItem from="1669707448257" duration="2321000" />
+      <workItem from="1669881846004" duration="1513000" />
+      <workItem from="1669962418784" duration="1820000" />
+      <workItem from="1670055855339" duration="1612000" />
+      <workItem from="1670206952664" duration="3481000" />
+      <workItem from="1670294283277" duration="4373000" />
+      <workItem from="1670485012934" duration="4631000" />
+      <workItem from="1670558593836" duration="1946000" />
+      <workItem from="1670597108284" duration="1162000" />
+      <workItem from="1670831835922" duration="588000" />
+      <workItem from="1670998749187" duration="3937000" />
+      <workItem from="1671164438298" duration="2309000" />
+      <workItem from="1671417556166" duration="17952000" />
+      <workItem from="1671502710852" duration="10243000" />
+      <workItem from="1671589734762" duration="11149000" />
+      <workItem from="1671688557000" duration="2634000" />
+      <workItem from="1671765704681" duration="7408000" />
+      <workItem from="1672021421898" duration="6873000" />
+      <workItem from="1672107860145" duration="14908000" />
+      <workItem from="1672193819902" duration="5228000" />
+      <workItem from="1672209520474" duration="11895000" />
+      <workItem from="1672280162283" duration="18823000" />
+      <workItem from="1672369611114" duration="23489000" />
+      <workItem from="1672710719100" duration="12285000" />
+      <workItem from="1672800377945" duration="9517000" />
+      <workItem from="1672892924937" duration="7056000" />
+      <workItem from="1672971409599" duration="8514000" />
+      <workItem from="1673243365383" duration="11521000" />
+      <workItem from="1673318852020" duration="6911000" />
+      <workItem from="1673403881680" duration="11741000" />
+      <workItem from="1673493125350" duration="1974000" />
+      <workItem from="1674104648632" duration="719000" />
+      <workItem from="1675218467973" duration="4922000" />
+      <workItem from="1675304452879" duration="3049000" />
+      <workItem from="1675332748776" duration="280000" />
+      <workItem from="1675390658255" duration="14247000" />
+      <workItem from="1675649455549" duration="14007000" />
+      <workItem from="1675680399355" duration="3991000" />
+      <workItem from="1675735759432" duration="9700000" />
+      <workItem from="1675822394414" duration="3638000" />
+      <workItem from="1675841184792" duration="7543000" />
+      <workItem from="1675913437567" duration="7348000" />
+      <workItem from="1675997211359" duration="8423000" />
+      <workItem from="1676211174232" duration="1348000" />
+      <workItem from="1676253462706" duration="9313000" />
+      <workItem from="1676285340311" duration="328000" />
+      <workItem from="1676341945691" duration="20463000" />
+      <workItem from="1676427418918" duration="19060000" />
+      <workItem from="1676513831961" duration="9552000" />
+      <workItem from="1676599587294" duration="17971000" />
+      <workItem from="1676860288339" duration="6644000" />
+      <workItem from="1676957954690" duration="15006000" />
+      <workItem from="1677033797158" duration="12751000" />
+      <workItem from="1677117989229" duration="21221000" />
+      <workItem from="1677208145130" duration="16632000" />
+      <workItem from="1677465993653" duration="14193000" />
+      <workItem from="1677551241574" duration="11126000" />
+      <workItem from="1677637214139" duration="14680000" />
+      <workItem from="1677722641750" duration="6951000" />
+      <workItem from="1678068270469" duration="18895000" />
+      <workItem from="1678156133752" duration="7875000" />
+      <workItem from="1678240216745" duration="17253000" />
+      <workItem from="1678330015357" duration="14880000" />
+      <workItem from="1678413939007" duration="16025000" />
+      <workItem from="1678673702204" duration="18245000" />
+      <workItem from="1678759705977" duration="9468000" />
+      <workItem from="1678934285678" duration="4507000" />
+      <workItem from="1679028157568" duration="9669000" />
+      <workItem from="1679277841773" duration="10499000" />
+      <workItem from="1679293882786" duration="4674000" />
+      <workItem from="1679299526290" duration="9124000" />
+      <workItem from="1679363995682" duration="11868000" />
+      <workItem from="1679394551809" duration="2209000" />
+      <workItem from="1679452391954" duration="19189000" />
+      <workItem from="1679536909533" duration="17413000" />
+      <workItem from="1679627792506" duration="21531000" />
+      <workItem from="1679969435726" duration="10136000" />
+      <workItem from="1680060222616" duration="13574000" />
+      <workItem from="1680145198111" duration="11782000" />
+      <workItem from="1680245266076" duration="5846000" />
+      <workItem from="1680487586398" duration="10220000" />
+      <workItem from="1680579786407" duration="10449000" />
+      <workItem from="1680596721122" duration="7859000" />
+      <workItem from="1680672441308" duration="634000" />
+      <workItem from="1680854901726" duration="1534000" />
+      <workItem from="1681091707937" duration="15920000" />
+      <workItem from="1681180008655" duration="11231000" />
+      <workItem from="1681267371659" duration="14568000" />
+      <workItem from="1681352486270" duration="12179000" />
+      <workItem from="1681441779800" duration="13214000" />
+      <workItem from="1681697211124" duration="17608000" />
+      <workItem from="1681783425559" duration="8211000" />
+      <workItem from="1681869783146" duration="5144000" />
+      <workItem from="1681956706722" duration="10663000" />
+      <workItem from="1682057144194" duration="17755000" />
+      <workItem from="1682220717136" duration="1338000" />
+      <workItem from="1682301074563" duration="16848000" />
+      <workItem from="1682388555418" duration="11184000" />
+      <workItem from="1682488619022" duration="8283000" />
+      <workItem from="1682560755438" duration="13689000" />
+      <workItem from="1682646997974" duration="14788000" />
+      <workItem from="1682751992951" duration="2898000" />
+      <workItem from="1683166002117" duration="19915000" />
+      <workItem from="1683251942389" duration="12819000" />
+      <workItem from="1683340728054" duration="14335000" />
+      <workItem from="1683597030726" duration="10899000" />
+      <workItem from="1683686298547" duration="24738000" />
+      <workItem from="1683770642206" duration="25419000" />
+      <workItem from="1683862374779" duration="14188000" />
+      <workItem from="1684117551880" duration="18704000" />
+      <workItem from="1684202653135" duration="14032000" />
+      <workItem from="1684311063523" duration="2827000" />
+      <workItem from="1684376671997" duration="7598000" />
+      <workItem from="1684468115032" duration="2473000" />
+      <workItem from="1684721635783" duration="15813000" />
+      <workItem from="1684813881129" duration="8746000" />
+      <workItem from="1684895429995" duration="18341000" />
+      <workItem from="1684993789064" duration="5189000" />
+      <workItem from="1685356709380" duration="5091000" />
+      <workItem from="1685412529869" duration="11697000" />
+      <workItem from="1685500741973" duration="11585000" />
+      <workItem from="1685585708756" duration="11296000" />
+      <workItem from="1685676430791" duration="4335000" />
+      <workItem from="1685933552587" duration="18563000" />
+      <workItem from="1686022596297" duration="6873000" />
+      <workItem from="1686116932684" duration="13920000" />
+      <workItem from="1686189123948" duration="16517000" />
+      <workItem from="1686276879670" duration="9245000" />
+      <workItem from="1686535121772" duration="20231000" />
+      <workItem from="1686624920305" duration="10269000" />
+      <workItem from="1686708407125" duration="20694000" />
+      <workItem from="1686794898586" duration="14661000" />
+      <workItem from="1686889336656" duration="9284000" />
+      <workItem from="1686991564276" duration="876000" />
+      <workItem from="1686993172976" duration="730000" />
+      <workItem from="1687141261182" duration="12551000" />
+      <workItem from="1687226806365" duration="11548000" />
+      <workItem from="1687317108129" duration="12498000" />
+      <workItem from="1687658445402" duration="23199000" />
+      <workItem from="1687744910827" duration="20682000" />
+      <workItem from="1687834360284" duration="15567000" />
+      <workItem from="1688015879426" duration="13078000" />
+      <workItem from="1688111249681" duration="5744000" />
+      <workItem from="1688440507505" duration="4415000" />
+      <workItem from="1688528545947" duration="7724000" />
+      <workItem from="1688609078080" duration="15605000" />
+      <workItem from="1688954605867" duration="12532000" />
+      <workItem from="1689041829183" duration="8027000" />
+      <workItem from="1689059818533" duration="6104000" />
+      <workItem from="1689127776654" duration="10551000" />
+      <workItem from="1689213922787" duration="8234000" />
+      <workItem from="1689300740375" duration="17623000" />
+      <workItem from="1689570000452" duration="9872000" />
+      <workItem from="1689651894531" duration="12595000" />
+      <workItem from="1689822754150" duration="1362000" />
+      <workItem from="1689922658363" duration="6307000" />
+      <workItem from="1690164482312" duration="10409000" />
+      <workItem from="1690250811500" duration="6965000" />
+      <workItem from="1690369912956" duration="532000" />
+      <workItem from="1690429748731" duration="3421000" />
+      <workItem from="1690509953007" duration="11284000" />
+      <workItem from="1690855345828" duration="9829000" />
+      <workItem from="1690953058986" duration="6008000" />
+      <workItem from="1691033519124" duration="9949000" />
+      <workItem from="1691141572025" duration="1477000" />
+      <workItem from="1691385125110" duration="4442000" />
+      <workItem from="1691463879929" duration="4180000" />
+      <workItem from="1691478407486" duration="4293000" />
+      <workItem from="1691548674272" duration="8145000" />
+      <workItem from="1691720513725" duration="11208000" />
+      <workItem from="1691807883561" duration="995000" />
+      <workItem from="1691985048401" duration="7425000" />
+      <workItem from="1692006706481" duration="3858000" />
+      <workItem from="1692078990543" duration="11536000" />
+      <workItem from="1692165248505" duration="4334000" />
+      <workItem from="1692325030205" duration="11266000" />
+      <workItem from="1692696588289" duration="1692000" />
+      <workItem from="1692701100240" duration="1445000" />
+      <workItem from="1692773142460" duration="7481000" />
+      <workItem from="1692854513591" duration="7261000" />
+      <workItem from="1693193790394" duration="4211000" />
+      <workItem from="1693275284304" duration="3556000" />
+      <workItem from="1693296783459" duration="2383000" />
+      <workItem from="1693300013525" duration="357000" />
+      <workItem from="1693300612259" duration="513000" />
+      <workItem from="1693301240672" duration="9095000" />
+      <workItem from="1693448145299" duration="6529000" />
+      <workItem from="1693539741497" duration="3520000" />
+      <workItem from="1693557024594" duration="186000" />
+      <workItem from="1693565442018" duration="989000" />
+      <workItem from="1693798704717" duration="559000" />
+      <workItem from="1693813919096" duration="1166000" />
+      <workItem from="1693881521809" duration="14289000" />
+      <workItem from="1693900686981" duration="188000" />
+      <workItem from="1693901450312" duration="3240000" />
+      <workItem from="1693968923220" duration="7855000" />
+      <workItem from="1694163413829" duration="20000" />
+      <workItem from="1694165139937" duration="861000" />
+      <workItem from="1694401677286" duration="10855000" />
+      <workItem from="1694484833185" duration="4101000" />
+      <workItem from="1694576695974" duration="6302000" />
+      <workItem from="1694594549376" duration="334000" />
+      <workItem from="1694595615352" duration="4236000" />
+      <workItem from="1694670936557" duration="5635000" />
+      <workItem from="1694758254838" duration="6886000" />
+      <workItem from="1695089372008" duration="10407000" />
+      <workItem from="1695262293304" duration="907000" />
+      <workItem from="1695286494304" duration="738000" />
+      <workItem from="1695351650827" duration="11801000" />
+      <workItem from="1695379801094" duration="11000" />
+      <workItem from="1695618304977" duration="8252000" />
+      <workItem from="1695700404638" duration="13391000" />
+      <workItem from="1695782653265" duration="7194000" />
+      <workItem from="1695805518875" duration="9236000" />
+      <workItem from="1695884998512" duration="2864000" />
+      <workItem from="1696730799788" duration="10646000" />
+      <workItem from="1696816850502" duration="13776000" />
+      <workItem from="1696844533352" duration="1106000" />
+      <workItem from="1696916705429" duration="7573000" />
+      <workItem from="1696931420956" duration="794000" />
+      <workItem from="1697006591595" duration="2142000" />
+      <workItem from="1697087623290" duration="17396000" />
+      <workItem from="1697176827420" duration="11751000" />
+      <workItem from="1697444125402" duration="3683000" />
+      <workItem from="1697469462486" duration="1520000" />
+      <workItem from="1697508274843" duration="20175000" />
+      <workItem from="1697596136661" duration="8254000" />
+      <workItem from="1697693694795" duration="8199000" />
+      <workItem from="1697767805954" duration="18005000" />
+      <workItem from="1698026798571" duration="15889000" />
+      <workItem from="1698116477535" duration="16898000" />
+      <workItem from="1698203093204" duration="14893000" />
+      <workItem from="1698287121176" duration="25646000" />
+      <workItem from="1698372650177" duration="20027000" />
+      <workItem from="1698655690737" duration="944000" />
+      <workItem from="1698717635840" duration="23906000" />
+      <workItem from="1698805083630" duration="10480000" />
+      <workItem from="1698893309548" duration="2889000" />
+      <workItem from="1698977782263" duration="23143000" />
+      <workItem from="1699238586513" duration="12101000" />
+      <workItem from="1699336035782" duration="7581000" />
+      <workItem from="1699409150083" duration="12843000" />
+      <workItem from="1699500909671" duration="7435000" />
+      <workItem from="1699584109825" duration="6752000" />
+      <workItem from="1699772645987" duration="1062000" />
+      <workItem from="1699927501361" duration="11213000" />
+      <workItem from="1700013777064" duration="7348000" />
+      <workItem from="1700023275615" duration="16378000" />
+      <workItem from="1700109541959" duration="9725000" />
+      <workItem from="1700188992604" duration="11241000" />
+      <workItem from="1700209624996" duration="2758000" />
+      <workItem from="1700212500163" duration="6672000" />
+      <workItem from="1700457320745" duration="4081000" />
+      <workItem from="1700533014158" duration="17252000" />
+      <workItem from="1700618576895" duration="13662000" />
+      <workItem from="1700705006866" duration="13048000" />
+      <workItem from="1700793177340" duration="7734000" />
+      <workItem from="1701067284757" duration="1854000" />
+      <workItem from="1701137429256" duration="21076000" />
+      <workItem from="1701226697087" duration="7108000" />
+      <workItem from="1701247188415" duration="8014000" />
+      <workItem from="1701310987221" duration="16751000" />
+      <workItem from="1701396562754" duration="1276000" />
+      <workItem from="1701398714391" duration="22000" />
+      <workItem from="1701402110205" duration="17239000" />
+      <workItem from="1701436949500" duration="17000" />
+      <workItem from="1701518053400" duration="2586000" />
+      <workItem from="1701656620326" duration="10454000" />
+      <workItem from="1701690126266" duration="637000" />
+      <workItem from="1701746801738" duration="20617000" />
+      <workItem from="1701829009844" duration="12501000" />
+      <workItem from="1701915779669" duration="20998000" />
+      <workItem from="1701944517180" duration="5056000" />
+      <workItem from="1702001919222" duration="20877000" />
+      <workItem from="1702098377605" duration="941000" />
+      <workItem from="1702209874908" duration="1228000" />
+      <workItem from="1702277478480" duration="5406000" />
+      <workItem from="1702346216445" duration="24133000" />
+      <workItem from="1702436556525" duration="24113000" />
+      <workItem from="1702532537823" duration="12631000" />
+      <workItem from="1702607023529" duration="6326000" />
+      <workItem from="1702874021693" duration="16903000" />
+      <workItem from="1702968506181" duration="3120000" />
+      <workItem from="1703040528099" duration="8391000" />
+      <workItem from="1703124718248" duration="11051000" />
+      <workItem from="1703216409566" duration="5886000" />
+      <workItem from="1703300524203" duration="1906000" />
+      <workItem from="1703469971573" duration="274000" />
+      <workItem from="1703470369299" duration="8825000" />
+      <workItem from="1703730243146" duration="5445000" />
+      <workItem from="1703816224025" duration="15813000" />
+      <workItem from="1704162256032" duration="11636000" />
+      <workItem from="1704260614554" duration="5302000" />
+      <workItem from="1704333801235" duration="17748000" />
+      <workItem from="1704420445158" duration="5412000" />
+      <workItem from="1704434594013" duration="1010000" />
+      <workItem from="1704532255471" duration="13195000" />
+      <workItem from="1704598468958" duration="1834000" />
+      <workItem from="1704682956813" duration="10891000" />
+      <workItem from="1704767051264" duration="15989000" />
+      <workItem from="1704864639671" duration="8864000" />
+      <workItem from="1704937487503" duration="5534000" />
+      <workItem from="1705030848276" duration="13180000" />
+      <workItem from="1705284364880" duration="17993000" />
+      <workItem from="1705371729836" duration="25700000" />
+      <workItem from="1705456952036" duration="12561000" />
+      <workItem from="1705546555191" duration="16357000" />
+      <workItem from="1705630969470" duration="32620000" />
+      <workItem from="1705921193212" duration="4244000" />
+      <workItem from="1705983939247" duration="7894000" />
+      <workItem from="1706065608979" duration="16648000" />
+      <workItem from="1706170008202" duration="2739000" />
+      <workItem from="1706241388870" duration="12130000" />
+      <workItem from="1706494215228" duration="13895000" />
+      <workItem from="1706580699024" duration="8095000" />
+      <workItem from="1706668533078" duration="13416000" />
+      <workItem from="1706763727721" duration="2710000" />
+      <workItem from="1706845335204" duration="9065000" />
+      <workItem from="1706881755238" duration="1363000" />
+      <workItem from="1708397545398" duration="15962000" />
+      <workItem from="1708484945908" duration="7494000" />
+      <workItem from="1708579797416" duration="11468000" />
+      <workItem from="1708600271516" duration="80000" />
+      <workItem from="1708654386016" duration="6271000" />
+      <workItem from="1708999078536" duration="10453000" />
+      <workItem from="1709087256514" duration="10801000" />
+      <workItem from="1709200167010" duration="1072000" />
+      <workItem from="1709519275545" duration="1437000" />
+      <workItem from="1709534549383" duration="7471000" />
+      <workItem from="1709617249119" duration="17626000" />
+      <workItem from="1709691904949" duration="7802000" />
+      <workItem from="1709780968866" duration="18488000" />
+      <workItem from="1709863608806" duration="18563000" />
+      <workItem from="1710215474513" duration="3581000" />
+      <workItem from="1710303187348" duration="260000" />
+      <workItem from="1710309384121" duration="5937000" />
+      <workItem from="1710393677763" duration="8171000" />
+      <workItem from="1710470781391" duration="103000" />
+      <workItem from="1710473591625" duration="6076000" />
+      <workItem from="1710902453372" duration="19717000" />
+      <workItem from="1711007320906" duration="3558000" />
+      <workItem from="1711089017341" duration="17283000" />
+      <workItem from="1711333783928" duration="16056000" />
+      <workItem from="1711431232820" duration="6567000" />
+      <workItem from="1711531072917" duration="3145000" />
+      <workItem from="1711611463652" duration="1184000" />
+      <workItem from="1712026379493" duration="3410000" />
+      <workItem from="1712111076465" duration="6089000" />
+      <workItem from="1712542124126" duration="18237000" />
+      <workItem from="1712640472114" duration="8701000" />
+      <workItem from="1712735555018" duration="11473000" />
+      <workItem from="1712805113480" duration="20936000" />
+      <workItem from="1712888044648" duration="8946000" />
+      <workItem from="1712920602551" duration="59000" />
+      <workItem from="1713163021368" duration="5538000" />
+      <workItem from="1713233913839" duration="8095000" />
+      <workItem from="1713342933875" duration="4205000" />
+      <workItem from="1713410414382" duration="16306000" />
+      <workItem from="1713493480831" duration="5126000" />
+      <workItem from="1713765538676" duration="10787000" />
+      <workItem from="1713867372254" duration="1340000" />
+      <workItem from="1713925124226" duration="8070000" />
+      <workItem from="1714022251963" duration="5929000" />
+      <workItem from="1714111072765" duration="26000" />
+      <workItem from="1714117184990" duration="4918000" />
+      <workItem from="1714283374759" duration="4195000" />
+      <workItem from="1714364256944" duration="13194000" />
+      <workItem from="1714448161579" duration="9893000" />
+      <workItem from="1715059691241" duration="8891000" />
+      <workItem from="1715085998028" duration="4370000" />
+      <workItem from="1715133812366" duration="9531000" />
+      <workItem from="1715222978812" duration="2137000" />
+      <workItem from="1715395184330" duration="10204000" />
+      <workItem from="1715566469645" duration="10068000" />
+      <workItem from="1715656028373" duration="19145000" />
+      <workItem from="1715742681477" duration="12030000" />
+      <workItem from="1715828326356" duration="17043000" />
+      <workItem from="1715912039431" duration="9374000" />
+      <workItem from="1716190311189" duration="6281000" />
+      <workItem from="1716279454275" duration="3617000" />
+      <workItem from="1716343835905" duration="7201000" />
+      <workItem from="1716430049351" duration="9676000" />
+      <workItem from="1716516266959" duration="11521000" />
+      <workItem from="1716861876332" duration="16347000" />
+      <workItem from="1716953393911" duration="8170000" />
+      <workItem from="1717036425811" duration="8939000" />
+      <workItem from="1717125019546" duration="5380000" />
+      <workItem from="1717141873126" duration="1025000" />
+      <workItem from="1717143007989" duration="106000" />
+      <workItem from="1717143220182" duration="1407000" />
+      <workItem from="1717144753822" duration="1460000" />
+      <workItem from="1717386220269" duration="1277000" />
+      <workItem from="1717398547395" duration="4237000" />
+      <workItem from="1717553748138" duration="4158000" />
+      <workItem from="1717727216007" duration="10294000" />
+      <workItem from="1718071743127" duration="15146000" />
+      <workItem from="1718177984357" duration="2272000" />
+      <workItem from="1718245162550" duration="6677000" />
+      <workItem from="1718330927592" duration="5837000" />
+      <workItem from="1718676240365" duration="6671000" />
+      <workItem from="1718763065134" duration="9516000" />
+      <workItem from="1718851688875" duration="8446000" />
+      <workItem from="1718937844749" duration="7994000" />
+      <workItem from="1719201167047" duration="13787000" />
+      <workItem from="1719280882220" duration="10024000" />
+      <workItem from="1719367765510" duration="12823000" />
+      <workItem from="1719458752726" duration="14613000" />
+      <workItem from="1719562335035" duration="1454000" />
+      <workItem from="1719799918064" duration="14478000" />
+      <workItem from="1719841434009" duration="2082000" />
+      <workItem from="1719891389147" duration="7919000" />
+      <workItem from="1719972752665" duration="5426000" />
+      <workItem from="1720058901272" duration="5373000" />
+      <workItem from="1720147980078" duration="13025000" />
+      <workItem from="1720491122679" duration="6926000" />
+      <workItem from="1720580039536" duration="15234000" />
+      <workItem from="1720664899488" duration="15525000" />
+      <workItem from="1720749842954" duration="6795000" />
+      <workItem from="1721011191059" duration="15175000" />
+      <workItem from="1721095486129" duration="21981000" />
+      <workItem from="1721182173467" duration="13231000" />
+      <workItem from="1721280464092" duration="15199000" />
+      <workItem from="1721354937838" duration="18049000" />
+      <workItem from="1721625874821" duration="8019000" />
+      <workItem from="1721706834316" duration="1181000" />
+      <workItem from="1721789140191" duration="9030000" />
+      <workItem from="1721876090577" duration="14940000" />
+      <workItem from="1721979983316" duration="6273000" />
+      <workItem from="1722222069541" duration="16255000" />
+      <workItem from="1722309584328" duration="11879000" />
+      <workItem from="1722391669431" duration="15256000" />
+      <workItem from="1722479593734" duration="7775000" />
+      <workItem from="1722564465894" duration="7090000" />
+      <workItem from="1722823700075" duration="15345000" />
+      <workItem from="1722921335447" duration="7332000" />
+      <workItem from="1722998176073" duration="10957000" />
+      <workItem from="1723085995869" duration="9393000" />
+      <workItem from="1723169202770" duration="14142000" />
+      <workItem from="1723514939473" duration="19011000" />
+      <workItem from="1723606488527" duration="8478000" />
+      <workItem from="1723687386343" duration="14361000" />
+      <workItem from="1723773227206" duration="4007000" />
+      <workItem from="1724034430632" duration="8913000" />
+      <workItem from="1724119521479" duration="11671000" />
+      <workItem from="1724208414098" duration="6741000" />
+      <workItem from="1724295853740" duration="15398000" />
+      <workItem from="1724323966853" duration="860000" />
+      <workItem from="1724386370936" duration="9061000" />
+      <workItem from="1724553735514" duration="1802000" />
+      <workItem from="1724664106974" duration="4157000" />
+      <workItem from="1724732235567" duration="10047000" />
+      <workItem from="1724813577011" duration="8909000" />
+      <workItem from="1724898830337" duration="9341000" />
+      <workItem from="1724982975881" duration="15930000" />
+      <workItem from="1725242381697" duration="22736000" />
+      <workItem from="1725334253954" duration="9855000" />
+      <workItem from="1725418072090" duration="6570000" />
+      <workItem from="1725504026099" duration="10786000" />
+      <workItem from="1725589101578" duration="13269000" />
+      <workItem from="1725846997854" duration="20885000" />
+      <workItem from="1725935463060" duration="16508000" />
+      <workItem from="1726019896813" duration="15958000" />
+      <workItem from="1726105842958" duration="20153000" />
+      <workItem from="1726193697583" duration="18199000" />
+      <workItem from="1726294187040" duration="13628000" />
+      <workItem from="1726625159809" duration="11567000" />
+      <workItem from="1726713123753" duration="12075000" />
+      <workItem from="1726795586524" duration="16664000" />
+      <workItem from="1727141244152" duration="20039000" />
+      <workItem from="1727228867388" duration="11075000" />
+      <workItem from="1727319078991" duration="6939000" />
+      <workItem from="1727401819427" duration="7185000" />
+      <workItem from="1727593310659" duration="7457000" />
+      <workItem from="1727659861822" duration="8259000" />
+      <workItem from="1728523496725" duration="6639000" />
+      <workItem from="1728530792841" duration="11973000" />
+      <workItem from="1728612991506" duration="15978000" />
+      <workItem from="1728698319167" duration="15842000" />
+      <workItem from="1728871521542" duration="18651000" />
+      <workItem from="1728955809934" duration="17717000" />
+      <workItem from="1729042180874" duration="13234000" />
+      <workItem from="1729130170018" duration="13590000" />
+      <workItem from="1729218009116" duration="12751000" />
+      <workItem from="1729478106411" duration="1535000" />
+      <workItem from="1729486766630" duration="1526000" />
+      <workItem from="1729493071798" duration="7367000" />
+      <workItem from="1729675262677" duration="28000" />
+      <workItem from="1729676619519" duration="22125000" />
+      <workItem from="1730044174148" duration="51207000" />
+      <workItem from="1730352634637" duration="25562000" />
+      <workItem from="1730688982595" duration="51006000" />
+      <workItem from="1730970399559" duration="60128000" />
+      <workItem from="1731575202132" duration="19735000" />
+      <workItem from="1731847104765" duration="1971000" />
+      <workItem from="1731849180771" duration="745000" />
+      <workItem from="1731850170528" duration="1602000" />
+      <workItem from="1731857584149" duration="210000" />
+      <workItem from="1731857800604" duration="218000" />
+      <workItem from="1731858030129" duration="550000" />
+      <workItem from="1731858594794" duration="36000" />
+      <workItem from="1731894185500" duration="24486000" />
+      <workItem from="1731983706629" duration="34761000" />
+      <workItem from="1732156865912" duration="24512000" />
+      <workItem from="1732499737189" duration="18292000" />
+      <workItem from="1732584287272" duration="3053000" />
+      <workItem from="1732600914679" duration="25607000" />
+      <workItem from="1732712979457" duration="21756000" />
+      <workItem from="1732799597924" duration="11328000" />
+      <workItem from="1732875119739" duration="1996000" />
+      <workItem from="1733107065881" duration="9263000" />
+      <workItem from="1733192113039" duration="79318000" />
+      <workItem from="1733722844609" duration="808000" />
+      <workItem from="1733723660965" duration="10257000" />
+      <workItem from="1733797964465" duration="2417000" />
+      <workItem from="1733812576109" duration="87824000" />
+      <workItem from="1734252363317" duration="1595000" />
+      <workItem from="1734314096882" duration="119560000" />
+      <workItem from="1734613084135" duration="35035000" />
+      <workItem from="1734919139509" duration="52067000" />
+      <workItem from="1735038300870" duration="10497000" />
+      <workItem from="1735092158160" duration="30744000" />
+      <workItem from="1735177500786" duration="23474000" />
+      <workItem from="1735265066546" duration="15958000" />
+      <workItem from="1735526384690" duration="40824000" />
+      <workItem from="1735798552258" duration="29115000" />
+      <workItem from="1736159262205" duration="62503000" />
+      <workItem from="1736474524898" duration="13240000" />
+      <workItem from="1736751526597" duration="15964000" />
+      <workItem from="1736908557676" duration="1492000" />
+      <workItem from="1736910062736" duration="68917000" />
+      <workItem from="1737427542103" duration="16383000" />
+      <workItem from="1737514398193" duration="58077000" />
+      <workItem from="1738977987623" duration="68786000" />
+      <workItem from="1739239340105" duration="100160000" />
+      <workItem from="1739758200137" duration="132399000" />
+      <workItem from="1740359757383" duration="98746000" />
+      <workItem from="1740652657855" duration="22253000" />
+      <workItem from="1740752981490" duration="4567000" />
+      <workItem from="1740966841127" duration="21847000" />
+      <workItem from="1740998691987" duration="44554000" />
+      <workItem from="1741165143407" duration="3202000" />
+      <workItem from="1741226271970" duration="36366000" />
+      <workItem from="1741570461835" duration="19514000" />
+      <workItem from="1741598091446" duration="84000" />
+      <workItem from="1741598182043" duration="48000" />
+      <workItem from="1741598597320" duration="2059000" />
+      <workItem from="1741601093312" duration="25360000" />
+      <workItem from="1741686811334" duration="209000" />
+      <workItem from="1741687027297" duration="449000" />
+      <workItem from="1741687483608" duration="67000" />
+      <workItem from="1741687575281" duration="514000" />
+      <workItem from="1741688104019" duration="60000" />
+      <workItem from="1741688172584" duration="5384000" />
+      <workItem from="1741747411371" duration="185000" />
+      <workItem from="1741749774707" duration="1087000" />
+      <workItem from="1741750878136" duration="673000" />
+      <workItem from="1741751661591" duration="156000" />
+      <workItem from="1741752440617" duration="445000" />
+      <workItem from="1741752935561" duration="6937000" />
+      <workItem from="1741760561158" duration="58775000" />
+      <workItem from="1742000159863" duration="1953000" />
+      <workItem from="1742096864835" duration="709000" />
+    </task>
+    <task id="LOCAL-00185" summary="template: 更新通用双样本模板">
+      <option name="closed" value="true" />
+      <created>1740972310800</created>
+      <option name="number" value="00185" />
+      <option name="presentableId" value="LOCAL-00185" />
+      <option name="project" value="LOCAL" />
+      <updated>1740972310800</updated>
+    </task>
+    <task id="LOCAL-00186" summary="feat: 新增健康人群判断">
+      <option name="closed" value="true" />
+      <created>1740982749032</created>
+      <option name="number" value="00186" />
+      <option name="presentableId" value="LOCAL-00186" />
+      <option name="project" value="LOCAL" />
+      <updated>1740982749032</updated>
+    </task>
+    <task id="LOCAL-00187" summary="fix: 修复1238产品文献输出异常">
+      <option name="closed" value="true" />
+      <created>1740986197307</created>
+      <option name="number" value="00187" />
+      <option name="presentableId" value="LOCAL-00187" />
+      <option name="project" value="LOCAL" />
+      <updated>1740986197307</updated>
+    </task>
+    <task id="LOCAL-00188" summary="feat: 增加注释">
+      <option name="closed" value="true" />
+      <created>1740990242040</created>
+      <option name="number" value="00188" />
+      <option name="presentableId" value="LOCAL-00188" />
+      <option name="project" value="LOCAL" />
+      <updated>1740990242040</updated>
+    </task>
+    <task id="LOCAL-00189" summary="feat: 增加 qc 附录">
+      <option name="closed" value="true" />
+      <created>1740990724286</created>
+      <option name="number" value="00189" />
+      <option name="presentableId" value="LOCAL-00189" />
+      <option name="project" value="LOCAL" />
+      <updated>1740990724286</updated>
+    </task>
+    <task id="LOCAL-00190" summary="template：更新同济报告">
+      <option name="closed" value="true" />
+      <created>1740997923074</created>
+      <option name="number" value="00190" />
+      <option name="presentableId" value="LOCAL-00190" />
+      <option name="project" value="LOCAL" />
+      <updated>1740997923074</updated>
+    </task>
+    <task id="LOCAL-00191" summary="feat: 广附一met14跳合并">
+      <option name="closed" value="true" />
+      <created>1741143789523</created>
+      <option name="number" value="00191" />
+      <option name="presentableId" value="LOCAL-00191" />
+      <option name="project" value="LOCAL" />
+      <updated>1741143789523</updated>
+    </task>
+    <task id="LOCAL-00192" summary="feat: 广附一met14跳合并完善">
+      <option name="closed" value="true" />
+      <created>1741144605545</created>
+      <option name="number" value="00192" />
+      <option name="presentableId" value="LOCAL-00192" />
+      <option name="project" value="LOCAL" />
+      <updated>1741144605545</updated>
+    </task>
+    <task id="LOCAL-00193" summary="fix: 修复广附一浅拷贝会更改原数据bug">
+      <option name="closed" value="true" />
+      <created>1741145658308</created>
+      <option name="number" value="00193" />
+      <option name="presentableId" value="LOCAL-00193" />
+      <option name="project" value="LOCAL" />
+      <updated>1741145658308</updated>
+    </task>
+    <task id="LOCAL-00194" summary="fix: 修复广附一mapped_variant_id空指针">
+      <option name="closed" value="true" />
+      <created>1741152702912</created>
+      <option name="number" value="00194" />
+      <option name="presentableId" value="LOCAL-00194" />
+      <option name="project" value="LOCAL" />
+      <updated>1741152702912</updated>
+    </task>
+    <task id="LOCAL-00195" summary="fix: 修复广附一mapped_variant_id空指针">
+      <option name="closed" value="true" />
+      <created>1741154658696</created>
+      <option name="number" value="00195" />
+      <option name="presentableId" value="LOCAL-00195" />
+      <option name="project" value="LOCAL" />
+      <updated>1741154658696</updated>
+    </task>
+    <task id="LOCAL-00196" summary="feat: 广附一模板上线">
+      <option name="closed" value="true" />
+      <created>1741160186632</created>
+      <option name="number" value="00196" />
+      <option name="presentableId" value="LOCAL-00196" />
+      <option name="project" value="LOCAL" />
+      <updated>1741160186632</updated>
+    </task>
+    <task id="LOCAL-00197" summary="feat：~">
+      <option name="closed" value="true" />
+      <created>1741331743739</created>
+      <option name="number" value="00197" />
+      <option name="presentableId" value="LOCAL-00197" />
+      <option name="project" value="LOCAL" />
+      <updated>1741331743739</updated>
+    </task>
+    <task id="LOCAL-00198" summary="feat：更新common_note 字段">
+      <option name="closed" value="true" />
+      <created>1741332208421</created>
+      <option name="number" value="00198" />
+      <option name="presentableId" value="LOCAL-00198" />
+      <option name="project" value="LOCAL" />
+      <updated>1741332208421</updated>
+    </task>
+    <task id="LOCAL-00199" summary="feat：更新 common_note 表查询字段 查询条件">
+      <option name="closed" value="true" />
+      <created>1741332724890</created>
+      <option name="number" value="00199" />
+      <option name="presentableId" value="LOCAL-00199" />
+      <option name="project" value="LOCAL" />
+      <updated>1741332724890</updated>
+    </task>
+    <task id="LOCAL-00200" summary="feat：更新模块化新逻辑">
+      <option name="closed" value="true" />
+      <created>1741571048491</created>
+      <option name="number" value="00200" />
+      <option name="presentableId" value="LOCAL-00200" />
+      <option name="project" value="LOCAL" />
+      <updated>1741571048491</updated>
+    </task>
+    <task id="LOCAL-00201" summary="feat：更新模块化新逻辑,完善">
+      <option name="closed" value="true" />
+      <created>1741585946986</created>
+      <option name="number" value="00201" />
+      <option name="presentableId" value="LOCAL-00201" />
+      <option name="project" value="LOCAL" />
+      <updated>1741585946986</updated>
+    </task>
+    <task id="LOCAL-00202" summary="fix: 修复重要靶向基因汇总输出异常">
+      <option name="closed" value="true" />
+      <created>1741586533142</created>
+      <option name="number" value="00202" />
+      <option name="presentableId" value="LOCAL-00202" />
+      <option name="project" value="LOCAL" />
+      <updated>1741586533142</updated>
+    </task>
+    <task id="LOCAL-00203" summary="fix: 修复重要靶向基因汇总附录输出异常">
+      <option name="closed" value="true" />
+      <created>1741588018575</created>
+      <option name="number" value="00203" />
+      <option name="presentableId" value="LOCAL-00203" />
+      <option name="project" value="LOCAL" />
+      <updated>1741588018575</updated>
+    </task>
+    <task id="LOCAL-00204" summary="feat: 增加【肉瘤辅助诊断提示】附录">
+      <option name="closed" value="true" />
+      <created>1741589887606</created>
+      <option name="number" value="00204" />
+      <option name="presentableId" value="LOCAL-00204" />
+      <option name="project" value="LOCAL" />
+      <updated>1741589887606</updated>
+    </task>
+    <task id="LOCAL-00205" summary="feat: 增加【肉瘤辅助诊断提示】附录1">
+      <option name="closed" value="true" />
+      <created>1741590044795</created>
+      <option name="number" value="00205" />
+      <option name="presentableId" value="LOCAL-00205" />
+      <option name="project" value="LOCAL" />
+      <updated>1741590044795</updated>
+    </task>
+    <task id="LOCAL-00206" summary="fix: 修复 tmb2 样本类型">
+      <option name="closed" value="true" />
+      <created>1741591701134</created>
+      <option name="number" value="00206" />
+      <option name="presentableId" value="LOCAL-00206" />
+      <option name="project" value="LOCAL" />
+      <updated>1741591701134</updated>
+    </task>
+    <task id="LOCAL-00207" summary="fix: 增加肉瘤表格">
+      <option name="closed" value="true" />
+      <created>1741605360755</created>
+      <option name="number" value="00207" />
+      <option name="presentableId" value="LOCAL-00207" />
+      <option name="project" value="LOCAL" />
+      <updated>1741605360755</updated>
+    </task>
+    <task id="LOCAL-00208" summary="feat: 增加肉瘤表格逻辑">
+      <option name="closed" value="true" />
+      <created>1741607693786</created>
+      <option name="number" value="00208" />
+      <option name="presentableId" value="LOCAL-00208" />
+      <option name="project" value="LOCAL" />
+      <updated>1741607693786</updated>
+    </task>
+    <task id="LOCAL-00209" summary="feat: 增加肉瘤模板生成逻辑">
+      <option name="closed" value="true" />
+      <created>1741608513914</created>
+      <option name="number" value="00209" />
+      <option name="presentableId" value="LOCAL-00209" />
+      <option name="project" value="LOCAL" />
+      <updated>1741608513915</updated>
+    </task>
+    <task id="LOCAL-00210" summary="feat: 更新扁平化处理肉瘤表格逻辑">
+      <option name="closed" value="true" />
+      <created>1741664436682</created>
+      <option name="number" value="00210" />
+      <option name="presentableId" value="LOCAL-00210" />
+      <option name="project" value="LOCAL" />
+      <updated>1741664436682</updated>
+    </task>
+    <task id="LOCAL-00211" summary="feat: QC质控增加 rna 附录判断">
+      <option name="closed" value="true" />
+      <created>1741677565905</created>
+      <option name="number" value="00211" />
+      <option name="presentableId" value="LOCAL-00211" />
+      <option name="project" value="LOCAL" />
+      <updated>1741677565905</updated>
+    </task>
+    <task id="LOCAL-00212" summary="feat: 增加 D+R 样本综合质量逻辑">
+      <option name="closed" value="true" />
+      <created>1741678877701</created>
+      <option name="number" value="00212" />
+      <option name="presentableId" value="LOCAL-00212" />
+      <option name="project" value="LOCAL" />
+      <updated>1741678877701</updated>
+    </task>
+    <task id="LOCAL-00213" summary="feat: 更新项目配置">
+      <option name="closed" value="true" />
+      <created>1741688535721</created>
+      <option name="number" value="00213" />
+      <option name="presentableId" value="LOCAL-00213" />
+      <option name="project" value="LOCAL" />
+      <updated>1741688535721</updated>
+    </task>
+    <task id="LOCAL-00214" summary="feat: 20250311 湘雅三报告名称不展示样本号">
+      <option name="closed" value="true" />
+      <created>1741689101354</created>
+      <option name="number" value="00214" />
+      <option name="presentableId" value="LOCAL-00214" />
+      <option name="project" value="LOCAL" />
+      <updated>1741689101354</updated>
+    </task>
+    <task id="LOCAL-00215" summary="feat: 更新模板">
+      <option name="closed" value="true" />
+      <created>1741689395041</created>
+      <option name="number" value="00215" />
+      <option name="presentableId" value="LOCAL-00215" />
+      <option name="project" value="LOCAL" />
+      <updated>1741689395041</updated>
+    </task>
+    <task id="LOCAL-00216" summary="feat: 增加tomcat配置">
+      <option name="closed" value="true" />
+      <created>1741747301931</created>
+      <option name="number" value="00216" />
+      <option name="presentableId" value="LOCAL-00216" />
+      <option name="project" value="LOCAL" />
+      <updated>1741747301931</updated>
+    </task>
+    <task id="LOCAL-00217" summary="feat: 更新项目依赖">
+      <option name="closed" value="true" />
+      <created>1741760171503</created>
+      <option name="number" value="00217" />
+      <option name="presentableId" value="LOCAL-00217" />
+      <option name="project" value="LOCAL" />
+      <updated>1741760171503</updated>
+    </task>
+    <task id="LOCAL-00218" summary="feat: 备份完整依赖，同时更新 .gitignore">
+      <option name="closed" value="true" />
+      <created>1741766086926</created>
+      <option name="number" value="00218" />
+      <option name="presentableId" value="LOCAL-00218" />
+      <option name="project" value="LOCAL" />
+      <updated>1741766086927</updated>
+    </task>
+    <task id="LOCAL-00219" summary="style: 更新注释">
+      <option name="closed" value="true" />
+      <created>1741766678683</created>
+      <option name="number" value="00219" />
+      <option name="presentableId" value="LOCAL-00219" />
+      <option name="project" value="LOCAL" />
+      <updated>1741766678683</updated>
+    </task>
+    <task id="LOCAL-00220" summary="style: 更新注释1">
+      <option name="closed" value="true" />
+      <created>1741768002475</created>
+      <option name="number" value="00220" />
+      <option name="presentableId" value="LOCAL-00220" />
+      <option name="project" value="LOCAL" />
+      <updated>1741768002476</updated>
+    </task>
+    <task id="LOCAL-00221" summary="feat: A级药物增加获取机构">
+      <option name="closed" value="true" />
+      <created>1741846750602</created>
+      <option name="number" value="00221" />
+      <option name="presentableId" value="LOCAL-00221" />
+      <option name="project" value="LOCAL" />
+      <updated>1741846750602</updated>
+    </task>
+    <task id="LOCAL-00222" summary="fix: 修正数据库为nkb">
+      <option name="closed" value="true" />
+      <created>1741847183923</created>
+      <option name="number" value="00222" />
+      <option name="presentableId" value="LOCAL-00222" />
+      <option name="project" value="LOCAL" />
+      <updated>1741847183923</updated>
+    </task>
+    <task id="LOCAL-00223" summary="feat: 生成报告A级药物增加获批机构">
+      <option name="closed" value="true" />
+      <created>1741847885530</created>
+      <option name="number" value="00223" />
+      <option name="presentableId" value="LOCAL-00223" />
+      <option name="project" value="LOCAL" />
+      <updated>1741847885530</updated>
+    </task>
+    <task id="LOCAL-00224" summary="feat: 生成报告druga药物增加获批机构">
+      <option name="closed" value="true" />
+      <created>1741849414790</created>
+      <option name="number" value="00224" />
+      <option name="presentableId" value="LOCAL-00224" />
+      <option name="project" value="LOCAL" />
+      <updated>1741849414790</updated>
+    </task>
+    <task id="LOCAL-00225" summary="fix: 增加获批机构">
+      <option name="closed" value="true" />
+      <created>1741850423831</created>
+      <option name="number" value="00225" />
+      <option name="presentableId" value="LOCAL-00225" />
+      <option name="project" value="LOCAL" />
+      <updated>1741850423831</updated>
+    </task>
+    <task id="LOCAL-00226" summary="fix: 修复获批机构">
+      <option name="closed" value="true" />
+      <created>1741851027884</created>
+      <option name="number" value="00226" />
+      <option name="presentableId" value="LOCAL-00226" />
+      <option name="project" value="LOCAL" />
+      <updated>1741851027884</updated>
+    </task>
+    <task id="LOCAL-00227" summary="feat: 同济报告名称需求">
+      <option name="closed" value="true" />
+      <created>1741856692626</created>
+      <option name="number" value="00227" />
+      <option name="presentableId" value="LOCAL-00227" />
+      <option name="project" value="LOCAL" />
+      <updated>1741856692626</updated>
+    </task>
+    <task id="LOCAL-00228" summary="template: 20250313更新三峡模板">
+      <option name="closed" value="true" />
+      <created>1741859600973</created>
+      <option name="number" value="00228" />
+      <option name="presentableId" value="LOCAL-00228" />
+      <option name="project" value="LOCAL" />
+      <updated>1741859600973</updated>
+    </task>
+    <task id="LOCAL-00229" summary="fix: 修复 MET &quot;NM_000245.4 exon14_IVS14 c.3013_3028+26del&quot; 不输出突变描述">
+      <option name="closed" value="true" />
+      <created>1741863461249</created>
+      <option name="number" value="00229" />
+      <option name="presentableId" value="LOCAL-00229" />
+      <option name="project" value="LOCAL" />
+      <updated>1741863461249</updated>
+    </task>
+    <task id="LOCAL-00230" summary="fix: 修复 MET &quot;NM_000245.4 exon14_IVS14 c.3013_3028+26del&quot; 输出突变描述异常">
+      <option name="closed" value="true" />
+      <created>1741923432805</created>
+      <option name="number" value="00230" />
+      <option name="presentableId" value="LOCAL-00230" />
+      <option name="project" value="LOCAL" />
+      <updated>1741923432805</updated>
+    </task>
+    <task id="LOCAL-00231" summary="feat: 佛山甲基化报告增加粪便组织判断">
+      <option name="closed" value="true" />
+      <created>1741936876117</created>
+      <option name="number" value="00231" />
+      <option name="presentableId" value="LOCAL-00231" />
+      <option name="project" value="LOCAL" />
+      <updated>1741936876117</updated>
+    </task>
+    <task id="LOCAL-00232" summary="fix: 佛山甲基化报告文件修复不正确">
+      <option name="closed" value="true" />
+      <created>1741941104558</created>
+      <option name="number" value="00232" />
+      <option name="presentableId" value="LOCAL-00232" />
+      <option name="project" value="LOCAL" />
+      <updated>1741941104558</updated>
+    </task>
+    <task id="LOCAL-00233" summary="feat: 更新肉瘤模板静态">
+      <option name="closed" value="true" />
+      <created>1742035322359</created>
+      <option name="number" value="00233" />
+      <option name="presentableId" value="LOCAL-00233" />
+      <option name="project" value="LOCAL" />
+      <updated>1742035322359</updated>
+    </task>
+    <option name="localTasksCounter" value="234" />
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="Test1_main - 2023.02.15 at 15h 03m 28s.xml">
+      <configuration name="Test1.main" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="Test1 - 2023.02.15 at 15h 04m 30s.xml">
+      <configuration name="Test1" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="Test1_ss - 2023.02.15 at 15h 04m 44s.xml">
+      <configuration name="Test1.ss" configurationId="JUnit" />
+    </history-entry>
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="8108993000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49858356" visible="true" weight="0.21782842" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Designer" order="2" />
+      <window_info id="Image Layers" order="3" />
+      <window_info id="Capture Tool" order="4" />
+      <window_info id="UI Designer" order="5" />
+      <window_info id="Favorites" order="6" sideWeight="0.50141644" side_tool="true" weight="0.27010724" />
+      <window_info id="Web" order="7" side_tool="true" />
+      <window_info x="610" y="235" width="316" height="353" id="aws.explorer" order="8" sideWeight="0.50141644" side_tool="true" type="FLOATING" weight="0.21179625" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.43275487" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.6458923" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49932975" weight="0.16147308" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.3286119" />
+      <window_info anchor="bottom" id="Application Servers" order="7" weight="0.3286119" />
+      <window_info anchor="bottom" id="Spring" order="8" weight="0.3286119" />
+      <window_info anchor="bottom" id="Terminal" order="9" weight="0.3286119" />
+      <window_info anchor="bottom" id="Docker" order="10" weight="0.3286119" />
+      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50067025" side_tool="true" weight="0.12606232" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.203966" />
+      <window_info anchor="bottom" id="Version Control" order="13" weight="0.3286119" />
+      <window_info anchor="bottom" id="Java Enterprise" order="14" />
+      <window_info anchor="bottom" id="Database Changes" order="15" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" id="Database" order="2" weight="0.3297587" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="3" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="4" />
+      <window_info anchor="right" id="Capture Analysis" order="5" />
+      <window_info anchor="right" id="Palette&#9;" order="6" />
+      <window_info anchor="right" id="Theme Preview" order="7" />
+      <window_info anchor="right" id="Maven" order="8" weight="0.3297587" />
+      <window_info anchor="right" id="Bean Validation" order="9" weight="0.3297587" />
+      <window_info anchor="right" id="Word Book" order="10" weight="0.32841823" />
+    </layout>
+    <layout-to-restore>
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49858356" visible="true" weight="0.24865952" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Designer" order="2" />
+      <window_info id="Image Layers" order="3" />
+      <window_info id="Capture Tool" order="4" />
+      <window_info id="UI Designer" order="5" />
+      <window_info id="Favorites" order="6" sideWeight="0.50141644" side_tool="true" weight="0.27010724" />
+      <window_info id="Web" order="7" side_tool="true" />
+      <window_info x="610" y="235" width="316" height="353" id="aws.explorer" order="8" sideWeight="0.50141644" side_tool="true" type="FLOATING" weight="0.21179625" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.43275487" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.6458923" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49932975" weight="0.2407932" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.3286119" />
+      <window_info anchor="bottom" id="Application Servers" order="7" weight="0.3286119" />
+      <window_info anchor="bottom" id="Spring" order="8" weight="0.3286119" />
+      <window_info anchor="bottom" id="Terminal" order="9" weight="0.3286119" />
+      <window_info anchor="bottom" id="Docker" order="10" weight="0.3286119" />
+      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50067025" side_tool="true" weight="0.12606232" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.203966" />
+      <window_info anchor="bottom" id="Version Control" order="13" weight="0.3286119" />
+      <window_info anchor="bottom" id="Java Enterprise" order="14" />
+      <window_info anchor="bottom" id="Database Changes" order="15" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" id="Database" order="2" weight="0.3297587" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="3" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="4" />
+      <window_info anchor="right" id="Capture Analysis" order="5" />
+      <window_info anchor="right" id="Palette&#9;" order="6" />
+      <window_info anchor="right" id="Theme Preview" order="7" />
+      <window_info anchor="right" id="Maven" order="8" weight="0.3297587" />
+      <window_info anchor="right" id="Bean Validation" order="9" weight="0.3297587" />
+      <window_info anchor="right" id="Word Book" order="10" weight="0.32841823" />
+    </layout-to-restore>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.py" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: 增加肉瘤模板生成逻辑" />
+    <MESSAGE value="feat: 更新扁平化处理肉瘤表格逻辑" />
+    <MESSAGE value="feat: QC质控增加 rna 附录判断" />
+    <MESSAGE value="feat: 增加 D+R 样本综合质量逻辑" />
+    <MESSAGE value="feat: 更新项目配置" />
+    <MESSAGE value="feat: 20250311 湘雅三报告名称不展示样本号" />
+    <MESSAGE value="feat: 更新模板" />
+    <MESSAGE value="feat: 增加tomcat配置" />
+    <MESSAGE value="feat: 更新项目依赖" />
+    <MESSAGE value="feat: 备份完整依赖，同时更新 .gitignore" />
+    <MESSAGE value="style: 更新注释" />
+    <MESSAGE value="style: 更新注释1" />
+    <MESSAGE value="feat: A级药物增加获取机构" />
+    <MESSAGE value="fix: 修正数据库为nkb" />
+    <MESSAGE value="feat: 生成报告A级药物增加获批机构" />
+    <MESSAGE value="feat: 生成报告druga药物增加获批机构" />
+    <MESSAGE value="fix: 增加获批机构" />
+    <MESSAGE value="fix: 修复获批机构" />
+    <MESSAGE value="feat: 同济报告名称需求" />
+    <MESSAGE value="template: 20250313更新三峡模板" />
+    <MESSAGE value="fix: 修复 MET &quot;NM_000245.4 exon14_IVS14 c.3013_3028+26del&quot; 不输出突变描述" />
+    <MESSAGE value="fix: 修复 MET &quot;NM_000245.4 exon14_IVS14 c.3013_3028+26del&quot; 输出突变描述异常" />
+    <MESSAGE value="feat: 佛山甲基化报告增加粪便组织判断" />
+    <MESSAGE value="fix: 佛山甲基化报告文件修复不正确" />
+    <MESSAGE value="feat: 更新肉瘤模板静态" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 更新肉瘤模板静态" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/novo/report/service/impl/GeneticMarkerVwServiceImpl.java</url>
+          <line>305</line>
+          <option name="timeStamp" value="169" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/novo/report/service/impl/GeneticMarkerVwServiceImpl.java</url>
+          <line>337</line>
+          <option name="timeStamp" value="170" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="org.apache.catalina.connector.RequestFacade" memberName="request" />
+        <PinnedItemInfo parentTag="java.util.HashMap$Node" memberName="value" />
+      </pinned-members>
+    </pin-to-top-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/jsp/ngs/addLife.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3474">
+          <caret line="193" column="12" selection-start-line="193" selection-start-column="12" selection-end-line="193" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/jsp/ngs/previewReportList1.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1296" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/utils/translate_hgvs.pl">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/utils/mutation_explanation.pm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-288">
+          <caret line="26" column="11" selection-start-line="26" selection-start-column="11" selection-end-line="26" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/ftl/AZ定制T790M阳性报告模板.ftl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1836" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/ftl/19del+T790M+.ftl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4968" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/utils/TemplateUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/spring/applicationContext-dao.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="140" column="41" selection-start-line="140" selection-start-column="33" selection-end-line="140" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/spring/applicationContext-service.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="65" selection-start-line="11" selection-start-column="58" selection-end-line="11" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/spring/springmvc.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="14" column="33" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/jsp/ngs/previewReportList2.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-87035">
+          <caret line="241" column="78" selection-start-line="236" selection-start-column="29" selection-end-line="241" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/utils/CreateQRCode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="576">
+          <caret line="40" column="21" selection-start-line="40" selection-start-column="21" selection-end-line="40" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/service/PyReportService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="14" column="27" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/controller/NgsAvailableDataVwController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/mail_IVD.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="21" selection-start-line="4" selection-start-column="9" selection-end-line="4" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/mail.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="1" column="15" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/service/impl/NgsReportServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="57" column="13" selection-start-line="57" selection-start-column="13" selection-end-line="57" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/controller/NgsReportController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4068">
+          <caret line="269" column="29" selection-start-line="269" selection-start-column="29" selection-end-line="269" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/controller/SendEmailController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="24" column="13" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/controller/OfflineReportController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="37" column="13" selection-start-line="37" selection-start-column="13" selection-end-line="37" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/utils/WebserviceProxyUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="7" column="28" lean-forward="true" selection-start-line="7" selection-start-column="28" selection-end-line="7" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/controller/LifeController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="248">
+          <caret line="81" column="65" lean-forward="true" selection-start-line="81" selection-start-column="65" selection-end-line="81" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/controller/AutoCompleteController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1332">
+          <caret line="102" column="42" selection-start-line="102" selection-start-column="42" selection-end-line="102" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/utils/generate_report.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="426" column="30" selection-start-line="426" selection-start-column="27" selection-end-line="426" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/utils/TemplateUtil2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="11" column="16" selection-start-line="11" selection-start-column="16" selection-end-line="11" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/config.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="1" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/user.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="24" selection-start-line="4" selection-start-column="24" selection-end-line="4" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/controller/DriverController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="313">
+          <caret line="68" column="106" selection-start-line="68" selection-start-column="95" selection-end-line="68" selection-end-column="106" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/dao/two/ReportDrugInfoDao.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="232">
+          <caret line="35" column="4" selection-start-line="35" selection-start-column="4" selection-end-line="35" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/dao/two/ReportDrugInfoDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="12" column="8" selection-start-line="12" selection-start-column="8" selection-end-line="12" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/controller/SampleFileController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="151" column="48" selection-start-line="151" selection-start-column="43" selection-end-line="151" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/jdbc.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="8" column="24" lean-forward="true" selection-start-line="8" selection-start-column="24" selection-end-line="8" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/service/GeneticMarkerVwService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="20" column="33" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/jsp/ngs/produceAndReviewReport.jsp">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/WEB-INF/jsp/ngs/produceReport.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="415">
+          <caret line="504" column="60" selection-start-line="504" selection-start-column="60" selection-end-line="504" selection-end-column="77" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/service/impl/GeneticMarkerVwServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-106">
+          <caret line="91" column="33" selection-start-line="91" selection-start-column="33" selection-end-line="91" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/beans/ReportTemplate.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="28224">
+          <caret line="2752" column="5" lean-forward="true" selection-start-line="2752" selection-start-column="5" selection-end-line="2752" selection-end-column="5" />
+          <folding>
+            <element signature="e#44288#44289#0" expanded="true" />
+            <element signature="e#44348#44349#0" expanded="true" />
+            <element signature="e#73347#73348#0" expanded="true" />
+            <element signature="e#73366#73367#0" expanded="true" />
+            <element signature="e#73408#73409#0" expanded="true" />
+            <element signature="e#73433#73434#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/utils/PyAnalysisReportTemplateUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="120" column="29" selection-start-line="120" selection-start-column="18" selection-end-line="120" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="125" column="68" lean-forward="true" selection-start-line="125" selection-start-column="25" selection-end-line="125" selection-end-column="68" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/utils/TranslateUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="179" column="18" selection-start-line="179" selection-start-column="18" selection-end-line="179" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/service/ComplexMutationService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="14" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/dao/two/AnalysisReportDao.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="246">
+          <caret line="543" column="33" selection-start-line="543" selection-start-column="17" selection-end-line="543" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/service/impl/ComplexMutationServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="259">
+          <caret line="166" column="42" selection-start-line="166" selection-start-column="42" selection-end-line="166" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/dao/two/ReportVarDrugDao.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="12" column="4" selection-start-line="12" selection-start-column="4" selection-end-line="12" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/service/impl/ReportCrServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="592" column="40" lean-forward="true" selection-start-line="592" selection-start-column="40" selection-end-line="592" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/dao/two/ReportClinicalTrialDao.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="128" column="4" selection-start-line="128" selection-start-column="4" selection-end-line="128" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/service/ReportCrService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="9" column="16" selection-start-line="9" selection-start-column="16" selection-end-line="9" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/dao/two/ReportVarDrugDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="18" column="9" selection-start-line="18" selection-start-column="9" selection-end-line="18" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/dao/two/AnalysisReportDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="170" column="14" selection-start-line="170" selection-start-column="14" selection-end-line="170" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/controller/GeneMarkerVwController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="190" column="76" lean-forward="true" selection-start-line="190" selection-start-column="76" selection-end-line="190" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/novo/report/dao/two/ReportClinicalTrialDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="407">
+          <caret line="42" column="152" selection-start-line="42" selection-start-column="141" selection-end-line="42" selection-end-column="152" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <last-edited>report_en7:Web exploded</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.5" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>Web (report_en7)|Web</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>report_en7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>11</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>lib</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.20114942" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
