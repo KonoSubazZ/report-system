@@ -16,6 +16,8 @@ public class TemplateConf {
   private Boolean totalRiskAssessment;
   private Boolean thyroidCancerHotSpotResult;
   private Boolean hrdStateTip;
+  private Boolean hrdStateBrac12Tip;
+  private Boolean hrdStateScoreTip;
   private Boolean sarcomaTyping;
   private Boolean sarcomaTyping1;
   private Boolean endometrialCarcinomaTyping;
@@ -201,6 +203,20 @@ public class TemplateConf {
 
   public void setHrd_state_tip(Boolean hrdStateTip) {
     this.hrdStateTip = hrdStateTip;
+  }
+  public Boolean getHrd_state_brac12_tip() {
+    return hrdStateBrac12Tip;
+  }
+
+  public void setHrd_state_brac12_tip(Boolean hrdStateBrac12Tip) {
+    this.hrdStateBrac12Tip = hrdStateBrac12Tip;
+  }
+  public Boolean getHrd_state_score_tip() {
+    return hrdStateScoreTip;
+  }
+
+  public void setHrd_state_score_tip(Boolean hrdStateScoreTip) {
+    this.hrdStateScoreTip = hrdStateScoreTip;
   }
 
 
