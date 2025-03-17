@@ -3794,6 +3794,25 @@ public class PyReportServiceImpl implements PyReportService {
             res.put("testResultSummaryNoteList", testResultSummaryNoteList);
         }
 
+        // 重要靶向用药相关基因结果汇总
+        if (templateConf != null && templateConf.getImportant_targeted_gene_summary()) {
+            ModCommonNote commonNote = new ModCommonNote();
+
+            // 通用重要靶向用药相关基因结果
+            commonNote.setModule("important_targeted_gene_summary1");
+            List<String> importantTargetedGeneSummaryNoteList = moduleService.getImportantTargetedGeneSummaryNote(commonNote);
+
+            commonNote.setCancer(cancerInfo.get("targetCancer").toString());
+            commonNote.setType("通用-" + cancerInfo.get("targetCancer").toString());
+            commonNote.setModule("important_targeted_gene_summary");
+            ModCommonNote importantTargetedGeneSummary = moduleService.getImportantTargetedGeneSummaryNoteAndTitle(commonNote);
+
+            importantTargetedGeneSummaryNoteList.add(0, importantTargetedGeneSummary.getNote());
+
+            res.put("importantTargetedGeneSummaryNoteList", importantTargetedGeneSummaryNoteList);
+            res.put("cancerTitle", importantTargetedGeneSummary.getCancer_title());
+        }
+
         // MSI
         if (templateConf != null && templateConf.getMsi()) {
             ModCommonNote commonNote = new ModCommonNote();
@@ -3901,24 +3920,7 @@ public class PyReportServiceImpl implements PyReportService {
             res.put("qcNoteList", qcNoteList);
         }
 
-        // 重要靶向用药相关基因结果汇总
-        if (templateConf != null && templateConf.getImportant_targeted_gene_summary()) {
-            ModCommonNote commonNote = new ModCommonNote();
 
-            // 通用重要靶向用药相关基因结果
-            commonNote.setModule("important_targeted_gene_summary1");
-            List<String> importantTargetedGeneSummaryNoteList = moduleService.getImportantTargetedGeneSummaryNote(commonNote);
-
-            commonNote.setCancer(cancerInfo.get("targetCancer").toString());
-            commonNote.setType("通用-" + cancerInfo.get("targetCancer").toString());
-            commonNote.setModule("important_targeted_gene_summary");
-            ModCommonNote importantTargetedGeneSummary = moduleService.getImportantTargetedGeneSummaryNoteAndTitle(commonNote);
-
-            importantTargetedGeneSummaryNoteList.add(0, importantTargetedGeneSummary.getNote());
-
-            res.put("importantTargetedGeneSummaryNoteList", importantTargetedGeneSummaryNoteList);
-            res.put("cancerTitle", importantTargetedGeneSummary.getCancer_title());
-        }
 
         // 肉瘤辅助诊断提示-肉瘤分型
         if (templateConf != null && templateConf.getSarcoma_typing()) {
