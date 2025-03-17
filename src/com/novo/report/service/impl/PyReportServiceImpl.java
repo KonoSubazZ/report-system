@@ -3779,6 +3779,10 @@ public class PyReportServiceImpl implements PyReportService {
         if (templateConf != null && templateConf.getTest_result_summary()) {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("test_result_summary");
+            // 【全外显子组升级版（WES Plus）基因检测报告】单独附录
+            if("全外显子组升级版（WES Plus）基因检测报告".equals(rt.getTemplate_name())){
+                commonNote.setType("wes");
+            }
             List<String> testResultSummaryNoteList = moduleService.getTestResultSummaryNote(commonNote);
             res.put("testResultSummaryNoteList", testResultSummaryNoteList);
         }
