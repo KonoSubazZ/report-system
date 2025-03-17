@@ -9,10 +9,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 增加测试模板">
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 增加hrd brac12 score 两个字段">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebContent/docx/NOVO检测报告-通用双样本.docx" beforeDir="false" afterPath="$PROJECT_DIR$/WebContent/docx/NOVO检测报告-通用双样本.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/novo/report/beans/TemplateConf.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/beans/TemplateConf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/novo/report/utils/PyAnalysisReportTemplateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/utils/PyAnalysisReportTemplateUtil.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -519,36 +518,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Downloaded.Files.Path.Enabled": "false",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Tomcat Server.Tomcat 8.5.43.executor": "Debug",
-    "git-widget-placeholder": "feature-module1",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/workspace/enterprise/report_en7/report_en7.iml",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "Settings.JavaScript",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Tomcat Server.Tomcat 8.5.43.executor&quot;: &quot;Debug&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature-module1&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/workspace/enterprise/report_en7/report_en7.iml&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Settings.JavaScript&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.novo.report.beans" />
@@ -1756,15 +1755,8 @@
       <workItem from="1741752935561" duration="6937000" />
       <workItem from="1741760561158" duration="58775000" />
       <workItem from="1742000159863" duration="1953000" />
-      <workItem from="1742096864835" duration="2106000" />
-    </task>
-    <task id="LOCAL-00187" summary="fix: 修复1238产品文献输出异常">
-      <option name="closed" value="true" />
-      <created>1740986197307</created>
-      <option name="number" value="00187" />
-      <option name="presentableId" value="LOCAL-00187" />
-      <option name="project" value="LOCAL" />
-      <updated>1740986197307</updated>
+      <workItem from="1742096864835" duration="4911000" />
+      <workItem from="1742175802045" duration="1525000" />
     </task>
     <task id="LOCAL-00188" summary="feat: 增加注释">
       <option name="closed" value="true" />
@@ -2150,7 +2142,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742098212954</updated>
     </task>
-    <option name="localTasksCounter" value="236" />
+    <task id="LOCAL-00236" summary="feat: 增加hrd brac12 score 两个字段">
+      <option name="closed" value="true" />
+      <created>1742099873902</created>
+      <option name="number" value="00236" />
+      <option name="presentableId" value="LOCAL-00236" />
+      <option name="project" value="LOCAL" />
+      <updated>1742099873902</updated>
+    </task>
+    <option name="localTasksCounter" value="237" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2286,7 +2286,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: QC质控增加 rna 附录判断" />
     <MESSAGE value="feat: 增加 D+R 样本综合质量逻辑" />
     <MESSAGE value="feat: 更新项目配置" />
     <MESSAGE value="feat: 20250311 湘雅三报告名称不展示样本号" />
@@ -2311,7 +2310,8 @@
     <MESSAGE value="feat: 更新肉瘤模板静态" />
     <MESSAGE value="feat: 更新 .ignore" />
     <MESSAGE value="feat: 增加测试模板" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 增加测试模板" />
+    <MESSAGE value="feat: 增加hrd brac12 score 两个字段" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 增加hrd brac12 score 两个字段" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
