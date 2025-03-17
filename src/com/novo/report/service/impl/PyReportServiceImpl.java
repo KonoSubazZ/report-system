@@ -3774,15 +3774,22 @@ public class PyReportServiceImpl implements PyReportService {
 
     private Map<String, Object> generateCommonNote(TemplateConf templateConf, String productName, String sampleType, ReportTemplate rt, Map cancerInfo) {
         Map<String, Object> res = new HashMap<>();
-
+        String templateName = rt.getTemplate_name();
         // 检测结果小结
         if (templateConf != null && templateConf.getTest_result_summary()) {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("test_result_summary");
-            // 【全外显子组升级版（WES Plus）基因检测报告】单独附录
-            if("全外显子组升级版（WES Plus）基因检测报告".equals(rt.getTemplate_name())){
-                commonNote.setType("wes");
+            // 【全外显子组升级版（WES Plus）基因检测报告】单独附录逻辑
+            if("全外显子组升级版（WES Plus）基因检测报告".equals(templateName)){
+                commonNote.setType("WESPLUS");
+            }else if("HRR45_HRDscore基因检测报告".equals(templateName)){
+                commonNote.setType("HRR45_HRDScore");
+            }else if("中国人群BRCA12基因分子分型研究_双样本-盖章版".equals(templateName)){
+                commonNote.setType("BRAC12");
+            }else if("BRCA12基因+同源重组修复缺陷评分（HRD score）检测报告".equals(templateName)){
+                commonNote.setType("BRAC12_HRDScore");
             }
+
             List<String> testResultSummaryNoteList = moduleService.getTestResultSummaryNote(commonNote);
             res.put("testResultSummaryNoteList", testResultSummaryNoteList);
         }
