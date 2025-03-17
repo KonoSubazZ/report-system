@@ -3664,7 +3664,8 @@ public class PyReportServiceImpl implements PyReportService {
         cancerInfo.put("endometrialCarcinoma", endometrialCarcinoma);
         cancerInfo.put("gastrointestinalStromalTumor", gastrointestinalStromalTumor);
         cancerInfo.put("targetCancer", target_cancer);
-        Map<String, Object> productDesc = generateProductDesc(cancerInfo, pd, templateName);
+        cancerInfo.put("sarcomaFlag", sarcomaFlag);
+        Map<String, Object> productDesc = generateProductDesc(cancerInfo, pd, templateName, templateConf);
         rt.setProductDesc(productDesc);
 
         // CUSTOM 生成检测小结信息, 暂时不用合并到 commonNote 中
@@ -3967,7 +3968,7 @@ public class PyReportServiceImpl implements PyReportService {
         return res;
     }
 
-    private Map<String, Object> generateProductDesc(Map<String, Object> cancerInfo, Map pd, String template) {
+    private Map<String, Object> generateProductDesc(Map<String, Object> cancerInfo, Map pd, String template, TemplateConf conf) {
         Map<String, Object> res = new HashMap<>();
         ModProductDesc productDesc = moduleService.getProductDesc(template);
         String productDescStr = productDesc.getProduct_desc();
@@ -3975,7 +3976,10 @@ public class PyReportServiceImpl implements PyReportService {
         if (pd != null) {
             productDescStr = productDescStr + "通过免疫组化检测 PD-L1 表达。";
         }
-        productDescList.add(productDescStr);
+        // 鼻咽癌产品描述特殊，需要用 \r\n 分割展示
+        String[] desc = productDescStr.split("\\r\\n");
+        productDescList.add(Arrays.toString(desc));
+
         // 获取产品描述第二句，根据癌种判断调整展示内容
         ModProductDesc productDesc1 = moduleService.getProductDesc("通用");
         String productDesc1Str = productDesc1.getProduct_desc();
@@ -3990,6 +3994,10 @@ public class PyReportServiceImpl implements PyReportService {
         }
         if (!(boolean) cancerInfo.get("gastrointestinalStromalTumor")) {
             toRemove = "、化疗药物";
+            productDesc1Str = productDesc1Str.replace(toRemove, "");
+        }
+        if (!(boolean) cancerInfo.get("sarcomaFlag") && conf.getSarcoma_typing()) {
+            toRemove = "肉瘤辅助诊断提示、";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
         productDescList.add(productDesc1Str);
