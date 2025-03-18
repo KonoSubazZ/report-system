@@ -3677,7 +3677,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setReferences(references);
 
         // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结、重要靶向基因汇总
-        Map<String, Object> commonNote = generateCommonNote(templateConf, productName, sf.getSample_type(), rt, cancerInfo);
+        Map<String, Object> commonNote = generateCommonNote(templateConf, productName, rt, cancerInfo);
         rt.setCommonNote(commonNote);
 
         AnalysisReport analysisReport = null;
@@ -3772,9 +3772,10 @@ public class PyReportServiceImpl implements PyReportService {
         return reportId;
     }
 
-    private Map<String, Object> generateCommonNote(TemplateConf templateConf, String productName, String sampleType, ReportTemplate rt, Map cancerInfo) {
+    private Map<String, Object> generateCommonNote(TemplateConf templateConf, String productName, ReportTemplate rt, Map cancerInfo) {
         Map<String, Object> res = new HashMap<>();
         String templateName = rt.getTemplate_name();
+        String sampleType = rt.getSummaryOfRresults().get("type").toString();
         // 检测结果小结
         if (templateConf != null && templateConf.getTest_result_summary()) {
             ModCommonNote commonNote = new ModCommonNote();

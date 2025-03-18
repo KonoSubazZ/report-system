@@ -9,7 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 检测结果小结完善v2">
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 更新通用双样本报告模板">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" afterDir="false" />
     </list>
@@ -1756,23 +1756,7 @@
       <workItem from="1741760561158" duration="58775000" />
       <workItem from="1742000159863" duration="1953000" />
       <workItem from="1742096864835" duration="4911000" />
-      <workItem from="1742175802045" duration="13258000" />
-    </task>
-    <task id="LOCAL-00193" summary="fix: 修复广附一浅拷贝会更改原数据bug">
-      <option name="closed" value="true" />
-      <created>1741145658308</created>
-      <option name="number" value="00193" />
-      <option name="presentableId" value="LOCAL-00193" />
-      <option name="project" value="LOCAL" />
-      <updated>1741145658308</updated>
-    </task>
-    <task id="LOCAL-00194" summary="fix: 修复广附一mapped_variant_id空指针">
-      <option name="closed" value="true" />
-      <created>1741152702912</created>
-      <option name="number" value="00194" />
-      <option name="presentableId" value="LOCAL-00194" />
-      <option name="project" value="LOCAL" />
-      <updated>1741152702912</updated>
+      <workItem from="1742175802045" duration="17280000" />
     </task>
     <task id="LOCAL-00195" summary="fix: 修复广附一mapped_variant_id空指针">
       <option name="closed" value="true" />
@@ -2150,7 +2134,23 @@
       <option name="project" value="LOCAL" />
       <updated>1742192297770</updated>
     </task>
-    <option name="localTasksCounter" value="242" />
+    <task id="LOCAL-00242" summary="feat: 重要靶向用药表格备注">
+      <option name="closed" value="true" />
+      <created>1742198801865</created>
+      <option name="number" value="00242" />
+      <option name="presentableId" value="LOCAL-00242" />
+      <option name="project" value="LOCAL" />
+      <updated>1742198801865</updated>
+    </task>
+    <task id="LOCAL-00243" summary="feat: 更新通用双样本报告模板">
+      <option name="closed" value="true" />
+      <created>1742198857805</created>
+      <option name="number" value="00243" />
+      <option name="presentableId" value="LOCAL-00243" />
+      <option name="project" value="LOCAL" />
+      <updated>1742198857805</updated>
+    </task>
+    <option name="localTasksCounter" value="244" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2286,8 +2286,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: 更新项目依赖" />
-    <MESSAGE value="feat: 备份完整依赖，同时更新 .gitignore" />
     <MESSAGE value="style: 更新注释" />
     <MESSAGE value="style: 更新注释1" />
     <MESSAGE value="feat: A级药物增加获取机构" />
@@ -2311,7 +2309,9 @@
     <MESSAGE value="feat: 产品描述增加肉瘤模块" />
     <MESSAGE value="feat: 检测结果小结完善" />
     <MESSAGE value="feat: 检测结果小结完善v2" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 检测结果小结完善v2" />
+    <MESSAGE value="feat: 重要靶向用药表格备注" />
+    <MESSAGE value="feat: 更新通用双样本报告模板" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 更新通用双样本报告模板" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
