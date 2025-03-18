@@ -3775,19 +3775,21 @@ public class PyReportServiceImpl implements PyReportService {
     private Map<String, Object> generateCommonNote(TemplateConf templateConf, String productName, ReportTemplate rt, Map cancerInfo) {
         Map<String, Object> res = new HashMap<>();
         String templateName = rt.getTemplate_name();
-        String sampleType = rt.getSummaryOfRresults().get("type").toString();
+        Object type = rt.getSummaryOfRresults().get("type");
+        String sampleType = (type instanceof String) ? (String) type : "blood";
+
         // 检测结果小结
         if (templateConf != null && templateConf.getTest_result_summary()) {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("test_result_summary");
             // 【全外显子组升级版（WES Plus）基因检测报告】单独附录逻辑
-            if("全外显子组升级版（WES Plus）基因检测报告".equals(templateName)){
+            if ("全外显子组升级版（WES Plus）基因检测报告".equals(templateName)) {
                 commonNote.setType("WESPLUS");
-            }else if("HRR45_HRDscore基因检测报告".equals(templateName)){
+            } else if ("HRR45_HRDscore基因检测报告".equals(templateName)) {
                 commonNote.setType("HRR45_HRDScore");
-            }else if("中国人群BRCA12基因分子分型研究_双样本-盖章版".equals(templateName)){
+            } else if ("中国人群BRCA12基因分子分型研究_双样本-盖章版".equals(templateName)) {
                 commonNote.setType("BRAC12");
-            }else if("BRCA12基因+同源重组修复缺陷评分（HRD score）检测报告".equals(templateName)){
+            } else if ("BRCA12基因+同源重组修复缺陷评分（HRD score）检测报告".equals(templateName)) {
                 commonNote.setType("BRAC12_HRDScore");
             }
 
@@ -3920,7 +3922,6 @@ public class PyReportServiceImpl implements PyReportService {
             List<String> qcNoteList = moduleService.getQcNote(commonNote);
             res.put("qcNoteList", qcNoteList);
         }
-
 
 
         // 肉瘤辅助诊断提示-肉瘤分型
@@ -6222,6 +6223,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 获取RNA和DNA的 worstAssessment, 取最低的评估结果
+     *
      * @param rnaAssessment
      * @param dnaAssessment
      * @return
