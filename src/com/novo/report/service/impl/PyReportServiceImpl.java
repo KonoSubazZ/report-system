@@ -3993,7 +3993,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
         // 鼻咽癌产品描述特殊，需要用 \r\n 分割展示
         String[] desc = productDescStr.split("\\r\\n");
-        productDescList.add(Arrays.toString(desc));
+        productDescList.addAll(Arrays.asList(desc));
 
         // 获取产品描述第二句，根据癌种判断调整展示内容
         ModProductDesc productDesc1 = moduleService.getProductDesc("通用");

@@ -9,8 +9,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 免疫药物用药提示备注双样本完善完毕">
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 更新通用双样本报告模板">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/novo/report/utils/generate_report.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/utils/generate_report.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1755,15 +1757,7 @@
       <workItem from="1741760561158" duration="58775000" />
       <workItem from="1742000159863" duration="1953000" />
       <workItem from="1742096864835" duration="4911000" />
-      <workItem from="1742175802045" duration="28077000" />
-    </task>
-    <task id="LOCAL-00198" summary="feat：更新common_note 字段">
-      <option name="closed" value="true" />
-      <created>1741332208421</created>
-      <option name="number" value="00198" />
-      <option name="presentableId" value="LOCAL-00198" />
-      <option name="project" value="LOCAL" />
-      <updated>1741332208421</updated>
+      <workItem from="1742175802045" duration="29728000" />
     </task>
     <task id="LOCAL-00199" summary="feat：更新 common_note 表查询字段 查询条件">
       <option name="closed" value="true" />
@@ -2149,7 +2143,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742264186538</updated>
     </task>
-    <option name="localTasksCounter" value="247" />
+    <task id="LOCAL-00247" summary="feat: 更新通用双样本报告模板">
+      <option name="closed" value="true" />
+      <created>1742291661752</created>
+      <option name="number" value="00247" />
+      <option name="presentableId" value="LOCAL-00247" />
+      <option name="project" value="LOCAL" />
+      <updated>1742291661752</updated>
+    </task>
+    <option name="localTasksCounter" value="248" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2306,11 +2308,11 @@
     <MESSAGE value="feat: 检测结果小结完善" />
     <MESSAGE value="feat: 检测结果小结完善v2" />
     <MESSAGE value="feat: 重要靶向用药表格备注" />
-    <MESSAGE value="feat: 更新通用双样本报告模板" />
     <MESSAGE value="fix: 免疫tmb模块组织血液判断异常" />
     <MESSAGE value="fix: 免疫tmb模块组织血液判断异常增加空指针判断" />
     <MESSAGE value="feat: 免疫药物用药提示备注双样本完善完毕" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 免疫药物用药提示备注双样本完善完毕" />
+    <MESSAGE value="feat: 更新通用双样本报告模板" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 更新通用双样本报告模板" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

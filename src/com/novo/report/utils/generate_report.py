@@ -464,6 +464,8 @@ if __name__ == '__main__':
         tpl.save(sys.argv[3])
         set_updatefields_true(sys.argv[3])
     except Exception as e:
+        logging.error("模板渲染失败: %s", str(e))
+        traceback.print_exc()  # 打印完整的异常堆栈信息
         raise e
 
 
