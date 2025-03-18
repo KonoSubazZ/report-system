@@ -3816,6 +3816,22 @@ public class PyReportServiceImpl implements PyReportService {
             res.put("cancerTitle", importantTargetedGeneSummary.getCancer_title());
         }
 
+        // TODO immunity 免疫提示解析，暂时用免疫正负解析来代替模块
+        if (templateConf != null && templateConf.getImmunity_P_N_anal()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("immunity");
+            if (templateConf.getTmb() && templateConf.getMsi() && templateConf.getMmr() && templateConf.getHpd()) {
+                commonNote.setType("HPD");
+            } else if (templateConf.getMsi() && templateConf.getMmr()) {
+                commonNote.setType("MMR");
+            } else if (templateConf.getMsi()) {
+                commonNote.setType("MSI");
+            }
+
+            List<String> immunityNoteList = moduleService.getImmunityNote(commonNote);
+            res.put("immunityNoteList", immunityNoteList);
+        }
+
         // MSI
         if (templateConf != null && templateConf.getMsi()) {
             ModCommonNote commonNote = new ModCommonNote();
@@ -3892,22 +3908,6 @@ public class PyReportServiceImpl implements PyReportService {
             commonNote.setModule("cr_mutation_tip");
             List<String> crMutationTipNoteList = moduleService.getcrMutationTipNote(commonNote);
             res.put("crMutationTipNoteList", crMutationTipNoteList);
-        }
-
-        // TODO immunity 免疫提示解析，暂时用免疫正负解析来代替模块
-        if (templateConf != null && templateConf.getImmunity_P_N_anal()) {
-            ModCommonNote commonNote = new ModCommonNote();
-            commonNote.setModule("immunity");
-            if (templateConf.getTmb() && templateConf.getMsi() && templateConf.getMmr() && templateConf.getHpd()) {
-                commonNote.setType("HPD");
-            } else if (templateConf.getMsi() && templateConf.getMmr()) {
-                commonNote.setType("MMR");
-            } else if (templateConf.getMsi()) {
-                commonNote.setType("MSI");
-            }
-
-            List<String> immunityNoteList = moduleService.getImmunityNote(commonNote);
-            res.put("immunityNoteList", immunityNoteList);
         }
 
         // qc 质控附录
