@@ -9,9 +9,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="fix: 免疫tmb模块组织血液判断异常增加空指针判断">
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 免疫药物用药提示备注双样本完善完毕">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1756,15 +1755,7 @@
       <workItem from="1741760561158" duration="58775000" />
       <workItem from="1742000159863" duration="1953000" />
       <workItem from="1742096864835" duration="4911000" />
-      <workItem from="1742175802045" duration="19947000" />
-    </task>
-    <task id="LOCAL-00197" summary="feat：~">
-      <option name="closed" value="true" />
-      <created>1741331743739</created>
-      <option name="number" value="00197" />
-      <option name="presentableId" value="LOCAL-00197" />
-      <option name="project" value="LOCAL" />
-      <updated>1741331743739</updated>
+      <workItem from="1742175802045" duration="28077000" />
     </task>
     <task id="LOCAL-00198" summary="feat：更新common_note 字段">
       <option name="closed" value="true" />
@@ -2150,7 +2141,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742262195858</updated>
     </task>
-    <option name="localTasksCounter" value="246" />
+    <task id="LOCAL-00246" summary="feat: 免疫药物用药提示备注双样本完善完毕">
+      <option name="closed" value="true" />
+      <created>1742264186538</created>
+      <option name="number" value="00246" />
+      <option name="presentableId" value="LOCAL-00246" />
+      <option name="project" value="LOCAL" />
+      <updated>1742264186538</updated>
+    </task>
+    <option name="localTasksCounter" value="247" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2286,7 +2285,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: A级药物增加获取机构" />
     <MESSAGE value="fix: 修正数据库为nkb" />
     <MESSAGE value="feat: 生成报告A级药物增加获批机构" />
     <MESSAGE value="feat: 生成报告druga药物增加获批机构" />
@@ -2311,7 +2309,8 @@
     <MESSAGE value="feat: 更新通用双样本报告模板" />
     <MESSAGE value="fix: 免疫tmb模块组织血液判断异常" />
     <MESSAGE value="fix: 免疫tmb模块组织血液判断异常增加空指针判断" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: 免疫tmb模块组织血液判断异常增加空指针判断" />
+    <MESSAGE value="feat: 免疫药物用药提示备注双样本完善完毕" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 免疫药物用药提示备注双样本完善完毕" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
