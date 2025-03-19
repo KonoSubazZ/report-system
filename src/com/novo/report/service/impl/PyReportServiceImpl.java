@@ -307,8 +307,10 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 获取免疫正、负、超进展 相关数量
         int positiveImmnueNum = 0;
+        int positiveOtherImmnueNum = 0;
         int negativeImmnueNum = 0;
         int hpdImmnueNum = 0;
+
         List<Map> positiveImmnue = new ArrayList<>();
         List<Map> negativeImmnue = new ArrayList<>();
         List<Map> hpdImmnue = new ArrayList<>();
@@ -323,6 +325,14 @@ public class PyReportServiceImpl implements PyReportService {
             positiveImmnueNum = positiveImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
             negativeImmnueNum = negativeImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
             hpdImmnueNum = hpdImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
+
+            // 20250319 新增 positiveOtherImmnueNum 判断是否其他展示检测意义
+            List<String> otherGenes = Arrays.asList("CD274", "KRAS", "PBRM1", "PDCD1LG2", "POLD1", "POLE", "TP53");
+            positiveOtherImmnueNum = (int) positiveImmnue.stream()
+                    .filter(immnue -> !"/".equals(immnue.get("varDesc").toString()) &&
+                            otherGenes.contains(immnue.get("gene").toString()))
+                    .count();
+
             // TODO 待优化 上面用了六个 for ，可优化为一个
             /*
             for (Map immnue : immnueall) {
@@ -1277,6 +1287,7 @@ public class PyReportServiceImpl implements PyReportService {
         summaryOfRresults.put("hasPathogenicityCount", hasPathogenicityCount);
         summaryOfRresults.put("qualityStat", qualityStat);
         summaryOfRresults.put("positiveImmnueNum", positiveImmnueNum);
+        summaryOfRresults.put("positiveOtherImmnueNum", positiveOtherImmnueNum);
         summaryOfRresults.put("negativeImmnueNum", negativeImmnueNum);
         summaryOfRresults.put("hpdImmnueNum", hpdImmnueNum);
         summaryOfRresults.put("immunopositiveSFSize", immunopositiveSFSize); //疗效影响因素-免疫治疗正相关指标
@@ -2915,7 +2926,7 @@ public class PyReportServiceImpl implements PyReportService {
             String[] split = currentNgsAvailable.getProduct_name().split("_");
             if (diseaseName.contains("子宫内膜癌") && "tis".equals(split[1]) || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
                 // TODO 增加配置 01 控制是否展示
-                if (templateConf.getEndometrial_carcinoma_typing()){
+                if (templateConf.getEndometrial_carcinoma_typing()) {
                     endometrialCarcinoma = true;
                 }
             }
@@ -2931,7 +2942,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 20241217 修复辅助肉瘤判断空指针
         if ((diseaseName.contains("肉瘤") && !isblood) || (currentNgsAvailable.getModuleFlag() != null && currentNgsAvailable.getModuleFlag().contains("肉瘤分子分型"))) {
             // TODO 肉瘤分型增加 01 控制是否展示
-            if (templateConf.getSarcoma_typing()){
+            if (templateConf.getSarcoma_typing()) {
                 sarcomaFlag = true;
             }
             List<MmSarcomaTyping> mmSarcomaTypings = moduleModificationAllDao.selectMmSarcomaTypingByReportId(currentNgsAvailable.getReport_id());
