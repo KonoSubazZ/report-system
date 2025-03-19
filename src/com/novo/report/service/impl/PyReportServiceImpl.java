@@ -3446,12 +3446,17 @@ public class PyReportServiceImpl implements PyReportService {
         // 20250319 新免疫基因表格提示输出，动态输出根据panel去重
         if (templateConf != null && templateConf.getImmunity_P_N()) {
             List<Map> positiveGeneList = handleImmunityGene("positive", product_name, positiveDDRImmnue);
+            rt.setPositiveGeneList(positiveGeneList);
+
             List<Map> positiveOtherGeneList = handleImmunityGene("positive_other", product_name, positiveOtherImmnue);
+            rt.setPositiveOtherGeneList(positiveOtherGeneList);
+
             List<Map> negativeGeneList = handleImmunityGene("negative", product_name, negativeImmnueFilter);
-//            rt.setPositiveGeneList(positiveGeneList);
+            rt.setNegativeGeneList(negativeGeneList);
         }
         if (templateConf != null && templateConf.getHpd()) {
             List<Map> hpdGeneList = handleImmunityGene("hpd", product_name, hpdImmnueFilter);
+            rt.setHpdGeneList(hpdGeneList);
         }
 
         // 检测方法与局限性

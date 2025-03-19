@@ -356,7 +356,6 @@ public class PyAnalysisReportTemplateUtil {
         data.put("negativeGeneList", rt.getNegativeGeneList());
         data.put("hpdGeneList", rt.getHpdGeneList());
 
-
         // ===============定制个性化数据===================
 
         // 晶赛 188、550 定制化数据
