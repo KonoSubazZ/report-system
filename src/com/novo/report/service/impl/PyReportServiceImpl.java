@@ -3673,7 +3673,7 @@ public class PyReportServiceImpl implements PyReportService {
         // rt.setTestResultSummary(testResultSummary);
 
         // CUSTOM 生成参考文献信息
-        Map<String, Object> references = generateReferences(templateName, urinaryProstateDisease);
+        Map<String, Object> references = generateReferences(templateName, cancerInfo, templateConf);
         rt.setReferences(references);
 
         // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结、重要靶向基因汇总
@@ -3955,7 +3955,7 @@ public class PyReportServiceImpl implements PyReportService {
         return res;
     }
 
-    private Map<String, Object> generateReferences(String templateName, String urinaryProstateDisease) {
+    private Map<String, Object> generateReferences(String templateName, Map<String, Object> cancerInfo, TemplateConf templateConf) {
         Map<String, Object> res = new HashMap<>();
 
         // TODO 暂时这样判断文献的模块，做张关联表
@@ -3963,6 +3963,7 @@ public class PyReportServiceImpl implements PyReportService {
         String module = "";
         if (templateList.contains(templateName)) {
             module = "通用实体瘤";
+            String urinaryProstateDisease = (String) cancerInfo.get("urinaryProstateDisease");
             if (StringUtils.isNotBlank(urinaryProstateDisease)) {
                 module = "通用泌尿";
             }
@@ -4011,7 +4012,7 @@ public class PyReportServiceImpl implements PyReportService {
             toRemove = "、化疗药物";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
-        if (!(boolean) cancerInfo.get("sarcomaFlag") && conf.getSarcoma_typing()) {
+        if (!(boolean) cancerInfo.get("sarcomaFlag") && !conf.getSarcoma_typing()) {
             toRemove = "肉瘤辅助诊断提示、";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }

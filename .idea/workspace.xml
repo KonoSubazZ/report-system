@@ -9,10 +9,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 更新通用双样本报告模板">
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="fix: 产品描述输出异常list">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/novo/report/utils/generate_report.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/utils/generate_report.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1757,15 +1756,8 @@
       <workItem from="1741760561158" duration="58775000" />
       <workItem from="1742000159863" duration="1953000" />
       <workItem from="1742096864835" duration="4911000" />
-      <workItem from="1742175802045" duration="29728000" />
-    </task>
-    <task id="LOCAL-00199" summary="feat：更新 common_note 表查询字段 查询条件">
-      <option name="closed" value="true" />
-      <created>1741332724890</created>
-      <option name="number" value="00199" />
-      <option name="presentableId" value="LOCAL-00199" />
-      <option name="project" value="LOCAL" />
-      <updated>1741332724890</updated>
+      <workItem from="1742175802045" duration="32885000" />
+      <workItem from="1742296774585" duration="626000" />
     </task>
     <task id="LOCAL-00200" summary="feat：更新模块化新逻辑">
       <option name="closed" value="true" />
@@ -2151,7 +2143,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742291661752</updated>
     </task>
-    <option name="localTasksCounter" value="248" />
+    <task id="LOCAL-00248" summary="fix: 产品描述输出异常list">
+      <option name="closed" value="true" />
+      <created>1742293526462</created>
+      <option name="number" value="00248" />
+      <option name="presentableId" value="LOCAL-00248" />
+      <option name="project" value="LOCAL" />
+      <updated>1742293526462</updated>
+    </task>
+    <option name="localTasksCounter" value="249" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2287,7 +2287,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix: 修正数据库为nkb" />
     <MESSAGE value="feat: 生成报告A级药物增加获批机构" />
     <MESSAGE value="feat: 生成报告druga药物增加获批机构" />
     <MESSAGE value="fix: 增加获批机构" />
@@ -2312,7 +2311,8 @@
     <MESSAGE value="fix: 免疫tmb模块组织血液判断异常增加空指针判断" />
     <MESSAGE value="feat: 免疫药物用药提示备注双样本完善完毕" />
     <MESSAGE value="feat: 更新通用双样本报告模板" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 更新通用双样本报告模板" />
+    <MESSAGE value="fix: 产品描述输出异常list" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: 产品描述输出异常list" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2326,6 +2326,11 @@
           <url>file://$PROJECT_DIR$/src/com/novo/report/service/impl/GeneticMarkerVwServiceImpl.java</url>
           <line>337</line>
           <option name="timeStamp" value="170" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java</url>
+          <line>3778</line>
+          <option name="timeStamp" value="175" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
