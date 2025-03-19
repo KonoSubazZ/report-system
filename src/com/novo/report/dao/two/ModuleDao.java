@@ -22,4 +22,6 @@ public interface ModuleDao {
     ModCommonNote getCommonNote(ModCommonNote modCommonNote);
 
     List<ModCancer> getCommonCancerNote(ModCancer cancer);
+
+    List<ModCancer> getImmunityGeneList(@Param("module")String module,@Param("productName") String productName);
 }

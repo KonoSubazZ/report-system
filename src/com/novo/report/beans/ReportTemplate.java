@@ -458,6 +458,43 @@ public class ReportTemplate {
 
     private Map<String, Object> MGMTInfo;
 
+    public List<Map> getPositiveGeneList() {
+        return positiveGeneList;
+    }
+
+    public void setPositiveGeneList(List<Map> positiveGeneList) {
+        this.positiveGeneList = positiveGeneList;
+    }
+
+    public List<Map> getPositiveOtherGeneList() {
+        return positiveOtherGeneList;
+    }
+
+    public void setPositiveOtherGeneList(List<Map> positiveOtherGeneList) {
+        this.positiveOtherGeneList = positiveOtherGeneList;
+    }
+
+    public List<Map> getNegativeGeneList() {
+        return negativeGeneList;
+    }
+
+    public void setNegativeGeneList(List<Map> negativeGeneList) {
+        this.negativeGeneList = negativeGeneList;
+    }
+
+    public List<Map> getHpdGeneList() {
+        return hpdGeneList;
+    }
+
+    public void setHpdGeneList(List<Map> hpdGeneList) {
+        this.hpdGeneList = hpdGeneList;
+    }
+
+    private List<Map> positiveGeneList;
+    private List<Map> positiveOtherGeneList;
+    private List<Map> negativeGeneList;
+    private List<Map> hpdGeneList;
+
 
     public Map<String, Object> getHenanPeopleCustomInfo() {
         return HenanPeopleCustomInfo;

@@ -97,4 +97,18 @@
           AND cancer = #{cancer}
           AND deleted = 1
     </select>
+
+    <select id="getImmunityGeneList" resultType="com.novo.report.beans.ModCancer">
+        SELECT
+            a.module,
+            a.desc1,
+            a.desc2
+        FROM
+            mod_cancer a
+                JOIN panel_gene b ON a.desc1 = b.gene
+        WHERE
+            a.module = #{module}
+          AND b.product_name = #{productName}
+          AND deleted = 1
+    </select>
 </mapper>

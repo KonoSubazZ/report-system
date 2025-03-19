@@ -81,6 +81,8 @@ public class PyReportServiceImpl implements PyReportService {
 
     @Autowired
     private ModuleService moduleService;
+    @Autowired
+    private ModuleDao moduleDao;
 
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
@@ -3441,6 +3443,17 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setNegative(negative);
         rt.setHpd(hpd);
 
+        // 20250319 新免疫基因表格提示输出，动态输出根据panel去重
+        if (templateConf != null && templateConf.getImmunity_P_N()) {
+            List<Map> positiveGeneList = handleImmunityGene("positive", product_name, positiveDDRImmnue);
+            List<Map> positiveOtherGeneList = handleImmunityGene("positive_other", product_name, positiveOtherImmnue);
+            List<Map> negativeGeneList = handleImmunityGene("negative", product_name, negativeImmnueFilter);
+//            rt.setPositiveGeneList(positiveGeneList);
+        }
+        if (templateConf != null && templateConf.getHpd()) {
+            List<Map> hpdGeneList = handleImmunityGene("hpd", product_name, hpdImmnueFilter);
+        }
+
         // 检测方法与局限性
         List<Map> productModularizations = analysisReportDao.getProductModularization();
         for (Map productModularization : productModularizations) {
@@ -3770,6 +3783,68 @@ public class PyReportServiceImpl implements PyReportService {
             executor.shutdown(); // 回收线程池
         }
         return reportId;
+    }
+
+    /**
+     * 处理生成免疫正负超进展表格
+     *
+     * @param module
+     * @param productName
+     * @param immunityMutGeneList
+     */
+    private List<Map> handleImmunityGene(String module, String productName, List<Map> immunityMutGeneList) {
+        List<ModCancer> geneList = moduleDao.getImmunityGeneList(module, productName);
+        List<Map> immunityGeneList = new ArrayList<>();
+//        for (ModCancer modCancer : geneList) {
+//            Map<String, String> immunityMap = new HashMap<>();
+//
+//            String gene = modCancer.getDesc1();
+//            String geneDesc = modCancer.getDesc2();
+//            String oriVariant = "-";
+//            for (Map immunityMutGene : immunityMutGeneList) {
+//                String gene1 = immunityMutGene.get("gene").toString();
+//                String variant = immunityMutGene.get("variant").toString();
+//                if (!"/".equals(variant)) {
+//                    if (gene.equals(gene1) && oriVariant.equals("-")) {
+//                        oriVariant = variant;
+//                    } else if (gene.equals(gene1) && !oriVariant.equals("-")) {
+//                        oriVariant = oriVariant + "," + variant;
+//                    }
+//                }
+//            }
+//            immunityMap.put("gene", gene);
+//            immunityMap.put("geneDesc", geneDesc);
+//            immunityMap.put("oriVariant", oriVariant);
+//
+//            immunityGeneList.add(immunityMap);
+//        }
+        // 将免疫突变基因列表转换为 Map，便于快速查找
+        Map<String, List<String>> geneVariantMap = new HashMap<>();
+        for (Map immunityMutGene : immunityMutGeneList) {
+            String gene = immunityMutGene.get("gene").toString();
+            String variant = immunityMutGene.get("variant").toString();
+            if (!"/".equals(variant)) {
+                geneVariantMap.computeIfAbsent(gene, k -> new ArrayList<>()).add(variant);
+            }
+        }
+
+        for (ModCancer modCancer : geneList) {
+            Map<String, String> immunityMap = new HashMap<>();
+            String gene = modCancer.getDesc1();
+            String geneDesc = modCancer.getDesc2();
+
+            // 拼接变异信息
+            String oriVariant = geneVariantMap.getOrDefault(gene, Arrays.asList("-")).stream()
+                    .distinct()
+                    .collect(Collectors.joining(","));
+
+            immunityMap.put("gene", gene);
+            immunityMap.put("geneDesc", geneDesc);
+            immunityMap.put("oriVariant", oriVariant);
+
+            immunityGeneList.add(immunityMap);
+        }
+        return immunityGeneList;
     }
 
     private Map<String, Object> generateCommonNote(TemplateConf templateConf, String productName, ReportTemplate rt, Map cancerInfo) {
