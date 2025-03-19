@@ -9,10 +9,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: report json 增加免疫表格数据">
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 增加免疫list set">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/novo/report/utils/PyAnalysisReportTemplateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/utils/PyAnalysisReportTemplateUtil.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1758,15 +1757,7 @@
       <workItem from="1742000159863" duration="1953000" />
       <workItem from="1742096864835" duration="4911000" />
       <workItem from="1742175802045" duration="32885000" />
-      <workItem from="1742296774585" duration="19337000" />
-    </task>
-    <task id="LOCAL-00203" summary="fix: 修复重要靶向基因汇总附录输出异常">
-      <option name="closed" value="true" />
-      <created>1741588018575</created>
-      <option name="number" value="00203" />
-      <option name="presentableId" value="LOCAL-00203" />
-      <option name="project" value="LOCAL" />
-      <updated>1741588018575</updated>
+      <workItem from="1742296774585" duration="19882000" />
     </task>
     <task id="LOCAL-00204" summary="feat: 增加【肉瘤辅助诊断提示】附录">
       <option name="closed" value="true" />
@@ -2152,7 +2143,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742375368292</updated>
     </task>
-    <option name="localTasksCounter" value="252" />
+    <task id="LOCAL-00252" summary="feat: 增加免疫list set">
+      <option name="closed" value="true" />
+      <created>1742375474231</created>
+      <option name="number" value="00252" />
+      <option name="presentableId" value="LOCAL-00252" />
+      <option name="project" value="LOCAL" />
+      <updated>1742375474231</updated>
+    </task>
+    <option name="localTasksCounter" value="253" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2288,7 +2287,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix: 修复获批机构" />
     <MESSAGE value="feat: 同济报告名称需求" />
     <MESSAGE value="template: 20250313更新三峡模板" />
     <MESSAGE value="fix: 修复 MET &quot;NM_000245.4 exon14_IVS14 c.3013_3028+26del&quot; 不输出突变描述" />
@@ -2313,7 +2311,8 @@
     <MESSAGE value="fix: 肉瘤去除异常" />
     <MESSAGE value="feat: 增加免疫正负超进展表格输出" />
     <MESSAGE value="feat: report json 增加免疫表格数据" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: report json 增加免疫表格数据" />
+    <MESSAGE value="feat: 增加免疫list set" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 增加免疫list set" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2330,12 +2329,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java</url>
-          <line>3446</line>
+          <line>3452</line>
           <option name="timeStamp" value="181" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java</url>
-          <line>3826</line>
+          <line>3832</line>
           <option name="timeStamp" value="184" />
         </line-breakpoint>
       </breakpoints>

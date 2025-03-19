@@ -2914,7 +2914,10 @@ public class PyReportServiceImpl implements PyReportService {
         if (currentNgsAvailable.getProduct_name().indexOf("_") != -1 && !"12k_tis_single".equals(currentNgsAvailable.getProduct_name()) && !currentNgsAvailable.getProduct_name().contains("novoivd") || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
             String[] split = currentNgsAvailable.getProduct_name().split("_");
             if (diseaseName.contains("子宫内膜癌") && "tis".equals(split[1]) || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
-                endometrialCarcinoma = true;
+                // TODO 增加配置 01 控制是否展示
+                if (templateConf.getEndometrial_carcinoma_typing()){
+                    endometrialCarcinoma = true;
+                }
             }
         }
         rt.setEndometrialCarcinoma(endometrialCarcinoma);
@@ -2927,7 +2930,10 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 20241217 修复辅助肉瘤判断空指针
         if ((diseaseName.contains("肉瘤") && !isblood) || (currentNgsAvailable.getModuleFlag() != null && currentNgsAvailable.getModuleFlag().contains("肉瘤分子分型"))) {
-            sarcomaFlag = true;
+            // TODO 肉瘤分型增加 01 控制是否展示
+            if (templateConf.getSarcoma_typing()){
+                sarcomaFlag = true;
+            }
             List<MmSarcomaTyping> mmSarcomaTypings = moduleModificationAllDao.selectMmSarcomaTypingByReportId(currentNgsAvailable.getReport_id());
             if (!mmSarcomaTypings.isEmpty()) {
                 for (MmSarcomaTyping mmSarcomaTyping : mmSarcomaTypings) {
