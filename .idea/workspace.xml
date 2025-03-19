@@ -9,8 +9,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 新增 other count 判断">
-      <change beforePath="$PROJECT_DIR$/src/com/novo/report/utils/generate_report.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/utils/generate_report.py" afterDir="false" />
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="fix: py 脚本日志异常">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/novo/report/beans/ReportTemplate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/beans/ReportTemplate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/novo/report/utils/PyAnalysisReportTemplateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/utils/PyAnalysisReportTemplateUtil.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1756,15 +1759,7 @@
       <workItem from="1742000159863" duration="1953000" />
       <workItem from="1742096864835" duration="4911000" />
       <workItem from="1742175802045" duration="32885000" />
-      <workItem from="1742296774585" duration="23519000" />
-    </task>
-    <task id="LOCAL-00206" summary="fix: 修复 tmb2 样本类型">
-      <option name="closed" value="true" />
-      <created>1741591701134</created>
-      <option name="number" value="00206" />
-      <option name="presentableId" value="LOCAL-00206" />
-      <option name="project" value="LOCAL" />
-      <updated>1741591701134</updated>
+      <workItem from="1742296774585" duration="27795000" />
     </task>
     <task id="LOCAL-00207" summary="fix: 增加肉瘤表格">
       <option name="closed" value="true" />
@@ -2150,7 +2145,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742380639479</updated>
     </task>
-    <option name="localTasksCounter" value="255" />
+    <task id="LOCAL-00255" summary="fix: py 脚本日志异常">
+      <option name="closed" value="true" />
+      <created>1742380842721</created>
+      <option name="number" value="00255" />
+      <option name="presentableId" value="LOCAL-00255" />
+      <option name="project" value="LOCAL" />
+      <updated>1742380842721</updated>
+    </task>
+    <option name="localTasksCounter" value="256" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2286,7 +2289,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix: 修复 MET &quot;NM_000245.4 exon14_IVS14 c.3013_3028+26del&quot; 不输出突变描述" />
     <MESSAGE value="fix: 修复 MET &quot;NM_000245.4 exon14_IVS14 c.3013_3028+26del&quot; 输出突变描述异常" />
     <MESSAGE value="feat: 佛山甲基化报告增加粪便组织判断" />
     <MESSAGE value="fix: 佛山甲基化报告文件修复不正确" />
@@ -2311,7 +2313,8 @@
     <MESSAGE value="feat: 增加免疫list set" />
     <MESSAGE value="feat: 子宫内膜癌分型 肉瘤分型 01表的判断" />
     <MESSAGE value="feat: 新增 other count 判断" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 新增 other count 判断" />
+    <MESSAGE value="fix: py 脚本日志异常" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: py 脚本日志异常" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2328,12 +2331,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java</url>
-          <line>3463</line>
+          <line>3465</line>
           <option name="timeStamp" value="181" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java</url>
-          <line>3843</line>
+          <line>3845</line>
           <option name="timeStamp" value="184" />
         </line-breakpoint>
       </breakpoints>

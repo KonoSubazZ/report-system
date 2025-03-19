@@ -179,6 +179,8 @@ public class PyReportServiceImpl implements PyReportService {
         List<Integer> diseaseIdList = (List<Integer>) result_map.get("diseaseIdList");
         Integer diseaseId = (Integer) result_map.get("diseaseId");
         String diseaseName = result_map.get("diseaseName").toString();
+        // 匹配癌种id
+        rt.setDid(diseaseId);
         // cr 相关药物数量(需要看下什么形式)
         int crDrugListSize = (int) result_map.get("crDrugListSize");
         // 胚系突变的数量

@@ -341,6 +341,19 @@ public class ReportTemplate {
     private String urinaryProstateDisease;
     private List<Map> cnvBe;
 
+    public Integer getDid() {
+        return did;
+    }
+
+    public void setDid(Integer did) {
+        this.did = did;
+    }
+
+    /**
+     * 匹配癌种id
+     */
+    private Integer did;
+
     /**
      * docs: 晶赛报告自定义的 BodyDrugTipCustomList
      * 基于通用的bodyDrugTipLineStr（item是位点 ） ->  更新为变异等级（I   II）分类
