@@ -9,12 +9,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="fix: 肉瘤去除异常">
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 增加免疫正负超进展表格输出">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/novo/report/dao/two/ModuleDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/dao/two/ModuleDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/novo/report/dao/two/ModuleDao.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/dao/two/ModuleDao.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/novo/report/utils/ImmuneAllUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/utils/ImmuneAllUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/novo/report/utils/PyAnalysisReportTemplateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/utils/PyAnalysisReportTemplateUtil.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1760,15 +1757,7 @@
       <workItem from="1742000159863" duration="1953000" />
       <workItem from="1742096864835" duration="4911000" />
       <workItem from="1742175802045" duration="32885000" />
-      <workItem from="1742296774585" duration="18707000" />
-    </task>
-    <task id="LOCAL-00201" summary="feat：更新模块化新逻辑,完善">
-      <option name="closed" value="true" />
-      <created>1741585946986</created>
-      <option name="number" value="00201" />
-      <option name="presentableId" value="LOCAL-00201" />
-      <option name="project" value="LOCAL" />
-      <updated>1741585946986</updated>
+      <workItem from="1742296774585" duration="19218000" />
     </task>
     <task id="LOCAL-00202" summary="fix: 修复重要靶向基因汇总输出异常">
       <option name="closed" value="true" />
@@ -2154,7 +2143,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742347719592</updated>
     </task>
-    <option name="localTasksCounter" value="250" />
+    <task id="LOCAL-00250" summary="feat: 增加免疫正负超进展表格输出">
+      <option name="closed" value="true" />
+      <created>1742375140465</created>
+      <option name="number" value="00250" />
+      <option name="presentableId" value="LOCAL-00250" />
+      <option name="project" value="LOCAL" />
+      <updated>1742375140465</updated>
+    </task>
+    <option name="localTasksCounter" value="251" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2290,7 +2287,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: 生成报告druga药物增加获批机构" />
     <MESSAGE value="fix: 增加获批机构" />
     <MESSAGE value="fix: 修复获批机构" />
     <MESSAGE value="feat: 同济报告名称需求" />
@@ -2315,7 +2311,8 @@
     <MESSAGE value="feat: 更新通用双样本报告模板" />
     <MESSAGE value="fix: 产品描述输出异常list" />
     <MESSAGE value="fix: 肉瘤去除异常" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: 肉瘤去除异常" />
+    <MESSAGE value="feat: 增加免疫正负超进展表格输出" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 增加免疫正负超进展表格输出" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

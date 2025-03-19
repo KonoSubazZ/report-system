@@ -350,6 +350,12 @@ public class PyAnalysisReportTemplateUtil {
         // 产品描述信息
         data.put("product", rt.getProductDesc());
 
+        // 免疫提示表格数据
+        data.put("positiveGeneList", rt.getPositiveGeneList());
+        data.put("positiveOtherGeneList", rt.getPositiveOtherGeneList());
+        data.put("negativeGeneList", rt.getNegativeGeneList());
+        data.put("hpdGeneList", rt.getHpdGeneList());
+
 
         // ===============定制个性化数据===================
 
