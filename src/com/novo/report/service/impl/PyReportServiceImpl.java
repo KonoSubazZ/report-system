@@ -367,6 +367,9 @@ public class PyReportServiceImpl implements PyReportService {
         boolean isblood = false;
         //获取样本信息
         SampleFile sf = sampleFileService.getSampleFileBySubbarcode(currentNgsAvailable.getSubbarcode());
+
+        // 设置样本类型
+        rt.setType(sf.getSample_type());
         if ("blood".equals(sf.getSample_type())) {
             isblood = true;
         }

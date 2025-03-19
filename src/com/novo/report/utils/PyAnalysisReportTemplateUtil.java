@@ -332,7 +332,10 @@ public class PyAnalysisReportTemplateUtil {
         data.put("up", rt.getUp()); // 泌尿预后相关基因检测结果
         data.put("urinaryProstateDisease", rt.getUrinaryProstateDisease());
         data.put("cnvBe", rt.getCnvBe());
+        // 癌种id
         data.put("did", rt.getDid());
+        // 样本类型en
+        data.put("type", rt.getType());
         // 检出重要基因总表数据
         data.put("importantTargetedGeneSummary", rt.getImportantTargetedGeneSummary());
         // 报告-基础信息

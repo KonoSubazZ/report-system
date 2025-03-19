@@ -354,6 +354,19 @@ public class ReportTemplate {
      */
     private Integer did;
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * 样本类型en tissue blood
+     */
+    private String type;
+
     /**
      * docs: 晶赛报告自定义的 BodyDrugTipCustomList
      * 基于通用的bodyDrugTipLineStr（item是位点 ） ->  更新为变异等级（I   II）分类
