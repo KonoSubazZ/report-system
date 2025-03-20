@@ -2,15 +2,16 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="report_en7:Web exploded" />
+      <artifact name="report_en7" />
     </artifacts-to-build>
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: json增加英文样本类型">
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 更新双样本模板">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1756,15 +1757,7 @@
       <workItem from="1742000159863" duration="1953000" />
       <workItem from="1742096864835" duration="4911000" />
       <workItem from="1742175802045" duration="32885000" />
-      <workItem from="1742296774585" duration="31194000" />
-    </task>
-    <task id="LOCAL-00209" summary="feat: 增加肉瘤模板生成逻辑">
-      <option name="closed" value="true" />
-      <created>1741608513914</created>
-      <option name="number" value="00209" />
-      <option name="presentableId" value="LOCAL-00209" />
-      <option name="project" value="LOCAL" />
-      <updated>1741608513915</updated>
+      <workItem from="1742296774585" duration="46352000" />
     </task>
     <task id="LOCAL-00210" summary="feat: 更新扁平化处理肉瘤表格逻辑">
       <option name="closed" value="true" />
@@ -2150,7 +2143,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742390700589</updated>
     </task>
-    <option name="localTasksCounter" value="258" />
+    <task id="LOCAL-00258" summary="feat: 更新双样本模板">
+      <option name="closed" value="true" />
+      <created>1742392043873</created>
+      <option name="number" value="00258" />
+      <option name="presentableId" value="LOCAL-00258" />
+      <option name="project" value="LOCAL" />
+      <updated>1742392043873</updated>
+    </task>
+    <option name="localTasksCounter" value="259" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2286,7 +2287,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix: 佛山甲基化报告文件修复不正确" />
     <MESSAGE value="feat: 更新肉瘤模板静态" />
     <MESSAGE value="feat: 更新 .ignore" />
     <MESSAGE value="feat: 增加测试模板" />
@@ -2311,7 +2311,8 @@
     <MESSAGE value="fix: py 脚本日志异常" />
     <MESSAGE value="feat: json增加匹配癌种id" />
     <MESSAGE value="feat: json增加英文样本类型" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: json增加英文样本类型" />
+    <MESSAGE value="feat: 更新双样本模板" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 更新双样本模板" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -4106,7 +4106,7 @@ public class PyReportServiceImpl implements PyReportService {
             toRemove = "内分泌治疗和神经内分泌分化分型以及疾病预后、";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
-        if (!(boolean) cancerInfo.get("endometrialCarcinoma")) {
+        if (!(boolean) cancerInfo.get("endometrialCarcinoma") && !conf.getEndometrial_carcinoma_typing()) {
             toRemove = "子宫内膜癌TCGA分子分型、";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
