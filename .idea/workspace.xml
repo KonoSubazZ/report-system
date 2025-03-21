@@ -9,7 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="fix: 子宫内膜癌增加判断">
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="fix: 处理免疫 variant 展示形式">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" afterDir="false" />
     </list>
@@ -1757,15 +1757,7 @@
       <workItem from="1742000159863" duration="1953000" />
       <workItem from="1742096864835" duration="4911000" />
       <workItem from="1742175802045" duration="32885000" />
-      <workItem from="1742296774585" duration="54801000" />
-    </task>
-    <task id="LOCAL-00211" summary="feat: QC质控增加 rna 附录判断">
-      <option name="closed" value="true" />
-      <created>1741677565905</created>
-      <option name="number" value="00211" />
-      <option name="presentableId" value="LOCAL-00211" />
-      <option name="project" value="LOCAL" />
-      <updated>1741677565905</updated>
+      <workItem from="1742296774585" duration="56792000" />
     </task>
     <task id="LOCAL-00212" summary="feat: 增加 D+R 样本综合质量逻辑">
       <option name="closed" value="true" />
@@ -2151,7 +2143,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742464038685</updated>
     </task>
-    <option name="localTasksCounter" value="260" />
+    <task id="LOCAL-00260" summary="fix: 处理免疫 variant 展示形式">
+      <option name="closed" value="true" />
+      <created>1742550628039</created>
+      <option name="number" value="00260" />
+      <option name="presentableId" value="LOCAL-00260" />
+      <option name="project" value="LOCAL" />
+      <updated>1742550628039</updated>
+    </task>
+    <option name="localTasksCounter" value="261" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2287,7 +2287,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: 更新 .ignore" />
     <MESSAGE value="feat: 增加测试模板" />
     <MESSAGE value="feat: 增加hrd brac12 score 两个字段" />
     <MESSAGE value="feat: 新增测试模板" />
@@ -2312,7 +2311,8 @@
     <MESSAGE value="feat: json增加英文样本类型" />
     <MESSAGE value="feat: 更新双样本模板" />
     <MESSAGE value="fix: 子宫内膜癌增加判断" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: 子宫内膜癌增加判断" />
+    <MESSAGE value="fix: 处理免疫 variant 展示形式" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: 处理免疫 variant 展示形式" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2329,12 +2329,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java</url>
-          <line>3468</line>
+          <line>3469</line>
           <option name="timeStamp" value="181" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java</url>
-          <line>3848</line>
+          <line>3849</line>
           <option name="timeStamp" value="184" />
         </line-breakpoint>
       </breakpoints>

@@ -2929,6 +2929,7 @@ public class PyReportServiceImpl implements PyReportService {
         boolean endometrialCarcinoma = false;
         if (currentNgsAvailable.getProduct_name().indexOf("_") != -1 && !"12k_tis_single".equals(currentNgsAvailable.getProduct_name()) && !currentNgsAvailable.getProduct_name().contains("novoivd") || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
             String[] split = currentNgsAvailable.getProduct_name().split("_");
+            // 子宫内膜癌 子宫内膜癌症
             if (diseaseName.contains("子宫内膜癌") && "tis".equals(split[1]) || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
                 // TODO 增加配置 01 控制是否展示
                 if (templateConf.getEndometrial_carcinoma_typing()) {
@@ -2938,7 +2939,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
         rt.setEndometrialCarcinoma(endometrialCarcinoma);
 
-        // 辅助肉瘤诊断
+        // 辅助肉瘤诊断 肉瘤是个大癌种
         boolean sarcomaFlag = false;
         int geneRearrangementSize = 0;
         int geneRearrangementVariationSize2 = 0;
