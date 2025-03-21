@@ -9,7 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 更新双样本模板">
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="fix: 子宫内膜癌增加判断">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" afterDir="false" />
     </list>
@@ -1757,15 +1757,7 @@
       <workItem from="1742000159863" duration="1953000" />
       <workItem from="1742096864835" duration="4911000" />
       <workItem from="1742175802045" duration="32885000" />
-      <workItem from="1742296774585" duration="46352000" />
-    </task>
-    <task id="LOCAL-00210" summary="feat: 更新扁平化处理肉瘤表格逻辑">
-      <option name="closed" value="true" />
-      <created>1741664436682</created>
-      <option name="number" value="00210" />
-      <option name="presentableId" value="LOCAL-00210" />
-      <option name="project" value="LOCAL" />
-      <updated>1741664436682</updated>
+      <workItem from="1742296774585" duration="54801000" />
     </task>
     <task id="LOCAL-00211" summary="feat: QC质控增加 rna 附录判断">
       <option name="closed" value="true" />
@@ -2151,7 +2143,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742392043873</updated>
     </task>
-    <option name="localTasksCounter" value="259" />
+    <task id="LOCAL-00259" summary="fix: 子宫内膜癌增加判断">
+      <option name="closed" value="true" />
+      <created>1742464038685</created>
+      <option name="number" value="00259" />
+      <option name="presentableId" value="LOCAL-00259" />
+      <option name="project" value="LOCAL" />
+      <updated>1742464038685</updated>
+    </task>
+    <option name="localTasksCounter" value="260" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2287,7 +2287,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: 更新肉瘤模板静态" />
     <MESSAGE value="feat: 更新 .ignore" />
     <MESSAGE value="feat: 增加测试模板" />
     <MESSAGE value="feat: 增加hrd brac12 score 两个字段" />
@@ -2312,7 +2311,8 @@
     <MESSAGE value="feat: json增加匹配癌种id" />
     <MESSAGE value="feat: json增加英文样本类型" />
     <MESSAGE value="feat: 更新双样本模板" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 更新双样本模板" />
+    <MESSAGE value="fix: 子宫内膜癌增加判断" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: 子宫内膜癌增加判断" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

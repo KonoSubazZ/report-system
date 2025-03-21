@@ -3849,8 +3849,17 @@ public class PyReportServiceImpl implements PyReportService {
         Map<String, List<String>> geneVariantMap = new HashMap<>();
         for (Map immunityMutGene : immunityMutGeneList) {
             String gene = immunityMutGene.get("gene").toString();
-            String variant = immunityMutGene.get("variant").toString();
-            if (!"/".equals(variant)) {
+            String oriVariant = immunityMutGene.get("variant").toString();
+            if (!"/".equals(oriVariant)) {
+                String variant = oriVariant;
+                // fix: 处理 variant 展示形式
+                if (oriVariant.contains("c.")) {
+                    variant = oriVariant.substring(oriVariant.indexOf("c."));
+                } else if ("Amplification".equals(oriVariant)) {
+                    variant = gene + "扩增";
+                } else if (oriVariant.contains("Fusion")) {
+                    variant = oriVariant.split(" ")[0] + "融合";
+                }
                 geneVariantMap.computeIfAbsent(gene, k -> new ArrayList<>()).add(variant);
             }
         }
