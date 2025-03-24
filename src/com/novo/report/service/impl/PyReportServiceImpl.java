@@ -3929,7 +3929,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // TODO immunity 免疫提示解析，暂时用免疫正负解析来代替模块
-        if (templateConf != null && templateConf.getImmunity_P_N_anal()) {
+        if (templateConf != null && templateConf.getMsi()) {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("immunity");
             if (templateConf.getTmb() && templateConf.getMsi() && templateConf.getMmr() && templateConf.getHpd()) {

@@ -9,7 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 更新通用双样本">
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="fix: 产品描述不能正常展示">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" afterDir="false" />
     </list>
@@ -1759,15 +1759,7 @@
       <workItem from="1742175802045" duration="32885000" />
       <workItem from="1742296774585" duration="56792000" />
       <workItem from="1742629022003" duration="3480000" />
-      <workItem from="1742779231347" duration="9500000" />
-    </task>
-    <task id="LOCAL-00213" summary="feat: 更新项目配置">
-      <option name="closed" value="true" />
-      <created>1741688535721</created>
-      <option name="number" value="00213" />
-      <option name="presentableId" value="LOCAL-00213" />
-      <option name="project" value="LOCAL" />
-      <updated>1741688535721</updated>
+      <workItem from="1742779231347" duration="11298000" />
     </task>
     <task id="LOCAL-00214" summary="feat: 20250311 湘雅三报告名称不展示样本号">
       <option name="closed" value="true" />
@@ -2153,7 +2145,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742783467046</updated>
     </task>
-    <option name="localTasksCounter" value="262" />
+    <task id="LOCAL-00262" summary="fix: 产品描述不能正常展示">
+      <option name="closed" value="true" />
+      <created>1742794470756</created>
+      <option name="number" value="00262" />
+      <option name="presentableId" value="LOCAL-00262" />
+      <option name="project" value="LOCAL" />
+      <updated>1742794470756</updated>
+    </task>
+    <option name="localTasksCounter" value="263" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2289,7 +2289,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: 增加hrd brac12 score 两个字段" />
     <MESSAGE value="feat: 新增测试模板" />
     <MESSAGE value="feat: 更新通用模板" />
     <MESSAGE value="feat: 产品描述增加肉瘤模块" />
@@ -2314,7 +2313,8 @@
     <MESSAGE value="fix: 子宫内膜癌增加判断" />
     <MESSAGE value="fix: 处理免疫 variant 展示形式" />
     <MESSAGE value="feat: 更新通用双样本" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 更新通用双样本" />
+    <MESSAGE value="fix: 产品描述不能正常展示" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: 产品描述不能正常展示" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
