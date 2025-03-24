@@ -38,7 +38,8 @@ public class PyAnalysisReportTemplateUtil {
                 "泌尿系统肿瘤99基因检测报告",
                 "消化道肿瘤50基因检测报告-双样本-盖章版",
                 "中国人群BRCA12基因分子分型研究_双样本-盖章版",
-                "BRCA12基因+同源重组修复缺陷评分（HRD score）检测报告");
+                "BRCA12基因+同源重组修复缺陷评分（HRD score）检测报告",
+                "HRDscore检测报告");
 
         // TODO 待升级-固定目录
         String docxPath = path + "docx/" + rt.getTemplate_name() + ".docx";
