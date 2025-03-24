@@ -9,9 +9,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 测试服务器更新 docxtpl 到0.16.8">
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 增加 HRDscore检测报告 测试">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/novo/report/utils/PyAnalysisReportTemplateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/utils/PyAnalysisReportTemplateUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/novo/report/utils/generate_report.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/utils/generate_report.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1759,15 +1759,7 @@
       <workItem from="1742175802045" duration="32885000" />
       <workItem from="1742296774585" duration="56792000" />
       <workItem from="1742629022003" duration="3480000" />
-      <workItem from="1742779231347" duration="16203000" />
-    </task>
-    <task id="LOCAL-00216" summary="feat: 增加tomcat配置">
-      <option name="closed" value="true" />
-      <created>1741747301931</created>
-      <option name="number" value="00216" />
-      <option name="presentableId" value="LOCAL-00216" />
-      <option name="project" value="LOCAL" />
-      <updated>1741747301931</updated>
+      <workItem from="1742779231347" duration="16765000" />
     </task>
     <task id="LOCAL-00217" summary="feat: 更新项目依赖">
       <option name="closed" value="true" />
@@ -2153,7 +2145,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742797411995</updated>
     </task>
-    <option name="localTasksCounter" value="265" />
+    <task id="LOCAL-00265" summary="feat: 增加 HRDscore检测报告 测试">
+      <option name="closed" value="true" />
+      <created>1742800685381</created>
+      <option name="number" value="00265" />
+      <option name="presentableId" value="LOCAL-00265" />
+      <option name="project" value="LOCAL" />
+      <updated>1742800685381</updated>
+    </task>
+    <option name="localTasksCounter" value="266" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2289,7 +2289,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: 产品描述增加肉瘤模块" />
     <MESSAGE value="feat: 检测结果小结完善" />
     <MESSAGE value="feat: 检测结果小结完善v2" />
     <MESSAGE value="feat: 重要靶向用药表格备注" />
@@ -2314,7 +2313,8 @@
     <MESSAGE value="fix: 产品描述不能正常展示" />
     <MESSAGE value="fix: 免疫解析不展示" />
     <MESSAGE value="feat: 测试服务器更新 docxtpl 到0.16.8" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 测试服务器更新 docxtpl 到0.16.8" />
+    <MESSAGE value="feat: 增加 HRDscore检测报告 测试" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 增加 HRDscore检测报告 测试" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

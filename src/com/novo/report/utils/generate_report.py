@@ -52,11 +52,12 @@ class MyRichText(RichText):
             text = six.text_type(text)
         if not isinstance(text, six.text_type):
             text = text.decode('utf-8', errors='ignore')
-        text = (escape(text)
-                .replace('\n', NEWLINE_XML)
-                .replace('\a', NEWPARAGRAPH_XML)
-                .replace('\t', TAB_XML)
-                .replace('\f', PAGE_BREAK))
+            text = (escape(text))
+#         text = (escape(text)
+#                 .replace('\n', NEWLINE_XML)
+#                 .replace('\a', NEWPARAGRAPH_XML)
+#                 .replace('\t', TAB_XML)
+#                 .replace('\f', PAGE_BREAK))
 
         prop = u''
 
