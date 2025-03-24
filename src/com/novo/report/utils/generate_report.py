@@ -8,7 +8,12 @@ import sys
 import math
 from docx import Document
 from docx.shared import Mm, Pt
-from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWLINE_XML, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
+# from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWLINE_XML, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
+specific_version_path = "/root/python3-packages"
+sys.path.insert(0, specific_version_path)
+# import docxtpl
+# from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
+from docxtpl import DocxTemplate, R, RichText, InlineImage
 import time
 from unicodedata import name
 from six import iteritems, text_type
