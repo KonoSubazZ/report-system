@@ -772,7 +772,7 @@ public class ReportCrServiceImpl implements ReportCrService {
             Map map = new HashMap<>();
 
             // 20250313 A级药物耐药敏感增加获批机构
-            if ((level == 1 ||  level == 5) ){
+            if ((level == 1 ||  level == 5) && "获批上市".equals(evidencePhase)){
                 String approvingAgency = "";
                 if (list.size() == 4){
                     approvingAgency = list.get(3);

@@ -4412,7 +4412,7 @@ public class PyReportServiceImpl implements PyReportService {
             if (DrugType.equals(approve_range)) {
 
                 // 20250313 A级药物增加获批机构
-                if (approve_range.equals("1") || approve_range.equals("5")) {
+                if ((approve_range.equals("1") || approve_range.equals("5")) && !approval_desc.equals("")) {
                     String approvingAgency = map2.get("approvingAgency") == null ? "" : map2.get("approvingAgency").toString();
                     map.put("approvingAgency", approvingAgency);
                 }
