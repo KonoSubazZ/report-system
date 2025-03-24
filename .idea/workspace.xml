@@ -11,7 +11,6 @@
   <component name="ChangeListManager">
     <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="fix: 处理免疫 variant 展示形式">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1758,6 +1757,8 @@
       <workItem from="1742096864835" duration="4911000" />
       <workItem from="1742175802045" duration="32885000" />
       <workItem from="1742296774585" duration="56792000" />
+      <workItem from="1742629022003" duration="3480000" />
+      <workItem from="1742779231347" duration="2299000" />
     </task>
     <task id="LOCAL-00212" summary="feat: 增加 D+R 样本综合质量逻辑">
       <option name="closed" value="true" />
