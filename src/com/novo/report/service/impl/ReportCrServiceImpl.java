@@ -1,41 +1,27 @@
 package com.novo.report.service.impl;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.sql.Timestamp;
-import java.text.Collator;
-
 import com.novo.report.beans.*;
+import com.novo.report.dao.two.*;
+import com.novo.report.service.ComplexMutationService;
 import com.novo.report.service.LifeService;
+import com.novo.report.service.ReportCrService;
 import com.novo.report.utils.AES;
+import com.novo.report.utils.TranslateUtil;
+import javafx.util.Pair;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import com.novo.report.dao.two.AnalysisReportDao;
-import com.novo.report.dao.two.ReportClinicalTrialDao;
-import com.novo.report.dao.two.ReportDrugInfoDao;
-import com.novo.report.dao.two.ReportUnknownVarDao;
-import com.novo.report.dao.two.ReportVarDrugDao;
-import com.novo.report.service.ComplexMutationService;
-import com.novo.report.service.ReportCrService;
-import com.novo.report.utils.TranslateUtil;
-
-import javafx.util.Pair;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONSerializer;
 import org.springframework.util.StringUtils;
+
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
+import java.text.Collator;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -69,12 +55,13 @@ public class ReportCrServiceImpl implements ReportCrService {
     /**
      * 获取用药信息（暂时理解体细胞突变都会匹配用药 胚系只有has_drug=1才会匹配用药 待确认）
      * 根据匹配规则获取用药信息 突变list diseaseIdList 病种id列表
+     *
      * @param user
-     * @param diseaseId 本癌种 id
-     * @param a 位点信息（基因 突变）
-     * @param diseaseIdList 病种id列表-子父
+     * @param diseaseId           本癌种 id
+     * @param a                   位点信息（基因 突变）
+     * @param diseaseIdList       病种id列表-子父
      * @param parentdiseaseIdList 父级癌种id列表 这个是什么作用??
-     * @param Flag 0 、1去知识库获取用药
+     * @param Flag                0 、1去知识库获取用药
      * @param lang
      * @param report_id
      * @throws IllegalAccessException
@@ -121,7 +108,7 @@ public class ReportCrServiceImpl implements ReportCrService {
 			}
 		}
 		*/
-		// 获取性别
+        // 获取性别
         String gender = lifeService.getGender(report_id) == null ? "" : lifeService.getGender(report_id);
         // 查询本地库，看该位点是否有靶向药物信息、一般来说只有一条
         List<ReportVarDrug> varDrugs = reportVarDrugDao.selectRecord(gene, ori_variant, diseaseId, lang, gender);
@@ -325,6 +312,7 @@ public class ReportCrServiceImpl implements ReportCrService {
 
     /**
      * 获取【vus】信息
+     *
      * @param user
      * @param diseaseId
      * @param diseaseIdList
@@ -487,9 +475,9 @@ public class ReportCrServiceImpl implements ReportCrService {
             String durgStr = drug_name + "&" + disease_name + "&" + evidence_phase;
 
             // 20250313 如果approveRange为1或者5（敏感A、耐药A），则添加approving_agency（获批机构）
-             if ((approveRange.equals("1") || approveRange.equals("5")) && "获批上市".equals(evidence_phase)) {
-                 String approvingAgency = map.get("approving_agency") == null ? null : map.get("approving_agency").toString();
-                 durgStr = durgStr + "&" + approvingAgency;
+            if ((approveRange.equals("1") || approveRange.equals("5")) && "获批上市".equals(evidence_phase)) {
+                String approvingAgency = map.get("approving_agency") == null ? null : map.get("approving_agency").toString();
+                durgStr = durgStr + "&" + approvingAgency;
             }
             drugs.add(durgStr);
         }
@@ -558,6 +546,7 @@ public class ReportCrServiceImpl implements ReportCrService {
 
     /**
      * list可能有多条，获取第一个元素
+     *
      * @param queryList
      * @return
      */
@@ -573,6 +562,7 @@ public class ReportCrServiceImpl implements ReportCrService {
     /**
      * 由gene 和 variant找出在知识库中的mutationID
      * variant 解释 p.R611Q 一般为 p点后缀，比如R611Q，但是有些时候没有，比如p.Arg611Gln，此时需要截取到R611，再从知识库中查找，如果还是没有，则返回null
+     *
      * @param gene
      * @param variant
      * @return
@@ -597,6 +587,7 @@ public class ReportCrServiceImpl implements ReportCrService {
     /**
      * 由mutationID找出所有的父级 mutationId
      * 获取包括自身在内的mutationId list ，一个突变可能有多个父级
+     *
      * @param mutationId
      * @return
      */
@@ -612,6 +603,7 @@ public class ReportCrServiceImpl implements ReportCrService {
 
     /**
      * 获取知识库的更新时间
+     *
      * @param mutationIdList
      * @param gene
      * @param diseaseIdList
@@ -619,14 +611,14 @@ public class ReportCrServiceImpl implements ReportCrService {
      */
     public Timestamp getNkbUpdateTime(List<Integer> mutationIdList, String gene, List<Integer> diseaseIdList) {
         Timestamp nkbUpdateTime = null;
-         if (mutationIdList.isEmpty()) {
+        if (mutationIdList.isEmpty()) {
             nkbUpdateTime = new Timestamp(0);
         } else {
-             // 获取知识库的突变、用药、临床信息获取 var_drug_anno 最晚更新时间更新时间
+            // 获取知识库的突变、用药、临床信息获取 var_drug_anno 最晚更新时间更新时间
             nkbUpdateTime = analysisReportDao.getVarDrugAnnoUpdateTime(mutationIdList, diseaseIdList);
         }
-         if (nkbUpdateTime == null) nkbUpdateTime = new Timestamp(0);
-         // 获取基因 gene_anno 的更新时间
+        if (nkbUpdateTime == null) nkbUpdateTime = new Timestamp(0);
+        // 获取基因 gene_anno 的更新时间
         Timestamp geneAnnoUpdateTime = analysisReportDao.getGeneAnnoUpdateTime(gene, diseaseIdList);
         Timestamp varAnnoUpdateTime = new Timestamp(0);
         Timestamp variantDescriptionUpdateTime = new Timestamp(0);
@@ -647,6 +639,7 @@ public class ReportCrServiceImpl implements ReportCrService {
     /**
      * 从知识库获取所有信息，并更新 rp_var_drug_en7 表
      * 如果user为空，就表示只读，不修改本地库
+     *
      * @param user
      * @param a
      * @param reportVarDrug
@@ -680,7 +673,7 @@ public class ReportCrServiceImpl implements ReportCrService {
         while (iterator.hasNext()) {
             Map b = iterator.next();
             int drugLevel = getDrugLevel(b, parentdiseaseIdList);
-             b.put("approve_range", String.valueOf(drugLevel));
+            b.put("approve_range", String.valueOf(drugLevel));
         }
 
         // TODO drugFlag 药物是否加#的标记 ==> 什么时候加 # ==> 有临床实验加 #
@@ -690,15 +683,15 @@ public class ReportCrServiceImpl implements ReportCrService {
         if (!mutationIdList.isEmpty()) {
             List<Map> otherADrugList = analysisReportDao.getOtherADrugListByIdList(mutationIdList, diseaseIdList, lang, mutation_type, sonIdList);
             // 过滤不是A、B药物
-            List<Map> mapList = drugList.stream().filter(s -> Arrays.asList("1","2","5","6").contains(s.get("approve_range"))).collect(Collectors.toList());
+            List<Map> mapList = drugList.stream().filter(s -> Arrays.asList("1", "2", "5", "6").contains(s.get("approve_range"))).collect(Collectors.toList());
             List<String> drugId = mapList.stream().map(map -> map.get("drug_id").toString()).collect(Collectors.toList());
             List<Map> otherADrugListFilter = otherADrugList.stream().filter(s -> !drugId.contains(s.get("drug_id").toString())).collect(Collectors.toList());
             Iterator<Map> otherADrugIterator = otherADrugListFilter.iterator();
             while (otherADrugIterator.hasNext()) {
                 Map b = otherADrugIterator.next();
-                if ("Resistant".equals(b.get("relationship").toString())){
+                if ("Resistant".equals(b.get("relationship").toString())) {
                     b.put("approve_range", "7");
-                } else  {
+                } else {
                     b.put("approve_range", "3");
                 }
             }
@@ -763,7 +756,7 @@ public class ReportCrServiceImpl implements ReportCrService {
             String drugName = list.get(0);
             String diseaseName = list.get(1);
             // 20241205 知识库更新了胰脏腺癌 本地没有更新 修复
-            if (diseaseName.equals("胰脏腺癌")){
+            if (diseaseName.equals("胰脏腺癌")) {
                 diseaseName = "胰腺腺癌";
             }
             Map disease = analysisReportDao.getDiseaseId(diseaseName);
@@ -772,12 +765,13 @@ public class ReportCrServiceImpl implements ReportCrService {
             Map map = new HashMap<>();
 
             // 20250313 A级药物耐药敏感增加获批机构
-            if ((level == 1 ||  level == 5) && "获批上市".equals(evidencePhase)){
+            if ((level == 1 || level == 5) && "获批上市".equals(evidencePhase)) {
                 String approvingAgency = "";
-                if (list.size() == 4){
+                if (list.size() == 4) {
                     approvingAgency = list.get(3);
-                }else {
-                  approvingAgency = reportDrugInfoDao.getApprovingAgency(disease_id, drugName);
+                } else {
+                    String oriName = drugName.replaceAll("[#*]", "");
+                    approvingAgency = reportDrugInfoDao.getApprovingAgency(disease_id, oriName);
                 }
                 map.put("approvingAgency", approvingAgency);
             }
@@ -970,8 +964,9 @@ public class ReportCrServiceImpl implements ReportCrService {
     }
 
     /**
-     *  更新本地库 用药
-     *  只有从知识库获取的用药信息才更新
+     * 更新本地库 用药
+     * 只有从知识库获取的用药信息才更新
+     *
      * @param user
      * @param reportVarDrug
      * @param drugList
@@ -1301,10 +1296,10 @@ public class ReportCrServiceImpl implements ReportCrService {
     }
 
 
-
     /**
      * 获取药物级别 根据 evidence_phase_id
      * 获取药物级别：1-4为获益A，B，C，D级药物， 5-8为耐药A，B，C，D级药物， 9，其他
+     *
      * @param b
      * @param parentdiseaseIdList 用来判断耐药C
      * @return
@@ -1316,7 +1311,7 @@ public class ReportCrServiceImpl implements ReportCrService {
         if ("Resistant".equals(b.get("relationship").toString()) && evidence_phase_id >= 12) {
             if (evidence_phase_id > 22) {
                 return 5;
-            }else if (evidence_phase_id > 17 && evidence_phase_id < 23) {
+            } else if (evidence_phase_id > 17 && evidence_phase_id < 23) {
                 return 6;
             } else if (evidence_phase_id > 15 && evidence_phase_id < 18) {
                 return 7;
@@ -1359,6 +1354,7 @@ public class ReportCrServiceImpl implements ReportCrService {
     /**
      * 获取 Give
      * 针对于 evidence_phase_id == 14 的特殊判断
+     *
      * @param b
      * @param parentdiseaseIdList
      * @return
@@ -1367,7 +1363,7 @@ public class ReportCrServiceImpl implements ReportCrService {
         Integer clinical_num = analysisReportDao.getClinicalNumber(Integer.parseInt(b.get("annotation_id").toString()), parentdiseaseIdList);
         if (clinical_num > 0) {
             return "2";
-        }else {
+        } else {
             if (b.get("has_previous_clinical_result") == null || "Y".equals(b.get("has_previous_clinical_result").toString())) {
                 return "1";
             }
@@ -1395,7 +1391,7 @@ public class ReportCrServiceImpl implements ReportCrService {
         if (drugs.size() > 0 && !drugs.isEmpty()) {
             drugInfo1 = drugs.get(0);
         }
-            return drugInfo1;
+        return drugInfo1;
     }
 
     @Override
@@ -1601,7 +1597,7 @@ public class ReportCrServiceImpl implements ReportCrService {
                 Integer drug_id = analysisReportDao.getDrugId(drugName);
 
                 // TODO 暂时解决一下 待排查
-                if (diseaseName.equals("胰脏腺癌")){
+                if (diseaseName.equals("胰脏腺癌")) {
                     diseaseName = "胰腺腺癌";
                 }
                 Map disease = analysisReportDao.getDiseaseId(diseaseName);
