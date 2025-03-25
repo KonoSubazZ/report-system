@@ -8,6 +8,7 @@ import sys
 import math
 from docx import Document
 from docx.shared import Mm, Pt
+from io import BytesIO
 from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWLINE_XML, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
 import time
 from unicodedata import name
@@ -142,12 +143,17 @@ def myimage(value):
     myimage = InlineImage(tpl, 'a.png', width=Pt(283.5), height=Pt(225))
     return myimage
 
-def pdimage(value,width,height):
+# def pdimage(value,width,height):
+#     imgdata = base64.b64decode(value)
+#     file = open('aa.jpg', 'wb')
+#     file.write(imgdata)
+#     file.close()
+#     pdimage = InlineImage(tpl, 'aa.jpg', width=Pt(width), height=Pt(height))
+#     return pdimage
+def pdimage(value, width, height):
     imgdata = base64.b64decode(value)
-    file = open('aa.jpg', 'wb')
-    file.write(imgdata)
-    file.close()
-    pdimage = InlineImage(tpl, 'aa.jpg', width=Pt(width), height=Pt(height))
+    image_stream = BytesIO(imgdata)
+    pdimage = InlineImage(tpl, image_stream, width=Pt(width), height=Pt(height))
     return pdimage
 
 def currencyimage(value,width,height):
