@@ -147,5 +147,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where
 		    a.drug_name_chinese = #{drug_name}
 		  and b.disease_id = #{disease_id}
+		  and b.checking_status_id = 1
+
 	</select>
 </mapper>
