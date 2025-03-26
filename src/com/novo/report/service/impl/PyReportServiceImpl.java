@@ -167,6 +167,11 @@ public class PyReportServiceImpl implements PyReportService {
         List<Integer> diseaseIdList = (List<Integer>) result_map.get("diseaseIdList");
         Integer diseaseId = (Integer) result_map.get("diseaseId");
         String diseaseName = result_map.get("diseaseName").toString();
+
+        // 生成解读癌种标志，需要判断子父级，用于判断做癌种判断
+        Map<String, Boolean> diseaseFlag = generateDiseaseFlag(diseaseName);
+        rt.setDisease(diseaseFlag);
+
         // cr 相关药物数量(需要看下什么形式)
         int crDrugListSize = (int) result_map.get("crDrugListSize");
         // 胚系突变的数量
@@ -3780,11 +3785,26 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
     /**
+     * 生成报告是否各癌种的标志癌种名字,判断标准为包含及解读癌种的子级关系
+     * @param diseaseName
+     */
+    private Map<String,Boolean> generateDiseaseFlag(String diseaseName) {
+        // 暂时所有的癌种Flag
+        // String[] cancers = {"BrainGlioma", "Sarcoma", "Midline", "Kidney"};
+        Map<String,Boolean> disease = new HashMap<>();
+        disease.put("BrainGlioma", diseaseName.contains("脑胶质瘤"));
+        disease.put("Sarcoma", diseaseName.contains("肉瘤"));
+        disease.put("Midline", diseaseName.contains("中线癌"));
+        disease.put("Kidney", diseaseName.contains("肾癌"));
+
+        return disease;
+    }
+
+    /**
      * 合并广附一 MET14跳
      * 具体逻辑为把位点父级 variant 包含 [Exon14 Skipping Mutation]的位点的orivariant mutFreq合并到位点variant [MET-MET Fusion M13:M15]
      * 具体信息以 MET-MET Fusion M13:M15 来展示
      *
-     * @param unknownVarAnalysisStr
      * @param bodyDrugNoComplexStr
      * @param snpIndelFileAll
      */
@@ -3831,8 +3851,8 @@ public class PyReportServiceImpl implements PyReportService {
     /**
      * 统计数据的特殊需求，处理特殊格式
      *
-     * @param map allMutation
-     * @param map targetedDrugDetection
+     * #@param map allMutation
+     * #@param map targetedDrugDetection
      * @return List<Map> fusionAll 融合列表
      */
     private void generateTongJiData(Map mutation, Map targetedDrugDetection, List<Map> fusionAll, String mutationType) {
@@ -4068,7 +4088,7 @@ public class PyReportServiceImpl implements PyReportService {
      * @param targetedDrugTipList     全部靶向用药解析
      * @param dMMRGeneList            MMR基因list
      * @param crAllList               所有胚系突变信息
-     * @param thisGeneticmarkerVwList 所有体系信息
+     * #@param thisGeneticmarkerVwList 所有体系信息
      * @param positiveInfo            免疫正信息map，包含所有基因
      * @param positiveOtherInfo       免疫正其他信息map
      * @param negativeInfo            免疫负信息map

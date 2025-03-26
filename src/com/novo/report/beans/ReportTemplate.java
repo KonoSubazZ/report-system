@@ -109,6 +109,19 @@ public class ReportTemplate {
     private String commission_date;
     private String diseaseName;
     private Map zeroDrugTipInfo;
+
+    public Map<String, Boolean> getDisease() {
+        return disease;
+    }
+
+    public void setDisease(Map<String, Boolean> disease) {
+        this.disease = disease;
+    }
+
+    /**
+     * 癌种判断
+     */
+    private Map<String, Boolean> disease;
     private String geneCount;
     private String mutCount;
     private String drugCount;
