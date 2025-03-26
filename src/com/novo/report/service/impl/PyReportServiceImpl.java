@@ -5659,18 +5659,15 @@ public class PyReportServiceImpl implements PyReportService {
         String tmb_status = "";
         DecimalFormat df = new DecimalFormat("0.000");
         int size = snpIndelFileAll.size();
-        if (productName.contains("1238")) {
+        if (productName.contains("1238") || productName.contains("988")) {
             tmbV = Double.valueOf(df.format(size / 1.4));
-            /*if (productName.contains("blo_1238")) {
-                tmb_status = "b" + getTmbStatus(tmbV, 20.0, 19.333, 19.333, chem_cancer);
-            } else if (productName.contains("tis_1238")) {
-                tmb_status = getTmbStatus(tmbV, 7.03, 4.81, 5.18, chem_cancer);
-            }*/
-            if (productName.contains("blo_1238")) {
+
+            if (productName.contains("blo_1238") || productName.contains("blo_988")) {
                 tmb_status = getTmbStatus(tmbV, 15.714, 18.214, 15, chem_cancer);
-            } else if (productName.contains("tis_1238")) {
+            } else if (productName.contains("tis_1238") || productName.contains("tis_988")) {
                 tmb_status = getTmbStatus(tmbV, 6.429, 7.143, 5, chem_cancer);
             }
+
         } else if (productName.contains("550")) {
             tmbV = Double.valueOf(df.format(size / 1.5));
             if (productName.contains("blo_550")) {
