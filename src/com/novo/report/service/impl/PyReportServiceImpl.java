@@ -256,7 +256,7 @@ public class PyReportServiceImpl implements PyReportService {
         String tmb_PIC = analysisReportDao.getTMB_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         String tmb_Percent = "";
         if (StringUtils.isEmpty(tmb_PIC)) {
-            if (!StringUtils.isEmpty(tmb) && (tmbProductName.contains("tis_550") || tmbProductName.contains("blo_550") || tmbProductName.contains("tis_1238") || tmbProductName.contains("blo_1238"))) {
+            if (!StringUtils.isEmpty(tmb) && (tmbProductName.contains("tis_550") || tmbProductName.contains("blo_550") || tmbProductName.contains("tis_1238") || tmbProductName.contains("blo_1238") ||  tmbProductName.contains("novopm2_blo_988") || tmbProductName.contains("novopm2_tis_988"))) {
                 String tmbPIC = getTmbPIC(tmb, chem_cancer, currentNgsAvailable.getSubbarcode(), tmbProductName);
                 if (!StringUtils.isEmpty(tmbPIC) && !("None".equals(tmbPIC) || "None\n".equals(tmbPIC))) {
                     List<String> tmbList = Arrays.asList(gson.fromJson(tmbPIC, String[].class));
@@ -3075,7 +3075,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 脑胶质瘤相关分子标记物检测结果
         boolean brainGliomaFlag = false;
-        if (product_name.equals("novopm2_tis_200")) {
+        if (product_name.equals("novopm2_tis_200") || product_name.equals("novopm2_rna1166_Sarcoma")) {
             brainGliomaFlag = true;
             List<MmBrainGlioma> mmBrainGliomas = moduleModificationAllDao.selectMmBrainGliomaByReportId(currentNgsAvailable.getReport_id());
             if (!CollectionUtils.isEmpty(mmBrainGliomas)) {
