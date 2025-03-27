@@ -843,6 +843,7 @@ public class GeneMarkerVwController {
                                 mmBrainGlioma.setUpdate_by(user_account);
                                 mmBrainGlioma.setUpdate_date(DateUtil.getSystemTime());
                                 moduleModificationAllDao.insertMmBrainGlioma(mmBrainGlioma);
+                                mmBrainGliomas.add(mmBrainGlioma);
 
                                 return mmBrainGlioma;
                             })
