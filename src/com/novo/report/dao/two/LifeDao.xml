@@ -15,6 +15,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="subbarcode!=null and subbarcode!=''">
 				and subbarcode =#{subbarcode}
 			</if>
+			<if test="product_name !=null and product_name != ''">
+				and product_name =#{product_name}
+			</if>
 		</where>
 	</select>
 	<select id="getDataFileStatusByPage" resultType="DataFileStatus">
@@ -27,6 +30,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
 			<if test="subbarcode!=null and subbarcode!=''">
 				and subbarcode =#{subbarcode}
+			</if>
+			<if test="product_name !=null and product_name != ''">
+				and product_name =#{product_name}
 			</if>
 		</where>
 		limit #{pageNo},#{pageSize}

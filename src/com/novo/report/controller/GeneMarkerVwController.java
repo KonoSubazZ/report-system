@@ -853,6 +853,85 @@ public class GeneMarkerVwController {
             }
             model.addAttribute("brainGliomaFlag", brainGlioma1166Flag);
 
+            // 1166 中线癌分型、肾脏分型模块，暂不清楚是否是通用逻辑
+            boolean cancerTypingFlag = false;
+            if (product_name.equals("novopm2_rna1166_Sarcoma")) {
+                cancerTypingFlag = true;
+                List<CancerTyping> cancerTypings = moduleModificationAllDao.getCancerTypingById(currentNgsAvailable.getReport_id());
+                if (cancerTypings.isEmpty()) {
+                    // 中线癌分型
+                    List<Map> fusionAll = analysisReportDao.getFusionAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+                    if (diseaseName.contains("中线癌")) {
+                        List<Map> MidlineTyping = analysisReportDao.getImmuneRelatedGene("Midline1166");
+                        for (Map map : MidlineTyping) {
+                            String gene = map.get("gene").toString();
+                            String info = map.get("info").toString();
+                            for (Map fusionMap : fusionAll) {
+                                String gene1 = fusionMap.get("gene").toString();
+                                String variant = fusionMap.get("ori_variant").toString();
+                                if (gene1.equals(gene)) {
+                                    if (variant.contains("NSD3-NUTM1 Fusion") && gene.equals("NSD3")) {
+                                        CancerTyping cancerTyping = new CancerTyping();
+                                        cancerTyping.setReport_id(currentNgsAvailable.getReport_id());
+                                        cancerTyping.setGene(gene);
+                                        cancerTyping.setVariant(variant);
+                                        cancerTyping.setTranscript(variant);
+                                        cancerTyping.setMutFreq(variant);
+                                        cancerTyping.setSubtype(variant);
+                                        cancerTyping.setEvidence(variant);
+                                        cancerTyping.setCreated_by(user_account);
+                                        cancerTyping.setUpdate_by(user_account);
+                                        moduleModificationAllDao.insertCancerTyping(cancerTyping);
+                                    } else {
+                                        CancerTyping cancerTyping = new CancerTyping();
+                                        cancerTyping.setReport_id(currentNgsAvailable.getReport_id());
+                                        cancerTyping.setGene(gene);
+                                        cancerTyping.setVariant(variant);
+                                        cancerTyping.setTranscript(variant);
+                                        cancerTyping.setMutFreq(variant);
+                                        cancerTyping.setSubtype(variant);
+                                        cancerTyping.setEvidence(variant);
+                                        cancerTyping.setCreated_by(user_account);
+                                        cancerTyping.setUpdate_by(user_account);
+                                        moduleModificationAllDao.insertCancerTyping(cancerTyping);
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+
+                    // 肾癌分型
+                    if (diseaseName.contains("肾癌")) {
+                        List<Map> KidneyTyping = analysisReportDao.getImmuneRelatedGene("Kidney1166");
+                        for (Map map : KidneyTyping) {
+                            String gene = map.get("gene").toString();
+                            String info = map.get("info").toString();
+                            for (Map fusionMap : fusionAll) {
+                                String gene1 = fusionMap.get("gene").toString();
+                                String variant = fusionMap.get("ori_variant").toString();
+                                if (gene1.equals(gene)) {
+                                    CancerTyping cancerTyping = new CancerTyping();
+                                    cancerTyping.setReport_id(currentNgsAvailable.getReport_id());
+                                    cancerTyping.setGene(gene);
+                                    cancerTyping.setVariant(variant);
+                                    cancerTyping.setTranscript(variant);
+                                    cancerTyping.setMutFreq(variant);
+                                    cancerTyping.setSubtype(info);
+                                    cancerTyping.setEvidence(variant);
+                                    cancerTyping.setCreated_by(user_account);
+                                    cancerTyping.setUpdate_by(user_account);
+                                    moduleModificationAllDao.insertCancerTyping(cancerTyping);
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+
+            }
+
             // 内分泌相关(泌尿系统肿瘤99基因报告)  || 188/462/550/1238/WES/WES plus/988中双样本
             boolean prostateCancerFlag = false;
             boolean urinaryProstateFlag = false;

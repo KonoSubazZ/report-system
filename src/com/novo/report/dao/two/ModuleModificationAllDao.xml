@@ -200,7 +200,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		values (#{report_id},#{approved_id},#{disease},#{drug},#{indication},#{institution},#{update_by},#{update_date})
 	</insert>
 
-    <update id="updateMmApprovedDrug">
+	<update id="updateMmApprovedDrug">
 		update mm_approved_drug set indication=#{indication},institution=#{institution},update_by=#{update_by},update_date=sysdate()
 		where report_id=#{report_id} and disease=#{disease} and drug=#{drug}
 	</update>
@@ -210,4 +210,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from mm_approved_drug
 		where report_id = #{report_id}
 	</select>
+	<select id="getCancerTypingById" resultType="com.novo.report.beans.CancerTyping">
+		SELECT
+		    id,
+		    report_id,
+		    transcript,
+		    gene,
+		    variant,
+		    mut_freq,
+		    subtype,
+		    evidence,
+		    created_by,
+		    created_date,
+		    update_by,
+		    update_date
+		FROM
+		    cancer_typing
+		WHERE report_id=#{report_id}
+	</select>
+	<insert id="insertCancerTyping">
+		insert into cancer_typing(report_id,transcript,gene,variant,mut_freq,subtype,evidence,created_by,created_date,update_by,update_date)
+		values (#{report_id},#{transcript},#{gene},#{variant},#{mut_freq},#{subtype},#{evidence},#{created_by},sysdate(),#{update_by},sysdate())
+	</insert>
 </mapper>

@@ -121,4 +121,9 @@ public interface ModuleModificationAllDao {
     @Delete("delete from mm_approved_drug where report_id = #{report_id} and disease = #{disease} and drug = #{drug}")
     void deleteMmApprovedDrug(@Param("report_id") Integer report_id, @Param("disease") String disease, @Param("drug") String drug);
 
+    // 获取1166产品的分型模块，包括中线癌分型、肾癌分型，暂不确定是否通用逻辑
+    List<CancerTyping> getCancerTypingById(@Param("report_id")Integer reportId);
+
+    // 增加1166产品的分型模块，包括中线癌分型、肾癌分型，暂不确定是否通用逻辑
+    void insertCancerTyping(CancerTyping CancerTyping);
 }
