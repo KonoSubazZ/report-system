@@ -860,8 +860,8 @@ public class GeneMarkerVwController {
                             .collect(Collectors.toList());
                 }
                 model.addAttribute("mmBrainGliomas", mmBrainGliomas);
+                model.addAttribute("brainGliomaFlag", brainGlioma1166Flag);
             }
-            model.addAttribute("brainGliomaFlag", brainGlioma1166Flag);
 
             // 1166 中线癌分型、肾脏分型模块，暂不清楚是否是通用逻辑
             boolean cancerTypingFlag = false;
