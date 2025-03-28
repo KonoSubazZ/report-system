@@ -435,11 +435,12 @@ public class OfflineReportController {
                                 System.out.println("webService 回传样本编号及报告发送时间 获取返回值：" + result);*/
                                 //发送报告成功后调报告发送成功状态接口
                                 String analysis_date = offlineReport.getTested_date().split(" ")[0].replace("-", "");
-                                try {
-                                    WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/update_sample_report_status/" + offlineReport.getTested_by() + "/" + analysis_date + "/" + "offline_report" + "/" + offlineReport.getSubbarcode());
-                                } catch (Exception e) {
-                                    System.out.println("调用HTTP接口时发生错误,样本编号：" + offlineReport.getSubbarcode());
-                                }
+                                // 注释9090接口
+//                                try {
+//                                    WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/update_sample_report_status/" + offlineReport.getTested_by() + "/" + analysis_date + "/" + "offline_report" + "/" + offlineReport.getSubbarcode());
+//                                } catch (Exception e) {
+//                                    System.out.println("调用HTTP接口时发生错误,样本编号：" + offlineReport.getSubbarcode());
+//                                }
                             }
                         }
                     } catch (Exception e) {

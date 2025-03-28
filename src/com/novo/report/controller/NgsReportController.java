@@ -354,11 +354,12 @@ public class NgsReportController {
                                     } else {
                                         product_name = filePath.substring(filePath.indexOf(analysis_date) + analysis_date.length() + 1).split("/")[0];
                                     }
-                                    try {
-                                        WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/update_sample_report_status/" + analyzer + "/" + analysis_date + "/" + product_name + "/" + sf.getSubbarcode());
-                                    } catch (Exception e) {
-                                        System.out.println("调用HTTP接口时发生错误,样本编号：" + analysisReport.getSubbarcode());
-                                    }
+                                    // 注释9090接口
+//                                    try {
+//                                        WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/update_sample_report_status/" + analyzer + "/" + analysis_date + "/" + product_name + "/" + sf.getSubbarcode());
+//                                    } catch (Exception e) {
+//                                        System.out.println("调用HTTP接口时发生错误,样本编号：" + analysisReport.getSubbarcode());
+//                                    }
                                 }
                             }
                         } catch (Exception e) {
