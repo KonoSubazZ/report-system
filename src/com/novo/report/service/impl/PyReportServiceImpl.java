@@ -3662,6 +3662,12 @@ public class PyReportServiceImpl implements PyReportService {
 
         // NOTE: 从这里新增个性化模板逻辑
 
+        // 1166产品 中线癌、肾癌分型逻辑
+        if (product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseName.contains("中线癌") || diseaseName.contains("肾癌"))) {
+            List<CancerTyping> cancerTyping = moduleModificationAllDao.getCancerTypingById(reportId);
+            rt.setCancerTyping1166(cancerTyping);
+        }
+
         //CUSTOM 晶赛188 550 个性化模板相关逻辑
         if (rt.getTemplate_name().contains("晶赛")) {
             Map<String, Object> JingsaiCustomInfo = generateJingsaiData(bodyDrugTipLineStr,

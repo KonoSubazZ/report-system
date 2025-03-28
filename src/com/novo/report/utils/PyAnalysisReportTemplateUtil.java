@@ -342,6 +342,11 @@ public class PyAnalysisReportTemplateUtil {
             data.put("bodyDrugNoComplexGFYStr", rt.getBodyDrugNoComplexGFYStr());
         }
 
+        // 1166产品分型结果
+        if (rt.getProduct_name().equals("novopm2_rna1166_Sarcoma")) {
+            data.put("cancerTyping1166", rt.getCancerTyping1166());
+        }
+
         //data.put("FrequencySinglePageData", rt.getFrequencySinglePageData());
         //7、创建一个Writer对象，指定输出文件的路径及文件名。
 //		FileSystemView fsv = FileSystemView.getFileSystemView();
