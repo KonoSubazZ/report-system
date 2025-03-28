@@ -833,7 +833,17 @@ public class GeneMarkerVwController {
                     brainGlioma.stream()
                             .map(map -> {
                                 String gene = map.get("gene").toString();
-                                String output = brainGlioma1166FusionGeneMap.containsKey(gene) ? "检出" : "未检出";
+                                String output = "未检出";
+
+                                if ("EGFR".equals(gene) && brainGlioma1166FusionGeneMap.containsKey(gene)) {
+                                    // 判断 EGFR VIII 变体
+                                    List<String> variantList = brainGlioma1166FusionGeneMap.get(gene);
+                                    if (variantList.stream().anyMatch(variant -> variant.contains("EGFR-EGFR"))) {
+                                        output = "检出";
+                                    }
+                                } else if (brainGlioma1166FusionGeneMap.containsKey(gene)) {
+                                    output = "检出";
+                                }
 
                                 MmBrainGlioma mmBrainGlioma = new MmBrainGlioma();
                                 mmBrainGlioma.setReport_id(currentNgsAvailable.getReport_id());
@@ -870,15 +880,20 @@ public class GeneMarkerVwController {
                                 String gene1 = fusionMap.get("gene").toString();
                                 String variant = fusionMap.get("ori_variant").toString();
                                 if (gene1.equals(gene)) {
+                                    String mutFreq = fusionMap.get("mutFreq").toString();
+                                    String transcript1 = fusionMap.get("sclip1_info").toString().split(":")[0];
+                                    String transcript2 = fusionMap.get("sclip2_info").toString().split(":")[0];
+                                    String transcript = transcript1 + "/" + transcript2;
                                     if (variant.contains("NSD3-NUTM1 Fusion") && gene.equals("NSD3")) {
+
                                         CancerTyping cancerTyping = new CancerTyping();
                                         cancerTyping.setReport_id(currentNgsAvailable.getReport_id());
                                         cancerTyping.setGene(gene);
                                         cancerTyping.setVariant(variant);
-                                        cancerTyping.setTranscript(variant);
-                                        cancerTyping.setMutFreq(variant);
-                                        cancerTyping.setSubtype(variant);
-                                        cancerTyping.setEvidence(variant);
+                                        cancerTyping.setTranscript(transcript);
+                                        cancerTyping.setMutFreq(mutFreq);
+                                        cancerTyping.setSubtype(info);
+                                        cancerTyping.setEvidence("指南推荐");
                                         cancerTyping.setCreated_by(user_account);
                                         cancerTyping.setUpdate_by(user_account);
                                         moduleModificationAllDao.insertCancerTyping(cancerTyping);
@@ -887,10 +902,10 @@ public class GeneMarkerVwController {
                                         cancerTyping.setReport_id(currentNgsAvailable.getReport_id());
                                         cancerTyping.setGene(gene);
                                         cancerTyping.setVariant(variant);
-                                        cancerTyping.setTranscript(variant);
-                                        cancerTyping.setMutFreq(variant);
-                                        cancerTyping.setSubtype(variant);
-                                        cancerTyping.setEvidence(variant);
+                                        cancerTyping.setTranscript(transcript);
+                                        cancerTyping.setMutFreq(mutFreq);
+                                        cancerTyping.setSubtype(info);
+                                        cancerTyping.setEvidence("指南推荐");
                                         cancerTyping.setCreated_by(user_account);
                                         cancerTyping.setUpdate_by(user_account);
                                         moduleModificationAllDao.insertCancerTyping(cancerTyping);
@@ -909,16 +924,22 @@ public class GeneMarkerVwController {
                             String info = map.get("info").toString();
                             for (Map fusionMap : fusionAll) {
                                 String gene1 = fusionMap.get("gene").toString();
-                                String variant = fusionMap.get("ori_variant").toString();
+
                                 if (gene1.equals(gene)) {
+                                    String variant = fusionMap.get("ori_variant").toString();
+                                    String mutFreq = fusionMap.get("mutFreq").toString();
+                                    String transcript1 = fusionMap.get("sclip1_info").toString().split(":")[0];
+                                    String transcript2 = fusionMap.get("sclip2_info").toString().split(":")[0];
+                                    String transcript = transcript1 + "/" + transcript2;
+
                                     CancerTyping cancerTyping = new CancerTyping();
                                     cancerTyping.setReport_id(currentNgsAvailable.getReport_id());
                                     cancerTyping.setGene(gene);
                                     cancerTyping.setVariant(variant);
-                                    cancerTyping.setTranscript(variant);
-                                    cancerTyping.setMutFreq(variant);
+                                    cancerTyping.setTranscript(transcript);
+                                    cancerTyping.setMutFreq(mutFreq);
                                     cancerTyping.setSubtype(info);
-                                    cancerTyping.setEvidence(variant);
+                                    cancerTyping.setEvidence("WHO");
                                     cancerTyping.setCreated_by(user_account);
                                     cancerTyping.setUpdate_by(user_account);
                                     moduleModificationAllDao.insertCancerTyping(cancerTyping);
