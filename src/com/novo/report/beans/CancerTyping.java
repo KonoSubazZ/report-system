@@ -7,13 +7,15 @@ public class CancerTyping {
     private String gene;
     private String variant;
     private String transcript;
-    private String mutFreq;
+    private String mut_freq;
     private String subtype;
     private String evidence;
     private String created_by;
     private String created_date;
     private String update_by;
     private String update_date;
+
+
 
     public Integer getId() {
         return id;
@@ -56,12 +58,12 @@ public class CancerTyping {
         this.variant = variant;
     }
 
-    public String getMutFreq() {
-        return mutFreq;
+    public String getMut_freq() {
+        return mut_freq;
     }
 
-    public void setMutFreq(String mutFreq) {
-        this.mutFreq = mutFreq;
+    public void setMut_freq(String mutFreq) {
+        this.mut_freq = mutFreq;
     }
 
     public String getSubtype() {

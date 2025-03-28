@@ -813,7 +813,7 @@ public class GeneMarkerVwController {
 
             // 脑胶质瘤1166相关分子标记物检测结果
             boolean brainGlioma1166Flag = false;
-            if (product_name.equals("novopm2_rna1166_Sarcoma")) {
+            if (product_name.equals("novopm2_rna1166_Sarcoma") && diseaseName.contains("脑胶质瘤")) {
                 brainGlioma1166Flag = true;
                 List<MmBrainGlioma> mmBrainGliomas = moduleModificationAllDao.selectMmBrainGliomaByReportId(currentNgsAvailable.getReport_id());
                 if (mmBrainGliomas.isEmpty()) {
@@ -866,91 +866,129 @@ public class GeneMarkerVwController {
             // 1166 中线癌分型、肾脏分型模块，暂不清楚是否是通用逻辑
             boolean cancerTypingFlag = false;
             if (product_name.equals("novopm2_rna1166_Sarcoma")) {
-                cancerTypingFlag = true;
+
                 List<CancerTyping> cancerTypings = moduleModificationAllDao.getCancerTypingById(currentNgsAvailable.getReport_id());
                 if (cancerTypings.isEmpty()) {
                     // 中线癌分型
                     List<Map> fusionAll = analysisReportDao.getFusionAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
                     if (diseaseName.contains("中线癌")) {
-                        List<Map> MidlineTyping = analysisReportDao.getImmuneRelatedGene("Midline1166");
-                        for (Map map : MidlineTyping) {
-                            String gene = map.get("gene").toString();
-                            String info = map.get("info").toString();
-                            for (Map fusionMap : fusionAll) {
-                                String gene1 = fusionMap.get("gene").toString();
-                                String variant = fusionMap.get("ori_variant").toString();
-                                if (gene1.equals(gene)) {
-                                    String mutFreq = fusionMap.get("mutFreq").toString();
-                                    String transcript1 = fusionMap.get("sclip1_info").toString().split(":")[0];
-                                    String transcript2 = fusionMap.get("sclip2_info").toString().split(":")[0];
-                                    String transcript = transcript1 + "/" + transcript2;
-                                    if (variant.contains("NSD3-NUTM1 Fusion") && gene.equals("NSD3")) {
+                        cancerTypingFlag = true;
+                        List<Map> midlineTyping = analysisReportDao.getImmuneRelatedGene("Midline1166");
+                        Map<String, List<Map>> fusionByGene = fusionAll.stream()
+                                .filter(Objects::nonNull)
+                                .filter(map -> {
+                                    String gene = String.valueOf(map.get("gene"));
+                                    String variant = String.valueOf(map.get("my_ori_variant"));
 
+                                    if (gene.equals("NUTM1")) {
+                                        return variant.contains("NSD3-NUTM1");
+                                    }
+
+                                    return true;
+                                })
+                                .collect(Collectors.groupingBy(map -> String.valueOf(map.get("gene"))));
+
+                        midlineTyping.stream()
+                                .filter(Objects::nonNull)
+                                .forEach(kidneyMap -> {
+                                    String gene = String.valueOf(kidneyMap.get("gene"));
+                                    String subtype = String.valueOf(kidneyMap.get("info"));
+                                    Integer reportId = currentNgsAvailable.getReport_id();
+                                    List<Map> matchingFusions = fusionByGene.getOrDefault(gene, Collections.emptyList());
+
+                                    if (matchingFusions.isEmpty()) {
+                                        // 未匹配时的默认处理
                                         CancerTyping cancerTyping = new CancerTyping();
-                                        cancerTyping.setReport_id(currentNgsAvailable.getReport_id());
+                                        cancerTyping.setReport_id(reportId);
                                         cancerTyping.setGene(gene);
-                                        cancerTyping.setVariant(variant);
-                                        cancerTyping.setTranscript(transcript);
-                                        cancerTyping.setMutFreq(mutFreq);
-                                        cancerTyping.setSubtype(info);
+                                        cancerTyping.setVariant("-");
+                                        cancerTyping.setTranscript("-/-");
+                                        cancerTyping.setMut_freq("-");
+                                        cancerTyping.setSubtype(subtype);
                                         cancerTyping.setEvidence("指南推荐");
                                         cancerTyping.setCreated_by(user_account);
                                         cancerTyping.setUpdate_by(user_account);
                                         moduleModificationAllDao.insertCancerTyping(cancerTyping);
                                     } else {
-                                        CancerTyping cancerTyping = new CancerTyping();
-                                        cancerTyping.setReport_id(currentNgsAvailable.getReport_id());
-                                        cancerTyping.setGene(gene);
-                                        cancerTyping.setVariant(variant);
-                                        cancerTyping.setTranscript(transcript);
-                                        cancerTyping.setMutFreq(mutFreq);
-                                        cancerTyping.setSubtype(info);
-                                        cancerTyping.setEvidence("指南推荐");
-                                        cancerTyping.setCreated_by(user_account);
-                                        cancerTyping.setUpdate_by(user_account);
-                                        moduleModificationAllDao.insertCancerTyping(cancerTyping);
-                                    }
+                                        // 有匹配时的处理
+                                        matchingFusions.forEach(fusionMap -> {
+                                            String variant = String.valueOf(fusionMap.get("my_ori_variant"));
+                                            String mutFreq = String.valueOf(fusionMap.get("mutFreq"));
+                                            String transcript1 = String.valueOf(fusionMap.get("sclip1_info")).split(":")[0];
+                                            String transcript2 = String.valueOf(fusionMap.get("sclip2_info")).split(":")[0];
+                                            String transcript = transcript1 + "/" + transcript2;
 
-                                }
-                            }
-                        }
+                                            CancerTyping cancerTyping = new CancerTyping();
+                                            cancerTyping.setReport_id(reportId);
+                                            cancerTyping.setGene(gene);
+                                            cancerTyping.setVariant(variant);
+                                            cancerTyping.setTranscript(transcript);
+                                            cancerTyping.setMut_freq(mutFreq);
+                                            cancerTyping.setSubtype(subtype);
+                                            cancerTyping.setEvidence("指南推荐");
+                                            cancerTyping.setCreated_by(user_account);
+                                            cancerTyping.setUpdate_by(user_account);
+                                            moduleModificationAllDao.insertCancerTyping(cancerTyping);
+                                        });
+                                    }
+                                });
                     }
 
                     // 肾癌分型
                     if (diseaseName.contains("肾癌")) {
-                        List<Map> KidneyTyping = analysisReportDao.getImmuneRelatedGene("Kidney1166");
-                        for (Map map : KidneyTyping) {
-                            String gene = map.get("gene").toString();
-                            String info = map.get("info").toString();
-                            for (Map fusionMap : fusionAll) {
-                                String gene1 = fusionMap.get("gene").toString();
+                        cancerTypingFlag = true;
+                        List<Map> kidneyTypingList = analysisReportDao.getImmuneRelatedGene("Kidney1166");
+                        Map<String, List<Map>> fusionByGene = fusionAll.stream()
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.groupingBy(map -> String.valueOf(map.get("gene"))));
 
-                                if (gene1.equals(gene)) {
-                                    String variant = fusionMap.get("ori_variant").toString();
-                                    String mutFreq = fusionMap.get("mutFreq").toString();
-                                    String transcript1 = fusionMap.get("sclip1_info").toString().split(":")[0];
-                                    String transcript2 = fusionMap.get("sclip2_info").toString().split(":")[0];
-                                    String transcript = transcript1 + "/" + transcript2;
+                        kidneyTypingList.stream()
+                                .filter(Objects::nonNull)
+                                .forEach(kidneyMap -> {
+                                    String gene = String.valueOf(kidneyMap.get("gene"));
+                                    String subtype = String.valueOf(kidneyMap.get("info"));
+                                    Integer reportId = currentNgsAvailable.getReport_id();
+                                    List<Map> matchingFusions = fusionByGene.getOrDefault(gene, Collections.emptyList());
 
-                                    CancerTyping cancerTyping = new CancerTyping();
-                                    cancerTyping.setReport_id(currentNgsAvailable.getReport_id());
-                                    cancerTyping.setGene(gene);
-                                    cancerTyping.setVariant(variant);
-                                    cancerTyping.setTranscript(transcript);
-                                    cancerTyping.setMutFreq(mutFreq);
-                                    cancerTyping.setSubtype(info);
-                                    cancerTyping.setEvidence("WHO");
-                                    cancerTyping.setCreated_by(user_account);
-                                    cancerTyping.setUpdate_by(user_account);
-                                    moduleModificationAllDao.insertCancerTyping(cancerTyping);
-                                }
-                            }
-                        }
+                                    if (matchingFusions.isEmpty()) {
+                                        // 未匹配时的默认处理
+                                        CancerTyping cancerTyping = new CancerTyping();
+                                        cancerTyping.setReport_id(reportId);
+                                        cancerTyping.setGene(gene);
+                                        cancerTyping.setVariant("-");
+                                        cancerTyping.setTranscript("-/-");
+                                        cancerTyping.setMut_freq("-");
+                                        cancerTyping.setSubtype(subtype);
+                                        cancerTyping.setEvidence("指南推荐");
+                                        cancerTyping.setCreated_by(user_account);
+                                        cancerTyping.setUpdate_by(user_account);
+                                        moduleModificationAllDao.insertCancerTyping(cancerTyping);
+                                    } else {
+                                        // 有匹配时的处理
+                                        matchingFusions.forEach(fusionMap -> {
+                                            String variant = String.valueOf(fusionMap.get("my_ori_variant"));
+                                            String mutFreq = String.valueOf(fusionMap.get("mutFreq"));
+                                            String transcript1 = String.valueOf(fusionMap.get("sclip1_info")).split(":")[0];
+                                            String transcript2 = String.valueOf(fusionMap.get("sclip2_info")).split(":")[0];
+                                            String transcript = transcript1 + "/" + transcript2;
+
+                                            CancerTyping cancerTyping = new CancerTyping();
+                                            cancerTyping.setReport_id(reportId);
+                                            cancerTyping.setGene(gene);
+                                            cancerTyping.setVariant(variant);
+                                            cancerTyping.setTranscript(transcript);
+                                            cancerTyping.setMut_freq(mutFreq);
+                                            cancerTyping.setSubtype(subtype);
+                                            cancerTyping.setEvidence("WHO");
+                                            cancerTyping.setCreated_by(user_account);
+                                            cancerTyping.setUpdate_by(user_account);
+                                            moduleModificationAllDao.insertCancerTyping(cancerTyping);
+                                        });
+                                    }
+                                });
                     }
 
                 }
-
-
             }
 
             // 内分泌相关(泌尿系统肿瘤99基因报告)  || 188/462/550/1238/WES/WES plus/988中双样本
