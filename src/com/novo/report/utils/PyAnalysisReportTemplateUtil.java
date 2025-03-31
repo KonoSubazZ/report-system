@@ -343,7 +343,7 @@ public class PyAnalysisReportTemplateUtil {
         }
 
         // 1166产品分型结果
-        if (rt.getProduct_name().equals("novopm2_rna1166_Sarcoma")) {
+        if (rt.getTemplate_name().contains("肿瘤融合基因RNA检测报告")) {
             data.put("cancerTyping1166", rt.getCancerTyping1166());
         }
 
