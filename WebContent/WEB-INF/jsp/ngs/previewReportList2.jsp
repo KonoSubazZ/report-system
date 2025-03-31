@@ -310,7 +310,8 @@
                         "platform": "${geneticMarkerVwPageBean.platform}",
                         "analysis_date": "${geneticMarkerVwPageBean.analysis_date}",
                         "subbarcode": "${geneticMarkerVwPageBean.subbarcode}",
-                        "product_name": "${geneticMarkerVwPageBean.product_name}"
+                        "product_name": "${geneticMarkerVwPageBean.product_name}",
+                        "product_name_show": "${geneticMarkerVwPageBean.product_name_show}"
                     },
                     success: function (data) {
                         parent.urlRunp4(data, $("#moduleFlag").val(), "0");
@@ -336,7 +337,8 @@
                         "platform": "${geneticMarkerVwPageBean.platform}",
                         "analysis_date": "${geneticMarkerVwPageBean.analysis_date}",
                         "subbarcode": "${geneticMarkerVwPageBean.subbarcode}",
-                        "product_name": "${geneticMarkerVwPageBean.product_name}"
+                        "product_name": "${geneticMarkerVwPageBean.product_name}",
+                        "product_name_show": "${geneticMarkerVwPageBean.product_name_show}"
                     },
                     success: function (data) {
                         parent.urlRunp4(data, $("#moduleFlag").val(), "1");

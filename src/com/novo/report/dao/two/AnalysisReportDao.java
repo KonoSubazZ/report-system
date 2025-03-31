@@ -397,16 +397,16 @@ public interface AnalysisReportDao {
     List<Map> getPrognosticEvaluation(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
     // QC DNA质控信息
-    @Select("SELECT file_id,tumorcellcontent,DNA_total,DNA_degradation,outbound_quantity,plane_data,sequencing_depth,coverage_uniformity,coverage,genome_alignment,base_quality FROM omics.qc_file WHERE file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and file_type=\"qc\" and status=\"Loaded\")")
-    Map getQC(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date);
+    @Select("SELECT file_id,tumorcellcontent,DNA_total,DNA_degradation,outbound_quantity,plane_data,sequencing_depth,coverage_uniformity,coverage,genome_alignment,base_quality FROM omics.qc_file WHERE file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"qc\" and status=\"Loaded\")")
+    Map getQC(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
     // QC RNA质控信息
-    @Select("SELECT file_id,tumorcellcontent,RNA_total,RNA_degradation,outbound_quantity,total_reads,genome_alignment,base_quality FROM omics.qc_rna_file WHERE file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and file_type=\"qc_rna\" and status=\"Loaded\")")
-    Map getQCRNA(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date);
+    @Select("SELECT file_id,tumorcellcontent,RNA_total,RNA_degradation,outbound_quantity,total_reads,genome_alignment,base_quality FROM omics.qc_rna_file WHERE file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and product_name=#{product_name} and analysis_date=#{analysis_date} and file_type=\"qc_rna\" and status=\"Loaded\")")
+    Map getQCRNA(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date,  @Param("product_name") String product_name);
 
     // QC HRD质控信息
-    @Select("SELECT file_id,tumorcellcontent,DNA_total,DNA_degradation,outbound_quantity,sequencing_depth,coverage_uniformity,coverage,genome_alignment,base_quality FROM omics.qc_hrd_file WHERE file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and file_type=\"qc_hrd\" and status=\"Loaded\")")
-    Map getQCHRD(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date);
+    @Select("SELECT file_id,tumorcellcontent,DNA_total,DNA_degradation,outbound_quantity,sequencing_depth,coverage_uniformity,coverage,genome_alignment,base_quality FROM omics.qc_hrd_file WHERE file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"qc_hrd\" and status=\"Loaded\")")
+    Map getQCHRD(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date,  @Param("product_name") String product_name);
 
     //从知识库获取药物id
     @Select("select drug_id from nkb.drug where (drug_name_chinese = #{drug_name} or drug_name = #{drug_name}) and checking_status_id = 2")

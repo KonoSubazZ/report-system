@@ -482,7 +482,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setGenome_alignment(sf.getGenome_alignment());
         rt.setBase_quality(sf.getBase_quality());
         //QC质控信息
-        Map qc = analysisReportDao.getQC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
+        Map qc = analysisReportDao.getQC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         if (qc != null && qc.size() > 0) {
             rt.setTumorcellcontent(qc.get("tumorcellcontent").toString());
             rt.setDNA_total(qc.get("DNA_total").toString());
@@ -534,10 +534,10 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setOutbound_quantity(sf.getOutbound_quantity());
         }
         //QC RNA质控信息
-        Map rna = analysisReportDao.getQCRNA(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
+        Map rna = analysisReportDao.getQCRNA(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         rt.setRna(rna);
         //QC HRD质控信息
-        Map hrd = analysisReportDao.getQCHRD(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
+        Map hrd = analysisReportDao.getQCHRD(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         rt.setHrd(hrd);
 
         StringBuilder sb = new StringBuilder();

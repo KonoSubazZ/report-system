@@ -34,7 +34,7 @@ public interface LifeService {
 		
 	void updateProductId(AnalysisReport pr);
 	
-	void updateProductByProductId(AnalysisReport pr);
+	void updateProductByProductId(AnalysisReport pr,String oldProductName);
 
 	Product getProduct(Integer report_id);
 

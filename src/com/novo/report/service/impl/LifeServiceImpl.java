@@ -96,7 +96,7 @@ public class LifeServiceImpl implements LifeService {
 		return lifeDao.getDiseaseClassFromSampleInfo(report_id);
 	}
 	@Override
-	public void updateProductId(AnalysisReport pr) {
+	public void updateProductId(AnalysisReport pr ) {
 		try {
 			AnalysisReport analysisReport = analysisReportDao.getReportFileNameByReportId(pr.getReport_id());
 			if(analysisReport==null || analysisReport.getReport_filename() == null){
@@ -115,11 +115,12 @@ public class LifeServiceImpl implements LifeService {
 		return lifeDao.getProduct(report_id);
 	}
 	@Override
-	public void updateProductByProductId(AnalysisReport pr) {
+	public void updateProductByProductId(AnalysisReport pr, String oldProductName) {
 		// 更换的产品名称
 		String product_name = lifeDao.getProductByProductId(pr.getProduct_id());
 		if (!"pd".equals(product_name)) {
-			driverDao.updateParseFile(pr.getSubbarcode(),pr.getAnalysis_date(),product_name);
+			// 增加 old 产品文件
+			driverDao.updateParseFile(pr.getSubbarcode(),pr.getAnalysis_date(),product_name, oldProductName);
 		}
 		pr.setProduct_name(product_name);
 		AnalysisReport analysisReportById = analysisReportDao.getAnalysisReportById(pr.getReport_id());
