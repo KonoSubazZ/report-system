@@ -864,7 +864,7 @@ public class GeneMarkerVwController {
             }
 
             // 1166 中线癌分型、肾脏分型模块，暂不清楚是否是通用逻辑
-            boolean cancerTypingFlag = false;
+            boolean cancerTyping1166Flag = false;
             if (product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseName.contains("肾癌") || diseaseName.contains("中线癌"))) {
 
                 List<CancerTyping> cancerTypings = moduleModificationAllDao.getCancerTypingById(currentNgsAvailable.getReport_id());
@@ -872,7 +872,7 @@ public class GeneMarkerVwController {
                     // 中线癌分型
                     List<Map> fusionAll = analysisReportDao.getFusionAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
                     if (diseaseName.contains("中线癌")) {
-                        cancerTypingFlag = true;
+                        cancerTyping1166Flag = true;
                         List<Map> midlineTyping = analysisReportDao.getImmuneRelatedGene("Midline1166");
                         Map<String, List<Map>> fusionByGene = fusionAll.stream()
                                 .filter(Objects::nonNull)
@@ -936,7 +936,7 @@ public class GeneMarkerVwController {
 
                     // 肾癌分型
                     if (diseaseName.contains("肾癌")) {
-                        cancerTypingFlag = true;
+                        cancerTyping1166Flag = true;
                         List<Map> kidneyTypingList = analysisReportDao.getImmuneRelatedGene("Kidney1166");
                         Map<String, List<Map>> fusionByGene = fusionAll.stream()
                                 .filter(Objects::nonNull)
@@ -987,6 +987,8 @@ public class GeneMarkerVwController {
                                     }
                                 });
                     }
+                    model.addAttribute("cancerTyping1166Flag", cancerTyping1166Flag);
+                    model.addAttribute("cancerTyping1166", cancerTypings);
 
                 }
             }
