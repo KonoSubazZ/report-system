@@ -879,7 +879,6 @@ public class GeneMarkerVwController {
                                 .filter(map -> {
                                     String gene = String.valueOf(map.get("gene"));
                                     String variant = String.valueOf(map.get("my_ori_variant"));
-
                                     if (gene.equals("NUTM1")) {
                                         return variant.contains("NSD3-NUTM1");
                                     }
@@ -987,10 +986,10 @@ public class GeneMarkerVwController {
                                     }
                                 });
                     }
-                    model.addAttribute("cancerTyping1166Flag", cancerTyping1166Flag);
-                    model.addAttribute("cancerTyping1166", cancerTypings);
-
                 }
+                model.addAttribute("cancerTyping1166Flag", true);
+                model.addAttribute("cancerTyping1166", cancerTypings);
+                model.addAttribute("cancerTyping1166Json",gson.toJson(cancerTypings));
             }
 
             // 内分泌相关(泌尿系统肿瘤99基因报告)  || 188/462/550/1238/WES/WES plus/988中双样本

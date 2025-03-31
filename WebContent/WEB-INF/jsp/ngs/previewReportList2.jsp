@@ -1052,8 +1052,8 @@
                                         <c:when test="${item.output == '阳性' or item.output == '阴性'  or item.output == '待验证' }">
                                             <select id="bg_output_${vs.count}"
                                                     <c:if test="${item.output == '阳性'}">style="background: red"
-                                                    </c:if>
-                                                        <c:if test="${item.output == '待验证'}">style="background: yellow"</c:if>
+                                            </c:if>
+                                                    <c:if test="${item.output == '待验证'}">style="background: yellow"</c:if>
                                                     onChange="updateMmBrainGlioma(${vs.count})">
                                                 <option value="阳性"
                                                         <c:if test="${item.output == '阳性'}">selected</c:if>>阳性
@@ -1107,53 +1107,24 @@
             <c:if test="${cancerTyping1166Flag == true}">
                 <div>
                     <h2 style="color: blue;font-size: 20px;font-weight: bold;">中线癌/肾癌辅助诊断提示</h2>
-                    <tbody id="tInfo20" class="my-tbody">
-                    <tr id="sarcomaTyping_tr">
-                        <th>检测结果</th>
-                        <th>融合reads</th>
-                        <th>基因变异相关亚型</th>
-                        <th>证据等级</th>
-
-                    </tr>
-                    <c:forEach items="${cancerTyping1166}" var="item" varStatus="vs">
-                        <tr id="sarcomaTyping_tr_${vs.count}">
-                            <td><label id="st_mutation_${vs.count}">${item.variant}</label><br>${item.transcript}</td>
-                            <td><label id="st_mutFreq_${vs.count}">${item.mut_freq}</label></td>
-                            <td>${item.sarcoma_subtype}</td>
-                            <td>${item.sarcoma_subtype}</td>
+                    <table>
+                        <tbody id="tInfo20" class="my-tbody">
+                        <tr id="cancerTyping1166_tr">
+                            <th style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;">检测结果</th>
+                            <th style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;">融合reads</th>
+                            <th style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;">基因变异相关亚型</th>
+                            <th style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;">证据等级</th>
                         </tr>
-                    </c:forEach>
-                    </tbody>
+                        <c:forEach items="${cancerTyping1166}" var="item" varStatus="vs">
+                            <tr id="cancerTyping1166_tr_${vs.count}">
+                                <td style="width:280px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;"><div>${item.variant}<br>${item.transcript}</div></td>
+                                <td style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.mut_freq}</td>
+                                <td style="width:200px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.subtype}</td>
+                                <td style="width:100px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.evidence}</td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
                     </table>
-                    <script>
-                        function updateMmBrainGlioma(i) {
-                            var info = $("#bg_info_" + i).text();
-                            var output = $("#bg_output_" + i).val();
-                            if (output == "检出" || output == "阳性") {
-                                document.getElementById("bg_output_" + i).style.backgroundColor = 'red'
-                            } else {
-                                document.getElementById("bg_output_" + i).style.backgroundColor = 'white'
-                            }
-                            $.ajax({
-                                url: "${pageContext.request.contextPath}/geneMarkerVw/updateMmBrainGlioma",
-                                type: "POST",
-                                data: {
-                                    "report_id":${geneticMarkerVwPageBean.report_id},
-                                    "info": info,
-                                    "output": output,
-                                    "update_by": "${user.user_account}"
-                                },
-                                dataType: "json",
-                                success: function (result) {
-                                    if (result) {
-                                        swal("成功！", "修改成功", "success");
-                                    } else {
-                                        swal("失败！", "修改失败", "error");
-                                    }
-                                }
-                            });
-                        }
-                    </script>
                 </div>
                 <br>
             </c:if>
@@ -1656,9 +1627,9 @@
                 </td>
                 <td style="cursor:pointer"><p id="geneText_${vs.count}" onmouseover='showGeneTitle(${vs.count})'
                                               class="gene"
-                                              <c:if test="${endometrialCarcinoma == true}">
-                                              <c:if test="${item.gene == 'POLE' or item.gene == 'TP53'}">style="color:red"</c:if>
-                </c:if>>${item.gene}</p>
+                        <c:if test="${endometrialCarcinoma == true}">
+                            <c:if test="${item.gene == 'POLE' or item.gene == 'TP53'}">style="color:red"</c:if>
+                        </c:if>>${item.gene}</p>
                     <script type="text/javascript">
                         function showGeneTitle(index) {
                             var data = medicineList[parseInt(index) - 1];
@@ -3397,6 +3368,7 @@
     var mmapprovedDrugsJson = ${mmapprovedDrugsJson == null ? "[]" : mmapprovedDrugsJson};
     var mmImmnueAlls = ${mmImmnueAllsJson == null ? "[]" : mmImmnueAllsJson};
     var chemo = ${chemoJson == null ? "[]" : chemoJson};
+    let cancerTyping1166 = ${cancerTyping1166Json == null ? "[]" : cancerTyping1166Json};
 
     var chemo_this = [];
     var chemo_unknown = [];
@@ -3513,9 +3485,17 @@
                     //$("#tInfo2").append(trString);
 
                     /* $.post("
+
+
                     ${pageContext.request.contextPath}/geneMarkerVw/addDrugRecord?userAccount=
+
+
                     ${user.user_account}&subbarcode=
+
+
                     ${geneticMarkerVwPageBean.subbarcode}&reportId=
+
+
                     ${geneticMarkerVwPageBean.report_id}",
 						data); */
 
