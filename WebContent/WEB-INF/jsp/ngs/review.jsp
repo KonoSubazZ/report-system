@@ -288,19 +288,19 @@
                     layer.msg(sample_code + "提交报告审核成功！", {
                         icon: 1,
                         offset: ['100px', '500px'],
-                        time: 1000
+                        time: 3000
                     });
                     updateReportStatus(report_id, "待审核");
                 }else{
                     layer.msg(data.msg, {
                         icon: 2,
                         offset: ['100px', '500px'],
-                        time: 1000
+                        time: 3000
                     });
                 }
             },
             error: function (xhr, status, error) {
-                layer.msg("请求失败" + error, {time: 1000});
+                layer.alert("请求失败" + error);
             }
         })
     }
@@ -319,7 +319,7 @@
                     layer.msg('状态更新成功', {
                         icon: 1,
                         offset: ['100px', '500px'],
-                        time: 1000
+                        time: 3000
                     });
                     $("#status").text(status);
                 }
@@ -392,7 +392,7 @@
                         "report_id": "${currentNgsAvailableData.report_id}",
                         "status": rstatus
                     }, function (data) {
-                        layer.msg("更新报告状态成功", {time: 1000, icon: 1});
+                        layer.msg("更新报告状态成功", {time: 3000, icon: 1});
                         $("#status").text(status);
                     });
                     if (code == 36){
@@ -404,17 +404,17 @@
                                 layer.msg('更新备注成功', {
                                     icon: 1,
                                     offset: ['100px', '500px'],
-                                    time: 1000
+                                    time: 3000
                                 });
                             }
                         });
                     }
                 } else {
-                    layer.msg(data.msg, {time: 1000, icon: 2});
+                    layer.msg(data.msg, {time: 3000, icon: 2});
                 }
             },
             error: function (xhr, status, error) {
-                layer.msg("请求失败" + error, {time: 1000});
+                layer.msg("请求失败" + error, {time: 3000});
             }
         })
     }

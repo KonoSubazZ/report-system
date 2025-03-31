@@ -351,21 +351,19 @@
                                             dataType: "json",
                                             success: function (res) {
                                                 if (res.status == "success") {
-                                                    layer.msg(res.msg, {
+                                                    layer.alert(res.msg, {
                                                         icon: 1,
-                                                        offset: ['100px', '500px'],
-                                                        time: 1000
+                                                        offset: ['100px', '500px']
                                                     });
                                                 } else {
-                                                    layer.msg(res.msg, {
+                                                    layer.alert(res.msg, {
                                                         icon: 2,
-                                                        offset: ['100px', '500px'],
-                                                        time: 1000
+                                                        offset: ['100px', '500px']
                                                     });
                                                 }
                                             },
                                             error: function (xhr, status, error) {
-                                                layer.msg("请求失败" + error, {time: 1000});
+                                                layer.alert("请求失败" + error, {time: 1000});
                                             }
                                         })
                                     }
