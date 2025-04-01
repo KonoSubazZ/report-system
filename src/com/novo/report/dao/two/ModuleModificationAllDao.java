@@ -126,4 +126,7 @@ public interface ModuleModificationAllDao {
 
     // 增加1166产品的分型模块，包括中线癌分型、肾癌分型，暂不确定是否通用逻辑
     void insertCancerTyping(CancerTyping CancerTyping);
+
+    @Delete("delete from cancer_typing where id = #{id} ")
+    void deleteCancerTyping1166(@Param("id")Integer id);
 }

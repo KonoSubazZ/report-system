@@ -904,9 +904,10 @@ public class GeneMarkerVwController {
                                         cancerTyping.setTranscript("-/-");
                                         cancerTyping.setMut_freq("-");
                                         cancerTyping.setSubtype(subtype);
-                                        cancerTyping.setEvidence("指南推荐");
+                                        cancerTyping.setEvidence("指南共识");
                                         cancerTyping.setCreated_by(user_account);
                                         cancerTyping.setUpdate_by(user_account);
+                                        cancerTypings.add(cancerTyping);
                                         moduleModificationAllDao.insertCancerTyping(cancerTyping);
                                     } else {
                                         // 有匹配时的处理
@@ -924,9 +925,11 @@ public class GeneMarkerVwController {
                                             cancerTyping.setTranscript(transcript);
                                             cancerTyping.setMut_freq(mutFreq);
                                             cancerTyping.setSubtype(subtype);
-                                            cancerTyping.setEvidence("指南推荐");
+                                            cancerTyping.setEvidence("指南共识");
                                             cancerTyping.setCreated_by(user_account);
                                             cancerTyping.setUpdate_by(user_account);
+
+                                            cancerTypings.add(cancerTyping);
                                             moduleModificationAllDao.insertCancerTyping(cancerTyping);
                                         });
                                     }
@@ -958,9 +961,11 @@ public class GeneMarkerVwController {
                                         cancerTyping.setTranscript("-/-");
                                         cancerTyping.setMut_freq("-");
                                         cancerTyping.setSubtype(subtype);
-                                        cancerTyping.setEvidence("指南推荐");
+                                        cancerTyping.setEvidence("WHO");
                                         cancerTyping.setCreated_by(user_account);
                                         cancerTyping.setUpdate_by(user_account);
+
+                                        cancerTypings.add(cancerTyping);
                                         moduleModificationAllDao.insertCancerTyping(cancerTyping);
                                     } else {
                                         // 有匹配时的处理
@@ -981,6 +986,8 @@ public class GeneMarkerVwController {
                                             cancerTyping.setEvidence("WHO");
                                             cancerTyping.setCreated_by(user_account);
                                             cancerTyping.setUpdate_by(user_account);
+
+                                            cancerTypings.add(cancerTyping);
                                             moduleModificationAllDao.insertCancerTyping(cancerTyping);
                                         });
                                     }
@@ -2221,6 +2228,23 @@ public class GeneMarkerVwController {
     public Object deleteMmApprovedDrug(Integer report_id, String disease, String drug) {
         try {
             moduleModificationAllDao.deleteMmApprovedDrug(report_id, disease, drug);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 删除1166的癌种分型
+     * @param id
+     * @return
+     */
+    @RequestMapping("delete-typing1166")
+    @ResponseBody
+    public Object deleteCancerTyping1166(Integer id) {
+        try {
+            moduleModificationAllDao.deleteCancerTyping1166(id);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

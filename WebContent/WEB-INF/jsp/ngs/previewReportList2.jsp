@@ -43,6 +43,27 @@
             }
         });
 
+        function deleteCancerTyping1166(id) {
+            console.log("wozhixing", id);
+            $.ajax({
+                url: "${pageContext.request.contextPath}/geneMarkerVw/delete-typing1166",
+                type: "POST",
+                data: {
+                    "id": id
+                },
+                dataType: "json",
+                success: function (result) {
+                    let domId = "#cancerTyping1166_" + id;
+                    $(domId).remove();
+                    if (result) {
+                        swal("成功！", "删除成功", "success");
+                    } else {
+                        swal("失败！", "删除成功", "error");
+                    }
+                }
+            });
+        }
+
     </script>
     <style type="text/css">
         tr {
@@ -249,6 +270,8 @@
                 <option value="前列腺癌内分泌和预后">前列腺癌内分泌和预后</option>
                 <option value="尿路上皮癌/膀胱癌预后">尿路上皮癌/膀胱癌预后</option>
                 <option value="子宫内膜癌分子分型+肉瘤分子分型">子宫内膜癌分子分型+肉瘤分子分型</option>
+                <option value="肾癌1166分子分型">肾癌1166分子分型</option>
+                <option value="脑胶质瘤1166分子分型">脑胶质瘤1166分子分型</option>
             </select>
             <%--<input type="text" class="input w50" id="moduleFlag" onchange="getAnalysisReportByReportId()" value="${geneticMarkerVwPageBean.moduleFlag}" placeholder="非必选项！请选择癌种模块"  />--%>
             <script type="text/javascript">
@@ -1107,28 +1130,46 @@
                 <br>
             </c:if>
             <c:if test="${cancerTyping1166Flag == true}">
+
                 <div>
                     <h2 style="color: blue;font-size: 20px;font-weight: bold;">中线癌/肾癌辅助诊断提示</h2>
                     <table>
                         <tbody id="tInfo20" class="my-tbody">
                         <tr id="cancerTyping1166_tr">
-                            <th style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;">检测结果</th>
-                            <th style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;">融合reads</th>
-                            <th style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;">基因变异相关亚型</th>
-                            <th style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;">证据等级</th>
+                            <th style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;">
+                                检测结果
+                            </th>
+                            <th style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;">
+                                融合reads
+                            </th>
+                            <th style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;">
+                                基因变异相关亚型
+                            </th>
+                            <th style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;">
+                                证据等级
+                            </th>
+                            <th style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;">
+                                操作
+                            </th>
                         </tr>
                         <c:forEach items="${cancerTyping1166}" var="item" varStatus="vs">
-                            <tr id="cancerTyping1166_tr_${vs.count}">
-                                <td style="width:280px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;"><div>${item.variant}<br>${item.transcript}</div></td>
+                            <tr id="cancerTyping1166_${item.id}">
+                                <td style="width:280px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">
+                                    <div>${item.variant}<br>${item.transcript}</div>
+                                </td>
                                 <td style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.mut_freq}</td>
                                 <td style="width:200px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.subtype}</td>
                                 <td style="width:100px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.evidence}</td>
+                                <td style="width:100px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">
+                                    <input type="button" value="删除" onclick="deleteCancerTyping1166(${item.id})"
+                                           class="btn"/>
+                                </td>
                             </tr>
                         </c:forEach>
                         </tbody>
                     </table>
                 </div>
-                <br>
+
             </c:if>
             <c:if test="${prostateCancerFlag == true}">
                 <div>
@@ -3489,13 +3530,21 @@
                     /* $.post("
 
 
+
+
                     ${pageContext.request.contextPath}/geneMarkerVw/addDrugRecord?userAccount=
+
+
 
 
                     ${user.user_account}&subbarcode=
 
 
+
+
                     ${geneticMarkerVwPageBean.subbarcode}&reportId=
+
+
 
 
                     ${geneticMarkerVwPageBean.report_id}",
