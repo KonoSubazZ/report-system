@@ -119,7 +119,8 @@ public class PyReportServiceImpl implements PyReportService {
         String productName = lifeDao.getProductByProductId(currentNgsAvailable.getProduct_id());
         currentNgsAvailable.setProduct_name(productName);
         pr.setProduct_name(productName);
-
+        // 用于模块判断
+        String module = currentNgsAvailable.getModuleFlag();
         // 获取所有位点信息 包括体系和胚系 （ this_genetic_marker_en7_vw2、 cr_evw rp_cr）
         List<Map> thisGeneticmarkerList = analysisReportDao.getHotByReportIdAndGene(pr.getReport_id());
         List<Map> crList = analysisReportDao.getHotCRByReportIdAndGene(pr.getReport_id());
@@ -3079,8 +3080,9 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // 脑胶质瘤相关分子标记物检测结果 && 增加1166RNA通用模板
+        boolean brainGlioma1166Flag = product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseFlag.get("BrainGlioma") || "脑胶质瘤1166分子分型".equals(module));
         boolean brainGliomaFlag = false;
-        if (product_name.equals("novopm2_tis_200") || (product_name.equals("novopm2_rna1166_Sarcoma") && diseaseFlag.get("brainGliomaFlag"))) {
+        if (product_name.equals("novopm2_tis_200") || brainGlioma1166Flag) {
             brainGliomaFlag = true;
             List<MmBrainGlioma> mmBrainGliomas = moduleModificationAllDao.selectMmBrainGliomaByReportId(currentNgsAvailable.getReport_id());
             if (!CollectionUtils.isEmpty(mmBrainGliomas)) {
@@ -3657,7 +3659,13 @@ public class PyReportServiceImpl implements PyReportService {
         summaryOfRresults.put("binary", binary);
 
         // 1166产品 中线癌、肾癌分型逻辑
-        if (product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseName.contains("中线癌") || diseaseName.contains("肾癌"))) {
+        boolean cancerTyping1166Flag = (diseaseFlag.get("Kidney") || "肾癌1166分子分型".equals(module)) || diseaseFlag.get("Midline");
+        if (product_name.equals("novopm2_rna1166_Sarcoma") && cancerTyping1166Flag) {
+            // 肾细胞癌 肾癌做的特殊处理
+            if (diseaseName.contains("肾")){
+                diseaseFlag.put("Kidney", true);
+            }
+
             List<CancerTyping> cancerTyping = moduleModificationAllDao.getCancerTypingById(reportId);
             // 增加统计检出数量
             long count = cancerTyping.stream()
