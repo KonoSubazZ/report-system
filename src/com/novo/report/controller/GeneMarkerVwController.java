@@ -811,9 +811,10 @@ public class GeneMarkerVwController {
             }
             model.addAttribute("brainGliomaFlag", brainGliomaFlag);
 
+            String module = currentNgsAvailable.getModuleFlag();
             // 脑胶质瘤1166相关分子标记物检测结果
             boolean brainGlioma1166Flag = false;
-            if (product_name.equals("novopm2_rna1166_Sarcoma") && diseaseName.contains("脑胶质瘤")) {
+            if (product_name.equals("novopm2_rna1166_Sarcoma") && diseaseName.contains("脑胶质瘤") || module.contains("脑胶质瘤1166分子分型")) {
                 brainGlioma1166Flag = true;
                 List<MmBrainGlioma> mmBrainGliomas = moduleModificationAllDao.selectMmBrainGliomaByReportId(currentNgsAvailable.getReport_id());
                 if (mmBrainGliomas.isEmpty()) {
@@ -865,7 +866,7 @@ public class GeneMarkerVwController {
 
             // 1166 中线癌分型、肾脏分型模块，暂不清楚是否是通用逻辑
             boolean cancerTyping1166Flag = false;
-            if (product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseName.contains("肾癌") || diseaseName.contains("中线癌"))) {
+            if (product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseName.contains("肾癌") || diseaseName.contains("中线癌")) ||  module.contains("肾癌1166分子分型")) {
 
                 List<CancerTyping> cancerTypings = moduleModificationAllDao.getCancerTypingById(currentNgsAvailable.getReport_id());
                 if (cancerTypings.isEmpty()) {
@@ -937,7 +938,7 @@ public class GeneMarkerVwController {
                     }
 
                     // 肾癌分型
-                    if (diseaseName.contains("肾癌")) {
+                    if (diseaseName.contains("肾癌") || module.contains("肾癌1166分子分型")) {
                         cancerTyping1166Flag = true;
                         List<Map> kidneyTypingList = analysisReportDao.getImmuneRelatedGene("Kidney1166");
                         Map<String, List<Map>> fusionByGene = fusionAll.stream()
