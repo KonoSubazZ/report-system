@@ -811,7 +811,8 @@ public class GeneMarkerVwController {
             }
             model.addAttribute("brainGliomaFlag", brainGliomaFlag);
 
-            String module = currentNgsAvailable.getModuleFlag();
+            String module = currentNgsAvailable.getModuleFlag() != null ? currentNgsAvailable.getModuleFlag() : "";
+
             // 脑胶质瘤1166相关分子标记物检测结果
             boolean brainGlioma1166Flag = false;
             if (product_name.equals("novopm2_rna1166_Sarcoma") && diseaseName.contains("脑胶质瘤") || module.contains("脑胶质瘤1166分子分型")) {
@@ -866,7 +867,7 @@ public class GeneMarkerVwController {
 
             // 1166 中线癌分型、肾脏分型模块，暂不清楚是否是通用逻辑
             boolean cancerTyping1166Flag = false;
-            if (product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseName.contains("肾细胞癌") || diseaseName.contains("中线癌")) ||  module.contains("肾癌1166分子分型")) {
+            if (product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseName.contains("肾细胞癌") || diseaseName.contains("中线癌")) ||  module.equals("肾癌1166分子分型")) {
 
                 List<CancerTyping> cancerTypings = moduleModificationAllDao.getCancerTypingById(currentNgsAvailable.getReport_id());
                 if (cancerTypings.isEmpty()) {
