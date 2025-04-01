@@ -866,7 +866,7 @@ public class GeneMarkerVwController {
 
             // 1166 中线癌分型、肾脏分型模块，暂不清楚是否是通用逻辑
             boolean cancerTyping1166Flag = false;
-            if (product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseName.contains("肾癌") || diseaseName.contains("中线癌")) ||  module.contains("肾癌1166分子分型")) {
+            if (product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseName.contains("肾细胞癌") || diseaseName.contains("中线癌")) ||  module.contains("肾癌1166分子分型")) {
 
                 List<CancerTyping> cancerTypings = moduleModificationAllDao.getCancerTypingById(currentNgsAvailable.getReport_id());
                 if (cancerTypings.isEmpty()) {
@@ -938,7 +938,7 @@ public class GeneMarkerVwController {
                     }
 
                     // 肾癌分型
-                    if (diseaseName.contains("肾癌") || module.contains("肾癌1166分子分型")) {
+                    if (diseaseName.contains("肾细胞癌") || module.contains("肾癌1166分子分型")) {
                         cancerTyping1166Flag = true;
                         List<Map> kidneyTypingList = analysisReportDao.getImmuneRelatedGene("Kidney1166");
                         Map<String, List<Map>> fusionByGene = fusionAll.stream()

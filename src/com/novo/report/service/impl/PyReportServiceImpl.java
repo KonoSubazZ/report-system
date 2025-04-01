@@ -3659,7 +3659,7 @@ public class PyReportServiceImpl implements PyReportService {
         summaryOfRresults.put("binary", binary);
 
         // 1166产品 中线癌、肾癌分型逻辑
-        boolean cancerTyping1166Flag = (diseaseFlag.get("Kidney") || "肾癌1166分子分型".equals(module)) || diseaseFlag.get("Midline");
+        boolean cancerTyping1166Flag = (diseaseName.contains("肾细胞癌") || "肾癌1166分子分型".equals(module)) || diseaseFlag.get("Midline");
         if (product_name.equals("novopm2_rna1166_Sarcoma") && cancerTyping1166Flag) {
             // 肾细胞癌 肾癌做的特殊处理
             if (diseaseName.contains("肾")){
