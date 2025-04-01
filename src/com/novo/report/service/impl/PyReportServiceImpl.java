@@ -261,7 +261,7 @@ public class PyReportServiceImpl implements PyReportService {
         String tmb_PIC = analysisReportDao.getTMB_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         String tmb_Percent = "";
         if (StringUtils.isEmpty(tmb_PIC)) {
-            if (!StringUtils.isEmpty(tmb) && (tmbProductName.contains("tis_550") || tmbProductName.contains("blo_550") || tmbProductName.contains("tis_1238") || tmbProductName.contains("blo_1238") ||  tmbProductName.contains("novopm2_blo_988") || tmbProductName.contains("novopm2_tis_988"))) {
+            if (!StringUtils.isEmpty(tmb) && (tmbProductName.contains("tis_550") || tmbProductName.contains("blo_550") || tmbProductName.contains("tis_1238") || tmbProductName.contains("blo_1238") || tmbProductName.contains("novopm2_blo_988") || tmbProductName.contains("novopm2_tis_988"))) {
                 String tmbPIC = getTmbPIC(tmb, chem_cancer, currentNgsAvailable.getSubbarcode(), tmbProductName);
                 if (!StringUtils.isEmpty(tmbPIC) && !("None".equals(tmbPIC) || "None\n".equals(tmbPIC))) {
                     List<String> tmbList = Arrays.asList(gson.fromJson(tmbPIC, String[].class));
@@ -3336,7 +3336,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 获取靶向癌种
         String target_cancer = StringUtils.isEmpty(pr.getTarget_cancer()) ? "" : pr.getTarget_cancer();
         // 泌尿系统肿瘤99产品输出泌尿系统癌症 || 188/462/550/1238/WES/WES plus的通用版
-        List<String> templates = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告", "NOVO泛癌种1238检测报告-佛山市第一人民医院", "泛实体瘤1238+1166基因检测报告-佛山市第一人民医院", "NOVO泛癌种1238检测报告-湖南省中医研", "泛实体瘤188基因检测报告-湖南省中医研","NOVO泛癌种988基因检测报告","NOVO泛癌种988基因报告");
+        List<String> templates = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告", "NOVO泛癌种1238检测报告-佛山市第一人民医院", "泛实体瘤1238+1166基因检测报告-佛山市第一人民医院", "NOVO泛癌种1238检测报告-湖南省中医研", "泛实体瘤188基因检测报告-湖南省中医研", "NOVO泛癌种988基因检测报告", "NOVO泛癌种988基因报告");
         if (("novopm2_tis_99".equals(product_name) || "novopm2_blo_99".equals(product_name)) || (templates.contains(rt.getTemplate_name()) && (prostateCancerFlag || StringUtils.isNotEmpty(urinaryProstateDisease)))) {
             target_cancer = "泌尿系统癌症";
         } else if (rt.getTemplate_name().contains("湘雅")) {
@@ -3656,17 +3656,22 @@ public class PyReportServiceImpl implements PyReportService {
         String binary = CreateQRCode.createQRCode(methodUrl + qrcode, session.getServletContext().getRealPath("/") + "images/tumour-logo.png");
         summaryOfRresults.put("binary", binary);
 
+        // 1166产品 中线癌、肾癌分型逻辑
+        if (product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseName.contains("中线癌") || diseaseName.contains("肾癌"))) {
+            List<CancerTyping> cancerTyping = moduleModificationAllDao.getCancerTypingById(reportId);
+            // 增加统计检出数量
+            long count = cancerTyping.stream()
+                    .filter(cancerTyping1 -> !cancerTyping1.getVariant().equals("-"))
+                    .count();
+            rt.setCancerTyping1166(cancerTyping);
+            summaryOfRresults.put("cancerCount1166", count);
+        }
+
         rt.setSummaryOfRresults(summaryOfRresults);
         String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
         analysisReportDao.updateReportDetail(dataToJson, currentNgsAvailable.getReport_id());
 
         // NOTE: 从这里新增个性化模板逻辑
-
-        // 1166产品 中线癌、肾癌分型逻辑
-        if (product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseName.contains("中线癌") || diseaseName.contains("肾癌"))) {
-            List<CancerTyping> cancerTyping = moduleModificationAllDao.getCancerTypingById(reportId);
-            rt.setCancerTyping1166(cancerTyping);
-        }
 
         //CUSTOM 晶赛188 550 个性化模板相关逻辑
         if (rt.getTemplate_name().contains("晶赛")) {
@@ -3792,12 +3797,13 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 生成报告是否各癌种的标志癌种名字,判断标准为包含及解读癌种的子级关系
+     *
      * @param diseaseName
      */
-    private Map<String,Boolean> generateDiseaseFlag(String diseaseName) {
+    private Map<String, Boolean> generateDiseaseFlag(String diseaseName) {
         // 暂时所有的癌种Flag
         // String[] cancers = {"BrainGlioma", "Sarcoma", "Midline", "Kidney"};
-        Map<String,Boolean> disease = new HashMap<>();
+        Map<String, Boolean> disease = new HashMap<>();
         disease.put("BrainGlioma", diseaseName.contains("脑胶质瘤"));
         disease.put("Sarcoma", diseaseName.contains("肉瘤"));
         disease.put("Midline", diseaseName.contains("中线癌"));
@@ -3856,9 +3862,10 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 统计数据的特殊需求，处理特殊格式
-     *
+     * <p>
      * #@param map allMutation
      * #@param map targetedDrugDetection
+     *
      * @return List<Map> fusionAll 融合列表
      */
     private void generateTongJiData(Map mutation, Map targetedDrugDetection, List<Map> fusionAll, String mutationType) {
@@ -4088,19 +4095,19 @@ public class PyReportServiceImpl implements PyReportService {
     /**
      * 生成晶赛自定义数据
      *
-     * @param bodyDrugTipList         体细胞变异分级提示
-     * @param unknownTipList          vus分级提示（III类 没有用药）
-     * @param complexDrugTipList      共突变分级提示
-     * @param targetedDrugTipList     全部靶向用药解析
-     * @param dMMRGeneList            MMR基因list
-     * @param crAllList               所有胚系突变信息
-     * #@param thisGeneticmarkerVwList 所有体系信息
-     * @param positiveInfo            免疫正信息map，包含所有基因
-     * @param positiveOtherInfo       免疫正其他信息map
-     * @param negativeInfo            免疫负信息map
-     * @param hpdInfo                 免疫超进展信息map
-     * @param bodyDrugList            体细胞用药解析
-     * @param complexDrugList         共突变用药解析
+     * @param bodyDrugTipList     体细胞变异分级提示
+     * @param unknownTipList      vus分级提示（III类 没有用药）
+     * @param complexDrugTipList  共突变分级提示
+     * @param targetedDrugTipList 全部靶向用药解析
+     * @param dMMRGeneList        MMR基因list
+     * @param crAllList           所有胚系突变信息
+     *                            #@param thisGeneticmarkerVwList 所有体系信息
+     * @param positiveInfo        免疫正信息map，包含所有基因
+     * @param positiveOtherInfo   免疫正其他信息map
+     * @param negativeInfo        免疫负信息map
+     * @param hpdInfo             免疫超进展信息map
+     * @param bodyDrugList        体细胞用药解析
+     * @param complexDrugList     共突变用药解析
      * @return
      */
     private Map<String, Object> generateJingsaiData(List<Map> bodyDrugTipList,
