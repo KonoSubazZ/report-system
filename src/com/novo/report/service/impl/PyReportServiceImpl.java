@@ -3664,6 +3664,7 @@ public class PyReportServiceImpl implements PyReportService {
             // 肾细胞癌 肾癌做的特殊处理
             if (diseaseName.contains("肾")){
                 diseaseFlag.put("Kidney", true);
+                diseaseFlag.put("KidneyFlag", true);
             }
 
             List<CancerTyping> cancerTyping = moduleModificationAllDao.getCancerTypingById(reportId);
