@@ -77,7 +77,7 @@ public interface ModuleModificationAllDao {
     void deleteMmImmnueAll(@Param("report_id") Integer report_id, @Param("flag") String flag, @Param("gene") String gene, @Param("variant") String variant, @Param("mutFreq") String mutFreq);
 
     // 脑胶质瘤相关分子标记物
-    void insertMmBrainGlioma(MmBrainGlioma mmBrainGlioma);
+    int insertMmBrainGlioma(MmBrainGlioma mmBrainGlioma);
 
     void updateMmBrainGlioma(@Param("report_id") Integer report_id, @Param("info") String info, @Param("output") String output, @Param("update_by") String update_by);
 

@@ -1,13 +1,20 @@
 package com.novo.report.beans;
 
 public class MmBrainGlioma {
+    private Integer id;
     private Integer report_id;
     private String gene;
     private String info;
     private String output;
     private String update_by;
     private String update_date;
+    public Integer getId() {
+        return id;
+    }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
     public Integer getReport_id() {
         return report_id;
     }

@@ -803,7 +803,8 @@ public class GeneMarkerVwController {
                         mmBrainGlioma.setOutput(output);
                         mmBrainGlioma.setUpdate_by(user_account);
                         mmBrainGlioma.setUpdate_date(DateUtil.getSystemTime());
-                        moduleModificationAllDao.insertMmBrainGlioma(mmBrainGlioma);
+                        int id =moduleModificationAllDao.insertMmBrainGlioma(mmBrainGlioma);
+                        mmBrainGlioma.setId(id);
                         mmBrainGliomas.add(mmBrainGlioma);
                     }
                 }
@@ -854,7 +855,9 @@ public class GeneMarkerVwController {
                                 mmBrainGlioma.setOutput(output);
                                 mmBrainGlioma.setUpdate_by(user_account);
                                 mmBrainGlioma.setUpdate_date(DateUtil.getSystemTime());
-                                moduleModificationAllDao.insertMmBrainGlioma(mmBrainGlioma);
+                                int id = moduleModificationAllDao.insertMmBrainGlioma(mmBrainGlioma);
+                                mmBrainGlioma.setId(id);
+
                                 mmBrainGliomas.add(mmBrainGlioma);
 
                                 return mmBrainGlioma;
