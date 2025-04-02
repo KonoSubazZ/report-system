@@ -3816,7 +3816,7 @@ public class PyReportServiceImpl implements PyReportService {
         disease.put("BrainGlioma", diseaseName.contains("脑胶质瘤"));
         disease.put("Sarcoma", diseaseName.contains("肉瘤"));
         disease.put("Midline", diseaseName.contains("中线癌"));
-        disease.put("Kidney", diseaseName.contains("肾癌"));
+        disease.put("Kidney", diseaseName.contains("肾"));
 
         return disease;
     }
