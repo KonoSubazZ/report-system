@@ -844,7 +844,12 @@ public class GeneMarkerVwController {
                                     if (variantList.stream().anyMatch(variant -> variant.contains("EGFR-EGFR"))) {
                                         output = "检出";
                                     }
-                                } else if (brainGlioma1166FusionGeneMap.containsKey(gene)) {
+                                } else if ("ZFTA".equals(gene) && brainGlioma1166FusionGeneMap.containsKey(gene)) { // 只报ZFTA（C11orf95）-RELA融合
+                                    List<String> variantList = brainGlioma1166FusionGeneMap.get(gene);
+                                    if (variantList.stream().anyMatch(variant -> variant.contains("ZFTA-RELA"))) {
+                                        output = "检出";
+                                    }
+                                }else if (brainGlioma1166FusionGeneMap.containsKey(gene)) {
                                     output = "检出";
                                 }
 
