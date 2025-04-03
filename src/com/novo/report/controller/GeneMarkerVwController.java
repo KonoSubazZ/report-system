@@ -917,8 +917,10 @@ public class GeneMarkerVwController {
                                         cancerTyping.setEvidence("指南共识");
                                         cancerTyping.setCreated_by(user_account);
                                         cancerTyping.setUpdate_by(user_account);
+                                        int id = moduleModificationAllDao.insertCancerTyping(cancerTyping);
+                                        cancerTyping.setId(id);
                                         cancerTypings.add(cancerTyping);
-                                        moduleModificationAllDao.insertCancerTyping(cancerTyping);
+
                                     } else {
                                         // 有匹配时的处理
                                         matchingFusions.forEach(fusionMap -> {
@@ -939,8 +941,9 @@ public class GeneMarkerVwController {
                                             cancerTyping.setCreated_by(user_account);
                                             cancerTyping.setUpdate_by(user_account);
 
+                                            int id = moduleModificationAllDao.insertCancerTyping(cancerTyping);
+                                            cancerTyping.setId(id);
                                             cancerTypings.add(cancerTyping);
-                                            moduleModificationAllDao.insertCancerTyping(cancerTyping);
                                         });
                                     }
                                 });
@@ -975,8 +978,9 @@ public class GeneMarkerVwController {
                                         cancerTyping.setCreated_by(user_account);
                                         cancerTyping.setUpdate_by(user_account);
 
+                                        int id = moduleModificationAllDao.insertCancerTyping(cancerTyping);
+                                        cancerTyping.setId(id);
                                         cancerTypings.add(cancerTyping);
-                                        moduleModificationAllDao.insertCancerTyping(cancerTyping);
                                     } else {
                                         // 有匹配时的处理
                                         matchingFusions.forEach(fusionMap -> {
@@ -997,8 +1001,9 @@ public class GeneMarkerVwController {
                                             cancerTyping.setCreated_by(user_account);
                                             cancerTyping.setUpdate_by(user_account);
 
+                                            int id = moduleModificationAllDao.insertCancerTyping(cancerTyping);
+                                            cancerTyping.setId(id);
                                             cancerTypings.add(cancerTyping);
-                                            moduleModificationAllDao.insertCancerTyping(cancerTyping);
                                         });
                                     }
                                 });
