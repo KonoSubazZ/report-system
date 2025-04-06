@@ -347,6 +347,11 @@ public class PyAnalysisReportTemplateUtil {
             data.put("cancerTyping1166", rt.getCancerTyping1166());
         }
 
+        // MRD产品
+        if (rt.getTemplate_name().contains("MRD")) {
+            data.put("mrd", rt.getMrd());
+        }
+
         //data.put("FrequencySinglePageData", rt.getFrequencySinglePageData());
         //7、创建一个Writer对象，指定输出文件的路径及文件名。
 //		FileSystemView fsv = FileSystemView.getFileSystemView();

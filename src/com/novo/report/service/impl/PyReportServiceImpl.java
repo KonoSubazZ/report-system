@@ -3662,7 +3662,7 @@ public class PyReportServiceImpl implements PyReportService {
         boolean cancerTyping1166Flag = (diseaseName.contains("肾细胞癌") || "肾癌1166分子分型".equals(module)) || diseaseFlag.get("Midline");
         if (product_name.equals("novopm2_rna1166_Sarcoma") && cancerTyping1166Flag) {
             // 肾细胞癌 肾癌做的特殊处理
-            if (diseaseName.contains("肾")){
+            if (diseaseName.contains("肾")) {
                 diseaseFlag.put("Kidney", true);
                 diseaseFlag.put("KidneyFlag", true);
             }
@@ -3677,6 +3677,18 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         rt.setSummaryOfRresults(summaryOfRresults);
+
+        if (rt.getTemplate_name().contains("MRD")) {
+            String subbarcode = currentNgsAvailable.getSubbarcode();
+            String analysisDate = currentNgsAvailable.getAnalysis_date();
+            String prodName = currentNgsAvailable.getProduct_name();
+            String imgBase64Str = analysisReportDao.getMRDBase64Str(subbarcode, analysisDate, prodName);
+            String mrdJson = analysisReportDao.getMRDDataInfo(subbarcode, analysisDate, prodName);
+            Map<String, Object> mrdInfo = new HashMap<>();
+            mrdInfo.put("mrdJson", mrdJson);
+            mrdInfo.put("imgStr", imgBase64Str);
+            rt.setMrd(mrdInfo);
+        }
         String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
         analysisReportDao.updateReportDetail(dataToJson, currentNgsAvailable.getReport_id());
 

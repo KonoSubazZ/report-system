@@ -319,6 +319,19 @@ public class ReportTemplate {
     private List<Map> commonTargetedDrug; // 常见靶向药物相关基因检测列表
     private List<Map> importantTargetedGeneFilter; // 重要靶向用药相关基因结果汇总
 
+    public Map<String, Object> getMrd() {
+        return mrd;
+    }
+
+    public void setMrd(Map<String, Object> mrd) {
+        this.mrd = mrd;
+    }
+
+    /**
+     * novopm2_MRD
+     */
+    private Map<String, Object> mrd; // 重要靶向用药相关基因结果汇总
+
     public List<CancerTyping> getCancerTyping1166() {
         return cancerTyping1166;
     }

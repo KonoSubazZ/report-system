@@ -780,4 +780,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			a.subbarcode = #{subbarcode}
 	</select>
 
+	<select id="getMRDBase64Str" resultType="java.lang.String">
+		SELECT
+			a.file_text AS imgBase64Str
+		FROM
+			data_file_status a
+		WHERE
+			a.subbarcode = #{subbarcode}
+		  AND a.analysis_date = #{analysis_date}
+		  AND a.product_name = #{product_name}
+		  AND a.file_type = 'MRD_PIC';
+	</select>
+
+	<select id="getMRDDataInfo" resultType="java.lang.String">
+		SELECT
+			mf.mrd
+		FROM
+			mrd_file mf
+				JOIN
+			data_file_status dfs ON mf.file_id = dfs.file_id
+		WHERE
+			dfs.subbarcode = #{subbarcode}
+		  AND dfs.analysis_date = #{analysis_date}
+		  AND dfs.product_name = #{product_name}
+		  AND dfs.file_type = 'MRD_JSON'
+	</select>
+
 </mapper>

@@ -681,4 +681,15 @@ public interface AnalysisReportDao {
      * @return
      */
     List<AnalysisReport> getReports(@Param("subbarcode")String subbarcode);
+
+    /**
+     * 20250406 获取MRD图片
+     * @param subbarcode
+     * @param analysis_date
+     * @param product_name
+     * @return
+     */
+    String getMRDBase64Str(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
+    String getMRDDataInfo(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
+
 }
