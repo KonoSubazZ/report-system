@@ -3686,12 +3686,24 @@ public class PyReportServiceImpl implements PyReportService {
             String prodName = currentNgsAvailable.getProduct_name();
             String imgBase64Str = analysisReportDao.getMRDBase64Str(subbarcode, analysisDate, prodName);
             String mrdJson = analysisReportDao.getMRDDataInfo(subbarcode, analysisDate, prodName);
+            Map res = gson.fromJson(mrdJson, Map.class);
+            List<List<String>> mrd_tds = (List<List<String>>) res.getOrDefault("mrd_tds", new ArrayList<>());
+            boolean isNegative = true;
 
-            Map<String, Object> res = gson.fromJson(mrdJson, Map.class);
-
+            // mrd_status 状态判断，最后一次检查如果未检出未阴性
+            for (List<String> mrd_td : mrd_tds) {
+                // 检查最后一个元素（组织突变丰度的值）是否为 "-"
+                String lastValue = mrd_td.get(mrd_td.size() - 1);
+                if (!"-".equals(lastValue)) {
+                    isNegative = false;
+                    break;
+                }
+            }
             Map<String, Object> mrdInfo = new HashMap<>();
             mrdInfo.put("mrdJson",  gson.fromJson(mrdJson, Map.class));
+            mrdInfo.put("mrd_status", isNegative ? "阴性" : "阳性");
             mrdInfo.put("imgStr", imgBase64Str);
+
             rt.setMrd(mrdInfo);
         }
         String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
