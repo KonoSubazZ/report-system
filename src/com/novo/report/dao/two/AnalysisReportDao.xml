@@ -805,5 +805,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND dfs.product_name = #{product_name}
 		  AND dfs.file_type = 'MRD_JSON'
 	</select>
+	<select id="getTypingInfo" resultType="com.novo.report.beans.AllCancerTyping">
+		SELECT
+			gene,
+			molecular_typing,
+			mutation_type,
+			subtype,
+			evidence
+		FROM
+			all_cancer_typing
+		WHERE
+			cancer = #{cancer}
+		  AND product_name = #{product_name}
+	</select>
 
 </mapper>
