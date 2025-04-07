@@ -1,6 +1,7 @@
 package com.novo.report.service.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.novo.report.beans.*;
 import com.novo.report.dao.two.*;
 import com.novo.report.service.*;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -3684,9 +3686,11 @@ public class PyReportServiceImpl implements PyReportService {
             String prodName = currentNgsAvailable.getProduct_name();
             String imgBase64Str = analysisReportDao.getMRDBase64Str(subbarcode, analysisDate, prodName);
             String mrdJson = analysisReportDao.getMRDDataInfo(subbarcode, analysisDate, prodName);
-            gson.toJson(mrdJson);
+
+            Map<String, Object> res = gson.fromJson(mrdJson, Map.class);
+
             Map<String, Object> mrdInfo = new HashMap<>();
-            mrdInfo.put("mrdJson",  gson.toJson(mrdJson));
+            mrdInfo.put("mrdJson",  gson.fromJson(mrdJson, Map.class));
             mrdInfo.put("imgStr", imgBase64Str);
             rt.setMrd(mrdInfo);
         }
