@@ -3684,8 +3684,9 @@ public class PyReportServiceImpl implements PyReportService {
             String prodName = currentNgsAvailable.getProduct_name();
             String imgBase64Str = analysisReportDao.getMRDBase64Str(subbarcode, analysisDate, prodName);
             String mrdJson = analysisReportDao.getMRDDataInfo(subbarcode, analysisDate, prodName);
+            gson.toJson(mrdJson);
             Map<String, Object> mrdInfo = new HashMap<>();
-            mrdInfo.put("mrdJson", mrdJson);
+            mrdInfo.put("mrdJson",  gson.toJson(mrdJson));
             mrdInfo.put("imgStr", imgBase64Str);
             rt.setMrd(mrdInfo);
         }
