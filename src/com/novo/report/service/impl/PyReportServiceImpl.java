@@ -3672,7 +3672,7 @@ public class PyReportServiceImpl implements PyReportService {
             List<CancerTyping> cancerTyping = moduleModificationAllDao.getCancerTypingById(reportId);
             // 增加统计检出数量
             long count = cancerTyping.stream()
-                    .filter(cancerTyping1 -> !cancerTyping1.getVariant().equals("-"))
+                    .filter(cancerTyping1 -> !cancerTyping1.getEvidence().equals("/"))
                     .count();
             rt.setCancerTyping1166(cancerTyping);
             summaryOfRresults.put("cancerCount1166", count);
