@@ -3,6 +3,7 @@ package com.novo.report.dao.two;
 import com.novo.report.beans.*;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 
 import java.util.List;
@@ -127,6 +128,6 @@ public interface ModuleModificationAllDao {
     // 增加1166产品的分型模块，包括中线癌分型、肾癌分型，暂不确定是否通用逻辑
     int insertCancerTyping(CancerTyping CancerTyping);
 
-    @Delete("delete from cancer_typing where id = #{id} ")
-    void deleteCancerTyping1166(@Param("id")Integer id);
+    @Update("UPDATE cancer_typing SET evidence = '/',subtype = '/' WHERE id = #{id}")
+    void updateCancerTyping1166(@Param("id")Integer id);
 }

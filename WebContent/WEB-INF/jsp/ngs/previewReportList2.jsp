@@ -46,15 +46,17 @@
         function deleteCancerTyping1166(id) {
             console.log("wozhixing", id);
             $.ajax({
-                url: "${pageContext.request.contextPath}/geneMarkerVw/delete-typing1166",
+                url: "${pageContext.request.contextPath}/geneMarkerVw/update-typing1166",
                 type: "POST",
                 data: {
                     "id": id
                 },
                 dataType: "json",
                 success: function (result) {
-                    let domId = "#cancerTyping1166_" + id;
-                    $(domId).remove();
+                    let domId = "#evidence1166_" + id;
+                    let domId1 = "#subtype1166_" + id;
+                    $(domId).text("/");
+                    $(domId1).text("/");
                     if (result) {
                         swal("成功！", "删除成功", "success");
                     } else {
@@ -1158,8 +1160,8 @@
                                     <div>${item.variant}<br>${item.transcript}</div>
                                 </td>
                                 <td style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.mut_freq}</td>
-                                <td style="width:200px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.subtype}</td>
-                                <td style="width:100px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.evidence}</td>
+                                <td id="evidence1166_${item.id}" style="width:200px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.subtype}</td>
+                                <td id="subtype1166_${item.id}" style="width:100px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.evidence}</td>
                                 <td style="width:100px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">
                                     <input type="button" value="删除" onclick="deleteCancerTyping1166(${item.id})"
                                            class="btn"/>

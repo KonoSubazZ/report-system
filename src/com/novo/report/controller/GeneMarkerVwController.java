@@ -2209,11 +2209,11 @@ public class GeneMarkerVwController {
      * @param id
      * @return
      */
-    @RequestMapping("delete-typing1166")
+    @RequestMapping("update-typing1166")
     @ResponseBody
-    public Object deleteCancerTyping1166(Integer id) {
+    public Object updateCancerTyping1166(Integer id) {
         try {
-            moduleModificationAllDao.deleteCancerTyping1166(id);
+            moduleModificationAllDao.updateCancerTyping1166(id);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
