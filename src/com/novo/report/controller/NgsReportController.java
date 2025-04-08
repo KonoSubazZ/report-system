@@ -83,7 +83,10 @@ public class NgsReportController {
 
                 // 记录异常信息
                 logger.severe("Error occurred while generating report: " + rt.toString() + e.getMessage());
-                e.printStackTrace();  // 输出异常的堆栈信息
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+                logger.severe("Error Report generation failed: " + e.getMessage() + "\n" + sw.toString());
 
             } catch (IOException ioException) {
                 ioException.printStackTrace(); // 如果创建日志文件失败，输出异常堆栈信息
