@@ -58,9 +58,9 @@
                     $(domId).text("/");
                     $(domId1).text("/");
                     if (result) {
-                        swal("成功！", "删除成功", "success");
+                        swal("成功！", "修改成功", "success");
                     } else {
-                        swal("失败！", "删除成功", "error");
+                        swal("失败！", "修改失败", "error");
                     }
                 }
             });
