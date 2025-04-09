@@ -28,7 +28,6 @@ Desktop.ini
 /.gradle/
 /target/
 /.idea/
-/*.iml
 /.settings/
 
 # IntelliJ IDEA 生成的配置文件
