@@ -10,8 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 增加 HRDscore检测报告 测试">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/309be44a-9bad-4b6e-ac9a-fa8e1d66627f.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/309be44a-9bad-4b6e-ac9a-fa8e1d66627f.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/novo/report/utils/generate_report.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/utils/generate_report.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -2289,7 +2290,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: 检测结果小结完善" />
     <MESSAGE value="feat: 检测结果小结完善v2" />
     <MESSAGE value="feat: 重要靶向用药表格备注" />
     <MESSAGE value="fix: 免疫tmb模块组织血液判断异常" />
@@ -2314,7 +2314,8 @@
     <MESSAGE value="fix: 免疫解析不展示" />
     <MESSAGE value="feat: 测试服务器更新 docxtpl 到0.16.8" />
     <MESSAGE value="feat: 增加 HRDscore检测报告 测试" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 增加 HRDscore检测报告 测试" />
+    <MESSAGE value="feat: 20250408更新模板v1" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 20250408更新模板v1" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2328,16 +2329,6 @@
           <url>file://$PROJECT_DIR$/src/com/novo/report/service/impl/GeneticMarkerVwServiceImpl.java</url>
           <line>337</line>
           <option name="timeStamp" value="170" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java</url>
-          <line>3469</line>
-          <option name="timeStamp" value="181" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java</url>
-          <line>3849</line>
-          <option name="timeStamp" value="184" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
