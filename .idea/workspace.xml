@@ -9,7 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="feat: 增加 HRDscore检测报告 测试">
+    <list default="true" id="28947e20-d324-4998-9865-af8888a3be6e" name="Default Changelist" comment="fix: 免疫输出备注">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/novo/report/service/impl/PyReportServiceImpl.java" afterDir="false" />
     </list>
@@ -1761,14 +1761,6 @@
       <workItem from="1742629022003" duration="3480000" />
       <workItem from="1742779231347" duration="16765000" />
     </task>
-    <task id="LOCAL-00217" summary="feat: 更新项目依赖">
-      <option name="closed" value="true" />
-      <created>1741760171503</created>
-      <option name="number" value="00217" />
-      <option name="presentableId" value="LOCAL-00217" />
-      <option name="project" value="LOCAL" />
-      <updated>1741760171503</updated>
-    </task>
     <task id="LOCAL-00218" summary="feat: 备份完整依赖，同时更新 .gitignore">
       <option name="closed" value="true" />
       <created>1741766086926</created>
@@ -2153,7 +2145,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742800685381</updated>
     </task>
-    <option name="localTasksCounter" value="266" />
+    <task id="LOCAL-00266" summary="fix: 免疫输出备注">
+      <option name="closed" value="true" />
+      <created>1744271043368</created>
+      <option name="number" value="00266" />
+      <option name="presentableId" value="LOCAL-00266" />
+      <option name="project" value="LOCAL" />
+      <updated>1744271043368</updated>
+    </task>
+    <option name="localTasksCounter" value="267" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2289,7 +2289,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: 重要靶向用药表格备注" />
     <MESSAGE value="fix: 免疫tmb模块组织血液判断异常" />
     <MESSAGE value="fix: 免疫tmb模块组织血液判断异常增加空指针判断" />
     <MESSAGE value="feat: 免疫药物用药提示备注双样本完善完毕" />
@@ -2314,7 +2313,8 @@
     <MESSAGE value="feat: 增加 HRDscore检测报告 测试" />
     <MESSAGE value="feat: 20250408更新模板v1" />
     <MESSAGE value="fix: 修复更新产品不成功" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: 修复更新产品不成功" />
+    <MESSAGE value="fix: 免疫输出备注" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: 免疫输出备注" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2328,6 +2328,11 @@
           <url>file://$PROJECT_DIR$/src/com/novo/report/service/impl/GeneticMarkerVwServiceImpl.java</url>
           <line>337</line>
           <option name="timeStamp" value="170" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/novo/report/controller/GeneMarkerVwController.java</url>
+          <line>938</line>
+          <option name="timeStamp" value="248" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

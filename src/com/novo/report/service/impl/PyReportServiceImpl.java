@@ -4120,7 +4120,7 @@ public class PyReportServiceImpl implements PyReportService {
             toRemove = "子宫内膜癌TCGA分子分型、";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
-        if (!(boolean) cancerInfo.get("gastrointestinalStromalTumor")) {
+        if (!(boolean) cancerInfo.get("gastrointestinalStromalTumor")|| !conf.getChemo_anal()) {
             toRemove = "、化疗药物";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
