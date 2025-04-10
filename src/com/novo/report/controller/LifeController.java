@@ -473,7 +473,8 @@ public class LifeController {
             pr.setAnalyzer("");
         }
         // fix: 同一日期一个样本可能有多个产品，增加产品名字做过滤条件，防止把不同产品的数据匹配到一起
-        String oldProductName = cd.getProduct_name_show();
+        String oldProductName = cd.getProduct_name();
+
         lifeService.updateProductByProductId(pr, oldProductName);
         cd.setReport_id(pr.getReport_id());
         return pr.getReport_id();
