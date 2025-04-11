@@ -392,22 +392,37 @@ def flatten_data(data):
         desc2s = item['desc2'].split(',')
         result.append({'desc1': item['desc1'], 'desc2': desc2s})
     return result
+def load_template_config(config_path='config.json'):
+    try:
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+    except Exception as e:
+        print(f"❌ 加载配置失败: {e}")
+        sys.exit(1)
 
-# jinja_env = jinja2.Environment()
-# jinja_env.filters['ms'] = mystyle
-# jinja_env.filters['mi'] = myimage
-# tpl.add_page_break()
-# print("渲染前: %f" % (time.time() - start))
-# tpl.render(info_json, jinja_env)
-# print("渲染后: %f" % (time.time() - start))
-# tpl.save('out0613.docx')
-# set_updatefields_true('out0613.docx')
-# print("总耗时: %f" % (time.time() - start))
+    return config
+
+def determine_template_file(template_name, config):
+    single_common = config["common_templates"]["single"]
+    double_common = config["common_templates"]["double"]
+
+    single_list = set(config["advanced_templates"]["single"])
+    double_list = set(config["advanced_templates"]["double"])
+
+    if template_name in double_list:
+        return double_common
+    elif template_name in single_list:
+        return single_common
+    else:
+        return f"{template_name}.docx"
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
         print("Usage: python3 {} TemplateWord JsonInfoPath OutputWord".format(__file__))
     try:
+
+        config = load_template_config()
+        selected_template_file = determine_template_file(sys.argv[1], config)
         tpl = DocxTemplate(sys.argv[1])
         f = open(sys.argv[2], encoding='utf-8')
         info_json = json.load(f)
