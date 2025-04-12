@@ -98,7 +98,7 @@
 			run_name,dna_index,run_code,rna_index,DNAQubit,RNAQubit,template_subbarcode,report_type,dna_panel,rna_panel,run_id,I5,I7,test_product,ward,consultation,
 			DNANucleic,RNANucleic,DNALibrary,RNALibrary,DNAPlaneData,meanSequencingDepth,targetAreaCoverage,RNAPlaneData,ReadsNumber,review_doctor,test_number,carcinoma,clinicaldiagnosis,
 			sampleremark,firsttreatment,secondtreatment,thirdtreatment,specimenno,serial_number,registration_number,recordercode,mailingaddress,sample_barcode,tnm_periodization,inspection_number,
-			receiv_ertele_phone,customertype
+			receiv_ertele_phone,customertype,laboratoryname
 		from sample_file where subbarcode=#{subbarcode}
 	</select>
 	<!--分页查询 -->

@@ -353,27 +353,14 @@
                             </div>
                             <div class="field">
                                 <c:choose>
-                                    <c:when test="${user.user_account=='huangmanqing'}"><input type="text" class="input w50"
+                                    <c:when test="${sampleInfo.laboratoryname =='天津医检所生产组织'}"><input type="text" class="input w50"
                                                                                            value="1" name="tested_by"
                                                                                            placeholder="盖章版请输入检测人"/></c:when>
-                                    <c:when test="${user.user_account=='wangxingsui'}"><input type="text"
+                                    <c:when test="${sampleInfo.laboratoryname =='广州医检所生产组织'}"><input type="text"
                                                                                              class="input w50" value="2"
                                                                                              name="tested_by"
                                                                                              placeholder="盖章版请输入检测人"/></c:when>
-                                    <c:when test="${user.user_account=='sunpeiya'}"><input type="text" class="input w50"
-                                                                                           value="3" name="tested_by"
-                                                                                           placeholder="盖章版请输入检测人"/></c:when>
-                                    <c:when test="${user.user_account=='gaoyuan'}"><input type="text" class="input w50"
-                                                                                          value="4" name="tested_by"
-                                                                                          placeholder="盖章版请输入检测人"/></c:when>
-                                    <c:when test="${user.user_account=='liulijie'}"><input type="text" class="input w50"
-                                                                                           value="5" name="tested_by"
-                                                                                           placeholder="盖章版请输入检测人"/></c:when>
-                                    <c:when test="${user.user_account=='wangyiping'}"><input type="text"
-                                                                                             class="input w50" value="6"
-                                                                                             name="tested_by"
-                                                                                             placeholder="盖章版请输入检测人"/></c:when>
-                                    <c:otherwise><input type="text" class="input w50" value="" name="tested_by"
+                                    <c:otherwise><input type="text" class="input w50" value="3" name="tested_by"
                                                         placeholder="盖章版请输入检测人"/></c:otherwise>
                                 </c:choose>
                                 <div class="tips"></div>
@@ -491,7 +478,8 @@
                         </div>
                     </td>
                     <td>
-                        <div class="form-group">
+                        <div class="
+">
                             <div class="label" style="width:75px">
                                 <label></label>
                             </div>

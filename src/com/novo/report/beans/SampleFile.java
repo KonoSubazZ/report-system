@@ -118,6 +118,15 @@ public class SampleFile {
 	private String receiv_ertele_phone;	//送检电话
 	private String customertype;	//客户类别
 
+	public String getLaboratoryname() {
+		return laboratoryname;
+	}
+
+	public void setLaboratoryname(String laboratoryname) {
+		this.laboratoryname = laboratoryname;
+	}
+
+	private String laboratoryname;
 	public String getTumorcellcontent() {
 		return tumorcellcontent;
 	}

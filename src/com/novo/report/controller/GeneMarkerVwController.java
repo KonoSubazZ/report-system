@@ -1355,12 +1355,15 @@ public class GeneMarkerVwController {
 
         // 获取癌种模块信息
         String moduleFlag = analysisReportDao.getModuleFlagByReportId(currentNgsAvailableData.getReport_id());
+        // 获取样本信息
+        SampleFile sampleInfo = sampleFileService.getSampleFileBySubbarcode(currentNgsAvailableData.getSubbarcode());
         model.addAttribute("currentNgsAvailableData", currentNgsAvailableData);
         model.addAttribute("diseaseClass", diseaseClass);
         model.addAttribute("product", product);
         model.addAttribute("chem_cancer", chem_cancer);
         model.addAttribute("target_cancer", target_cancer);
         model.addAttribute("moduleFlag", moduleFlag);
+        model.addAttribute("sampleInfo", sampleInfo);
         if (currentNgsAvailableData.getFlag() != null && currentNgsAvailableData.getFlag() == 1) {
             AnalysisReport analysis_report = analysisReportDao.getReportFileNameByReportId(currentNgsAvailableData.getReport_id());
             model.addAttribute("analysis_report", analysis_report);
