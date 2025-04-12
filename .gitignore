@@ -64,7 +64,7 @@ Thumbs.db
 .docker/
 
 # 如果使用 JetBrains 的项目文件
-.idea/
+#.idea/
 
 # 如果使用 JRebel
 rebel.xml

@@ -74,6 +74,19 @@ public class SpecimenHead {
 	 */
 	private String patientinfoisacancer;
 
+	public String getLaboratoryname() {
+		return laboratoryname;
+	}
+
+	public void setLaboratoryname(String laboratoryname) {
+		this.laboratoryname = laboratoryname;
+	}
+
+	/**
+	 * 实验室信息
+	 */
+	private String laboratoryname;
+
 	public String getPatientinfoisacancer() {
 		return patientinfoisacancer;
 	}

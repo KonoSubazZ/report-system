@@ -189,6 +189,7 @@ public class SampleFileController {
 					sf.setPatient_phone(sh.getPatientphone());
 					sf.setReceiv_ertele_phone(sh.getReceivertelephone());
 					sf.setCustomertype(sh.getCustomertype());
+					sf.setLocationname(sh.getLocationname());
 					//匹配银丰样本信息
 //					YFSampleInformation(sf);
 					sampleFileService.addSampleFile(sf);
