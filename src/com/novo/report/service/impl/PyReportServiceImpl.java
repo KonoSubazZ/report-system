@@ -74,6 +74,8 @@ public class PyReportServiceImpl implements PyReportService {
 
     @Autowired
     private ModuleModificationAllDao moduleModificationAllDao;
+    @Autowired
+    private GeneticMarkerVwDao geneticMarkerVwDao;
 
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
@@ -821,8 +823,6 @@ public class PyReportServiceImpl implements PyReportService {
 
                     String gene = map.get("gene").toString();
                     String ori_variant = map.get("ori_variant").toString();
-
-
                     String ExonicFunc = map.get("ExonicFunc") == null ? "-" : map.get("ExonicFunc").toString();
                     String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
                     if (mutFreq.equals(".")) {
@@ -847,6 +847,17 @@ public class PyReportServiceImpl implements PyReportService {
                     targetDrugTipLine.put("gene", gene);
                     targetDrugTipLine.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
                     targetDrugTipLine.put("ExonicFunc", translateMutType(ExonicFunc));
+                    targetDrugTipLine.put("ExonicFunc1", translateMutType(ExonicFunc));
+
+                    // 20250413增加14外显子跳跃突变提示
+                    String InNKB = map.get("InNKB") == null ? "-" : map.get("InNKB").toString();
+                    if (InNKB.equals("true")) {
+                        String mutId = map.get("mapped_variant_id") == null ? "-" : map.get("mapped_variant_id").toString();
+                        List<Integer> parentVariant = analysisReportDao.getParentMutationId(Integer.valueOf(mutId));
+                        if (parentVariant.contains(2936)){
+                            targetDrugTipLine.put("ExonicFunc1", "14号外显子跳跃突变");
+                        }
+                    }
                     targetDrugTipLine.put("mutFreq", mutFreq);
 
                     Set drugNameGroup = new HashSet();
@@ -1340,6 +1351,7 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> bodyDrugNoComplexGene6Str = new ArrayList<Map>();
         List<Map> bodyDrugNoComplexExceptGene6Str = new ArrayList<Map>();
         for (Map map : list) {
+
             Map targetedDrugDetection = new HashMap();
             List<Map> drugInformationStr = new ArrayList<Map>(); // 药物信息,旧逻辑暂不使用
 
