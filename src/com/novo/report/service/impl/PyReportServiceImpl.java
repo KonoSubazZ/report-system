@@ -1223,6 +1223,17 @@ public class PyReportServiceImpl implements PyReportService {
                     unknownTipLine.put("gene", gene);
                     unknownTipLine.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
                     unknownTipLine.put("ExonicFunc", translateMutType(ExonicFunc));
+                    unknownTipLine.put("ExonicFunc1", translateMutType(ExonicFunc));
+
+                    // vus 增加14跳跃输出
+                    String InNKB = map.get("InNKB") == null ? "-" : map.get("InNKB").toString();
+                    if (InNKB.equals("true")) {
+                        String mutId = map.get("mapped_variant_id") == null ? "-" : map.get("mapped_variant_id").toString();
+                        List<Integer> parentVariant = analysisReportDao.getParentMutationId(Integer.valueOf(mutId));
+                        if (parentVariant.contains(2936)){
+                            unknownTipLine.put("ExonicFunc1", "14号外显子跳跃突变");
+                        }
+                    }
                     unknownTipLine.put("mutFreq", mutFreq);
                     unknownTipLine.put("result_type", rpUnknownVar.getOrDefault("result_type", "").toString());
                     unknownTipLineStr.add(unknownTipLine);
