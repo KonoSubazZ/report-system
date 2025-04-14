@@ -765,13 +765,17 @@ public class ReportCrServiceImpl implements ReportCrService {
             Map map = new HashMap<>();
 
             // 20250313 A级药物耐药敏感增加获批机构
-            if ((level == 1 || level == 5) && "获批上市".equals(evidencePhase)) {
+            if ((level == 1 || level == 5) ) {
                 String approvingAgency = "";
                 if (list.size() == 4) {
                     approvingAgency = list.get(3);
                 } else {
                     String oriName = drugName.replaceAll("[#*]", "");
-                    approvingAgency = reportDrugInfoDao.getApprovingAgency(disease_id, oriName);
+                    if ("获批上市".equals(evidencePhase)){
+                        approvingAgency = reportDrugInfoDao.getApprovingAgency(disease_id, oriName);
+                    } else if ("指南推荐".equals(evidencePhase)) {
+                        approvingAgency = reportDrugInfoDao.getApprovingAgency1(disease_id, oriName);
+                    }
                 }
                 map.put("approvingAgency", approvingAgency);
             }

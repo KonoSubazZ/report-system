@@ -150,4 +150,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  and b.checking_status_id = 2
 
 	</select>
+    <select id="getApprovingAgency1" resultType="java.lang.String">
+		select
+		    a.guideline_type
+		from nkb.guideline_drug_evw a
+		where
+		    a.drug_name_chinese = #{drug_name}
+		  and a.disease_id = #{disease_id}
+		  and a.checking_status = "Approved"
+
+	</select>
 </mapper>

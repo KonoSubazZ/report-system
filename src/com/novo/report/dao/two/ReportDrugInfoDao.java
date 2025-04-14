@@ -51,4 +51,5 @@ public interface ReportDrugInfoDao {
 	 * @return
 	 */
 	String getApprovingAgency(@Param("disease_id") Integer disease_id,@Param("drug_name") String drug_name);
+	String getApprovingAgency1(@Param("disease_id") Integer disease_id,@Param("drug_name") String drug_name);
 }
