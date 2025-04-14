@@ -53,5 +53,5 @@ public interface ReportDrugInfoDao {
 	String getApprovingAgency(@Param("disease_id") Integer disease_id,@Param("drug_name") String drug_name);
 	List<String> getApprovingAgency1(@Param("disease_id") Integer disease_id,@Param("drug_name") String drug_name);
 
-	List<String> getApprovingAgency2(Integer diseaseId, String oriName);
+	List<String> getApprovingAgency2(@Param("disease_id")Integer diseaseId,@Param("drug_name") String oriName);
 }
