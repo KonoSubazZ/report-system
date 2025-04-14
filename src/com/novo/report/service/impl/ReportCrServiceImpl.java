@@ -774,8 +774,14 @@ public class ReportCrServiceImpl implements ReportCrService {
                     if ("获批上市".equals(evidencePhase)){
                         approvingAgency = reportDrugInfoDao.getApprovingAgency(disease_id, oriName);
                     } else if ("指南推荐".equals(evidencePhase)) {
-                        List<String> guides = reportDrugInfoDao.getApprovingAgency1(disease_id, oriName);
-                         approvingAgency = String.join("/", guides);
+                        List<String> guides = (level == 1)
+                                ? reportDrugInfoDao.getApprovingAgency1(disease_id, oriName)
+                                : reportDrugInfoDao.getApprovingAgency2(disease_id, oriName);
+
+                        approvingAgency = Optional.ofNullable(guides)
+                                .orElse(Collections.emptyList())
+                                .stream()
+                                .collect(Collectors.joining("/"));
                     }
                 }
                 map.put("approvingAgency", approvingAgency);
