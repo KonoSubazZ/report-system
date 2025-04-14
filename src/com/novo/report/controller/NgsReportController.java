@@ -256,7 +256,7 @@ public class NgsReportController {
             copyto = new String[ccSet.size()];
             ccSet.toArray(copyto);
             //主题
-//            String subject = "请查收诺禾致源的检测报告，姓名：" + sf.getPerson_name() + "-" + sf.getSubbarcode() + ", 送检单位：" + sf.getCustomer();
+//          String subject = "请查收诺禾致源的检测报告，姓名：" + sf.getPerson_name() + "-" + sf.getSubbarcode() + ", 送检单位：" + sf.getCustomer();
             // 20250412取消送检单位
             String subject = "请查收诺禾致源的检测报告，姓名：" + sf.getPerson_name() + "-" + sf.getSubbarcode();
             //内容
