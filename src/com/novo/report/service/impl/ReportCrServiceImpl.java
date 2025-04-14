@@ -475,7 +475,7 @@ public class ReportCrServiceImpl implements ReportCrService {
             String durgStr = drug_name + "&" + disease_name + "&" + evidence_phase;
 
             // 20250313 如果approveRange为1或者5（敏感A、耐药A），则添加approving_agency（获批机构）
-            if ((approveRange.equals("1") || approveRange.equals("5")) && "获批上市".equals(evidence_phase)) {
+            if (approveRange.equals("1") || approveRange.equals("5")) {
                 String approvingAgency = map.get("approving_agency") == null ? null : map.get("approving_agency").toString();
                 durgStr = durgStr + "&" + approvingAgency;
             }
@@ -764,7 +764,7 @@ public class ReportCrServiceImpl implements ReportCrService {
             String evidencePhase = list.get(2);
             Map map = new HashMap<>();
 
-            // 20250313 A级药物耐药敏感增加获批机构
+            // 20250313 A级药物耐药敏感增加获批机构、指南推荐
             if ((level == 1 || level == 5) ) {
                 String approvingAgency = "";
                 if (list.size() == 4) {
@@ -774,7 +774,8 @@ public class ReportCrServiceImpl implements ReportCrService {
                     if ("获批上市".equals(evidencePhase)){
                         approvingAgency = reportDrugInfoDao.getApprovingAgency(disease_id, oriName);
                     } else if ("指南推荐".equals(evidencePhase)) {
-                        approvingAgency = reportDrugInfoDao.getApprovingAgency1(disease_id, oriName);
+                        List<String> guides = reportDrugInfoDao.getApprovingAgency1(disease_id, oriName);
+                         approvingAgency = String.join("/", guides);
                     }
                 }
                 map.put("approvingAgency", approvingAgency);
