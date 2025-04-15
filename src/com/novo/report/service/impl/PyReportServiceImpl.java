@@ -2296,6 +2296,7 @@ public class PyReportServiceImpl implements PyReportService {
                 irinotecanDrugAnnotation.put("content3", chemoArray.get(3));
                 irinotecanDrugAnnotation.put("content4", chemoArray.get(4));
                 irinotecanDrugAnnotation.put("content5", chemoArray.get(5));
+                irinotecanDrugAnnotation.put("content6", chemoArray.get(6));
                 irinotecanDrugAnnotationStr.add(irinotecanDrugAnnotation);
             }
             rt.setIrinotecanDrugAnnotationStr(irinotecanDrugAnnotationStr);
