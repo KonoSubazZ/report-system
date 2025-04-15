@@ -352,15 +352,43 @@
                                 <label>检测人：</label>
                             </div>
                             <div class="field">
+                                <%--                                <c:choose>--%>
+                                <%--&lt;%&ndash;                                    <c:when test="${sampleInfo.laboratoryname =='天津医检所生产组织'}"><input type="text" class="input w50"&ndash;%&gt;--%>
+                                <%--&lt;%&ndash;                                                                                           value="1" name="tested_by"&ndash;%&gt;--%>
+                                <%--&lt;%&ndash;                                                                                           placeholder="盖章版请输入检测人"/></c:when>&ndash;%&gt;--%>
+                                <%--&lt;%&ndash;                                    <c:when test="${sampleInfo.laboratoryname =='广州医检所生产组织'}"><input type="text"&ndash;%&gt;--%>
+                                <%--&lt;%&ndash;                                                                                             class="input w50" value="2"&ndash;%&gt;--%>
+                                <%--&lt;%&ndash;                                                                                             name="tested_by"&ndash;%&gt;--%>
+                                <%--&lt;%&ndash;                                                                                             placeholder="盖章版请输入检测人"/></c:when>&ndash;%&gt;--%>
+                                <%--                                    --%>
+                                <%--                                    <c:otherwise><input type="text" class="input w50" value="3" name="tested_by"--%>
+                                <%--                                                        placeholder="盖章版请输入检测人"/></c:otherwise>--%>
+                                <%--                                </c:choose>--%>
                                 <c:choose>
-                                    <c:when test="${sampleInfo.laboratoryname =='天津医检所生产组织'}"><input type="text" class="input w50"
-                                                                                           value="1" name="tested_by"
+                                    <c:when test="${user.user_account=='huangmanqing'}"><input type="text"
+                                                                                               class="input w50"
+                                                                                               value="1"
+                                                                                               name="tested_by"
+                                                                                               placeholder="盖章版请输入检测人"/></c:when>
+                                    <c:when test="${user.user_account=='wangxingsui'}"><input type="text"
+                                                                                              class="input w50"
+                                                                                              value="2"
+                                                                                              name="tested_by"
+                                                                                              placeholder="盖章版请输入检测人"/></c:when>
+                                    <c:when test="${user.user_account=='sunpeiya'}"><input type="text" class="input w50"
+                                                                                           value="3" name="tested_by"
                                                                                            placeholder="盖章版请输入检测人"/></c:when>
-                                    <c:when test="${sampleInfo.laboratoryname =='广州医检所生产组织'}"><input type="text"
-                                                                                             class="input w50" value="2"
+                                    <c:when test="${user.user_account=='gaoyuan'}"><input type="text" class="input w50"
+                                                                                          value="4" name="tested_by"
+                                                                                          placeholder="盖章版请输入检测人"/></c:when>
+                                    <c:when test="${user.user_account=='liulijie'}"><input type="text" class="input w50"
+                                                                                           value="5" name="tested_by"
+                                                                                           placeholder="盖章版请输入检测人"/></c:when>
+                                    <c:when test="${user.user_account=='wangyiping'}"><input type="text"
+                                                                                             class="input w50" value="6"
                                                                                              name="tested_by"
                                                                                              placeholder="盖章版请输入检测人"/></c:when>
-                                    <c:otherwise><input type="text" class="input w50" value="3" name="tested_by"
+                                    <c:otherwise><input type="text" class="input w50" value="" name="tested_by"
                                                         placeholder="盖章版请输入检测人"/></c:otherwise>
                                 </c:choose>
                                 <div class="tips"></div>
@@ -609,7 +637,7 @@
                                         dataType: "json",
                                         success: function (data) {
                                             if (data) {
-                                                layer.msg("更新新系统状态成功",  {
+                                                layer.msg("更新新系统状态成功", {
                                                     icon: 0,
                                                     offset: ['100px', '500px'],
                                                     time: 1000
@@ -617,7 +645,7 @@
                                             }
                                         },
                                         error: function (xhr, status, error) {
-                                            layer.msg("请求失败" + error,  {
+                                            layer.msg("请求失败" + error, {
                                                 icon: 0,
                                                 offset: ['100px', '500px'],
                                                 time: 1000

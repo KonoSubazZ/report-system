@@ -358,12 +358,12 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // 增加天津、广州医检所判断
-        if("天津医检所生产组织".equals(sf.getLaboratoryname())){
-            rt.setTestedby("1");
-        }else if ("广州医检所生产组织".equals(sf.getLaboratoryname())){
-            rt.setTestedby("2");
-        }
-//        rt.setTestedby(pr.getTested_by());
+//        if("天津医检所生产组织".equals(sf.getLaboratoryname())){
+//            rt.setTestedby("1");
+//        }else if ("广州医检所生产组织".equals(sf.getLaboratoryname())){
+//            rt.setTestedby("2");
+//        }
+        rt.setTestedby(pr.getTested_by());
         rt.setCheckedby(pr.getChecked_by());
         rt.setClient(sf.getClient());
         rt.setAge(sf.getAge());
