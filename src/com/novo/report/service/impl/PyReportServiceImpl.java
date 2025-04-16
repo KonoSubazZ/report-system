@@ -2289,10 +2289,7 @@ public class PyReportServiceImpl implements PyReportService {
                 rt.setChemoSideeffectsEffectivenessStr(chemoSideeffectsEffectivenessStr);
                 rt.setCrGeneCount(String.valueOf(crGeneCount));
             } else {
-                String templateName = rt.getTemplate_name();
-//                if ("实体瘤60基因重肿".equals(templateName)){
-//
-//                }
+
                 String[]  chemoJson1 = chemoJson.split("\\r\\n");
                 for (String s : chemoJson1){
                     List<String> chemoArray = Arrays.asList(s.split("\",\""));
@@ -2302,7 +2299,7 @@ public class PyReportServiceImpl implements PyReportService {
                     irinotecanDrugAnnotation.put("content3", chemoArray.get(3));
                     irinotecanDrugAnnotation.put("content4", chemoArray.get(4));
                     irinotecanDrugAnnotation.put("content5", chemoArray.get(5));
-                    irinotecanDrugAnnotation.put("content6", chemoArray.get(6).replace("]", ""));
+                    irinotecanDrugAnnotation.put("content6", chemoArray.get(6).replace("\"]", ""));
                     irinotecanDrugAnnotationStr.add(irinotecanDrugAnnotation);
                 }
 
