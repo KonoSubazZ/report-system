@@ -2290,7 +2290,7 @@ public class PyReportServiceImpl implements PyReportService {
                 rt.setCrGeneCount(String.valueOf(crGeneCount));
             } else {
 
-                String[]  chemoJson1 = chemoJson.split("\\r\\n");
+                String[]  chemoJson1 = chemoJson.split("\\n");
                 for (String s : chemoJson1){
                     List<String> chemoArray = Arrays.asList(s.split("\",\""));
                     Map irinotecanDrugAnnotation = new HashMap();
