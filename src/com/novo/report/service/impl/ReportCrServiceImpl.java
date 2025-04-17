@@ -475,13 +475,13 @@ public class ReportCrServiceImpl implements ReportCrService {
             String durgStr = drug_name + "&" + disease_name + "&" + evidence_phase;
 
             // 20250313 如果approveRange为1或者5（敏感A），则添加approving_agency（获批机构）
-            if (approveRange.equals("1")) {
+            if (approveRange.equals("1") && "获批上市".equals(evidence_phase)) {
                 String approvingAgency = map.get("approving_agency") == null ? null : map.get("approving_agency").toString();
                 durgStr = durgStr + "&" + approvingAgency;
             }
             drugs.add(durgStr);
         }
-//        Collections.sort(drugs, CHINA_COMPARE);
+
         String sb = "";
         for (String string : drugs) {
             sb += string + ";";
@@ -765,21 +765,13 @@ public class ReportCrServiceImpl implements ReportCrService {
             Map map = new HashMap<>();
 
             // 20250313 A级药物耐药敏感增加获批机构、指南推荐
-            if ((level == 1 || level == 5) ) {
+            if (level == 1 && "获批上市".equals(evidencePhase)) {
                 String approvingAgency = "";
-                if (list.size() == 4) {
+                if (list.size() == 4 && !"null".equals(list.get(3))) {
                     approvingAgency = list.get(3);
                 } else {
                     String oriName = drugName.replaceAll("[#*]", "");
-                    if ("获批上市".equals(evidencePhase)){
-                        approvingAgency = reportDrugInfoDao.getApprovingAgency(disease_id, oriName);
-                    } else if ("指南推荐".equals(evidencePhase) && level == 1) {
-                        List<String> guides = reportDrugInfoDao.getApprovingAgency1(disease_id, oriName);
-//                                : reportDrugInfoDao.getApprovingAgency2(disease_id, oriName);
-
-                        approvingAgency = String.join("/", Optional.ofNullable(guides)
-                                .orElse(Collections.emptyList()));
-                    }
+                    approvingAgency = reportDrugInfoDao.getApprovingAgency(disease_id, oriName);
                 }
                 map.put("approvingAgency", approvingAgency);
             }
