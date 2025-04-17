@@ -474,7 +474,7 @@ public class ReportCrServiceImpl implements ReportCrService {
             }
             String durgStr = drug_name + "&" + disease_name + "&" + evidence_phase;
 
-            // 20250313 如果approveRange为1或者5（敏感A），则添加approving_agency（获批机构）
+            // 20250313 如果approveRange为1（敏感A,获批上市），则添加approving_agency（获批机构）
             if (approveRange.equals("1") && "获批上市".equals(evidence_phase)) {
                 String approvingAgency = map.get("approving_agency") == null ? null : map.get("approving_agency").toString();
                 durgStr = durgStr + "&" + approvingAgency;
