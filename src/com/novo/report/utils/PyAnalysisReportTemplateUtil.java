@@ -352,6 +352,10 @@ public class PyAnalysisReportTemplateUtil {
             data.put("mrd", rt.getMrd());
         }
 
+        if (rt.getTemplate_name().equals("肿瘤早筛基因甲基化检测报告")) {
+            data.put("methylationInfo", rt.getMethylation());
+        }
+
         //data.put("FrequencySinglePageData", rt.getFrequencySinglePageData());
         //7、创建一个Writer对象，指定输出文件的路径及文件名。
 //		FileSystemView fsv = FileSystemView.getFileSystemView();
@@ -391,6 +395,11 @@ public class PyAnalysisReportTemplateUtil {
                 templateName = templateName.replace("粪便", "血液");
             }
             fileName = rt.getBarcode() + rt.getClient() + templateName + apr.getReport_id() + ".docx";
+        } else if (rt.getTemplate_name().equals("肿瘤早筛基因甲基化检测报告")) {
+            String title = (String) rt.getMethylation().getOrDefault("title", "");
+            String sampleRes = (String) rt.getMethylation().getOrDefault("sample_res", "");
+
+            fileName = rt.getBarcode() + rt.getClient() + title + "-" + sampleRes + "-佛山市第一人民医院" + apr.getReport_id() + ".docx";
         } else {
 //			fileName = rt.getBarcode()+rt.getClient()+rt.getTemplate_name()+apr.getReport_id()+".docx";
             fileName = rt.getBarcode() + rt.getClient() + rt.getTemplate_name().replaceAll("-湖肿|-药企|-维基生物|-格微|-病理科|-检验科|-无化疗", "") + apr.getReport_id() + ".docx";

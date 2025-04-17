@@ -3742,6 +3742,25 @@ public class PyReportServiceImpl implements PyReportService {
 
             rt.setMrd(mrdInfo);
         }
+        if (rt.getTemplate_name().equals("肿瘤早筛基因甲基化检测报告")) {
+            String subbarcode = currentNgsAvailable.getSubbarcode();
+            String analysisDate = currentNgsAvailable.getAnalysis_date();
+            String prodName = currentNgsAvailable.getProduct_name();
+            String methylation = analysisReportDao.getMethylationDataInfo(subbarcode, analysisDate, prodName);
+            Map res = gson.fromJson(methylation, Map.class);
+
+            Map<String, Object> methylationInfo = new HashMap<>();
+            methylationInfo.put("title",  res.getOrDefault("title", ""));
+            methylationInfo.put("gene1",  res.getOrDefault("gene1", ""));
+            methylationInfo.put("gene2",  res.getOrDefault("gene2", ""));
+            methylationInfo.put("ct1",  res.getOrDefault("ct1", ""));
+            methylationInfo.put("ct2",  res.getOrDefault("ct2", ""));
+            methylationInfo.put("test_res1",  res.getOrDefault("test_res1", ""));
+            methylationInfo.put("test_res2",  res.getOrDefault("test_res2", ""));
+            methylationInfo.put("sample_res",  res.getOrDefault("sample_res", ""));
+
+            rt.setMethylation(methylationInfo);
+        }
         String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
         analysisReportDao.updateReportDetail(dataToJson, currentNgsAvailable.getReport_id());
 

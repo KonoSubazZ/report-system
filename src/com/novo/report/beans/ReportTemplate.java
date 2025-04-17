@@ -332,6 +332,19 @@ public class ReportTemplate {
      */
     private Map<String, Object> mrd; // 重要靶向用药相关基因结果汇总
 
+    public Map<String, Object> getMethylation() {
+        return methylation;
+    }
+
+    public void setMethylation(Map<String, Object> methylation) {
+        this.methylation = methylation;
+    }
+
+    /**
+     * novopm2_MRD
+     */
+    private Map<String, Object> methylation; // 重要靶向用药相关基因结果汇总
+
     public List<CancerTyping> getCancerTyping1166() {
         return cancerTyping1166;
     }

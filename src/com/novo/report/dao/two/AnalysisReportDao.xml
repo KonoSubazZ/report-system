@@ -818,5 +818,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			cancer = #{cancer}
 		  AND product_name = #{product_name}
 	</select>
+	<select id="getMethylationDataInfo" resultType="java.lang.String">
+		SELECT
+			mf.methylation
+		FROM
+			methylation_file mf
+				JOIN
+			data_file_status dfs ON mf.file_id = dfs.file_id
+		WHERE
+			dfs.subbarcode = #{subbarcode}
+		  AND dfs.analysis_date = #{analysis_date}
+		  AND dfs.product_name = #{product_name}
+		  AND dfs.file_type = 'METHYLATION_JSON'
+	</select>
 
 </mapper>
