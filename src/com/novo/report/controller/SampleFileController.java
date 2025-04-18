@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.JsonObject;
+import com.novo.report.common.Result;
 import com.novo.report.utils.YFWebserviceProxyUtils;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -370,14 +372,15 @@ public class SampleFileController {
 
 	@RequestMapping("updatePersonName")
 	@ResponseBody
-	public Object updatePersonName(SampleFile sampleFile){
-		try {
-			sampleFileService.updatePersonName(sampleFile);
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+	public Result<JsonObject> updatePersonName(SampleFile sampleFile){
+//		try {
+//			Result<JsonObject> res	= sampleFileService.updatePersonName(sampleFile);
+//			return true;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+		return sampleFileService.updatePersonName(sampleFile);
 	}
 
 	@RequestMapping("updateGender")

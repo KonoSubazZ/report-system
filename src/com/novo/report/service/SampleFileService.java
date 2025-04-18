@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
 import com.novo.report.beans.NumberOfMutations;
 import com.novo.report.beans.PaginationVO;
 import com.novo.report.beans.SampleFile;
 import com.novo.report.beans.SampleFilePageBean;
+import com.novo.report.common.Result;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +26,7 @@ public interface SampleFileService {
 	Integer getSampleIdByBarcode(String barcode);
 	Object RefulshLims();
 	void updateSmapleType(SampleFile sampleFile);
-	void updatePersonName(SampleFile sampleFile);
+	Result<JsonObject> updatePersonName(SampleFile sampleFile);
 	void updateGender(SampleFile sampleFile);
 	void updateAge(SampleFile sampleFile);
 	void updateDiseaseType(SampleFile sampleFile);
