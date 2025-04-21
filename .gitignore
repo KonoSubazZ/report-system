@@ -72,3 +72,7 @@ rebel.xml
 
 # 如果有数据库相关的文件（如 SQLite 数据库）
 *.db
+
+.idea/*
+!.idea/modules.xml
+*.iml
