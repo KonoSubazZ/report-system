@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface ModuleDao {
-   ModProductDesc getProductDesc(String templateName);
+    ModProductDesc getProductDesc(String templateName);
 
     ModCancerNoteSummary getCancerNote(ModCancerNoteSummary modCancerNoteSummary);
 

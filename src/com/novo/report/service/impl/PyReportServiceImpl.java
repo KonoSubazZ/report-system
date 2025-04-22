@@ -3691,35 +3691,38 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setHenanPeopleCustomInfo(HenanPeopleCustomInfo);
         }
         String templateName = rt.getTemplate_name();
-        // CUSTOM 重要靶向基因汇总-检出总表
-        HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer, templateName);
-        rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
+        // CUSTOM 重要靶向基因汇总-检出总表,暂时不使用了
+//        HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer, templateName);
+//        rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
 
-        // CUSTOM 报告一些基础数据
-        HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd);
-        rt.setReportInfo(reportInfo);
+        // 增加配置，有模块化才使用模板
+        if (templateConf != null){
+            // CUSTOM 报告一些基础数据
+            HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd);
+            rt.setReportInfo(reportInfo);
 
-        // CUSTOM 关于癌种判断的一些展示逻辑,生成检测项目信息
-        Map<String, Object> cancerInfo = new HashMap<>();
-        cancerInfo.put("urinaryProstateDisease", urinaryProstateDisease);
-        cancerInfo.put("endometrialCarcinoma", endometrialCarcinoma);
-        cancerInfo.put("gastrointestinalStromalTumor", gastrointestinalStromalTumor);
-        cancerInfo.put("targetCancer", target_cancer);
-        cancerInfo.put("sarcomaFlag", sarcomaFlag);
-        Map<String, Object> productDesc = generateProductDesc(cancerInfo, pd, templateName, templateConf);
-        rt.setProductDesc(productDesc);
+            // CUSTOM 关于癌种判断的一些展示逻辑,生成检测项目信息
+            Map<String, Object> cancerInfo = new HashMap<>();
+            cancerInfo.put("urinaryProstateDisease", urinaryProstateDisease);
+            cancerInfo.put("endometrialCarcinoma", endometrialCarcinoma);
+            cancerInfo.put("gastrointestinalStromalTumor", gastrointestinalStromalTumor);
+            cancerInfo.put("targetCancer", target_cancer);
+            cancerInfo.put("sarcomaFlag", sarcomaFlag);
+            Map<String, Object> productDesc = generateProductDesc(cancerInfo, pd, templateName, templateConf);
+            rt.setProductDesc(productDesc);
 
-        // CUSTOM 生成检测小结信息, 暂时不用合并到 commonNote 中
-        // Map<String, Object> testResultSummary = generateTestResultSummary(templateName);
-        // rt.setTestResultSummary(testResultSummary);
+            // CUSTOM 生成检测小结信息, 暂时不用合并到 commonNote 中
+            // Map<String, Object> testResultSummary = generateTestResultSummary(templateName);
+            // rt.setTestResultSummary(testResultSummary);
 
-        // CUSTOM 生成参考文献信息
-        Map<String, Object> references = generateReferences(templateName, cancerInfo, templateConf);
-        rt.setReferences(references);
+            // CUSTOM 生成参考文献信息
+            Map<String, Object> references = generateReferences(templateName, cancerInfo, templateConf);
+            rt.setReferences(references);
 
-        // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结、重要靶向基因汇总
-        Map<String, Object> commonNote = generateCommonNote(templateConf, productName, rt, cancerInfo);
-        rt.setCommonNote(commonNote);
+            // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结、重要靶向基因汇总
+            Map<String, Object> commonNote = generateCommonNote(templateConf, productName, rt, cancerInfo);
+            rt.setCommonNote(commonNote);
+        }
 
         AnalysisReport analysisReport = null;
         String status = null;
@@ -4159,14 +4162,6 @@ public class PyReportServiceImpl implements PyReportService {
         if (note != null) {
             noteList.add(note.getNote());
         }
-
-//        List<String> notes = moduleService.getImportantTargetedGeneSummaryNote(templateName);
-//        if (notes != null) {
-//            noteList.addAll(notes);
-//        }
-//
-//        res.put("title", title.getTitle());
-//        res.put("noteList", noteList);
 
         return res;
     }
