@@ -3695,7 +3695,7 @@ public class PyReportServiceImpl implements PyReportService {
         // HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer, templateName);
         // rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
 
-        // 增加配置，有模块化才使用模板
+        // 增加配置，有模块化才使用新模块化逻辑
         if (templateConf != null){
             // CUSTOM 报告一些基础数据
             HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd);
