@@ -3545,12 +3545,12 @@ public class PyReportServiceImpl implements PyReportService {
         ngsQrcode.setReport_date(pr.getReport_date());
         ngsQrcodeService.insertNgsQrcode(ngsQrcode);*/
         // 调取接口，上传二维码信息
-        String ngsQrcode = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/" + sf.getClient() + "/subbarcode/" + sf.getSubbarcode() + "/product_name/" + sf.getProduct_name() + "/username/3/qrcode/" + qrcode + "/report_date/" + pr.getReport_date();
-        String httpURLGETCase = WebserviceProxyUtils.httpURLGETCase(ngsQrcode);
-        System.out.println(httpURLGETCase);
+        // String ngsQrcode = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/" + sf.getClient() + "/subbarcode/" + sf.getSubbarcode() + "/product_name/" + sf.getProduct_name() + "/username/3/qrcode/" + qrcode + "/report_date/" + pr.getReport_date();
+        // String httpURLGETCase = WebserviceProxyUtils.httpURLGETCase(ngsQrcode);
+        // System.out.println(httpURLGETCase);
 //        String binary = QrCodeUtils.creatRrCode(qrcode, 200, 200);
-        String binary = CreateQRCode.createQRCode(methodUrl + qrcode, session.getServletContext().getRealPath("/") + "images/tumour-logo.png");
-        summaryOfRresults.put("binary", binary);
+        // String binary = CreateQRCode.createQRCode(methodUrl + qrcode, session.getServletContext().getRealPath("/") + "images/tumour-logo.png");
+        // summaryOfRresults.put("binary", binary);
 
         rt.setSummaryOfRresults(summaryOfRresults);
         String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
