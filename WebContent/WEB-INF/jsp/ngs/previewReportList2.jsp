@@ -299,9 +299,9 @@ tr {
 						dataType:"json"});
 				}
 			</script>
-			<div style="float:left;margin:8px 0 0 10px;">
-				<button style="width: 150px;padding:10px;border-radius: 3px;border:none;background:#0ae;border:1px solid #ccc" onclick="knowledgeBaseMatching2()" <c:if test="${pendingAndErrorCount > 0}">disabled="disabled"</c:if>>匹配模块化</button>
-			</div>
+<%--			<div style="float:left;margin:8px 0 0 10px;">--%>
+<%--				<button style="width: 150px;padding:10px;border-radius: 3px;border:none;background:#0ae;border:1px solid #ccc" onclick="knowledgeBaseMatching2()" <c:if test="${pendingAndErrorCount > 0}">disabled="disabled"</c:if>>匹配模块化</button>--%>
+<%--			</div>--%>
 			<script type="text/javascript">
 				function knowledgeBaseMatching2(){
 					$.ajax({url:"${pageContext.request.contextPath}/life/updateProductByProductId",
