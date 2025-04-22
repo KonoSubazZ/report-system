@@ -3692,8 +3692,8 @@ public class PyReportServiceImpl implements PyReportService {
         }
         String templateName = rt.getTemplate_name();
         // CUSTOM 重要靶向基因汇总-检出总表,暂时不使用了
-//        HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer, templateName);
-//        rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
+        // HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer, templateName);
+        // rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
 
         // 增加配置，有模块化才使用模板
         if (templateConf != null){
