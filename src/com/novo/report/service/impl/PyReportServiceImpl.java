@@ -4131,6 +4131,10 @@ public class PyReportServiceImpl implements PyReportService {
             toRemove = "肉瘤辅助诊断提示、";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
+        if (!conf.getMsi()) {
+            toRemove = "、免疫药物";
+            productDesc1Str = productDesc1Str.replace(toRemove, "");
+        }
         productDescList.add(productDesc1Str);
         res.put("productDescList", productDescList);
 
