@@ -1,6 +1,8 @@
 import base64
 import json
 import os
+import tempfile
+import shutil
 import jinja2
 import lxml
 import six
@@ -419,6 +421,12 @@ def determine_template_file(template_name, config):
         return single_common
     else:
         return f"{template_name}.docx"
+
+def load_template_safely(tpl_path):
+    tmp_tpl_file = tempfile.NamedTemporaryFile(delete=False, suffix=".docx")
+    shutil.copy2(tpl_path, tmp_tpl_file.name)
+    tpl = DocxTemplate(tmp_tpl_file.name)
+    return tpl, tmp_tpl_file.name
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
