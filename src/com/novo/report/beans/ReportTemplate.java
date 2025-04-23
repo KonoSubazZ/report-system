@@ -367,6 +367,20 @@ public class ReportTemplate {
      */
     private String type;
 
+    public String getPanel() {
+        return panel;
+    }
+
+    public void setPanel(String panel) {
+        this.panel = panel;
+    }
+
+    /**
+     * 产品panel
+     */
+    private String panel;
+
+
     /**
      * docs: 晶赛报告自定义的 BodyDrugTipCustomList
      * 基于通用的bodyDrugTipLineStr（item是位点 ） ->  更新为变异等级（I   II）分类
