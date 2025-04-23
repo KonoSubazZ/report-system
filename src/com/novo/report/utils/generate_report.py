@@ -436,7 +436,7 @@ if __name__ == '__main__':
 
         # 加载模块化配置文件
         config = load_template_config()
-        enabled = config.get("enabled", False)
+        enabled = config.get("module_enabled", False)
 
         # 是否使用模块化模板
         if enabled:
