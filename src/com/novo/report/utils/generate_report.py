@@ -407,11 +407,11 @@ def load_template_config(config_path="report_config.json"):
 
     return config
 def determine_template_file(template_name, config):
-    single_common = config["common_templates"]["single"]
-    double_common = config["common_templates"]["double"]
+    single_common = config["common_templates"]["single_sample"]
+    double_common = config["common_templates"]["double_sample"]
 
-    single_list = set(config["advanced_templates"]["single"])
-    double_list = set(config["advanced_templates"]["double"])
+    single_list = set(config["advanced_templates"]["single_sample"])
+    double_list = set(config["advanced_templates"]["double_sample"])
 
     if template_name in double_list:
         return double_common
