@@ -392,9 +392,13 @@ def flatten_data(data):
         desc2s = item['desc2'].split(',')
         result.append({'desc1': item['desc1'], 'desc2': desc2s})
     return result
-def load_template_config(config_path="/data/soft/apache-tomcat-8.5.43/webapps/report_en7/WEB-INF/classes/com/novo/report/utils/report_config.json"):
+def load_template_config(config_path="report_config.json"):
     try:
-        with open(config_path, 'r', encoding='utf-8') as f:
+    # 获取当前 Python 文件所在目录
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    full_path = os.path.join(base_dir, config_path)
+
+    with open(full_path, 'r', encoding='utf-8') as f:
             config = json.load(f)
     except Exception as e:
         print(f"❌ 加载配置失败: {e}")
