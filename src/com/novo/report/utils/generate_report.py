@@ -394,18 +394,18 @@ def flatten_data(data):
     return result
 def load_template_config(config_path="report_config.json"):
     try:
-    # 获取当前 Python 文件所在目录
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    full_path = os.path.join(base_dir, config_path)
+        # 获取当前 Python 文件所在目录
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        full_path = os.path.join(base_dir, config_path)
 
-    with open(full_path, 'r', encoding='utf-8') as f:
+        with open(full_path, 'r', encoding='utf-8') as f:
             config = json.load(f)
+
     except Exception as e:
         print(f"❌ 加载配置失败: {e}")
         sys.exit(1)
 
     return config
-
 def determine_template_file(template_name, config):
     single_common = config["common_templates"]["single"]
     double_common = config["common_templates"]["double"]
