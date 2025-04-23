@@ -337,6 +337,8 @@ public class PyAnalysisReportTemplateUtil {
         data.put("did", rt.getDid());
         // 样本类型en
         data.put("type", rt.getType());
+        // 产品panel
+        data.put("panel", rt.getPanel());
         // 检出重要基因总表数据
         data.put("importantTargetedGeneSummary", rt.getImportantTargetedGeneSummary());
         // 报告-基础信息
