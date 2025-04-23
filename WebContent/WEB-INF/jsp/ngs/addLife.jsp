@@ -89,7 +89,7 @@
                                                                 $("#disease_type").val(data.disease_type);
                                                                 $("#specimenno").val(data.specimenno);
                                                                 var label = document.getElementById('specimenno_label');
-                                                                if (data.customer.includes("阿克曼") || data.customer.includes("银丰") || data.customer.includes("迪安") || data.hospital.includes("常德")) {
+                                                                if (data.customer.includes("阿克曼") || data.customer.includes("银丰") || data.customer.includes("迪安") || data.hospital.includes("常德") || data.customer.includes("赛福")) {
                                                                     $('#specimenno_div').show(); // 显示div
                                                                     if (data.customer.includes("阿克曼")) {
                                                                         label.innerText = "阿克曼编号：";
@@ -99,6 +99,8 @@
                                                                         label.innerText = "迪安编号：";
                                                                     } else if (data.hospital.includes("常德")) {
                                                                         label.innerText = "常德病理号：";
+                                                                    } else if (data.customer.includes("赛福")) {
+                                                                        label.innerText = "赛福病理号：";
                                                                     }
                                                                 } else {
                                                                     $('#specimenno_div').hide(); // 隐藏div
@@ -605,7 +607,7 @@
                                     var customer = $("#customer").val();
                                     var hospital = $("#hospital").val();
                                     var label = document.getElementById('specimenno_label');
-                                    if (customer.includes("阿克曼") || customer.includes("银丰") || customer.includes("迪安") || hospital.includes("常德")) {
+                                    if (customer.includes("阿克曼") || customer.includes("银丰") || customer.includes("迪安") || hospital.includes("常德") || customer.includes("赛福")) {
                                         $('#specimenno_div').show(); // 显示div
                                         if (customer.includes("阿克曼")) {
                                             label.innerText = "阿克曼编号：";
@@ -615,6 +617,8 @@
                                             label.innerText = "迪安编号：";
                                         } else if (hospital.includes("常德")) {
                                             label.innerText = "常德病理号：";
+                                        } else if (customer.includes("赛福")) {
+                                            label.innerText = "赛福病理号：";
                                         }
                                     } else {
                                         $('#specimenno_div').hide(); // 隐藏div
