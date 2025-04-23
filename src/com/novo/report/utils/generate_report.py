@@ -426,31 +426,38 @@ if __name__ == '__main__':
         tpl = DocxTemplate(sys.argv[1])
         f = open(sys.argv[2], encoding='utf-8')
         info_json = json.load(f)
-        # 在页眉中插入图片
-        # header_image = info_json['pageHeaderPic']
-        # if header_image is not "":
-        #     header = tpl.sections[0].header
-        #     header.paragraphs[0].add_run().add_picture(header_image, width=Pt(492.6), height=Pt(38))
+
+        # 初始化 【pyfn】 使用变量
+        # 所有检出基因列表-标红
         GENE_LIST = info_json['allGeneSet'] if info_json['allGeneSet'] else []
+        # 体系基因列表-标红
         BodyGene_LIST = info_json['bodyGeneSet'] if info_json['bodyGeneSet'] else []
+        # 胚系（所有）基因列表-标红
         EmbryonalGene_LIST = info_json['embryonalGeneSet'] if info_json['embryonalGeneSet'] else []
+        # 化疗基因列表-标红
         ChemoGene_LIST = info_json['chemoGeneSet'] if info_json['chemoGeneSet'] else []
+        # 胚系（致病1、2）基因列表-标红
         CancerRiskGene_LIST = info_json['cancerRiskGene'] if info_json['cancerRiskGene'] else []
+        # 单基因多基因模板逻辑
         DetectionMutation_LIST = info_json['detectionMutationSet'] if info_json['detectionMutationSet'] else []
+        # 华西模板逻辑  可能促进药物效果标志物、可能导致药物效果降低标志物、可能导致疾病发生超进展标志物、PARP抑制剂相关基因检测结果
         PromoteGene_LIST = info_json['promoteGeneSet'] if info_json['promoteGeneSet'] else []
         ReducedGene_LIST = info_json['reducedGeneSet'] if info_json['reducedGeneSet'] else []
         ProgressionGene_LIST = info_json['progressionGeneSet'] if info_json['progressionGeneSet'] else []
         ParpinhibitorGene_LIST = info_json['parpinhibitorGeneSet'] if info_json['parpinhibitorGeneSet'] else []
         PredictorGene_LIST = info_json['predictorGeneSet'] if info_json['predictorGeneSet'] else []
+        # 免疫正相关基因是否检出
         ImmunopositiveGene_LIST = info_json['immunopositiveGeneSet'] if info_json['immunopositiveGeneSet'] else []
+        # 免疫负相关基因是否检出
         ImmunonegativeGene_LIST = info_json['immunonegativeGeneSet'] if info_json['immunonegativeGeneSet'] else []
+        # 肉瘤附录列表逻辑
         if 'sarcomaTypingList1' in info_json.get('note', {}) and info_json['note']['sarcomaTypingList1']:
             info_json['note']['sarcomaTypingList1'] = flatten_data(info_json['note']['sarcomaTypingList1'])
             info_json['note']['sarcomaTypingList2'] = flatten_data(info_json['note']['sarcomaTypingList2'])
             info_json['note']['sarcomaTypingList3'] = flatten_data(info_json['note']['sarcomaTypingList3'])
             info_json['note']['sarcomaTypingList4'] = flatten_data(info_json['note']['sarcomaTypingList4'])
 
-
+        # 模板init过滤器
         jinja_env = jinja2.Environment()
         jinja_env.filters['ms'] = mystyle
         jinja_env.filters['ms2'] = mystyle2

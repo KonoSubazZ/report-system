@@ -44,9 +44,9 @@ public class PyAnalysisReportTemplateUtil {
         // TODO 待升级-固定目录
         String docxPath = path + "docx/" + rt.getTemplate_name() + ".docx";
 
-        if (advancedTemplates.contains(rt.getTemplate_name())) {
-            docxPath = path + "docx/" + "NOVO检测报告-通用双样本" + ".docx";
-        }
+//        if (advancedTemplates.contains(rt.getTemplate_name())) {
+//            docxPath = path + "docx/" + "NOVO检测报告-通用双样本" + ".docx";
+//        }
         Map<String, Object> data = new HashMap<String, Object>();
         if (apr.getProduct_name().contains("novoivd")) {
             data.put("age", StringUtils.isEmpty(rt.getAge()) ? "/" : rt.getAge());
