@@ -129,6 +129,7 @@ public class PyReportServiceImpl implements PyReportService {
         TemplateConf templateConf = templateConfService.get(rt.getTemplate_name());
         // 获取产品名称
         String productName = lifeDao.getProductByProductId(currentNgsAvailable.getProduct_id());
+        rt.setPanel(productName);
         currentNgsAvailable.setProduct_name(productName);
         pr.setProduct_name(productName);
 
@@ -2932,7 +2933,7 @@ public class PyReportServiceImpl implements PyReportService {
             // 子宫内膜癌 子宫内膜癌症
             if (diseaseName.contains("子宫内膜癌") && "tis".equals(split[1]) || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
                 // TODO 增加配置 01 控制是否展示
-                if (templateConf.getEndometrial_carcinoma_typing()) {
+                if (templateConf != null && templateConf.getEndometrial_carcinoma_typing()) {
                     endometrialCarcinoma = true;
                 }
             }
@@ -2948,7 +2949,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 20241217 修复辅助肉瘤判断空指针
         if ((diseaseName.contains("肉瘤") && !isblood) || (currentNgsAvailable.getModuleFlag() != null && currentNgsAvailable.getModuleFlag().contains("肉瘤分子分型"))) {
             // TODO 肉瘤分型增加 01 控制是否展示
-            if (templateConf.getSarcoma_typing()) {
+            if (templateConf != null && templateConf.getSarcoma_typing()) {
                 sarcomaFlag = true;
             }
             List<MmSarcomaTyping> mmSarcomaTypings = moduleModificationAllDao.selectMmSarcomaTypingByReportId(currentNgsAvailable.getReport_id());
