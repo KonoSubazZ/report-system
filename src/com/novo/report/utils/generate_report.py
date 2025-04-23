@@ -392,7 +392,7 @@ def flatten_data(data):
         desc2s = item['desc2'].split(',')
         result.append({'desc1': item['desc1'], 'desc2': desc2s})
     return result
-def load_template_config(config_path='config.json'):
+def load_template_config(config_path="/data/soft/apache-tomcat-8.5.43/webapps/report_en7/WEB-INF/classes/com/novo/report/utils/report_config.json"):
     try:
         with open(config_path, 'r', encoding='utf-8') as f:
             config = json.load(f)
@@ -421,9 +421,36 @@ if __name__ == '__main__':
         print("Usage: python3 {} TemplateWord JsonInfoPath OutputWord".format(__file__))
     try:
 
+        # 例: python3 generate_report.py \
+        #             /path/to/模板文件.docx \
+        #             /path/to/tempJson.json \
+        #             /path/to/输出文件.docx
+        # init py脚本参数
+        input_template_path = sys.argv[1]
+        json_path = sys.argv[2]
+        output_path = sys.argv[3]
+
+        # 加载模块化配置文件
         config = load_template_config()
-        selected_template_file = determine_template_file(sys.argv[1], config)
-        tpl = DocxTemplate(sys.argv[1])
+        enabled = config.get("enabled", False)
+
+        # 是否使用模块化模板
+        if enabled:
+            template_name = os.path.basename(input_template_path).replace(".docx", "")
+            selected_template_file = determine_template_file(template_name, config)
+            tpl_path = os.path.join(os.path.dirname(input_template_path), selected_template_file)
+
+            print(f"[INFO] 匹配到的模板名: {template_name}")
+            print(f"[INFO] 实际使用的模板文件: {selected_template_file}")
+            print(f"[INFO] 实际模板路径: {tpl_path}")
+        else:
+            tpl_path = input_template_path
+            print(f"[INFO] 未启用模板替换逻辑，直接使用输入路径模板: {tpl_path}")
+
+        # 加载模板
+        tpl = DocxTemplate(tpl_path)
+
+        # 加载输出文件
         f = open(sys.argv[2], encoding='utf-8')
         info_json = json.load(f)
 
