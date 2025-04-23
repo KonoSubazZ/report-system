@@ -357,7 +357,7 @@ public class PyReportServiceImpl implements PyReportService {
             isblood = true;
         }
 
-        // 增加天津、广州医检所判断
+        //  增加天津、广州医检所判断
 //        if("天津医检所生产组织".equals(sf.getLaboratoryname())){
 //            rt.setTestedby("1");
 //        }else if ("广州医检所生产组织".equals(sf.getLaboratoryname())){
