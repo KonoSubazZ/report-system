@@ -15,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -3866,9 +3865,6 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setHenanPeopleCustomInfo(HenanPeopleCustomInfo);
         }
         String templateName = rt.getTemplate_name();
-        // CUSTOM 重要靶向基因汇总-检出总表,暂时不使用了
-        // HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer, templateName);
-        // rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
 
         // 增加配置，有模块化才使用新模块化逻辑
         if (templateConf != null){
@@ -3886,8 +3882,6 @@ public class PyReportServiceImpl implements PyReportService {
             Map<String, Object> productDesc = generateProductDesc(cancerInfo, pd, templateName, templateConf);
             rt.setProductDesc(productDesc);
 
-//        HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer);
-//        rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
             // CUSTOM 生成检测小结信息, 暂时不用合并到 commonNote 中
             // Map<String, Object> testResultSummary = generateTestResultSummary(templateName);
             // rt.setTestResultSummary(testResultSummary);
@@ -4207,6 +4201,8 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
     private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer) {
+        return null;
+    }
     /**
      * 处理生成免疫正负超进展表格
      *
@@ -6743,4 +6739,4 @@ public class PyReportServiceImpl implements PyReportService {
             return "合格";
         }
     }
-}
+    }
