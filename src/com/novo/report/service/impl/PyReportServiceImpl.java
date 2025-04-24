@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.novo.report.beans.*;
 import com.novo.report.dao.two.*;
+import com.novo.report.mod.ModCancerNoteSummary;
+import com.novo.report.mod.ModCommonNote;
+import com.novo.report.mod.ModProductDesc;
 import com.novo.report.service.*;
 import com.novo.report.utils.*;
 import net.sf.json.JSONArray;
@@ -77,6 +80,14 @@ public class PyReportServiceImpl implements PyReportService {
     @Autowired
     private GeneticMarkerVwDao geneticMarkerVwDao;
 
+    @Autowired
+    private TemplateConfService templateConfService;
+
+    @Autowired
+    private ModuleService moduleService;
+    @Autowired
+    private ModuleDao moduleDao;
+
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
         boolean flag = false;
@@ -114,13 +125,15 @@ public class PyReportServiceImpl implements PyReportService {
                                  HttpSession session,
                                  CurrentNgsAvailableData currentNgsAvailable,
                                  User user) throws Exception {
-
         // 设置当前语言-此时代表中文
         Integer lang = 1;
         Gson gson = new Gson();
 
+        // 获取模板配置项
+        TemplateConf templateConf = templateConfService.get(rt.getTemplate_name());
         // 获取产品名称
         String productName = lifeDao.getProductByProductId(currentNgsAvailable.getProduct_id());
+        rt.setPanel(productName);
         currentNgsAvailable.setProduct_name(productName);
         pr.setProduct_name(productName);
         // 用于模块判断
@@ -145,15 +158,15 @@ public class PyReportServiceImpl implements PyReportService {
         // 用于记录与 "CR" 基因相关的药物列表数量。
         int crDrugList = 0;
 
-        // 用于记录所有基因 - 暂时不清楚
+        // 记录所有检出基因（胚体系 123）
         HashSet<Object> allGeneSet = new HashSet<>();
-        // 胚系（所有）
+        // 胚系检出基因（所有）
         HashSet<Object> crGeneSet = new HashSet<>();
-        // 胚系 只包含（1、2、3）
+        // 胚系检出基因 只包含（1、2、3）
         HashSet<Object> embryonalGeneSet = new HashSet<>();
-        // 体系
+        // 体系检出基因
         HashSet<Object> bodyGeneSet = new HashSet<>();
-        // 汇总
+        // 记录所有位点基因 包括胚系12345
         HashSet<Object> GeneSet = new HashSet<>();
 
         //循环设置临床意义
@@ -177,6 +190,8 @@ public class PyReportServiceImpl implements PyReportService {
         Map<String, Boolean> diseaseFlag = generateDiseaseFlag(diseaseName);
         rt.setDisease(diseaseFlag);
 
+        // 匹配癌种id
+        rt.setDid(diseaseId);
         // cr 相关药物数量(需要看下什么形式)
         int crDrugListSize = (int) result_map.get("crDrugListSize");
         // 胚系突变的数量
@@ -305,8 +320,10 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 获取免疫正、负、超进展 相关数量
         int positiveImmnueNum = 0;
+        int positiveOtherImmnueNum = 0;
         int negativeImmnueNum = 0;
         int hpdImmnueNum = 0;
+
         List<Map> positiveImmnue = new ArrayList<>();
         List<Map> negativeImmnue = new ArrayList<>();
         List<Map> hpdImmnue = new ArrayList<>();
@@ -321,6 +338,14 @@ public class PyReportServiceImpl implements PyReportService {
             positiveImmnueNum = positiveImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
             negativeImmnueNum = negativeImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
             hpdImmnueNum = hpdImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
+
+            // 20250319 新增 positiveOtherImmnueNum 判断是否其他展示检测意义
+            List<String> otherGenes = Arrays.asList("CD274", "KRAS", "PBRM1", "PDCD1LG2", "POLD1", "POLE", "TP53");
+            positiveOtherImmnueNum = (int) positiveImmnue.stream()
+                    .filter(immnue -> !"/".equals(immnue.get("varDesc").toString()) &&
+                            otherGenes.contains(immnue.get("gene").toString()))
+                    .count();
+
             // TODO 待优化 上面用了六个 for ，可优化为一个
             /*
             for (Map immnue : immnueall) {
@@ -353,6 +378,9 @@ public class PyReportServiceImpl implements PyReportService {
         boolean isblood = false;
         //获取样本信息
         SampleFile sf = sampleFileService.getSampleFileBySubbarcode(currentNgsAvailable.getSubbarcode());
+
+        // 设置样本类型
+        rt.setType(sf.getSample_type());
         if ("blood".equals(sf.getSample_type())) {
             isblood = true;
         }
@@ -508,12 +536,14 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setBase_quality(qc.get("base_quality").toString());
         }
         // DNA-Panel 判定合格标准 平均测序深度（X）  合格：组织≥500，cfDNA≥3000;  警戒：500＞组织≥400，3000＞cfDNA≥2500;  不合格：组织<400，cfDNA<2500。
+        String dnaAssessment = "";
         if (!StringUtils.isEmpty(rt.getSequencing_depth()) && !"-".equals(rt.getSequencing_depth())) {
             String sequencing_depth1 = rt.getSequencing_depth();
             if (sequencing_depth1.charAt(sequencing_depth1.length() - 1) == 'X') {
                 sequencing_depth1 = sequencing_depth1.substring(0, sequencing_depth1.length() - 1);
             }
             Double sequencing_depth = Double.valueOf(sequencing_depth1);
+
             if (!isblood) {
                 if (sequencing_depth >= 500) {
                     rt.setOverall_quality_assessment("合格");
@@ -532,6 +562,7 @@ public class PyReportServiceImpl implements PyReportService {
                 }
             }
         }
+        dnaAssessment = rt.getOverall_quality_assessment();
         // 实验QC以样本模板上传的样本信息为主
         if (!StringUtils.isEmpty(sf.getTumorcellcontent())) {
             rt.setTumorcellcontent(sf.getTumorcellcontent());
@@ -551,6 +582,22 @@ public class PyReportServiceImpl implements PyReportService {
         //QC HRD质控信息
         Map hrd = analysisReportDao.getQCHRD(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         rt.setHrd(hrd);
+        // 20250311 样本质量评估
+        if (rna != null && rna.size() > 0) {
+            String totalReadsStr = rna.get("total_reads").toString();
+            Double totalReads = Double.valueOf(totalReadsStr);
+            String rnaAssessment = "";
+            if (totalReads >= 12000000) {
+                rnaAssessment = "合格";
+            } else if (totalReads < 12000000 && totalReads >= 10000000) {
+                rnaAssessment = "警戒";
+            } else {
+                rnaAssessment = "不合格";
+            }
+            // 判断 D+R 样本综合质量
+            String assessment = getWorstAssessment(dnaAssessment, rnaAssessment);
+            rt.setOverall_quality_assessment(assessment);
+        }
 
         StringBuilder sb = new StringBuilder();
         Set<String> geneSet = new HashSet<>();
@@ -567,10 +614,7 @@ public class PyReportServiceImpl implements PyReportService {
             }
         }
 
-
-        /*if (pr.getProduct_name().contains("novoivd") && pr.getProduct_name().contains("Crc")) {
-            allGeneSet.add("UGT1A1");
-        }*/
+        // 蚌埠 体细胞geneSet 特殊逻辑
         if (rt.getTemplate_name().contains("蚌埠")) {
             Set<String> bengbu = new HashSet();
             for (Map map : thisGeneticmarkerList) {
@@ -583,6 +627,7 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setBengbu(bengbu);
         }
 
+        // 关于报告中位点展示的排序逻辑
         list.sort((Map map1, Map map2) -> Float.valueOf(map2.get("orderNum").toString()).compareTo(Float.valueOf(map1.get("orderNum").toString())));
         List<RpVatiantOrder> selectOrderByAnalysisReportId = reportClinicalTrialDao.selectOrderByAnalysisReportId(currentNgsAvailable.getReport_id());
         if (selectOrderByAnalysisReportId.isEmpty()) {
@@ -608,12 +653,13 @@ public class PyReportServiceImpl implements PyReportService {
         if (rt.getTemplate_name().contains("安徽胸科") || rt.getTemplate_name().contains("泛实体瘤182+6基因报告")) {
             output = "未检测到与用药相关突变";
         }
+        // 肺癌11基因报告-重庆分子 肺癌26基因报告模板-重庆分子 特殊模板需求
         List<Map> hotallgenedrugs = analysisReportDao.gethotGeneDrug("hotallgenedrug", rt.getTemplate_name());
         if (!hotallgenedrugs.isEmpty()) {
             List<Map> hotAllGeneDrugTipLineStr = getHotgeneData(hotallgenedrugs, thisGeneticmarkerList, crList, "allgene", output, rt.getTemplate_name());
             rt.setHotAllGeneDrugTipLineStr(hotAllGeneDrugTipLineStr);
         }
-        //靶向基因检测结果小结热点基因
+        // 靶向基因检测结果小结热点基因 -湖南肿瘤肺癌49模板 湖南肿瘤胃肠癌49模板 实体瘤54+6基因报告-安徽胸科 泛实体瘤182+6基因报告 泛实体瘤182+6基因报告-单样本
         List<Map> hotgenedrugs = analysisReportDao.gethotGeneDrug("hotgenedrug", rt.getTemplate_name());
         if (!hotgenedrugs.isEmpty()) {
             List<Map> hotGeneDrugTipLineStr = getHotgeneData(hotgenedrugs, thisGeneticmarkerList, crList, "snp_indel", output, rt.getTemplate_name());
@@ -640,13 +686,13 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setHotGeneDrugSet(hotGeneDrugSet);
         }
 
-        // 肿瘤遗传风险检测结果小结
+        // 肿瘤遗传风险检测结果小结 湖南肿瘤胃肠癌49模板
         List<Map> hotcrgenedrugs = analysisReportDao.gethotGeneDrug("hotcrgenedrug", rt.getTemplate_name());
         if (!hotcrgenedrugs.isEmpty()) {
             List<Map> hotCrGeneDrugTipLineStr = getHotgeneData(hotcrgenedrugs, thisGeneticmarkerList, crList, "CR", output, rt.getTemplate_name());
             rt.setHotCrGeneDrugTipLineStr(hotCrGeneDrugTipLineStr);
         }
-        //(银丰-华西)
+        // (银丰-华西)
         HashSet<Object> promoteGeneSet = new HashSet<>(); //可能促进药物效果标志物
         HashSet<Object> reducedGeneSet = new HashSet<>(); //可能导致药物效果降低标志物
         HashSet<Object> progressionGeneSet = new HashSet<>(); //可能导致疾病发生超进展标志物
@@ -689,7 +735,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setImmunopositiveGeneSet(immunopositiveGeneSet);
         rt.setImmunonegativeGeneSet(immunonegativeGeneSet);
 
-        // 获取基因列表
+        // 获取基因列表-基因检测列表
         List<String> geneSymbols = analysisReportDao.getGeneSymbols(currentNgsAvailable.getProduct_id());
         Map<String, Object> geneClassification = new HashMap<String, Object>();
         Map<String, Object> geneMap = getGeneClassification(geneSymbols, geneClassification);
@@ -705,6 +751,8 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> variationGrading1 = new ArrayList<Map>();
         List<Map> variationGrading2 = new ArrayList<Map>();
         List<Map> variationGrading3 = new ArrayList<Map>();
+
+        // TODO 待优化 list 整合到一个遍历里
         for (Map map : list) {
             String gene = map.get("gene").toString();
             String has_drug = map.get("has_drug") == null ? "" : map.get("has_drug").toString();
@@ -800,12 +848,15 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> bodyDrugTipLineStr = new ArrayList<Map>();
         List<Map> complexDrugTipLineStr = new ArrayList<Map>();
         List<Map> bodyAndComplexDrugTipLineStr = new ArrayList<Map>();
+
+        // 54+6和182+6的模板 需要把这6个基因和其他基因分两部分展示 安徽胸科和北京胸科
+        // 检测基因：EGFR、KRAS、ALK、PIK3CA、BRAF、ROS1
+        List<String> gene6 = Arrays.asList("EGFR", "KRAS", "ALK", "PIK3CA", "BRAF", "ROS1");
         List<Map> targetDrugTipLineGene6Str = new ArrayList<Map>();
         List<Map> targetDrugTipLineExceptGene6Str = new ArrayList<Map>();
         List<Map> bodyDrugTipLineGene6Str = new ArrayList<Map>();
         List<Map> bodyDrugTipLineExceptGene6Str = new ArrayList<Map>();
-        //检测基因：EGFR、KRAS、ALK、PIK3CA、BRAF、ROS1
-        List<String> gene6 = Arrays.asList("EGFR", "KRAS", "ALK", "PIK3CA", "BRAF", "ROS1");
+
         boolean redFlag = false;
         boolean complex = false;
         String bodyDrugStr = "";
@@ -813,6 +864,8 @@ public class PyReportServiceImpl implements PyReportService {
         String embryonalDrugStr = "";
         String somaticMutationStr = "";
         rt.setBengbuComplex("未见变异"); // 蚌埠肠癌共突变逻辑
+
+        // 靶向药物提示输出逻辑
         if (allDrugMutNum != 0) {
             // *****************靶向药物提示表格***************
             for (Map map : list) {
@@ -828,8 +881,8 @@ public class PyReportServiceImpl implements PyReportService {
                     if (mutFreq.equals(".")) {
                         mutFreq = "-";
                     }
-                    //判断是否是融合突变
-                    List<String> templates = lifeNoNDFTemplate(); //life报告模板融合不输出突变丰度和NDF值
+                    // 判断是否是融合突变、life报告模板融合不输出突变丰度和NDF值
+                    List<String> templates = lifeNoNDFTemplate();
                     if (templates.contains(rt.getTemplate_name())) {
                         if (ori_variant.indexOf("Fusion") != -1) {
                             mutFreq = "/";
@@ -950,6 +1003,7 @@ public class PyReportServiceImpl implements PyReportService {
                     }
 
                     // 胚系靶向药物提示
+                    // embryonalDrugTipLineStr 胚系靶向药物提示 和 targetDrugTipLineStr 体系靶向药物提示
                     String has_drug = map.get("has_drug") == null ? "" : map.get("has_drug").toString();
                     if (!has_drug.equals("") && (has_drug.equals("true") || has_drug.equals("1"))) {
                         if (!targetDrugTipLine.isEmpty()) {
@@ -1092,6 +1146,7 @@ public class PyReportServiceImpl implements PyReportService {
                         }
                         bodyAndComplexDrugTipLineStr.add(targetDrugTipLine);
                     }
+                    // 这里为什么要检查 map 是否为空
                     if (!targetDrugTipLine.isEmpty()) {
                         targetDrugTipLineStr.add(targetDrugTipLine);
                         if (gene6.contains(gene)) {
@@ -1115,11 +1170,6 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setTargetDrugTipLineStr(targetDrugTipLineStr);
         rt.setEmbryonalDrugTipLineStr(embryonalDrugTipLineStr);
         rt.setUnknownDrugTipLineStr(unknownDrugTipLineStr);
-        /*if (rt.getTemplate_name().contains("同济")) {
-            rt.setBodyDrugTipLineStr(listSort2(bodyDrugTipLineStr));
-        } else {
-            rt.setBodyDrugTipLineStr(listSort(bodyDrugTipLineStr));
-        }*/
         rt.setBodyDrugTipLineStr(listSort2(bodyDrugTipLineStr));
         rt.setComplexDrugTipLineStr(listSort(complexDrugTipLineStr));
         rt.setBodyAndComplexDrugTipLineStr(listSort(bodyAndComplexDrugTipLineStr));
@@ -1161,6 +1211,7 @@ public class PyReportServiceImpl implements PyReportService {
                         rt.setBengbuComplex("");
                     }
                     String ori_varian_split = removeMutations(transferOriVariant(ori_variant));
+                    // 判断 点突变 扩增 融合 snp cnv fusion 的 逻辑，具体涉及到 mutation 的展示
                     if (!ori_varian_split.equals("Amplification") && ori_varian_split != null && !ori_varian_split.contains("Fusion")) {
                         String[] splits = ori_varian_split.split(" ");
                         unknownTipLine.put("Transcript", splits[0]);
@@ -1286,6 +1337,7 @@ public class PyReportServiceImpl implements PyReportService {
         summaryOfRresults.put("hasPathogenicityCount", hasPathogenicityCount);
         summaryOfRresults.put("qualityStat", qualityStat);
         summaryOfRresults.put("positiveImmnueNum", positiveImmnueNum);
+        summaryOfRresults.put("positiveOtherImmnueNum", positiveOtherImmnueNum);
         summaryOfRresults.put("negativeImmnueNum", negativeImmnueNum);
         summaryOfRresults.put("hpdImmnueNum", hpdImmnueNum);
         summaryOfRresults.put("immunopositiveSFSize", immunopositiveSFSize); //疗效影响因素-免疫治疗正相关指标
@@ -2972,13 +3024,17 @@ public class PyReportServiceImpl implements PyReportService {
         boolean endometrialCarcinoma = false;
         if (currentNgsAvailable.getProduct_name().indexOf("_") != -1 && !"12k_tis_single".equals(currentNgsAvailable.getProduct_name()) && !currentNgsAvailable.getProduct_name().contains("novoivd") || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
             String[] split = currentNgsAvailable.getProduct_name().split("_");
+            // 子宫内膜癌 子宫内膜癌症
             if (diseaseName.contains("子宫内膜癌") && "tis".equals(split[1]) || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
-                endometrialCarcinoma = true;
+                // TODO 增加配置 01 控制是否展示
+                if (templateConf != null && templateConf.getEndometrial_carcinoma_typing()) {
+                    endometrialCarcinoma = true;
+                }
             }
         }
         rt.setEndometrialCarcinoma(endometrialCarcinoma);
 
-        // 辅助肉瘤诊断
+        // 辅助肉瘤诊断 肉瘤是个大癌种
         boolean sarcomaFlag = false;
         int geneRearrangementSize = 0;
         int geneRearrangementVariationSize2 = 0;
@@ -2986,7 +3042,10 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 20241217 修复辅助肉瘤判断空指针
         if ((diseaseName.contains("肉瘤") && !isblood) || (currentNgsAvailable.getModuleFlag() != null && currentNgsAvailable.getModuleFlag().contains("肉瘤分子分型"))) {
-            sarcomaFlag = true;
+            // TODO 肉瘤分型增加 01 控制是否展示
+            if (templateConf != null && templateConf.getSarcoma_typing()) {
+                sarcomaFlag = true;
+            }
             List<MmSarcomaTyping> mmSarcomaTypings = moduleModificationAllDao.selectMmSarcomaTypingByReportId(currentNgsAvailable.getReport_id());
             if (!mmSarcomaTypings.isEmpty()) {
                 for (MmSarcomaTyping mmSarcomaTyping : mmSarcomaTypings) {
@@ -3503,6 +3562,22 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setNegative(negative);
         rt.setHpd(hpd);
 
+        // 20250319 新免疫基因表格提示输出，动态输出根据panel去重
+        if (templateConf != null && templateConf.getImmunity_P_N()) {
+            List<Map> positiveGeneList = handleImmunityGene("positive", product_name, positiveDDRImmnue);
+            rt.setPositiveGeneList(positiveGeneList);
+
+            List<Map> positiveOtherGeneList = handleImmunityGene("positive_other", product_name, positiveOtherImmnue);
+            rt.setPositiveOtherGeneList(positiveOtherGeneList);
+
+            List<Map> negativeGeneList = handleImmunityGene("negative", product_name, negativeImmnueFilter);
+            rt.setNegativeGeneList(negativeGeneList);
+        }
+        if (templateConf != null && templateConf.getHpd()) {
+            List<Map> hpdGeneList = handleImmunityGene("hpd", product_name, hpdImmnueFilter);
+            rt.setHpdGeneList(hpdGeneList);
+        }
+
         // 检测方法与局限性
         List<Map> productModularizations = analysisReportDao.getProductModularization();
         for (Map productModularization : productModularizations) {
@@ -3790,11 +3865,41 @@ public class PyReportServiceImpl implements PyReportService {
             Map<String, Object> HenanPeopleCustomInfo = geneHenanPeopleData(thisGeneticmarkerVwList, bodyDrugTipLineStr, unknownTipLineStr);
             rt.setHenanPeopleCustomInfo(HenanPeopleCustomInfo);
         }
+        String templateName = rt.getTemplate_name();
+        // CUSTOM 重要靶向基因汇总-检出总表,暂时不使用了
+        // HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer, templateName);
+        // rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
 
-        // CUSTOM 重要靶向基因汇总-检出总表
+        // 增加配置，有模块化才使用新模块化逻辑
+        if (templateConf != null){
+            // CUSTOM 报告一些基础数据
+            HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd);
+            rt.setReportInfo(reportInfo);
+
+            // CUSTOM 关于癌种判断的一些展示逻辑,生成检测项目信息
+            Map<String, Object> cancerInfo = new HashMap<>();
+            cancerInfo.put("urinaryProstateDisease", urinaryProstateDisease);
+            cancerInfo.put("endometrialCarcinoma", endometrialCarcinoma);
+            cancerInfo.put("gastrointestinalStromalTumor", gastrointestinalStromalTumor);
+            cancerInfo.put("targetCancer", target_cancer);
+            cancerInfo.put("sarcomaFlag", sarcomaFlag);
+            Map<String, Object> productDesc = generateProductDesc(cancerInfo, pd, templateName, templateConf);
+            rt.setProductDesc(productDesc);
 
 //        HashMap<String, Object> importantTargetedGeneSummary = generateImportantTargetedGeneSummary(target_cancer);
 //        rt.setImportantTargetedGeneSummary(importantTargetedGeneSummary);
+            // CUSTOM 生成检测小结信息, 暂时不用合并到 commonNote 中
+            // Map<String, Object> testResultSummary = generateTestResultSummary(templateName);
+            // rt.setTestResultSummary(testResultSummary);
+
+            // CUSTOM 生成参考文献信息
+            Map<String, Object> references = generateReferences(templateName, cancerInfo, templateConf);
+            rt.setReferences(references);
+
+            // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结、重要靶向基因汇总
+            Map<String, Object> commonNote = generateCommonNote(templateConf, productName, rt, cancerInfo);
+            rt.setCommonNote(commonNote);
+        }
 
         AnalysisReport analysisReport = null;
         String status = null;
@@ -4102,20 +4207,357 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
     private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer) {
-        HashMap<String, Object> res = new HashMap<>();
-        String title = "重要靶向用药相关基因结果汇总";
-        if ("泌尿系统癌症".equals(targetCancer)) {
-            title = "泌尿系统肿瘤重要靶向用药相关基因结果汇总";
-        } else if ("泛癌种".equals(targetCancer)) {
-            title = "重要靶向用药相关基因结果汇总";
-        } else if ("肺癌".equals(targetCancer)) {
-            title = "肺癌精准诊疗相关基因结果汇总";
-        } else if ("结直肠癌".equals(targetCancer)) {
-            title = "结直肠癌精准诊疗相关基因结果汇总";
-        } else if ("乳腺癌".equals(targetCancer)) {
-            title = "乳腺癌精准诊疗相关基因结果汇总";
+    /**
+     * 处理生成免疫正负超进展表格
+     *
+     * @param module
+     * @param productName
+     * @param immunityMutGeneList
+     */
+    private List<Map> handleImmunityGene(String module, String productName, List<Map> immunityMutGeneList) {
+        List<ModCancer> geneList = moduleDao.getImmunityGeneList(module, productName);
+        List<Map> immunityGeneList = new ArrayList<>();
+//        for (ModCancer modCancer : geneList) {
+//            Map<String, String> immunityMap = new HashMap<>();
+//
+//            String gene = modCancer.getDesc1();
+//            String geneDesc = modCancer.getDesc2();
+//            String oriVariant = "-";
+//            for (Map immunityMutGene : immunityMutGeneList) {
+//                String gene1 = immunityMutGene.get("gene").toString();
+//                String variant = immunityMutGene.get("variant").toString();
+//                if (!"/".equals(variant)) {
+//                    if (gene.equals(gene1) && oriVariant.equals("-")) {
+//                        oriVariant = variant;
+//                    } else if (gene.equals(gene1) && !oriVariant.equals("-")) {
+//                        oriVariant = oriVariant + "," + variant;
+//                    }
+//                }
+//            }
+//            immunityMap.put("gene", gene);
+//            immunityMap.put("geneDesc", geneDesc);
+//            immunityMap.put("oriVariant", oriVariant);
+//
+//            immunityGeneList.add(immunityMap);
+//        }
+        // 将免疫突变基因列表转换为 Map，便于快速查找
+        Map<String, List<String>> geneVariantMap = new HashMap<>();
+        for (Map immunityMutGene : immunityMutGeneList) {
+            String gene = immunityMutGene.get("gene").toString();
+            String oriVariant = immunityMutGene.get("variant").toString();
+            if (!"/".equals(oriVariant)) {
+                String variant = oriVariant;
+                // fix: 处理 variant 展示形式
+                if (oriVariant.contains("c.")) {
+                    variant = oriVariant.substring(oriVariant.indexOf("c."));
+                } else if ("Amplification".equals(oriVariant)) {
+                    variant = gene + "扩增";
+                } else if (oriVariant.contains("Fusion")) {
+                    variant = oriVariant.split(" ")[0] + "融合";
+                }
+                geneVariantMap.computeIfAbsent(gene, k -> new ArrayList<>()).add(variant);
+            }
         }
-        res.put("title", title);
+
+        for (ModCancer modCancer : geneList) {
+            Map<String, String> immunityMap = new HashMap<>();
+            String gene = modCancer.getDesc1();
+            String geneDesc = modCancer.getDesc2();
+
+            // 拼接变异信息
+            String oriVariant = geneVariantMap.getOrDefault(gene, Arrays.asList("-")).stream()
+                    .distinct()
+                    .collect(Collectors.joining(","));
+
+            immunityMap.put("gene", gene);
+            immunityMap.put("geneDesc", geneDesc);
+            immunityMap.put("oriVariant", oriVariant);
+
+            immunityGeneList.add(immunityMap);
+        }
+        return immunityGeneList;
+    }
+
+    private Map<String, Object> generateCommonNote(TemplateConf templateConf, String productName, ReportTemplate rt, Map cancerInfo) {
+        Map<String, Object> res = new HashMap<>();
+        String templateName = rt.getTemplate_name();
+        Object type = rt.getSummaryOfRresults().get("type");
+        String sampleType = (type instanceof String) ? (String) type : "blood";
+
+        // 检测结果小结
+        if (templateConf != null && templateConf.getTest_result_summary()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("test_result_summary");
+            // 【全外显子组升级版（WES Plus）基因检测报告】单独附录逻辑
+            if ("全外显子组升级版（WES Plus）基因检测报告".equals(templateName)) {
+                commonNote.setType("WESPLUS");
+            } else if ("HRR45_HRDscore基因检测报告".equals(templateName)) {
+                commonNote.setType("HRR45_HRDScore");
+            } else if ("中国人群BRCA12基因分子分型研究_双样本-盖章版".equals(templateName)) {
+                commonNote.setType("BRAC12");
+            } else if ("BRCA12基因+同源重组修复缺陷评分（HRD score）检测报告".equals(templateName)) {
+                commonNote.setType("BRAC12_HRDScore");
+            }
+
+            List<String> testResultSummaryNoteList = moduleService.getTestResultSummaryNote(commonNote);
+            res.put("testResultSummaryNoteList", testResultSummaryNoteList);
+        }
+
+        // 重要靶向用药相关基因结果汇总
+        if (templateConf != null && templateConf.getImportant_targeted_gene_summary()) {
+            ModCommonNote commonNote = new ModCommonNote();
+
+            // 通用重要靶向用药相关基因结果
+            commonNote.setModule("important_targeted_gene_summary1");
+            List<String> importantTargetedGeneSummaryNoteList = moduleService.getImportantTargetedGeneSummaryNote(commonNote);
+
+            commonNote.setCancer(cancerInfo.get("targetCancer").toString());
+            commonNote.setType("通用-" + cancerInfo.get("targetCancer").toString());
+            commonNote.setModule("important_targeted_gene_summary");
+            ModCommonNote importantTargetedGeneSummary = moduleService.getImportantTargetedGeneSummaryNoteAndTitle(commonNote);
+
+            importantTargetedGeneSummaryNoteList.add(0, importantTargetedGeneSummary.getNote());
+
+            res.put("importantTargetedGeneSummaryNoteList", importantTargetedGeneSummaryNoteList);
+            res.put("cancerTitle", importantTargetedGeneSummary.getCancer_title());
+        }
+
+        // TODO immunity 免疫提示解析，暂时用免疫正负解析来代替模块
+        if (templateConf != null && templateConf.getMsi()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("immunity");
+            if (templateConf.getMsi() && templateConf.getMmr() && templateConf.getHpd()) {
+                commonNote.setType("HPD");
+            } else if (templateConf.getMsi() && templateConf.getMmr()) {
+                commonNote.setType("MMR");
+            } else if (templateConf.getMsi()) {
+                commonNote.setType("MSI");
+            }
+
+            List<String> immunityNoteList = moduleService.getImmunityNote(commonNote);
+            res.put("immunityNoteList", immunityNoteList);
+        }
+
+        // MSI
+        if (templateConf != null && templateConf.getMsi()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("MSI1");
+            String MSI1 = moduleService.getMSI1(commonNote);
+            commonNote.setModule("MSI2");
+            List<String> MSI2List = moduleService.getMSI2(commonNote);
+            commonNote.setModule("MSI3");
+            List<String> MSI3NoteList = moduleService.getMSI3(commonNote);
+
+            res.put("MSI1", MSI1);
+            res.put("MSI2", MSI2List);
+            res.put("MSI3NoteList", MSI3NoteList);
+        }
+
+        // MMR
+        if (templateConf != null && templateConf.getMmr()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("MMR1");
+            String MMR1 = moduleService.getMMR1(commonNote);
+            commonNote.setModule("MMR2");
+            String MMR2 = moduleService.getMMR2(commonNote);
+            commonNote.setModule("MMR3");
+            List<String> MMR3NoteList = moduleService.getMMR3(commonNote);
+
+            res.put("MMR1", MMR1);
+            res.put("MMR2", MMR2);
+            res.put("MMR3NoteList", MMR3NoteList);
+        }
+
+        // TMB
+        if (templateConf != null && templateConf.getTmb()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("TMB1");
+            String TMB1 = moduleService.getTMB1(commonNote);
+            commonNote.setModule("TMB3");
+            List<String> TMB3NoteList = moduleService.getTMB3(commonNote);
+            // 区分组织血液
+            commonNote.setModule("TMB2");
+            commonNote.setSample_type(sampleType);
+            String TMB2 = moduleService.getTMB2(commonNote);
+
+            res.put("TMB1", TMB1);
+            res.put("TMB2", TMB2);
+            res.put("TMB3NoteList", TMB3NoteList);
+        }
+
+        // chemo 化疗解析
+        if (templateConf != null && templateConf.getChemo_anal()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("chemo1");
+            List<String> Chemo1NoteList = moduleService.getChemo1List(commonNote);
+            commonNote.setModule("chemo2");
+            List<String> Chemo2NoteList = moduleService.getChemo2List(commonNote);
+
+            res.put("chemo1NoteList", Chemo1NoteList);
+            res.put("chemo2NoteList", Chemo2NoteList);
+
+        }
+
+        // 双样本 somatic_mutation_tip 体细胞变异分级提示
+        if (templateConf != null && templateConf.getSomatic_mutation_tip()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setType("双样本");
+            commonNote.setModule("somatic_mutation_tip");
+            List<String> somaticMutationTipNoteList = moduleService.getSomaticMutationTipNote(commonNote, rt.isReadsFlag(), rt.isComplex());
+            res.put("somaticMutationTipNoteList", somaticMutationTipNoteList);
+        }
+
+        // 双样本 cr_mutation_tip 肿瘤遗传风险检测
+        if (templateConf != null && templateConf.getCr_mutation_tip()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setType("双样本");
+            commonNote.setModule("cr_mutation_tip");
+            List<String> crMutationTipNoteList = moduleService.getcrMutationTipNote(commonNote);
+            res.put("crMutationTipNoteList", crMutationTipNoteList);
+        }
+
+        // qc 质控附录
+        if (templateConf != null && templateConf.getQc()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("qc");
+            commonNote.setType("通用");
+            // 判断是否为 D+R 产品
+            if (rt.isReadsFlag()) {
+                commonNote.setType("RNA");
+            }
+            List<String> qcNoteList = moduleService.getQcNote(commonNote);
+            res.put("qcNoteList", qcNoteList);
+        }
+
+
+        // 肉瘤辅助诊断提示-肉瘤分型
+        if (templateConf != null && templateConf.getSarcoma_typing()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setModule("sarcoma_typing");
+            List<String> sarcomaTypingNoteList = moduleService.getSarcomaTypingNote(commonNote);
+
+            ModCancer cancer = new ModCancer();
+            cancer.setModule("sarcoma_typing");
+
+            cancer.setCancer("sarcoma1");
+            List<ModCancer> sarcomaTypingNote1 = moduleService.getSarcomaTypingNote1(cancer);
+
+            cancer.setCancer("sarcoma2");
+            List<ModCancer> sarcomaTypingNote2 = moduleService.getSarcomaTypingNote1(cancer);
+
+            cancer.setCancer("sarcoma3");
+            List<ModCancer> sarcomaTypingNote3 = moduleService.getSarcomaTypingNote1(cancer);
+
+            cancer.setCancer("sarcoma4");
+            List<ModCancer> sarcomaTypingNote4 = moduleService.getSarcomaTypingNote1(cancer);
+
+            res.put("sarcomaTypingNoteList", sarcomaTypingNoteList);
+            res.put("sarcomaTypingList1", sarcomaTypingNote1);
+            res.put("sarcomaTypingList2", sarcomaTypingNote2);
+            res.put("sarcomaTypingList3", sarcomaTypingNote3);
+            res.put("sarcomaTypingList4", sarcomaTypingNote4);
+        }
+
+        return res;
+    }
+
+    private Map<String, Object> generateReferences(String templateName, Map<String, Object> cancerInfo, TemplateConf templateConf) {
+        Map<String, Object> res = new HashMap<>();
+
+        // TODO 暂时这样判断文献的模块，做张关联表
+        List<String> templateList = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告", "NOVO泛癌种1238检测报告-佛山市第一人民医院", "泛实体瘤1238+1166基因检测报告-佛山市第一人民医院", "NOVO泛癌种1238检测报告-湖南省中医研", "泛实体瘤188基因检测报告-湖南省中医研");
+        String module = "";
+        if (templateList.contains(templateName)) {
+            module = "通用实体瘤";
+            String urinaryProstateDisease = (String) cancerInfo.get("urinaryProstateDisease");
+            if (StringUtils.isNotBlank(urinaryProstateDisease)) {
+                module = "通用泌尿";
+            }
+        }
+
+        List<String> referenceList = moduleService.getReferences(templateName, module);
+        res.put("referenceList", referenceList);
+
+        return res;
+    }
+
+    private Map<String, Object> generateTestResultSummary(String templateName) {
+        Map<String, Object> res = new HashMap<>();
+
+//        List<String> testResultSummaryNote = moduleService.getTestResultSummaryNote(templateName);
+//        res.put("noteList", testResultSummaryNote);
+
+        return res;
+    }
+
+    private Map<String, Object> generateProductDesc(Map<String, Object> cancerInfo, Map pd, String template, TemplateConf conf) {
+        Map<String, Object> res = new HashMap<>();
+        ModProductDesc productDesc = moduleService.getProductDesc(template);
+        String productDescStr = productDesc.getProduct_desc();
+        List<String> productDescList = new ArrayList();
+        if (pd != null) {
+            productDescStr = productDescStr + "通过免疫组化检测 PD-L1 表达。";
+        }
+        // 鼻咽癌产品描述特殊，需要用 \r\n 分割展示
+        String[] desc = productDescStr.split("\\r\\n");
+        productDescList.addAll(Arrays.asList(desc));
+
+        // 获取产品描述第二句，根据癌种判断调整展示内容
+        ModProductDesc productDesc1 = moduleService.getProductDesc("通用");
+        String productDesc1Str = productDesc1.getProduct_desc();
+        String toRemove = "";
+        if (StringUtils.isEmpty(cancerInfo.get("urinaryProstateDisease").toString())) {
+            toRemove = "内分泌治疗和神经内分泌分化分型以及疾病预后、";
+            productDesc1Str = productDesc1Str.replace(toRemove, "");
+        }
+        if (!(boolean) cancerInfo.get("endometrialCarcinoma") || !conf.getEndometrial_carcinoma_typing()) {
+            toRemove = "子宫内膜癌TCGA分子分型、";
+            productDesc1Str = productDesc1Str.replace(toRemove, "");
+        }
+        if (!(boolean) cancerInfo.get("gastrointestinalStromalTumor")|| !conf.getChemo_anal()) {
+            toRemove = "、化疗药物";
+            productDesc1Str = productDesc1Str.replace(toRemove, "");
+        }
+        if (!(boolean) cancerInfo.get("sarcomaFlag") || !conf.getSarcoma_typing()) {
+            toRemove = "肉瘤辅助诊断提示、";
+            productDesc1Str = productDesc1Str.replace(toRemove, "");
+        }
+        if (!conf.getMsi()) {
+            toRemove = "、免疫药物";
+            productDesc1Str = productDesc1Str.replace(toRemove, "");
+        }
+        productDescList.add(productDesc1Str);
+        res.put("productDescList", productDescList);
+
+        return res;
+    }
+
+    private HashMap<String, Object> generateReportInfoData(TemplateConf templateConf, Map pd) {
+        HashMap<String, Object> res = new HashMap<>();
+        String reportName = templateConf.getReport_name();
+        if (pd != null) {
+            reportName = reportName.replace("检测报告", "+PD-L1检测报告");
+        }
+        res.put("name", reportName);
+        res.put("conf", templateConf);
+        return res;
+    }
+
+    private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer, String templateName) {
+        HashMap<String, Object> res = new HashMap<>();
+        ModCancerNoteSummary modCancerNoteSummary = new ModCancerNoteSummary();
+        modCancerNoteSummary.setCancer(targetCancer);
+        modCancerNoteSummary.setTemplate_name(templateName);
+        modCancerNoteSummary.setModule("important_targeted_gene_summary");
+
+        ModCancerNoteSummary title = moduleService.getCancerTitle(modCancerNoteSummary);
+
+        List<String> noteList = new ArrayList<>();
+        ModCancerNoteSummary note = moduleService.getCancerNote(modCancerNoteSummary);
+        if (note != null) {
+            noteList.add(note.getNote());
+        }
+
         return res;
     }
 
@@ -4529,8 +4971,12 @@ public class PyReportServiceImpl implements PyReportService {
             String drugName = map2.get("drug_name").toString();
             String evidence_phase = map2.get("evidence_phase") == null ? "" : map2.get("evidence_phase").toString();
             map.put("evidence_phase", evidence_phase);
+
+            // 获取是否获批药物
             Integer approvedDrugNum = reportUnknownVarDao.getApprovedDrugNum(drugName, 1);
+            // cfda 是否获批 0 未获批 1 获批
             String cfda = reportUnknownVarDao.getApprovedCFDANum(drugName, 1) == null ? "0" : reportUnknownVarDao.getApprovedCFDANum(drugName, 1);
+            // 药物展示形式-具体逻辑为获取药物 + *，临床实验 + #
             drug_name = isAddSymbol(drug_name, cfda, clinicalList);
             String approve_range = map2.get("approve_range") == null ? "" : map2.get("approve_range").toString();
             String approval_desc = map2.get("approval_desc") == null ? "" : map2.get("approval_desc").toString();
@@ -6278,6 +6724,23 @@ public class PyReportServiceImpl implements PyReportService {
                 Map map = drugAStr.remove(index);
                 drugAStr.add(0, map);
             }
+        }
+    }
+
+    /**
+     * 获取RNA和DNA的 worstAssessment, 取最低的评估结果
+     *
+     * @param rnaAssessment
+     * @param dnaAssessment
+     * @return
+     */
+    private static String getWorstAssessment(String rnaAssessment, String dnaAssessment) {
+        if ("不合格".equals(rnaAssessment) || "不合格".equals(dnaAssessment)) {
+            return "不合格";
+        } else if ("警戒".equals(rnaAssessment) || "警戒".equals(dnaAssessment)) {
+            return "警戒";
+        } else {
+            return "合格";
         }
     }
 }

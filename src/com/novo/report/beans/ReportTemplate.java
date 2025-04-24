@@ -1,9 +1,6 @@
 package com.novo.report.beans;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ReportTemplate {
     private String client; // 委 托人
@@ -409,12 +406,84 @@ public class ReportTemplate {
     private String urinaryProstateDisease;
     private List<Map> cnvBe;
 
+    public Integer getDid() {
+        return did;
+    }
+
+    public void setDid(Integer did) {
+        this.did = did;
+    }
+
+    /**
+     * 匹配癌种id
+     */
+    private Integer did;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * 样本类型en tissue blood
+     */
+    private String type;
+
+    public String getPanel() {
+        return panel;
+    }
+
+    public void setPanel(String panel) {
+        this.panel = panel;
+    }
+
+    /**
+     * 产品panel
+     */
+    private String panel;
+
+
     /**
      * docs: 晶赛报告自定义的 BodyDrugTipCustomList
      * 基于通用的bodyDrugTipLineStr（item是位点 ） ->  更新为变异等级（I   II）分类
      */
     private Map<String, Object> JingsaiCustomInfo;
     private Map<String, Object> HenanPeopleCustomInfo;
+
+    /**
+     * 报告基础信息配置
+     */
+    private Map<String, Object> reportInfo;
+
+
+    public Map<String, Object> getReportInfo() {
+        return reportInfo;
+    }
+
+    public void setReportInfo(Map<String, Object> reportInfo) {
+        this.reportInfo = reportInfo;
+    }
+
+    /**
+     * 静态信息附录、包括 胚体系提示、胚体系解析、msi、mmr、tmb
+     */
+    private Map<String, Object> commonNote;
+
+    public Map<String, Object> getCommonNote() {
+        return commonNote;
+    }
+
+    public void setCommonNote(Map<String, Object> commonNote) {
+        this.commonNote = commonNote;
+    }
+
+    /**
+     * docs: 报告的一些基础数据
+     */
+    private Map<String, Object> ReportInfo;
 
     public Map<String, Object> getImportantTargetedGeneSummary() {
         return importantTargetedGeneSummary;
@@ -426,6 +495,47 @@ public class ReportTemplate {
      * 重要靶向用药相关基因结果汇总-检出总表
      */
     private Map<String, Object> importantTargetedGeneSummary;
+
+    public Map<String, Object> getProductDesc() {
+        return productDesc;
+    }
+
+    public void setProductDesc(Map<String, Object> productDesc) {
+        this.productDesc = productDesc;
+    }
+
+    /**
+     * 产品描述
+     */
+    private Map<String, Object> productDesc;
+
+    public Map<String, Object> getTestResultSummary() {
+        return testResultSummary;
+    }
+
+    public void setTestResultSummary(Map<String, Object> testResultSummary) {
+        this.testResultSummary = testResultSummary;
+    }
+
+    /**
+     * 检测结果小结
+     */
+    private Map<String, Object> testResultSummary;
+
+    public Map<String, Object> getReferences() {
+        return references;
+    }
+
+    public void setReferences(Map<String, Object> references) {
+        this.references = references;
+    }
+
+    /**
+     * 参考文献
+     */
+    private Map<String, Object> references;
+
+
 
     public Map<String, Object> getEWSR1Info() {
         return EWSR1Info;
@@ -452,6 +562,43 @@ public class ReportTemplate {
     }
 
     private Map<String, Object> MGMTInfo;
+
+    public List<Map> getPositiveGeneList() {
+        return positiveGeneList;
+    }
+
+    public void setPositiveGeneList(List<Map> positiveGeneList) {
+        this.positiveGeneList = positiveGeneList;
+    }
+
+    public List<Map> getPositiveOtherGeneList() {
+        return positiveOtherGeneList;
+    }
+
+    public void setPositiveOtherGeneList(List<Map> positiveOtherGeneList) {
+        this.positiveOtherGeneList = positiveOtherGeneList;
+    }
+
+    public List<Map> getNegativeGeneList() {
+        return negativeGeneList;
+    }
+
+    public void setNegativeGeneList(List<Map> negativeGeneList) {
+        this.negativeGeneList = negativeGeneList;
+    }
+
+    public List<Map> getHpdGeneList() {
+        return hpdGeneList;
+    }
+
+    public void setHpdGeneList(List<Map> hpdGeneList) {
+        this.hpdGeneList = hpdGeneList;
+    }
+
+    private List<Map> positiveGeneList;
+    private List<Map> positiveOtherGeneList;
+    private List<Map> negativeGeneList;
+    private List<Map> hpdGeneList;
 
 
     public Map<String, Object> getHenanPeopleCustomInfo() {

@@ -12,11 +12,46 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import com.google.gson.Gson;
+import com.novo.report.beans.AnalysisReport;
+import com.novo.report.beans.ReportTemplate;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PyAnalysisReportTemplateUtil {
 
     public static AnalysisReport getFreeMarker(HttpServletResponse response, HttpServletRequest request, ReportTemplate rt, HttpSession session, AnalysisReport apr) throws Exception {
         String path = session.getServletContext().getRealPath("/");
+        List<String> advancedTemplates = Arrays.asList(
+                "泛实体瘤188基因检测报告",
+                "NovoPM1.0检测报告",
+                "NOVO泛癌种1238检测报告",
+                "肉瘤1238+1166基因检测报告",
+                "泛实体瘤1238+1166基因检测报告",
+                "泛实体瘤550+596基因检测报告",
+                "肉瘤550+596基因检测报告",
+                "全外显子组升级版（WES Plus）基因检测报告",
+                "1238_HRDscore基因检测报告",
+                "泛实体瘤550+HRD基因检测报告",
+                "泛实体瘤188基因+HRDscore检测报告",
+                "鼻咽癌1238基因检测报告",
+                "实体瘤462基因检测报告",
+                "泛癌种86基因检测报告",
+                "BRCA45基因检测报告",
+                "HRR45_HRDscore基因检测报告",
+                "泌尿系统肿瘤99基因检测报告",
+                "消化道肿瘤50基因检测报告-双样本-盖章版",
+                "中国人群BRCA12基因分子分型研究_双样本-盖章版",
+                "BRCA12基因+同源重组修复缺陷评分（HRD score）检测报告",
+                "HRDscore检测报告");
 
         // TODO 待升级-固定目录
         String docxPath = path + "docx/" + rt.getTemplate_name() + ".docx";
@@ -310,6 +345,69 @@ public class PyAnalysisReportTemplateUtil {
         data.put("disease", rt.getDisease());
         // 检出重要基因总表数据
         // data.put("importantTargetedGeneSummary", rt.getImportantTargetedGeneSummary());
+        data.put("chemoSummary", rt.getChemoSummary());
+        data.put("chemoSummaryCy", rt.getChemoSummaryCY());
+        data.put("chemoAnalysis", rt.getChemoAnalysis());
+        data.put("variationGrading", rt.getVariationGrading());
+        data.put("siteResult", rt.getSiteResult());
+        data.put("her2", rt.getHer2());
+        data.put("met", rt.getMet());
+        data.put("appellation", rt.getAppellation());
+        data.put("hotGeneDrugSet", rt.getHotGeneDrugSet()); // 实体瘤20+6基因报告-安徽胸科(模板需求)
+        data.put("dmmr", rt.getDmmr()); //错配修复（MMR）基因
+        data.put("positiveDDR", rt.getPositiveDDR()); //免疫正相关基因 ---DNA损伤修复（DDR）通路基因---
+        data.put("positiveOther", rt.getPositiveOther()); //免疫正相关基因 ---其他基因---
+        data.put("negative", rt.getNegative()); // 免疫负相关基因
+        data.put("hpd", rt.getHpd()); // 免疫超进展相关基因(HPD)
+        data.put("approvedDrugData", rt.getApprovedDrugData()); // 本癌种FDA/NMPA获批的其他可选靶向药物
+        data.put("lynchMap", rt.getLynchMap());
+        data.put("gastrointestinalStromalTumor", rt.isGastrointestinalStromalTumor());
+        data.put("gfy_ori_variant", rt.getGfy_ori_variant());
+        data.put("gfy_mutFreq", rt.getGfy_mutFreq());
+        data.put("hrr45List", rt.getHrr45List());
+        data.put("hrrBrcaStr", rt.getHrrBrcaStr());
+        data.put("hrr45map", rt.getHrr45map());
+        data.put("diseaseIdList", rt.getDiseaseIDList());
+        data.put("pageHeaderPic", rt.getPageHeaderPic());
+        data.put("sealFlag", rt.isSealFlag());
+        data.put("bg", rt.getBg()); // 脑胶质瘤相关分子标记物检测结果
+        data.put("brainGliomaFlag", rt.isBrainGliomaFlag());
+        data.put("bengbu", rt.getBengbu());
+        data.put("et", rt.getEt()); // 内分泌治疗相关基因检测结果
+        data.put("ed", rt.getEd()); // 神经内分泌分化相关基因检测结果
+        data.put("prostateCancerFlag", rt.isProstateCancerFlag());
+        data.put("up", rt.getUp()); // 泌尿预后相关基因检测结果
+        data.put("urinaryProstateDisease", rt.getUrinaryProstateDisease());
+        data.put("cnvBe", rt.getCnvBe());
+        // 癌种id
+        data.put("did", rt.getDid());
+        // 样本类型en
+        data.put("type", rt.getType());
+        // 产品panel
+        data.put("panel", rt.getPanel());
+        // 检出重要基因总表数据
+        data.put("importantTargetedGeneSummary", rt.getImportantTargetedGeneSummary());
+        // 报告-基础信息
+        data.put("reportInfo", rt.getReportInfo());
+        // 报告-模块配置
+        // data.put("templateConf", rt.getTemplateConf());
+        // 检测结果小结
+        data.put("testResultSummary", rt.getTestResultSummary());
+
+        // 参考文献
+        data.put("references", rt.getReferences());
+
+        // msi mmr tmb chmeo tip ana 模块附录
+        data.put("note", rt.getCommonNote());
+
+        // 产品描述信息
+        data.put("product", rt.getProductDesc());
+
+        // 免疫提示表格数据
+        data.put("positiveGeneList", rt.getPositiveGeneList());
+        data.put("positiveOtherGeneList", rt.getPositiveOtherGeneList());
+        data.put("negativeGeneList", rt.getNegativeGeneList());
+        data.put("hpdGeneList", rt.getHpdGeneList());
 
         // ===============定制个性化数据===================
 

@@ -290,7 +290,6 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         // 20250217 修复位点突变描述，未输出杂合
         // String mutDesc = translateUtil.translate2(Gene, ori_variant, ".");
         String mutDesc = translateUtil.translate2(Gene, ori_variant, Zygosity);
-        System.out.println("胚系mutDesc: " + mutDesc);
         cr_info.put("mutDesc", mutDesc);
         // 得到基因描述
         String geneDescription = "";

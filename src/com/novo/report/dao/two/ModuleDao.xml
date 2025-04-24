@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.ModuleDao">
+
+    <select id="getProductDesc" resultType="com.novo.report.mod.ModProductDesc">
+        SELECT
+            product_desc
+        FROM mod_product_desc
+        WHERE template_name = #{templateName}
+          AND deleted = 1
+    </select>
+
+    <select id="getCancerNote" resultType="com.novo.report.mod.ModCancerNoteSummary">
+        SELECT
+            note
+        FROM mod_cancer_note_summary
+        WHERE template_name = #{templateName}
+          AND module = #{module}
+          AND cancer = #{cancer}
+          AND note is not null
+          AND note != ''
+          AND deleted = 1
+    </select>
+
+    <select id="getCancerTitle" resultType="com.novo.report.mod.ModCancerNoteSummary">
+        SELECT
+            title
+        FROM mod_cancer_note_summary
+        WHERE template_name = #{templateName}
+          AND module = #{module}
+          AND cancer = #{cancer}
+          AND title is not null
+          AND title != ''
+          AND deleted = 1
+    </select>
+
+    <select id="getImportantTargetedGeneSummaryNote"
+            resultType="com.novo.report.mod.ModImportantTargetedGeneSummaryNote">
+        SELECT
+            note
+        FROM mod_important_targeted_gene_summary_note
+        WHERE template_name = #{templateName}
+          AND deleted = 1
+    </select>
+
+    <select id="getTestResultSummaryNote" resultType="com.novo.report.mod.ModTestResultSummaryNote">
+        SELECT
+            note
+        FROM mod_test_result_summary_note
+        WHERE template_name = #{templateName}
+          AND deleted = 1
+    </select>
+
+    <select id="getReferences" resultType="com.novo.report.mod.ModReferences">
+        SELECT
+            b.references
+        FROM references_template_mapping a
+          JOIN mod_references b ON a.references_id = b.id
+        WHERE a.template_name = #{templateName}
+        <if test="module != null and module != '' ">
+            AND a.references_name = #{module}
+        </if>
+        AND b.deleted = 1
+    </select>
+
+    <select id="getCommonNote" resultType="com.novo.report.mod.ModCommonNote">
+        SELECT
+            cancer_title,
+            note
+        FROM mod_common_note
+        WHERE module = #{module}
+        <if test="type != null and type != '' ">
+            AND type = #{type}
+        </if>
+        <if test="type == null or type == '' ">
+            AND type = '通用'
+        </if>
+        <if test="sampleType != null and sampleType != '' ">
+            AND sample_type = #{sampleType}
+        </if>
+        <if test="cancer != null and cancer != '' ">
+            AND cancer = #{cancer}
+        </if>
+        AND deleted = 1
+    </select>
+
+    <select id="getCommonCancerNote" resultType="com.novo.report.beans.ModCancer">
+        SELECT
+            cancer,
+            desc1,
+            desc2
+        FROM mod_cancer
+        WHERE module = #{module}
+          AND cancer = #{cancer}
+          AND deleted = 1
+    </select>
+
+    <select id="getImmunityGeneList" resultType="com.novo.report.beans.ModCancer">
+        SELECT
+            a.module,
+            a.desc1,
+            a.desc2
+        FROM
+            mod_cancer a
+                JOIN panel_gene b ON a.desc1 = b.gene
+        WHERE
+            a.module = #{module}
+          AND b.product_name = #{productName}
+          AND deleted = 1
+    </select>
+</mapper>

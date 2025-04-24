@@ -1,6 +1,8 @@
 import base64
 import json
-
+import os
+import tempfile
+import shutil
 import jinja2
 import lxml
 import six
@@ -10,6 +12,12 @@ from docx import Document
 from docx.shared import Mm, Pt
 from io import BytesIO
 from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWLINE_XML, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
+# from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWLINE_XML, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
+specific_version_path = "/root/python3-packages"
+sys.path.insert(0, specific_version_path)
+# import docxtpl
+# from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
+from docxtpl import DocxTemplate, R, RichText, InlineImage
 import time
 from unicodedata import name
 from six import iteritems, text_type
@@ -48,11 +56,12 @@ class MyRichText(RichText):
             text = six.text_type(text)
         if not isinstance(text, six.text_type):
             text = text.decode('utf-8', errors='ignore')
-        text = (escape(text)
-                .replace('\n', NEWLINE_XML)
-                .replace('\a', NEWPARAGRAPH_XML)
-                .replace('\t', TAB_XML)
-                .replace('\f', PAGE_BREAK))
+            text = (escape(text))
+#         text = (escape(text)
+#                 .replace('\n', NEWLINE_XML)
+#                 .replace('\a', NEWPARAGRAPH_XML)
+#                 .replace('\t', TAB_XML)
+#                 .replace('\f', PAGE_BREAK))
 
         prop = u''
 
@@ -143,14 +152,7 @@ def myimage(value):
     myimage = InlineImage(tpl, 'a.png', width=Pt(283.5), height=Pt(225))
     return myimage
 
-# def pdimage(value,width,height):
-#     imgdata = base64.b64decode(value)
-#     file = open('aa.jpg', 'wb')
-#     file.write(imgdata)
-#     file.close()
-#     pdimage = InlineImage(tpl, 'aa.jpg', width=Pt(width), height=Pt(height))
-#     return pdimage
-def pdimage(value, width, height):
+def pdimage(value,width,height):
     imgdata = base64.b64decode(value)
     image_stream = BytesIO(imgdata)
     pdimage = InlineImage(tpl, image_stream, width=Pt(width), height=Pt(height))
@@ -385,52 +387,116 @@ def set_updatefields_true(docx_path):
     element_updatefields.set(namespace+"val", "true")
     doc.save(docx_path)
 
-# 20241029-1238贵医 在检测小结去重
-def unique_genes(genes):
-    seen = set()
-    unique = []
-    for gene in genes:
-        if gene not in seen:  # 假设 tdd 对象有 gene 属性
-            unique.append(gene)
-            seen.add(gene.gene)
-    return unique
+# 20250310 扁平化数据
+def flatten_data(data):
+    result = []
+    for item in data:
+        desc2s = item['desc2'].split(',')
+        result.append({'desc1': item['desc1'], 'desc2': desc2s})
+    return result
+def load_template_config(config_path="report_config.json"):
+    try:
+        # 获取当前 Python 文件所在目录
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        full_path = os.path.join(base_dir, config_path)
 
-# jinja_env = jinja2.Environment()
-# jinja_env.filters['ms'] = mystyle
-# jinja_env.filters['mi'] = myimage
-# tpl.add_page_break()
-# print("渲染前: %f" % (time.time() - start))
-# tpl.render(info_json, jinja_env)
-# print("渲染后: %f" % (time.time() - start))
-# tpl.save('out0613.docx')
-# set_updatefields_true('out0613.docx')
-# print("总耗时: %f" % (time.time() - start))
+        with open(full_path, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+
+    except Exception as e:
+        print(f"❌ 加载配置失败: {e}")
+        sys.exit(1)
+
+    return config
+def determine_template_file(template_name, config):
+    single_common = config["common_templates"]["single_sample"]
+    double_common = config["common_templates"]["double_sample"]
+
+    single_list = set(config["advanced_templates"]["single_sample"])
+    double_list = set(config["advanced_templates"]["double_sample"])
+
+    if template_name in double_list:
+        return double_common
+    elif template_name in single_list:
+        return single_common
+    else:
+        return f"{template_name}.docx"
+
+def load_template_safely(tpl_path):
+    tmp_tpl_file = tempfile.NamedTemporaryFile(delete=False, suffix=".docx")
+    shutil.copy2(tpl_path, tmp_tpl_file.name)
+    tpl = DocxTemplate(tmp_tpl_file.name)
+    return tpl, tmp_tpl_file.name
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
         print("Usage: python3 {} TemplateWord JsonInfoPath OutputWord".format(__file__))
     try:
-        tpl = DocxTemplate(sys.argv[1])
+
+        # 例: python3 generate_report.py \
+        #             /path/to/模板文件.docx \
+        #             /path/to/tempJson.json \
+        #             /path/to/输出文件.docx
+        # init py脚本参数
+        input_template_path = sys.argv[1]
+        json_path = sys.argv[2]
+        output_path = sys.argv[3]
+
+        # 加载模块化配置文件
+        config = load_template_config()
+        enabled = config.get("module_enabled", False)
+
+        # 是否使用模块化模板
+        if enabled:
+            template_name = os.path.basename(input_template_path).replace(".docx", "")
+            selected_template_file = determine_template_file(template_name, config)
+            tpl_path = os.path.join(os.path.dirname(input_template_path), selected_template_file)
+
+            print(f"[INFO] 匹配到的模板名: {template_name}")
+            print(f"[INFO] 实际使用的模板文件: {selected_template_file}")
+            print(f"[INFO] 实际模板路径: {tpl_path}")
+        else:
+            tpl_path = input_template_path
+            print(f"[INFO] 未启用模板替换逻辑，直接使用输入路径模板: {tpl_path}")
+
+        # 加载模板
+        tpl = DocxTemplate(tpl_path)
+
+        # 加载输出文件
         f = open(sys.argv[2], encoding='utf-8')
         info_json = json.load(f)
-        # 在页眉中插入图片
-        # header_image = info_json['pageHeaderPic']
-        # if header_image is not "":
-        #     header = tpl.sections[0].header
-        #     header.paragraphs[0].add_run().add_picture(header_image, width=Pt(492.6), height=Pt(38))
+
+        # 初始化 【pyfn】 使用变量
+        # 所有检出基因列表-标红
         GENE_LIST = info_json['allGeneSet'] if info_json['allGeneSet'] else []
+        # 体系基因列表-标红
         BodyGene_LIST = info_json['bodyGeneSet'] if info_json['bodyGeneSet'] else []
+        # 胚系（所有）基因列表-标红
         EmbryonalGene_LIST = info_json['embryonalGeneSet'] if info_json['embryonalGeneSet'] else []
+        # 化疗基因列表-标红
         ChemoGene_LIST = info_json['chemoGeneSet'] if info_json['chemoGeneSet'] else []
+        # 胚系（致病1、2）基因列表-标红
         CancerRiskGene_LIST = info_json['cancerRiskGene'] if info_json['cancerRiskGene'] else []
+        # 单基因多基因模板逻辑
         DetectionMutation_LIST = info_json['detectionMutationSet'] if info_json['detectionMutationSet'] else []
+        # 华西模板逻辑  可能促进药物效果标志物、可能导致药物效果降低标志物、可能导致疾病发生超进展标志物、PARP抑制剂相关基因检测结果
         PromoteGene_LIST = info_json['promoteGeneSet'] if info_json['promoteGeneSet'] else []
         ReducedGene_LIST = info_json['reducedGeneSet'] if info_json['reducedGeneSet'] else []
         ProgressionGene_LIST = info_json['progressionGeneSet'] if info_json['progressionGeneSet'] else []
         ParpinhibitorGene_LIST = info_json['parpinhibitorGeneSet'] if info_json['parpinhibitorGeneSet'] else []
         PredictorGene_LIST = info_json['predictorGeneSet'] if info_json['predictorGeneSet'] else []
+        # 免疫正相关基因是否检出
         ImmunopositiveGene_LIST = info_json['immunopositiveGeneSet'] if info_json['immunopositiveGeneSet'] else []
+        # 免疫负相关基因是否检出
         ImmunonegativeGene_LIST = info_json['immunonegativeGeneSet'] if info_json['immunonegativeGeneSet'] else []
+        # 肉瘤附录列表逻辑
+        if 'sarcomaTypingList1' in info_json.get('note', {}) and info_json['note']['sarcomaTypingList1']:
+            info_json['note']['sarcomaTypingList1'] = flatten_data(info_json['note']['sarcomaTypingList1'])
+            info_json['note']['sarcomaTypingList2'] = flatten_data(info_json['note']['sarcomaTypingList2'])
+            info_json['note']['sarcomaTypingList3'] = flatten_data(info_json['note']['sarcomaTypingList3'])
+            info_json['note']['sarcomaTypingList4'] = flatten_data(info_json['note']['sarcomaTypingList4'])
+
+        # 模板init过滤器
         jinja_env = jinja2.Environment()
         jinja_env.filters['ms'] = mystyle
         jinja_env.filters['ms2'] = mystyle2
@@ -459,7 +525,7 @@ if __name__ == '__main__':
         jinja_env.filters['nb'] = newBold
         jinja_env.filters['split'] = split
         jinja_env.filters['mr'] = markInRed
-        jinja_env.filters['unique_genes'] = unique_genes
+
         #tpl.add_page_break()
         tpl.render(info_json, jinja_env,autoescape=True)
         tpl.save(sys.argv[3])
