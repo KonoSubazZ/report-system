@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ChemoJsonUtil2 {
-    public static List<Map<String, Object>> getChemoResult(List<Map<String, Object>> chemicalData, List<Map<String,Object>> chem) {
+    public static List<Map<String, Object>> getChemoResult(List<Map<String, Object>> chemicalData, List<Map<String, Object>> chem) {
         /*List<String> drug_list = Arrays.asList("阿那曲唑","阿那曲唑 + 依西美坦","奥沙利铂","表柔比星 + 氟尿嘧啶 + 奥沙利铂","铂类","博来霉素 + 顺铂 + 依托泊苷","多柔比星","多西他赛","多西他赛 + 沙利度胺","蒽环类",
                 "蒽环类 + 紫杉烷","氟尿嘧啶","氟尿嘧啶 + 奥沙利铂","氟尿嘧啶 + 亚叶酸","氟尿嘧啶 + 亚叶酸 + 奥沙利铂","氟尿嘧啶 + 伊立替康 + 奥沙利铂","氟尿嘧啶类","格拉司琼","环磷酰胺",
                 "环磷酰胺 + 表柔比星","环磷酰胺 + 表柔比星 + 氟尿嘧啶","环磷酰胺 + 表柔比星 + 紫杉醇","环磷酰胺 + 多柔比星","环磷酰胺 + 多柔比星 + 氟尿嘧啶","吉西他滨","吉西他滨 + 紫杉醇",
@@ -70,6 +70,9 @@ public class ChemoJsonUtil2 {
                 eff1 = eff1.replace("减弱", "可能较低").replace("增强", "可能较高");
                 eff2 = eff2.replace("减弱", "可能较低").replace("增强", "可能较高");
                 eff3 = eff3.replace("减弱", "可能较低").replace("增强", "可能较高");
+
+                // 20250427 增加TA6/TA7等位基因不反转逻辑
+                List<String> alleleList = Arrays.asList("rs3064744", "rs8175347");
                 if (chr.equals(chr1) && pos.equals(position)) {
                     Map out_line = new HashMap();
                     Map temp_info = new HashMap();
@@ -81,9 +84,12 @@ public class ChemoJsonUtil2 {
                             trans_PMID = "/";
                             evidence = "/";
                         }
-                        char[] chars = allele1.toCharArray();
-                        Arrays.sort(chars);
-                        allele1 = new String((chars));
+                        // 20250427 增加TA6/TA7等位基因不排序逻辑
+//                        if (!alleleList.contains(rs_id)) {
+//                            char[] chars = allele1.toCharArray();
+//                            Arrays.sort(chars);
+//                            allele1 = new String((chars));
+//                        }
                         out_line.put("drug_class", drug_class);
                         out_line.put("drug_name_chinese", drug_name_chinese);
                         out_line.put("gene", gene);
@@ -107,9 +113,11 @@ public class ChemoJsonUtil2 {
                             trans_PMID = "/";
                             evidence = "/";
                         }
-                        char[] chars = allele2.toCharArray();
-                        Arrays.sort(chars);
-                        allele2 = new String((chars));
+//                        if (!alleleList.contains(rs_id)) {
+//                            char[] chars = allele2.toCharArray();
+//                            Arrays.sort(chars);
+//                            allele2 = new String((chars));
+//                        }
                         out_line.put("drug_class", drug_class);
                         out_line.put("drug_name_chinese", drug_name_chinese);
                         out_line.put("gene", gene);
@@ -133,9 +141,12 @@ public class ChemoJsonUtil2 {
                             trans_PMID = "/";
                             evidence = "/";
                         }
-                        char[] chars = allele3.toCharArray();
-                        Arrays.sort(chars);
-                        allele3 = new String((chars));
+                        // 20250427 增加TA6/TA7等位基因不排序逻辑
+//                        if (!alleleList.contains(rs_id)) {
+//                            char[] chars = allele3.toCharArray();
+//                            Arrays.sort(chars);
+//                            allele3 = new String((chars));
+//                        }
                         out_line.put("drug_class", drug_class);
                         out_line.put("drug_name_chinese", drug_name_chinese);
                         out_line.put("gene", gene);
@@ -153,9 +164,12 @@ public class ChemoJsonUtil2 {
                         temp_info.put("allele", allele3);
                         temp_info.put("cancer_type", cancer_type);
                     } else {
-                        char[] chars = allele.toCharArray();
-                        Arrays.sort(chars);
-                        allele = new String((chars));
+                        // 20250427 增加TA6/TA7等位基因不排序逻辑
+//                        if (!alleleList.contains(rs_id)) {
+//                            char[] chars = allele.toCharArray();
+//                            Arrays.sort(chars);
+//                            allele = new String((chars));
+//                        }
                         out_line.put("drug_class", drug_class);
                         out_line.put("drug_name_chinese", drug_name_chinese);
                         out_line.put("gene", gene);
@@ -392,7 +406,7 @@ public class ChemoJsonUtil2 {
     }
 
     // 输出化疗解析结果
-    public static List<List<Map<String,Object>>> getChemoAnalysis(List<Map<String, Object>> chemoResult) {
+    public static List<List<Map<String, Object>>> getChemoAnalysis(List<Map<String, Object>> chemoResult) {
         for (Map<String, Object> map : chemoResult) {
             String tox = map.get("tox").toString();
             if ("无".equals(tox)) {
@@ -406,10 +420,11 @@ public class ChemoJsonUtil2 {
         // 药物排序
         listSort2(chemoResult, "drug_name_chinese");
         // 药物归类
-        List<List<Map<String,Object>>> groupList = new ArrayList<>();
-        chemoResult.stream().collect(Collectors.groupingBy(map->map.get("drug_class"), Collectors.toList())).
+        List<List<Map<String, Object>>> groupList = new ArrayList<>();
+        chemoResult.stream().collect(Collectors.groupingBy(map -> map.get("drug_class"), Collectors.toList())).
                 forEach((map, fooListByAge) -> {
-                    groupList.add(fooListByAge);});
+                    groupList.add(fooListByAge);
+                });
         // 药物归类排序
         listSort3(groupList, "drug_class");
         return groupList;
