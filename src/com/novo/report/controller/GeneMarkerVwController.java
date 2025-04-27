@@ -970,7 +970,7 @@ public class GeneMarkerVwController {
             // 内分泌相关(泌尿系统肿瘤99基因报告)  || 188/462/550/1238/WES/WES plus/988中双样本
             boolean prostateCancerFlag = false;
             boolean urinaryProstateFlag = false;
-            List<String> productList = Arrays.asList("novopm2_blo_1238", "novopm2_tis_1238", "novopm2_tis_188", "novopm2_blo_188", "novopm2_tis_wes", "novopm2_blo_wes", "novopm3_tis_550", "novopm3_blo_550", "novopm2_tis_wesplus", "novopm2_blo_wesplus", "novopm2_tis_462", "novopm2_blo_462", "novopm2_tis_99", "novopm2_blo_99", "novopm2_tis_988", "novopm2_blo_988");
+            List<String> productList = Arrays.asList("novopm2_blo_1238", "novopm2_tis_1238", "novopm2_tis_188", "novopm2_blo_188", "novopm2_tis_wes", "novopm2_blo_wes", "novopm3_tis_550", "novopm3_blo_550", "novopm2_tis_wesplus", "novopm2_blo_wesplus", "novopm2_tis_462", "novopm2_blo_462", "novopm2_tis_99", "novopm2_blo_99", "novopm2_tis_988", "novopm2_blo_988","novopm2_tis_1238_MRD","novopm2_tis_1249_hlaloh_MRD");
             boolean b = productList.contains(product_name);
             // 10283->前列腺癌
             if (diseaseIdList.contains(10283) && b || currentNgsAvailable.getModuleFlag().contains("前列腺癌内分泌和预后")) {
