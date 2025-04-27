@@ -3390,9 +3390,7 @@ public class PyReportServiceImpl implements PyReportService {
                 "泛实体瘤188基因检测报告-湖南省中医研",
                 "NOVO泛癌种988基因检测报告",
                 "NOVO泛癌种988基因报告",
-                "实体瘤462基因报告-苏州市立医院",
-                "实体瘤分子残留病灶(MRD)组织检测报告",
-                "实体瘤分子残留病灶(MRD)组织检测报告-基智远");
+                "实体瘤462基因报告-苏州市立医院");
         if ((("novopm2_tis_99".equals(product_name) || "novopm2_blo_99".equals(product_name))) || (templates.contains(rt.getTemplate_name()) && (prostateCancerFlag || StringUtils.isNotEmpty(urinaryProstateDisease)))) {
             target_cancer = "泌尿系统癌症";
         } else if (rt.getTemplate_name().contains("湘雅")) {
