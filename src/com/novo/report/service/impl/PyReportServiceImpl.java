@@ -1,7 +1,6 @@
 package com.novo.report.service.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.novo.report.beans.*;
 import com.novo.report.dao.two.*;
 import com.novo.report.mod.ModCancerNoteSummary;
@@ -22,7 +21,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -906,7 +904,7 @@ public class PyReportServiceImpl implements PyReportService {
                     if (InNKB.equals("true")) {
                         String mutId = map.get("mapped_variant_id") == null ? "-" : map.get("mapped_variant_id").toString();
                         List<Integer> parentVariant = analysisReportDao.getParentMutationId(Integer.valueOf(mutId));
-                        if (parentVariant.contains(2936)){
+                        if (parentVariant.contains(2936)) {
                             targetDrugTipLine.put("ExonicFunc1", "14号外显子跳跃突变");
                         }
                     }
@@ -1280,7 +1278,7 @@ public class PyReportServiceImpl implements PyReportService {
                     if (InNKB.equals("true")) {
                         String mutId = map.get("mapped_variant_id") == null ? "-" : map.get("mapped_variant_id").toString();
                         List<Integer> parentVariant = analysisReportDao.getParentMutationId(Integer.valueOf(mutId));
-                        if (parentVariant.contains(2936)){
+                        if (parentVariant.contains(2936)) {
                             unknownTipLine.put("ExonicFunc1", "14号外显子跳跃突变");
                         }
                     }
@@ -2341,8 +2339,8 @@ public class PyReportServiceImpl implements PyReportService {
                 rt.setCrGeneCount(String.valueOf(crGeneCount));
             } else {
 
-                String[]  chemoJson1 = chemoJson.split("\\n");
-                for (String s : chemoJson1){
+                String[] chemoJson1 = chemoJson.split("\\n");
+                for (String s : chemoJson1) {
                     List<String> chemoArray = Arrays.asList(s.split("\",\""));
                     Map irinotecanDrugAnnotation = new HashMap();
                     irinotecanDrugAnnotation.put("content1", chemoArray.get(1));
@@ -3428,8 +3426,26 @@ public class PyReportServiceImpl implements PyReportService {
         // 获取靶向癌种
         String target_cancer = StringUtils.isEmpty(pr.getTarget_cancer()) ? "" : pr.getTarget_cancer();
         // 泌尿系统肿瘤99产品输出泌尿系统癌症 || 188/462/550/1238/WES/WES plus的通用版
-        List<String> templates = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告", "NOVO泛癌种1238检测报告-佛山市第一人民医院", "泛实体瘤1238+1166基因检测报告-佛山市第一人民医院", "NOVO泛癌种1238检测报告-湖南省中医研", "泛实体瘤188基因检测报告-湖南省中医研", "NOVO泛癌种988基因检测报告", "NOVO泛癌种988基因报告");
-        if (("novopm2_tis_99".equals(product_name) || "novopm2_blo_99".equals(product_name)) || (templates.contains(rt.getTemplate_name()) && (prostateCancerFlag || StringUtils.isNotEmpty(urinaryProstateDisease)))) {
+        List<String> templates = Arrays.asList("泛实体瘤188基因报告",
+                "泛实体瘤188基因检测报告",
+                "实体瘤462基因检测报告",
+                "NovoPM1.0报告",
+                "NovoPM1.0检测报告",
+                "NOVO泛癌种1238报告",
+                "NOVO泛癌种1238检测报告",
+                "WES报告",
+                "全外显子组升级版（WES Plus）基因报告",
+                "全外显子组升级版（WES Plus）基因检测报告",
+                "NOVO泛癌种1238检测报告-佛山市第一人民医院",
+                "泛实体瘤1238+1166基因检测报告-佛山市第一人民医院",
+                "NOVO泛癌种1238检测报告-湖南省中医研",
+                "泛实体瘤188基因检测报告-湖南省中医研",
+                "NOVO泛癌种988基因检测报告",
+                "NOVO泛癌种988基因报告",
+                "实体瘤462基因报告-苏州市立医院",
+                "实体瘤分子残留病灶(MRD)组织检测报告",
+                "实体瘤分子残留病灶(MRD)组织检测报告-基智远");
+        if ((("novopm2_tis_99".equals(product_name) || "novopm2_blo_99".equals(product_name))) || (templates.contains(rt.getTemplate_name()) && (prostateCancerFlag || StringUtils.isNotEmpty(urinaryProstateDisease)))) {
             target_cancer = "泌尿系统癌症";
         } else if (rt.getTemplate_name().contains("湘雅")) {
             target_cancer = "泛癌种";
@@ -3804,7 +3820,7 @@ public class PyReportServiceImpl implements PyReportService {
                 }
             }
             Map<String, Object> mrdInfo = new HashMap<>();
-            mrdInfo.put("mrdJson",  gson.fromJson(mrdJson, Map.class));
+            mrdInfo.put("mrdJson", gson.fromJson(mrdJson, Map.class));
             mrdInfo.put("mrd_status", isNegative ? "阴性" : "阳性");
             mrdInfo.put("imgStr", imgBase64Str);
 
@@ -3818,14 +3834,14 @@ public class PyReportServiceImpl implements PyReportService {
             Map res = gson.fromJson(methylation, Map.class);
 
             Map<String, Object> methylationInfo = new HashMap<>();
-            methylationInfo.put("title",  res.getOrDefault("title", ""));
-            methylationInfo.put("gene1",  res.getOrDefault("gene1", ""));
-            methylationInfo.put("gene2",  res.getOrDefault("gene2", ""));
-            methylationInfo.put("ct1",  res.getOrDefault("ct1", ""));
-            methylationInfo.put("ct2",  res.getOrDefault("ct2", ""));
-            methylationInfo.put("test_res1",  res.getOrDefault("test_res1", ""));
-            methylationInfo.put("test_res2",  res.getOrDefault("test_res2", ""));
-            methylationInfo.put("sample_res",  res.getOrDefault("sample_res", ""));
+            methylationInfo.put("title", res.getOrDefault("title", ""));
+            methylationInfo.put("gene1", res.getOrDefault("gene1", ""));
+            methylationInfo.put("gene2", res.getOrDefault("gene2", ""));
+            methylationInfo.put("ct1", res.getOrDefault("ct1", ""));
+            methylationInfo.put("ct2", res.getOrDefault("ct2", ""));
+            methylationInfo.put("test_res1", res.getOrDefault("test_res1", ""));
+            methylationInfo.put("test_res2", res.getOrDefault("test_res2", ""));
+            methylationInfo.put("sample_res", res.getOrDefault("sample_res", ""));
 
             rt.setMethylation(methylationInfo);
         }
