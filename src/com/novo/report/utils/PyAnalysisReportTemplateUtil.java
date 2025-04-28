@@ -343,8 +343,6 @@ public class PyAnalysisReportTemplateUtil {
         data.put("cnvBe", rt.getCnvBe());
         // 报告中关于癌种的判断
         data.put("disease", rt.getDisease());
-        // 检出重要基因总表数据
-        // data.put("importantTargetedGeneSummary", rt.getImportantTargetedGeneSummary());
         data.put("chemoSummary", rt.getChemoSummary());
         data.put("chemoSummaryCy", rt.getChemoSummaryCY());
         data.put("chemoAnalysis", rt.getChemoAnalysis());
@@ -386,11 +384,10 @@ public class PyAnalysisReportTemplateUtil {
         // 产品panel
         data.put("panel", rt.getPanel());
         // 检出重要基因总表数据
-        data.put("importantTargetedGeneSummary", rt.getImportantTargetedGeneSummary());
+        // data.put("importantTargetedGeneSummary", rt.getImportantTargetedGeneSummary());
         // 报告-基础信息
         data.put("reportInfo", rt.getReportInfo());
-        // 报告-模块配置
-        // data.put("templateConf", rt.getTemplateConf());
+
         // 检测结果小结
         data.put("testResultSummary", rt.getTestResultSummary());
 
@@ -540,9 +537,9 @@ public class PyAnalysisReportTemplateUtil {
                 htmlFile = templateUtil.stat_report(file, docxPath, filePath);
                 return htmlFile;
             } finally {
-                if (file.exists()) { // 如果已存在,删除旧文件
-                    file.delete();
-                }
+//                if (file.exists()) { // 如果已存在,删除旧文件
+//                    file.delete();
+//                }
             }
         } catch (IOException e1) {
             // TODO Auto-generated catch block
