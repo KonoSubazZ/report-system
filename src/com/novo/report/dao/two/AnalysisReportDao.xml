@@ -832,4 +832,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND dfs.file_type = 'METHYLATION_JSON'
 	</select>
 
+	<select id="getReportPageName" resultType="java.lang.String">
+		SELECT
+			report_name
+		FROM
+			pcr_template
+		WHERE
+			template_name = #{template_name}
+		  AND has_code = 1
+	</select>
+
 </mapper>

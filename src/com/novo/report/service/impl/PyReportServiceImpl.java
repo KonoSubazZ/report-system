@@ -3708,6 +3708,8 @@ public class PyReportServiceImpl implements PyReportService {
         System.out.println(httpURLGETCase);
 //        String binary = QrCodeUtils.creatRrCode(qrcode, 200, 200);
         String binary = CreateQRCode.createQRCode(methodUrl + qrcode, session.getServletContext().getRealPath("/") + "images/tumour-logo.png");
+
+
         summaryOfRresults.put("binary", binary);
 
         // 1166产品 中线癌、肾癌分型逻辑
@@ -3756,6 +3758,7 @@ public class PyReportServiceImpl implements PyReportService {
 
             rt.setMrd(mrdInfo);
         }
+        String methylationTitle = "肿瘤早筛基因甲基化检测报告";
         if (rt.getTemplate_name().equals("肿瘤早筛基因甲基化检测报告")) {
             String subbarcode = currentNgsAvailable.getSubbarcode();
             String analysisDate = currentNgsAvailable.getAnalysis_date();
@@ -3772,9 +3775,15 @@ public class PyReportServiceImpl implements PyReportService {
             methylationInfo.put("test_res1", res.getOrDefault("test_res1", ""));
             methylationInfo.put("test_res2", res.getOrDefault("test_res2", ""));
             methylationInfo.put("sample_res", res.getOrDefault("sample_res", ""));
+            methylationTitle = res.getOrDefault("title", "").toString();
 
             rt.setMethylation(methylationInfo);
         }
+
+        // 封装二维码生成及上传
+        String logoPath = session.getServletContext().getRealPath("/") + "images/tumour-logo.png";
+        generateAndUploadQRCode(report_id, sf.getClient(), sf.getSubbarcode(), rt.getTemplate_name(), pr.getReport_date(), logoPath, methylationTitle);
+
         String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
         analysisReportDao.updateReportDetail(dataToJson, currentNgsAvailable.getReport_id());
 
@@ -6294,4 +6303,28 @@ public class PyReportServiceImpl implements PyReportService {
             }
         }
     }
+
+    public String generateAndUploadQRCode(String report_id, String client, String subbarcode, String template_name, String report_date, String logoPath, String methylationTitle) {
+
+        String pageName = analysisReportDao.getReportPageName(template_name);
+        if (pageName == null) {
+            return null;
+        } else if ("肿瘤早筛基因甲基化检测".equals(pageName)) {
+            pageName = methylationTitle;
+        }
+        // Generate the unique QR code string
+        String qrcode = RandomUtils.getStringRandom(4) + report_id.substring(0, 2) + RandomUtils.getStringRandom(6) + report_id.substring(2) + RandomUtils.getStringRandom(2);
+
+        // Upload QR code via API
+        String ngsQrcodeUrl = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/" + client + "/subbarcode/" + subbarcode + "/product_name/" + pageName + "/username/3/qrcode/" + qrcode + "/report_date/" + report_date;
+        String httpResponse = WebserviceProxyUtils.httpURLGETCase(ngsQrcodeUrl);
+        System.out.println(httpResponse);
+
+        // Create QR code image
+        String methodUrl = "http://qrcode.novogene.com/index.php/Api/Code/qrcode/uncodeid/";
+        String qrCodeImagePath = CreateQRCode.createQRCode(methodUrl + qrcode, logoPath);
+
+        return qrCodeImagePath;
+    }
+
 }
