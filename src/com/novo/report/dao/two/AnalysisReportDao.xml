@@ -839,7 +839,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			pcr_template
 		WHERE
 			template_name = #{template_name}
-		  AND has_code = 1
+		  AND has_qrcode = 1
 	</select>
 
 </mapper>

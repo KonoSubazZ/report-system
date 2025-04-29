@@ -3692,8 +3692,8 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 获取二维码{{ summaryOfRresults.binary | ci(200,200) }}
         String report_id = pr.getReport_id().toString();
-        String methodUrl = "http://qrcode.novogene.com/index.php/Api/Code/qrcode/uncodeid/";
-        String qrcode = RandomUtils.getStringRandom(4) + report_id.substring(0, 2) + RandomUtils.getStringRandom(6) + report_id.substring(2) + RandomUtils.getStringRandom(2);
+        // String methodUrl = "http://qrcode.novogene.com/index.php/Api/Code/qrcode/uncodeid/";
+        // String qrcode = RandomUtils.getStringRandom(4) + report_id.substring(0, 2) + RandomUtils.getStringRandom(6) + report_id.substring(2) + RandomUtils.getStringRandom(2);
         /*// 特殊情况：出现长时间连接不上数据库，引起生成报告卡顿原因
         NgsQrcode ngsQrcode = new NgsQrcode();
         ngsQrcode.setClient(sf.getClient());
@@ -3703,14 +3703,11 @@ public class PyReportServiceImpl implements PyReportService {
         ngsQrcode.setReport_date(pr.getReport_date());
         ngsQrcodeService.insertNgsQrcode(ngsQrcode);*/
         // 调取接口，上传二维码信息
-        String ngsQrcode = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/" + sf.getClient() + "/subbarcode/" + sf.getSubbarcode() + "/product_name/" + sf.getProduct_name() + "/username/3/qrcode/" + qrcode + "/report_date/" + pr.getReport_date();
-        String httpURLGETCase = WebserviceProxyUtils.httpURLGETCase(ngsQrcode);
-        System.out.println(httpURLGETCase);
-//        String binary = QrCodeUtils.creatRrCode(qrcode, 200, 200);
-        String binary = CreateQRCode.createQRCode(methodUrl + qrcode, session.getServletContext().getRealPath("/") + "images/tumour-logo.png");
-
-
-        summaryOfRresults.put("binary", binary);
+        // String ngsQrcode = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/" + sf.getClient() + "/subbarcode/" + sf.getSubbarcode() + "/product_name/" + sf.getProduct_name() + "/username/3/qrcode/" + qrcode + "/report_date/" + pr.getReport_date();
+        // String httpURLGETCase = WebserviceProxyUtils.httpURLGETCase(ngsQrcode);
+        // System.out.println(httpURLGETCase);
+        // String binary = QrCodeUtils.creatRrCode(qrcode, 200, 200);
+        // String binary = CreateQRCode.createQRCode(methodUrl + qrcode, session.getServletContext().getRealPath("/") + "images/tumour-logo.png");
 
         // 1166产品 中线癌、肾癌分型逻辑
         boolean cancerTyping1166Flag = (diseaseName.contains("肾细胞癌") || "肾癌1166分子分型".equals(module)) || diseaseFlag.get("Midline");
@@ -3782,7 +3779,8 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 封装二维码生成及上传
         String logoPath = session.getServletContext().getRealPath("/") + "images/tumour-logo.png";
-        generateAndUploadQRCode(report_id, sf.getClient(), sf.getSubbarcode(), rt.getTemplate_name(), pr.getReport_date(), logoPath, methylationTitle);
+        String qrCodeBase64Str = generateAndUploadQRCode(report_id, sf.getClient(), sf.getSubbarcode(), rt.getTemplate_name(), pr.getReport_date(), logoPath, methylationTitle);
+        summaryOfRresults.put("binary", qrCodeBase64Str);
 
         String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
         analysisReportDao.updateReportDetail(dataToJson, currentNgsAvailable.getReport_id());
