@@ -3779,7 +3779,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 封装二维码生成及上传
         String logoPath = session.getServletContext().getRealPath("/") + "images/tumour-logo.png";
-        String qrCodeBase64Str = generateAndUploadQRCode(report_id, sf.getClient(), sf.getSubbarcode(), rt.getTemplate_name(), pr.getReport_date(), logoPath, methylationTitle);
+        String qrCodeBase64Str = generateAndUploadQRCode(report_id, sf.getClient(), sf.getSubbarcode(), rt.getTemplate_name(), pr.getReport_date(), logoPath, methylationTitle, pd);
         summaryOfRresults.put("binary", qrCodeBase64Str);
 
         String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
@@ -6302,13 +6302,18 @@ public class PyReportServiceImpl implements PyReportService {
         }
     }
 
-    public String generateAndUploadQRCode(String report_id, String client, String subbarcode, String template_name, String report_date, String logoPath, String methylationTitle) {
+    public String generateAndUploadQRCode(String report_id, String client, String subbarcode, String template_name, String report_date, String logoPath, String methylationTitle,Map pd) {
 
         String pageName = analysisReportDao.getReportPageName(template_name);
         if (pageName == null) {
             return null;
         } else if ("肿瘤早筛基因甲基化检测".equals(pageName)) {
             pageName = methylationTitle;
+        }
+
+        // 判断是否有PD
+        if (pd != null && !"PD-L1检测报告".equals(pageName)) {
+            pageName = pageName.replace("检测报告","+PD-L1检测报告");
         }
         // Generate the unique QR code string
         String qrcode = RandomUtils.getStringRandom(4) + report_id.substring(0, 2) + RandomUtils.getStringRandom(6) + report_id.substring(2) + RandomUtils.getStringRandom(2);
