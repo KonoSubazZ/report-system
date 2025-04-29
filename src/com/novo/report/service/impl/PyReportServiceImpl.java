@@ -5574,6 +5574,14 @@ public class PyReportServiceImpl implements PyReportService {
         return geneClassification;
     }
 
+    /**
+     * 肉瘤分型描述也与这个有关
+     * @param allMutation
+     * @param sarcomaProductName
+     * @param lang
+     * @param product_name
+     * @return
+     */
     @Override
     public List<Map> getSarcomaTyping(List<Map> allMutation, String sarcomaProductName, Integer lang, String product_name) {
         List<Map> sarcomaTypings = new ArrayList<>();
