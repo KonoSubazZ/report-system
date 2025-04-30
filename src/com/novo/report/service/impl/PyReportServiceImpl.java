@@ -3668,7 +3668,7 @@ public class PyReportServiceImpl implements PyReportService {
                 }
             }
             // 20250304 广附一 MET14跳突变置顶
-            if (gfy_ori_variant.containsKey("gfyMET")) {
+            if (gfy_ori_variant.containsKey("gfyMET") && gfy_ori_variant.get("gfyMET").toString().contains("Fusion")) {
                 List<String> gfyMETList = (List<String>) gfy_ori_variant.get("gfyMET");
                 List<String> gfyMET1List = (List<String>) gfy_mutFreq.get("gfyMET");
                 String target = "MET-MET Fusion M13:M15";
