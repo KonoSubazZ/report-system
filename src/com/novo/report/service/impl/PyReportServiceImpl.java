@@ -3019,6 +3019,15 @@ public class PyReportServiceImpl implements PyReportService {
         summaryOfRresults.put("geneRearrangementSize", geneRearrangementSize);
         summaryOfRresults.put("geneRearrangementVariationSize2", geneRearrangementVariationSize2);
         rt.setSarcomaFlag(sarcomaFlag);
+        // 20250430 增加novopm2_rna1166_Sarcoma、novopm2_rna639_Sarcoma产品新需求
+        if ("novopm2_rna1166_Sarcoma".equals(productName) || "novopm2_rna639_Sarcoma".equals(productName)) {
+            sarcomaTyping = sarcomaTyping.stream()
+                    .filter(map -> {
+                        Object value = map.get("sarcomaAndEvidence");
+                        return value instanceof List && !((List<?>) value).isEmpty();
+                    })
+                    .collect(Collectors.toList());
+        }
         rt.setSarcomaTyping(sarcomaTyping);
 
         // 湘雅附二1238+1166
@@ -3692,26 +3701,17 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 获取二维码{{ summaryOfRresults.binary | ci(200,200) }}
         String report_id = pr.getReport_id().toString();
-        // String methodUrl = "http://qrcode.novogene.com/index.php/Api/Code/qrcode/uncodeid/";
-        // String qrcode = RandomUtils.getStringRandom(4) + report_id.substring(0, 2) + RandomUtils.getStringRandom(6) + report_id.substring(2) + RandomUtils.getStringRandom(2);
-        /*// 特殊情况：出现长时间连接不上数据库，引起生成报告卡顿原因
-        NgsQrcode ngsQrcode = new NgsQrcode();
-        ngsQrcode.setClient(sf.getClient());
-        ngsQrcode.setSubbarcode(sf.getSubbarcode());
-        ngsQrcode.setProduct_name(sf.getProduct_name());
-        ngsQrcode.setQrcode(qrcode);
-        ngsQrcode.setReport_date(pr.getReport_date());
-        ngsQrcodeService.insertNgsQrcode(ngsQrcode);*/
-        // 调取接口，上传二维码信息
-        // String ngsQrcode = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/" + sf.getClient() + "/subbarcode/" + sf.getSubbarcode() + "/product_name/" + sf.getProduct_name() + "/username/3/qrcode/" + qrcode + "/report_date/" + pr.getReport_date();
-        // String httpURLGETCase = WebserviceProxyUtils.httpURLGETCase(ngsQrcode);
-        // System.out.println(httpURLGETCase);
-        // String binary = QrCodeUtils.creatRrCode(qrcode, 200, 200);
-        // String binary = CreateQRCode.createQRCode(methodUrl + qrcode, session.getServletContext().getRealPath("/") + "images/tumour-logo.png");
+        String methodUrl = "http://qrcode.novogene.com/index.php/Api/Code/qrcode/uncodeid/";
+        String qrcode = RandomUtils.getStringRandom(4) + report_id.substring(0, 2) + RandomUtils.getStringRandom(6) + report_id.substring(2) + RandomUtils.getStringRandom(2);
 
+        // 调取接口，上传二维码信息
+        String ngsQrcode = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/" + sf.getClient() + "/subbarcode/" + sf.getSubbarcode() + "/product_name/" + sf.getProduct_name() + "/username/3/qrcode/" + qrcode + "/report_date/" + pr.getReport_date();
+        String httpURLGETCase = WebserviceProxyUtils.httpURLGETCase(ngsQrcode);
+        String binary = CreateQRCode.createQRCode(methodUrl + qrcode, session.getServletContext().getRealPath("/") + "images/tumour-logo.png");
+        summaryOfRresults.put("binary", binary);
         // 1166产品 中线癌、肾癌分型逻辑
         boolean cancerTyping1166Flag = (diseaseName.contains("肾细胞癌") || "肾癌1166分子分型".equals(module)) || diseaseFlag.get("Midline");
-        if ((product_name.equals("novopm2_rna1166_Sarcoma") || product_name.equals("novopm2_rna639_Sarcoma"))&& cancerTyping1166Flag) {
+        if ((product_name.equals("novopm2_rna1166_Sarcoma") || product_name.equals("novopm2_rna639_Sarcoma")) && cancerTyping1166Flag) {
             // 肾细胞癌 肾癌做的特殊处理
             if (diseaseName.contains("肾")) {
                 diseaseFlag.put("Kidney", true);
@@ -3720,11 +3720,11 @@ public class PyReportServiceImpl implements PyReportService {
 
             List<CancerTyping> cancerTyping = moduleModificationAllDao.getCancerTypingById(reportId);
             // 增加统计检出数量
-            long count = cancerTyping.stream()
+            cancerTyping = cancerTyping.stream()
                     .filter(cancerTyping1 -> !cancerTyping1.getEvidence().equals("/"))
-                    .count();
+                    .collect(Collectors.toList());
             rt.setCancerTyping1166(cancerTyping);
-            summaryOfRresults.put("cancerCount1166", count);
+            summaryOfRresults.put("cancerCount1166", cancerTyping.size());
         }
 
         rt.setSummaryOfRresults(summaryOfRresults);
@@ -3778,9 +3778,9 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // 封装二维码生成及上传
-        String logoPath = session.getServletContext().getRealPath("/") + "images/tumour-logo.png";
-        String qrCodeBase64Str = generateAndUploadQRCode(report_id, sf.getClient(), sf.getSubbarcode(), rt.getTemplate_name(), pr.getReport_date(), logoPath, methylationTitle, pd);
-        summaryOfRresults.put("binary", qrCodeBase64Str);
+        // String logoPath = session.getServletContext().getRealPath("/") + "images/tumour-logo.png";
+        // String qrCodeBase64Str = generateAndUploadQRCode(report_id, sf.getClient(), sf.getSubbarcode(), rt.getTemplate_name(), pr.getReport_date(), logoPath, methylationTitle, pd);
+        // summaryOfRresults.put("binary", qrCodeBase64Str);
 
         String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
         analysisReportDao.updateReportDetail(dataToJson, currentNgsAvailable.getReport_id());
@@ -5576,6 +5576,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 肉瘤分型描述也与这个有关
+     *
      * @param allMutation
      * @param sarcomaProductName
      * @param lang
@@ -6310,7 +6311,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
     }
 
-    public String generateAndUploadQRCode(String report_id, String client, String subbarcode, String template_name, String report_date, String logoPath, String methylationTitle,Map pd) {
+    public String generateAndUploadQRCode(String report_id, String client, String subbarcode, String template_name, String report_date, String logoPath, String methylationTitle, Map pd) {
 
         String pageName = analysisReportDao.getReportPageName(template_name);
         if (pageName == null) {
@@ -6321,7 +6322,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 判断是否有PD
         if (pd != null && !"PD-L1检测报告".equals(pageName)) {
-            pageName = pageName.replace("检测报告","+PD-L1检测报告");
+            pageName = pageName.replace("检测报告", "+PD-L1检测报告");
         }
         // Generate the unique QR code string
         String qrcode = RandomUtils.getStringRandom(4) + report_id.substring(0, 2) + RandomUtils.getStringRandom(6) + report_id.substring(2) + RandomUtils.getStringRandom(2);
