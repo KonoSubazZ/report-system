@@ -3125,7 +3125,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // 脑胶质瘤相关分子标记物检测结果 && 增加1166RNA通用模板
-        boolean brainGlioma1166Flag = product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseFlag.get("BrainGlioma") || "脑胶质瘤1166分子分型".equals(module));
+        boolean brainGlioma1166Flag = (product_name.equals("novopm2_rna1166_Sarcoma") || product_name.equals("novopm2_rna639_Sarcoma")) && (diseaseFlag.get("BrainGlioma") || "脑胶质瘤1166分子分型".equals(module));
         boolean brainGliomaFlag = false;
         if (product_name.equals("novopm2_tis_200") || brainGlioma1166Flag) {
             brainGliomaFlag = true;
