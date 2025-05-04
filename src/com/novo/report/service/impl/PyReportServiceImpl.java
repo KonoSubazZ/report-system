@@ -3020,7 +3020,7 @@ public class PyReportServiceImpl implements PyReportService {
         summaryOfRresults.put("geneRearrangementVariationSize2", geneRearrangementVariationSize2);
         rt.setSarcomaFlag(sarcomaFlag);
         // 20250430 增加novopm2_rna1166_Sarcoma、novopm2_rna639_Sarcoma产品新需求
-        if (("novopm2_rna1166_Sarcoma".equals(productName) && !rt.getTemplate_name().contains("肿瘤融合基因RNA")) || "novopm2_rna639_Sarcoma".equals(productName)) {
+        if (("novopm2_rna1166_Sarcoma".equals(productName) && rt.getTemplate_name().contains("肿瘤融合基因RNA")) || "novopm2_rna639_Sarcoma".equals(productName)) {
             sarcomaTyping = sarcomaTyping.stream()
                     .filter(map -> {
                         Object value = map.get("sarcomaAndEvidence");
