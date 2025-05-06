@@ -438,7 +438,7 @@ public class PyAnalysisReportTemplateUtil {
         }
 
         // 1166产品分型结果
-        if (rt.getTemplate_name().contains("肿瘤融合基因RNA检测报告") || rt.getTemplate_name().contains("肿瘤融合基因RNA报告")) {
+        if (rt.getTemplate_name().contains("肿瘤融合基因RNA检测报告") || rt.getTemplate_name().contains("肿瘤融合基因RNA报告") || rt.getTemplate_name().contains("肿瘤融合基因RNA报告-中肿")) {
             data.put("cancerTyping1166", rt.getCancerTyping1166());
         }
 

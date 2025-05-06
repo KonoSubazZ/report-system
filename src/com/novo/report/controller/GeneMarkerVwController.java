@@ -802,7 +802,7 @@ public class GeneMarkerVwController {
                         mmBrainGlioma.setOutput(output);
                         mmBrainGlioma.setUpdate_by(user_account);
                         mmBrainGlioma.setUpdate_date(DateUtil.getSystemTime());
-                        int id =moduleModificationAllDao.insertMmBrainGlioma(mmBrainGlioma);
+                        int id = moduleModificationAllDao.insertMmBrainGlioma(mmBrainGlioma);
                         mmBrainGlioma.setId(id);
                         mmBrainGliomas.add(mmBrainGlioma);
                     }
@@ -815,7 +815,7 @@ public class GeneMarkerVwController {
 
             // 脑胶质瘤1166相关分子标记物检测结果
             boolean brainGlioma1166Flag = false;
-            if (product_name.equals("novopm2_rna1166_Sarcoma") && diseaseName.contains("脑胶质瘤") || module.contains("脑胶质瘤1166分子分型")) {
+            if ((product_name.equals("novopm2_rna1166_Sarcoma") || product_name.equals("novopm2_rna639_Sarcoma")) && diseaseName.contains("脑胶质瘤") || module.contains("脑胶质瘤1166分子分型")) {
                 brainGlioma1166Flag = true;
                 List<MmBrainGlioma> mmBrainGliomas = moduleModificationAllDao.selectMmBrainGliomaByReportId(currentNgsAvailable.getReport_id());
                 if (mmBrainGliomas.isEmpty()) {
@@ -848,7 +848,7 @@ public class GeneMarkerVwController {
                                     if (variantList.stream().anyMatch(variant -> variant.contains("ZFTA-RELA"))) {
                                         output = "检出";
                                     }
-                                }else if (brainGlioma1166FusionGeneMap.containsKey(gene)) {
+                                } else if (brainGlioma1166FusionGeneMap.containsKey(gene)) {
                                     output = "检出";
                                 }
 
@@ -874,7 +874,8 @@ public class GeneMarkerVwController {
 
             // 1166 中线癌分型、肾脏分型模块，暂不清楚是否是通用逻辑
             boolean cancerTyping1166Flag = false;
-            if (product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseName.contains("肾细胞癌") || diseaseName.contains("中线癌")) ||  module.equals("肾癌1166分子分型")) {
+
+            if (product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseName.contains("肾细胞癌") || diseaseName.contains("中线癌")) || module.equals("肾癌1166分子分型")) {
 
                 List<CancerTyping> cancerTypings = moduleModificationAllDao.getCancerTypingById(currentNgsAvailable.getReport_id());
                 if (cancerTypings.isEmpty()) {
@@ -882,7 +883,7 @@ public class GeneMarkerVwController {
                     List<Map> fusionAll = analysisReportDao.getFusionAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
                     if (diseaseName.contains("中线癌")) {
                         cancerTyping1166Flag = true;
-                        List<AllCancerTyping> midlineTyping = analysisReportDao.getTypingInfo(product_name,"Midline");
+                        List<AllCancerTyping> midlineTyping = analysisReportDao.getTypingInfo(product_name, "Midline");
 
                         fusionAll.stream()
                                 .forEach(fusionAllMap -> {
@@ -906,12 +907,12 @@ public class GeneMarkerVwController {
                                     cancerTyping.setUpdate_by(user_account);
 
                                     // 获取中线癌分型
-                                    for (AllCancerTyping allCancerTyping : midlineTyping){
+                                    for (AllCancerTyping allCancerTyping : midlineTyping) {
                                         String gene1 = allCancerTyping.getGene();
                                         String molecularTyping = allCancerTyping.getMolecular_typing();
                                         String evidence = allCancerTyping.getEvidence();
                                         String subtype = allCancerTyping.getSubtype();
-                                        if (gene.equals(gene1) && variant.contains(molecularTyping)){
+                                        if (gene.equals(gene1) && variant.contains(molecularTyping)) {
                                             cancerTyping.setSubtype(subtype);
                                             cancerTyping.setEvidence(evidence);
                                         }
@@ -924,7 +925,7 @@ public class GeneMarkerVwController {
                     // 肾癌分型
                     if (diseaseName.contains("肾细胞癌") || module.contains("肾癌1166分子分型")) {
                         cancerTyping1166Flag = true;
-                        List<AllCancerTyping> midlineTyping = analysisReportDao.getTypingInfo(product_name,"Kidney");
+                        List<AllCancerTyping> midlineTyping = analysisReportDao.getTypingInfo(product_name, "Kidney");
                         fusionAll.stream()
                                 .forEach(fusionAllMap -> {
                                     String gene = String.valueOf(fusionAllMap.get("gene"));
@@ -947,12 +948,12 @@ public class GeneMarkerVwController {
                                     cancerTyping.setUpdate_by(user_account);
 
                                     // 获取肾癌分型
-                                    for (AllCancerTyping allCancerTyping : midlineTyping){
+                                    for (AllCancerTyping allCancerTyping : midlineTyping) {
                                         String gene1 = allCancerTyping.getGene();
                                         String molecularTyping = allCancerTyping.getMolecular_typing();
                                         String evidence = allCancerTyping.getEvidence();
                                         String subtype = allCancerTyping.getSubtype();
-                                        if (gene.equals(gene1) && variant.contains(molecularTyping)){
+                                        if (gene.equals(gene1) && variant.contains(molecularTyping)) {
                                             cancerTyping.setSubtype(subtype);
                                             cancerTyping.setEvidence(evidence);
                                         }
@@ -964,7 +965,7 @@ public class GeneMarkerVwController {
                 }
                 model.addAttribute("cancerTyping1166Flag", true);
                 model.addAttribute("cancerTyping1166", cancerTypings);
-                model.addAttribute("cancerTyping1166Json",gson.toJson(cancerTypings));
+                model.addAttribute("cancerTyping1166Json", gson.toJson(cancerTypings));
             }
 
             // 内分泌相关(泌尿系统肿瘤99基因报告)  || 188/462/550/1238/WES/WES plus/988中双样本
@@ -2208,6 +2209,7 @@ public class GeneMarkerVwController {
 
     /**
      * 删除1166的癌种分型
+     *
      * @param id
      * @return
      */

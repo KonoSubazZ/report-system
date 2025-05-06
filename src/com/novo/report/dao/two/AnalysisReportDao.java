@@ -695,4 +695,6 @@ public interface AnalysisReportDao {
 
     List<AllCancerTyping> getTypingInfo(@Param("product_name") String product_name, @Param("cancer") String cancer);
 
+    String  getReportPageName(@Param("template_name") String template_name);
+
 }
