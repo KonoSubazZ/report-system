@@ -6764,7 +6764,7 @@ public class PyReportServiceImpl implements PyReportService {
             return "合格";
         }
     }
-    }
+
 
     public String generateAndUploadQRCode(String report_id, String client, String subbarcode, String template_name, String report_date, String logoPath, String methylationTitle, Map pd) {
 
