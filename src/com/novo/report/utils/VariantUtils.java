@@ -1,5 +1,8 @@
 package com.novo.report.utils;
 
+import java.util.List;
+import java.util.Map;
+
 public class VariantUtils {
 
     private VariantUtils() {
@@ -43,6 +46,22 @@ public class VariantUtils {
 
         return true;
     }
+   /* public void getParentMutId(Map mutation) {
+        String gene = mutation.get("gene") == null ? "" : mutation.get("gene").toString();
+        String variant = mutation.get("variant") == null ? "" : mutation.get("variant").toString();
+
+        // 父级突变的变异信息，例 Exon11 Mutation， 可能有多个
+        List<String> parentVariant = analysisReportDao.getParentVariant(gene, variant);
+
+        // 没有查询到父级突变 根据variant类型判断
+        if (parentVariant.isEmpty() && (variant.indexOf("fs") > -1 || variant.indexOf("*") > -1 || variant.indexOf("+") > -1 || variant.indexOf("-") > -1) && !(variant.indexOf("Fusion") > -1)) {
+            Integer mut_id = analysisReportDao.getMutationId(gene, "Inactive Mutation");
+            if (mut_id != null) {
+                parentVariant.add("Inactive Mutation");
+            }
+        }
+        mutation.put("parent_variant", parentVariant);
+    }*/
 
 
 }
