@@ -27,7 +27,7 @@ public class VariantServiceImpl implements VariantService {
                 .anyMatch(map -> {
                     Object parentVariant = map.get("parent_variant");
                     return parentVariant != null &&
-                            parentVariant.toString().contains("EGFR Exon19 Deletion");
+                            parentVariant.toString().contains("Exon19 Deletion Mutation");
                 });
 
     }

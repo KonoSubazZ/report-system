@@ -72,8 +72,12 @@ public class PyReportServiceImpl implements PyReportService {
 
     @Autowired
     private ModuleModificationAllDao moduleModificationAllDao;
+
     @Autowired
     private GeneticMarkerVwDao geneticMarkerVwDao;
+
+    @Autowired
+    private VariantService variantService;
 
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
@@ -4039,9 +4043,14 @@ public class PyReportServiceImpl implements PyReportService {
             }
             TJmutation = m + ExonicFunc + " " + split[0] + ": " + split[2];
             // 同济新增需求
-            if (VariantUtils.isExon19Deletion(gene,oriVariant)){
-                TJmutation = "19号外显子框内缺失突变" + " " + split[0] + ": " + split[2];
+            Object mutIdObj = mutation.get("mapped_variant_id");
+            if (mutIdObj != null) {
+                int mutId = Integer.parseInt(mutIdObj.toString());
+                if (variantService.isExon19Deletion(gene, mutId)) {
+                    TJmutation = "19号外显子框内缺失突变" + " " + split[0] + ": " + split[2];
+                }
             }
+
             if (oriVariant.indexOf("p.") >= 0) {
                 TJmutation += " p." + "(" + type + ")";
             }
