@@ -812,9 +812,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			ctDNA_content = #{ctDNA_content},
 			mrd_status = #{mrd_status}
 		WHERE file_id = (
-			SELECT mf.file_id
-			FROM mrd_file mf
-					 JOIN data_file_status dfs ON mf.file_id = dfs.file_id
+			SELECT dfs.file_id
+			FROM data_file_status dfs
 			WHERE dfs.subbarcode = #{subbarcode}
 			  AND dfs.analysis_date = #{analysis_date}
 			  AND dfs.product_name = #{product_name}
