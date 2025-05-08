@@ -805,6 +805,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND dfs.product_name = #{product_name}
 		  AND dfs.file_type = 'MRD_JSON'
 	</select>
+
+	<update id="updateMRDData">
+		UPDATE mrd_file
+		SET
+			ctDNA_content = #{ctDNA_content},
+			mrd_status = #{mrd_status}
+		WHERE file_id = (
+			SELECT mf.file_id
+			FROM mrd_file mf
+					 JOIN data_file_status dfs ON mf.file_id = dfs.file_id
+			WHERE dfs.subbarcode = #{subbarcode}
+			  AND dfs.analysis_date = #{analysis_date}
+			  AND dfs.product_name = #{product_name}
+			  AND dfs.file_type = 'MRD_JSON'
+			LIMIT 1
+			);
+	</update>
+
 	<select id="getTypingInfo" resultType="com.novo.report.beans.AllCancerTyping">
 		SELECT
 			gene,

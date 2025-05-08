@@ -691,6 +691,7 @@ public interface AnalysisReportDao {
      */
     String getMRDBase64Str(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
     String getMRDDataInfo(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
+    void updateMRDData(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name, @Param("ctDNA_content") String ctDNAContent, @Param("mrd_status") String mrdStatus);
     String getMethylationDataInfo(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
     List<AllCancerTyping> getTypingInfo(@Param("product_name") String product_name, @Param("cancer") String cancer);
