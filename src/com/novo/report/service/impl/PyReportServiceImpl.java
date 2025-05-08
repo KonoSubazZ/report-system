@@ -4034,6 +4034,10 @@ public class PyReportServiceImpl implements PyReportService {
                 m = exon + "号内含子";
             }
             TJmutation = m + ExonicFunc + " " + split[0] + ": " + split[2];
+            // 同济新增需求
+            if (VariantUtils.isExon19Deletion(oriVariant)){
+                TJmutation = "19号外显子框内缺失突变" + " " + split[0] + ": " + split[2];
+            }
             if (oriVariant.indexOf("p.") >= 0) {
                 TJmutation += " p." + "(" + type + ")";
             }

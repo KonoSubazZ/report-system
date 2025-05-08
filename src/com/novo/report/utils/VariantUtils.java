@@ -36,7 +36,7 @@ public class VariantUtils {
 			return false;
 		}
 
-		// Check for del or delins
+		// Check for del or delins or dup
 		if (!(variant.contains("del") || variant.contains("delins") || variant.contains("dup"))) {
 			return false;
 		}
