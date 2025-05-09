@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.VariantDao">
+
+    <select id="getParentMut" resultType="java.util.Map">
+        SELECT
+            gene_symbol,
+            parent_variant_id,
+            parent_variant
+        FROM nkb.gene_variant_parent_vw
+        WHERE gene_symbol = #{gene_symbol}
+          AND gene_variant_id = #{gene_variant_id}
+    </select>
+</mapper>

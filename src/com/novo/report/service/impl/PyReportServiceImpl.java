@@ -75,6 +75,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     @Autowired
     private ModuleModificationAllDao moduleModificationAllDao;
+
     @Autowired
     private GeneticMarkerVwDao geneticMarkerVwDao;
 
@@ -85,6 +86,9 @@ public class PyReportServiceImpl implements PyReportService {
     private ModuleService moduleService;
     @Autowired
     private ModuleDao moduleDao;
+
+    @Autowired
+    private VariantService variantService;
 
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
@@ -3806,6 +3810,7 @@ public class PyReportServiceImpl implements PyReportService {
             String mrdJson = analysisReportDao.getMRDDataInfo(subbarcode, analysisDate, prodName);
             Map res = gson.fromJson(mrdJson, Map.class);
             List<List<String>> mrd_tds = (List<List<String>>) res.getOrDefault("mrd_tds", new ArrayList<>());
+            String ctDNAContent = (String) res.getOrDefault("ctDNA_content", "");
             boolean isNegative = true;
 
             // mrd_status 状态判断，最后一次检查如果未检出未阴性
@@ -3821,8 +3826,10 @@ public class PyReportServiceImpl implements PyReportService {
             mrdInfo.put("mrdJson", gson.fromJson(mrdJson, Map.class));
             mrdInfo.put("mrd_status", isNegative ? "阴性" : "阳性");
             mrdInfo.put("imgStr", imgBase64Str);
-
             rt.setMrd(mrdInfo);
+
+            String mrdStatus = (String) mrdInfo.get("mrd_status");
+            analysisReportDao.updateMRDData(subbarcode, analysisDate, prodName, ctDNAContent, mrdStatus);
         }
         String methylationTitle = "肿瘤早筛基因甲基化检测报告";
         if (rt.getTemplate_name().equals("肿瘤早筛基因甲基化检测报告")) {
@@ -4081,6 +4088,7 @@ public class PyReportServiceImpl implements PyReportService {
         String ExonicFunc = translateMutType(mutation.get("ExonicFunc").toString());
         targetedDrugDetection.put("ExonicFunc", ExonicFunc);
         String oriVariant = mutation.get("ori_variant").toString();
+        String gene = mutation.get("gene").toString();
         String type = "";
         // 同济mutation的特殊展示逻辑
         String TJmutation = "";
@@ -4128,6 +4136,15 @@ public class PyReportServiceImpl implements PyReportService {
                 m = exon + "号内含子";
             }
             TJmutation = m + ExonicFunc + " " + split[0] + ": " + split[2];
+            // 同济新增需求
+            Object mutIdObj = mutation.get("mapped_variant_id");
+            if (mutIdObj != null) {
+                int mutId = Integer.parseInt(mutIdObj.toString());
+                if (variantService.isExon19Deletion(gene, mutId)) {
+                    TJmutation = "19号外显子框内缺失突变" + " " + split[0] + ": " + split[2];
+                }
+            }
+
             if (oriVariant.indexOf("p.") >= 0) {
                 TJmutation += " p." + "(" + type + ")";
             }
