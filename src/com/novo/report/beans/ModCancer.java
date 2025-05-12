@@ -4,6 +4,8 @@ package com.novo.report.beans;
 public class ModCancer {
 
   private long id;
+  private String panel;
+
   private String module;
   private String cancer;
   private String desc1;
@@ -23,6 +25,9 @@ public class ModCancer {
     this.id = id;
   }
 
+  public String getPanel() { return panel; }
+
+  public void setPanel(String panel) {  this.panel = panel; }
 
   public String getModule() {
     return module;

@@ -4467,6 +4467,7 @@ public class PyReportServiceImpl implements PyReportService {
 
             ModCancer cancer = new ModCancer();
             cancer.setModule("sarcoma_typing");
+            cancer.setPanel(rt.getPanel());
 
             cancer.setCancer("sarcoma1");
             List<ModCancer> sarcomaTypingNote1 = moduleService.getSarcomaTypingNote1(cancer);

@@ -233,6 +233,6 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public List<ModCancer> getSarcomaTypingNote1(ModCancer cancer) {
-        return  moduleDao.getCommonCancerNote(cancer);
+        return  moduleDao.getSarcomaNote(cancer);
     }
 }

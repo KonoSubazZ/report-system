@@ -111,4 +111,18 @@
           AND b.product_name = #{productName}
           AND deleted = 1
     </select>
+
+    <select id="getSarcomaNote" resultType="com.novo.report.beans.ModCancer">
+        SELECT
+            panel,
+            cancer,
+            desc1,
+            desc2
+        FROM mod_cancer
+        WHERE module = #{module}
+          AND cancer = #{cancer}
+          AND FIND_IN_SET(#{panel}, panel)
+          AND deleted = 1
+        ORDER BY id ASC
+    </select>
 </mapper>
