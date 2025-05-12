@@ -4533,10 +4533,14 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 获取产品描述第二句，根据癌种判断调整展示内容
         ModProductDesc productDesc1 = moduleService.getProductDesc("通用");
+        String upDisease = cancerInfo.get("urinaryProstateDisease").toString();
         String productDesc1Str = productDesc1.getProduct_desc();
         String toRemove = "";
-        if (StringUtils.isEmpty(cancerInfo.get("urinaryProstateDisease").toString())) {
+        if (StringUtils.isEmpty(upDisease)) {
             toRemove = "内分泌治疗和神经内分泌分化分型以及疾病预后、";
+            productDesc1Str = productDesc1Str.replace(toRemove, "");
+        }else if (!"前列腺癌".equals(upDisease)){
+            toRemove = "内分泌治疗和神经内分泌分化分型以及";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
         if (!(boolean) cancerInfo.get("endometrialCarcinoma") || !conf.getEndometrial_carcinoma_typing()) {
