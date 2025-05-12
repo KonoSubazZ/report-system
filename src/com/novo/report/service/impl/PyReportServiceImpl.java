@@ -3902,7 +3902,7 @@ public class PyReportServiceImpl implements PyReportService {
             cancerInfo.put("gastrointestinalStromalTumor", gastrointestinalStromalTumor);
             cancerInfo.put("targetCancer", target_cancer);
             cancerInfo.put("sarcomaFlag", sarcomaFlag);
-            Map<String, Object> productDesc = generateProductDesc(cancerInfo, pd, templateName, templateConf);
+            Map<String, Object> productDesc = generateProductDesc(cancerInfo, pd, templateName, templateConf, rt.getType());
             rt.setProductDesc(productDesc);
 
             // CUSTOM 生成检测小结信息, 暂时不用合并到 commonNote 中
@@ -4519,11 +4519,16 @@ public class PyReportServiceImpl implements PyReportService {
         return res;
     }
 
-    private Map<String, Object> generateProductDesc(Map<String, Object> cancerInfo, Map pd, String template, TemplateConf conf) {
+    private Map<String, Object> generateProductDesc(Map<String, Object> cancerInfo, Map pd, String template, TemplateConf conf,  String type) {
         Map<String, Object> res = new HashMap<>();
         ModProductDesc productDesc = moduleService.getProductDesc(template);
         String productDescStr = productDesc.getProduct_desc();
         List<String> productDescList = new ArrayList();
+        if (template.contains("全外显子组升级版") && "tissue".equals(type)) {
+            String desc = "，同时，本产品检测基因组不稳定状态（GIS），结合BRCA1/2基因变异情况，综合评估同源重组缺陷状态";
+            int lastPeriod = productDescStr.lastIndexOf("。");
+            productDescStr = productDescStr.substring(0, lastPeriod) + desc + productDescStr.substring(lastPeriod);
+        }
         if (pd != null) {
             productDescStr = productDescStr + "通过免疫组化检测 PD-L1 表达。";
         }
