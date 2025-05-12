@@ -177,7 +177,8 @@ public class ModuleServiceImpl implements ModuleService {
         List<String> notesList = new ArrayList<>(Arrays.asList(notes));
         if (!reads) {
             notesList.remove(notesList.size() - 2);
-            notesList.get(notesList.size() - 1).replace("13.", "12.");
+            notesList.set(notesList.size() - 1,
+                    notesList.get(notesList.size() - 1).replace("13.", "12.")); // 替换编号
         }
         if (!complex) {
             notesList.remove(notesList.size() - 1);
