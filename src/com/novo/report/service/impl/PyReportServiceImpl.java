@@ -3579,8 +3579,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         //CUSTOM 肺癌60基因模板-河南人民60个性化模板相关逻辑
         if (rt.getTemplate_name().contains("肺癌60基因-河南人民-单样本")) {
-            Map<String, Object> HenanPeopleCustomInfo = geneHenanPeopleData(thisGeneticmarkerVwList,
-                    bodyDrugTipLineStr);
+            Map<String, Object> HenanPeopleCustomInfo = geneHenanPeopleData(thisGeneticmarkerVwList, bodyDrugTipLineStr, unknownTipLineStr);
             rt.setHenanPeopleCustomInfo(HenanPeopleCustomInfo);
         }
 
@@ -3701,7 +3700,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     }
 
-    private Map<String, Object> geneHenanPeopleData(List<Map> somaticMutationSiteList, List<Map> bodyDrugTipList) {
+    private Map<String, Object> geneHenanPeopleData(List<Map> somaticMutationSiteList, List<Map> bodyDrugTipList, List<Map> unknownTipList) {
         // 河南人民检测基因列表
         List<String> geneList = Arrays.asList("EGFR", "KRAS", "BRAF", "PIK3CA", "ALK", "ROS1", "MET", "RET", "ERBB2", "TP53");
         // 河南人民60个性化数据汇总
@@ -3715,7 +3714,10 @@ public class PyReportServiceImpl implements PyReportService {
         geneList.stream().forEach(gene -> somaticMutationSitesInfo.put(gene, new ArrayList<>()));
         // 过滤bodyDrugTipList，只保留包含geneList中的基因的数据
         List<Map> BodyDrugTipList = bodyDrugTipList.stream()
-                .filter(map -> geneList.contains(map.get("gene")))
+                //        .filter(map -> geneList.contains(map.get("gene")))
+                .collect(Collectors.toList());
+        List<Map> unknownMutationSiteInfoList = unknownTipList.stream()
+                //        .filter(map -> geneList.contains(map.get("gene")))
                 .collect(Collectors.toList());
 
         for (Map site : somaticMutationSiteList) {
@@ -3725,23 +3727,27 @@ public class PyReportServiceImpl implements PyReportService {
                 String mutation = "";
                 String exon = (String) site.get("exon");
                 String mutationType = (String) site.get("mut_type");
+                String ExonicFunc = translateMutType((String) site.get("ExonicFunc"));
                 String mutFreq = (String) site.get("mutFreq");
                 // NDF值展示逻辑
                 String mutFreqString = mutFreq.contains("-") ? mutFreq : mutFreq + "%";
+                String mutFreqStr = mutationType.equals("拷贝数变异") ? "  ( 拷贝数：" + mutFreq + ")" : "  ( 丰度：" + mutFreqString + ")";
+                if (mutationType.equals("融合")) {
+                    mutFreqStr = "  ( NDF：" + mutFreq + ")";
+                }
                 String oriVariant = (String) site.get("ori_variant");
                 String[] oriVariantArr = oriVariant.split(" ");
-                String mutFreqStr = mutationType.equals("拷贝数变异") ? "  ( 拷贝数：" + mutFreq + ")" : "  ( 丰度：" + mutFreqString + ")";
                 int len = oriVariantArr.length;
-
-                if ("突变".equals(mutationType) || "缺失".equals(mutationType)) {
+                // fix 20241217 snpindel 显示不正确
+                if ("突变".equals(mutationType) || "缺失".equals(mutationType) || "插入".equals(mutationType)) {
                     String region = StringUtils.isNotBlank(exon)
                             ? exon + "外显子"
                             : oriVariantArr[len - 2].replaceAll("\\D+", "") + "内含子";
-                    mutation = region + oriVariantArr[len - 1] + mutationType + mutFreqStr;
+                    mutation = region + oriVariantArr[len - 1] + ExonicFunc + mutFreqStr;
                 } else if ("融合".equals(mutationType)) {
-                    mutation = oriVariantArr[0] + "(" + oriVariantArr[len - 1] + ")" + mutationType + mutFreqStr;
+                    mutation = oriVariantArr[0] + "(" + oriVariantArr[len - 1] + ")" + ExonicFunc + mutFreqStr;
                 } else {
-                    mutation = oriVariantArr[0] + mutationType + mutFreqStr;
+                    mutation = oriVariantArr[0] + ExonicFunc + mutFreqStr;
                 }
                 site.put("mutation", mutation);
                 geneInfo.add(site);
@@ -3754,6 +3760,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         HenanPeopleCustomInfo.put("somaticMutationSitesInfo", somaticMutationSitesInfo);
         HenanPeopleCustomInfo.put("somaticMutationSiteInfoList", somaticMutationSiteInfoList);
+        HenanPeopleCustomInfo.put("unknownMutationSiteInfoList", unknownMutationSiteInfoList);
         HenanPeopleCustomInfo.put("BodyDrugTipList", BodyDrugTipList);
         return HenanPeopleCustomInfo;
     }
