@@ -4577,7 +4577,12 @@ public class PyReportServiceImpl implements PyReportService {
         if (pd != null) {
             reportName = reportName.replace("检测报告", "+PD-L1检测报告");
         }
+        String name1 = "检测基因列表";
+        if (templateConf.getReport_name().contains("全外显子组升级版")){
+            name1 = "癌症相关重要基因列表";
+        }
         res.put("name", reportName);
+        res.put("name1", name1);
         res.put("conf", templateConf);
         return res;
     }
