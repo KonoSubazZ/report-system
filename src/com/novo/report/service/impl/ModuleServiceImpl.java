@@ -231,17 +231,19 @@ public class ModuleServiceImpl implements ModuleService {
     public List<String> getSarcomaTypingNote(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        List<String> notes = Arrays.asList(commonNote.getNote().split("\r\n"));
+
+        String[] notes = commonNote.getNote().split("\r\n");
+        List<String> notesList = new ArrayList<>(Arrays.asList(notes));
 
         // wesplus 不输出reads, RNA panel 才会输出 reads.
         String panel = modCommonNote.getPanel();
         Map<String,Object> moduleConf = moduleDao.getModuleConf("SARCOMA_WITHOUT_READS");
         List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
         if (panelList.contains(panel)){
-            notes.remove(2);
+            notesList.remove(2);
         }
 
-        noteList.addAll(notes);
+        noteList.addAll(notesList);
 
         return noteList;
     }
