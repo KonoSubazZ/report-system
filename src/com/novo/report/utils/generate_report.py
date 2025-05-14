@@ -11,7 +11,6 @@ import math
 from docx import Document
 from docx.shared import Mm, Pt
 from io import BytesIO
-from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWLINE_XML, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
 # from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWLINE_XML, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
 specific_version_path = "/root/python3-packages"
 sys.path.insert(0, specific_version_path)
