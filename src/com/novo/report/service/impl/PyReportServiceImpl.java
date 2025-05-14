@@ -4462,6 +4462,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 肉瘤辅助诊断提示-肉瘤分型
         if (templateConf != null && templateConf.getSarcoma_typing()) {
             ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setPanel(rt.getPanel());
             commonNote.setModule("sarcoma_typing");
             List<String> sarcomaTypingNoteList = moduleService.getSarcomaTypingNote(commonNote);
 

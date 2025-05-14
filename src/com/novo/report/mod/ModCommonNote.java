@@ -7,6 +7,7 @@ public class ModCommonNote {
 
     private Integer id;
     private String module;
+    private String panel;
     private String type;
     private String sampleType;
     private String cancer;
@@ -26,7 +27,8 @@ public class ModCommonNote {
     public void setId(Integer id) {
         this.id = id;
     }
-
+    public String getPanel() { return panel; }
+    public void setPanel(String panel) { this.panel = panel; }
 
     public String getModule() {
         return module;

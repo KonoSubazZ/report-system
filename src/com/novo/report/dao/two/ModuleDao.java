@@ -5,6 +5,7 @@ import com.novo.report.mod.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ModuleDao {
     ModProductDesc getProductDesc(String templateName);
@@ -26,5 +27,6 @@ public interface ModuleDao {
     List<ModCancer> getImmunityGeneList(@Param("module")String module,@Param("productName") String productName);
 
     List<ModCancer> getSarcomaNote(ModCancer cancer);
+    Map<String,Object> getModuleConf(@Param("conf")String conf);
 
 }

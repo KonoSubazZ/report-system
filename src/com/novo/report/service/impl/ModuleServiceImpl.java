@@ -8,13 +8,11 @@ import com.novo.report.mod.ModCommonNote;
 import com.novo.report.mod.ModProductDesc;
 import com.novo.report.mod.ModReferences;
 import com.novo.report.service.ModuleService;
+import com.novo.report.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 @Service
@@ -183,7 +181,11 @@ public class ModuleServiceImpl implements ModuleService {
             notesList.remove(notesList.size() - 1);
         }
         // 关于拷贝数的提示，根据模板名称删除
-        if (templateName.equals("中国人群BRCA12基因分子分型研究_双样本-盖章版") || templateName.contains("BRCA12基因+同源重组修复缺陷评分")){
+        Map<String,Object> moduleConf = moduleDao.getModuleConf("SOMA_TIP_WITHOUT_CNV");
+
+        List<String> templateList = MapUtils.getCommaSeparatedList(moduleConf, "templates");
+//        List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
+        if (templateList.contains(templateName)){
             notesList.remove(9);
         }
         noteList.addAll(notesList);
@@ -229,8 +231,17 @@ public class ModuleServiceImpl implements ModuleService {
     public List<String> getSarcomaTypingNote(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        noteList.addAll(Arrays.asList(notes));
+        List<String> notes = Arrays.asList(commonNote.getNote().split("\r\n"));
+
+        // wesplus 不输出reads, RNA panel 才会输出 reads.
+        String panel = modCommonNote.getPanel();
+        Map<String,Object> moduleConf = moduleDao.getModuleConf("SARCOMA_WITHOUT_READS");
+        List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
+        if (panelList.contains(panel)){
+            notes.remove(2);
+        }
+
+        noteList.addAll(notes);
 
         return noteList;
     }

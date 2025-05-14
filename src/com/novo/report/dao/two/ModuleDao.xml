@@ -125,4 +125,14 @@
           AND deleted = 1
         ORDER BY id ASC
     </select>
+    <select id="getModuleConf" resultType="java.util.Map">
+        SELECT
+            conf,
+            templates,
+            panels
+        FROM module_conf
+        WHERE conf = #{conf}
+    </select>
+
+
 </mapper>
