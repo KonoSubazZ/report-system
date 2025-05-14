@@ -3890,9 +3890,9 @@ public class PyReportServiceImpl implements PyReportService {
         String templateName = rt.getTemplate_name();
 
         // 增加配置，有模块化才使用新模块化逻辑
-        if (templateConf != null){
+        if (templateConf != null) {
             // CUSTOM 报告一些基础数据
-            HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd);
+            HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd, allMutation, rt.getPanel());
             rt.setReportInfo(reportInfo);
 
             // CUSTOM 关于癌种判断的一些展示逻辑,生成检测项目信息
@@ -4236,6 +4236,7 @@ public class PyReportServiceImpl implements PyReportService {
     private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer) {
         return null;
     }
+
     /**
      * 处理生成免疫正负超进展表格
      *
@@ -4432,7 +4433,7 @@ public class PyReportServiceImpl implements PyReportService {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setType("双样本");
             commonNote.setModule("somatic_mutation_tip");
-            List<String> somaticMutationTipNoteList = moduleService.getSomaticMutationTipNote(commonNote, rt.isReadsFlag(), rt.isComplex(),templateName);
+            List<String> somaticMutationTipNoteList = moduleService.getSomaticMutationTipNote(commonNote, rt.isReadsFlag(), rt.isComplex(), templateName);
             res.put("somaticMutationTipNoteList", somaticMutationTipNoteList);
         }
 
@@ -4521,7 +4522,7 @@ public class PyReportServiceImpl implements PyReportService {
         return res;
     }
 
-    private Map<String, Object> generateProductDesc(Map<String, Object> cancerInfo, Map pd, String template, TemplateConf conf,  String type) {
+    private Map<String, Object> generateProductDesc(Map<String, Object> cancerInfo, Map pd, String template, TemplateConf conf, String type) {
         Map<String, Object> res = new HashMap<>();
         ModProductDesc productDesc = moduleService.getProductDesc(template);
         String productDescStr = productDesc.getProduct_desc();
@@ -4546,7 +4547,7 @@ public class PyReportServiceImpl implements PyReportService {
         if (StringUtils.isEmpty(upDisease)) {
             toRemove = "内分泌治疗和神经内分泌分化分型以及疾病预后、";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
-        }else if (!"前列腺癌".equals(upDisease)){
+        } else if (!"前列腺癌".equals(upDisease)) {
             toRemove = "内分泌治疗和神经内分泌分化分型以及";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
@@ -4554,7 +4555,7 @@ public class PyReportServiceImpl implements PyReportService {
             toRemove = "子宫内膜癌TCGA分子分型、";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
-        if (!(boolean) cancerInfo.get("gastrointestinalStromalTumor")|| !conf.getChemo_anal()) {
+        if (!(boolean) cancerInfo.get("gastrointestinalStromalTumor") || !conf.getChemo_anal()) {
             toRemove = "、化疗药物";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
@@ -4572,16 +4573,24 @@ public class PyReportServiceImpl implements PyReportService {
         return res;
     }
 
-    private HashMap<String, Object> generateReportInfoData(TemplateConf templateConf, Map pd) {
+    private HashMap<String, Object> generateReportInfoData(TemplateConf templateConf, Map pd, List<Map> allMutation, String panel) {
         HashMap<String, Object> res = new HashMap<>();
         String reportName = templateConf.getReport_name();
         if (pd != null) {
             reportName = reportName.replace("检测报告", "+PD-L1检测报告");
         }
         String name1 = "检测基因列表";
-        if (templateConf.getReport_name().contains("全外显子组升级版")){
+        if (templateConf.getReport_name().contains("全外显子组升级版")) {
             name1 = "癌症相关重要基因列表";
         }
+
+        // 增加对于 解析模块的判断
+        List<String> panelList = moduleService.getconfPanelList("ANAL_HIDE_IF_NO_DATA");
+        boolean isShowAnal = true;
+        if (panelList.contains(panel) && allMutation.isEmpty()) {
+            isShowAnal = false;
+        }
+        res.put("show_anal", isShowAnal);
         res.put("name", reportName);
         res.put("name1", name1);
         res.put("conf", templateConf);

@@ -174,6 +174,7 @@ public class ModuleServiceImpl implements ModuleService {
         // 所有的提示，根据 reads complex 筛选删除最后一条数据
         List<String> notesList = new ArrayList<>(Arrays.asList(notes));
         if (!reads) {
+            notesList.remove(9);
             notesList.remove(notesList.size() - 2);
             // notesList.set(notesList.size() - 1, notesList.get(notesList.size() - 1).replace("13.", "12."));
         }
@@ -181,13 +182,13 @@ public class ModuleServiceImpl implements ModuleService {
             notesList.remove(notesList.size() - 1);
         }
         // 关于拷贝数的提示，根据模板名称删除
-        Map<String,Object> moduleConf = moduleDao.getModuleConf("SOMA_TIP_WITHOUT_CNV");
+        // Map<String,Object> moduleConf = moduleDao.getModuleConf("SOMA_TIP_WITHOUT_CNV");
 
-        List<String> templateList = MapUtils.getCommaSeparatedList(moduleConf, "templates");
-//        List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
-        if (templateList.contains(templateName)){
-            notesList.remove(9);
-        }
+        // List<String> templateList = MapUtils.getCommaSeparatedList(moduleConf, "templates");
+        // List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
+//        if (templateList.contains(templateName)){
+//            notesList.remove(9);
+//        }
         noteList.addAll(notesList);
 
         return noteList;
@@ -251,5 +252,12 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public List<ModCancer> getSarcomaTypingNote1(ModCancer cancer) {
         return  moduleDao.getSarcomaNote(cancer);
+    }
+
+    @Override
+    public List<String> getconfPanelList(String conf) {
+        Map<String,Object> moduleConf = moduleDao.getModuleConf(conf);
+
+        return MapUtils.getCommaSeparatedList(moduleConf, "panels");
     }
 }

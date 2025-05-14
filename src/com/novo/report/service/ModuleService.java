@@ -4,6 +4,7 @@ import com.novo.report.beans.ModCancer;
 import com.novo.report.mod.ModCancerNoteSummary;
 import com.novo.report.mod.ModCommonNote;
 import com.novo.report.mod.ModProductDesc;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -210,4 +211,11 @@ public interface ModuleService {
      * @return
      */
     List<ModCancer> getSarcomaTypingNote1(ModCancer cancer);
+
+    /**
+     * 不展示 基因检测结果解析 模块的 panel
+     * @param conf
+     * @return
+     */
+    List<String> getconfPanelList(@Param("conf") String conf);
 }
