@@ -4432,7 +4432,7 @@ public class PyReportServiceImpl implements PyReportService {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setType("双样本");
             commonNote.setModule("somatic_mutation_tip");
-            List<String> somaticMutationTipNoteList = moduleService.getSomaticMutationTipNote(commonNote, rt.isReadsFlag(), rt.isComplex());
+            List<String> somaticMutationTipNoteList = moduleService.getSomaticMutationTipNote(commonNote, rt.isReadsFlag(), rt.isComplex(),templateName);
             res.put("somaticMutationTipNoteList", somaticMutationTipNoteList);
         }
 

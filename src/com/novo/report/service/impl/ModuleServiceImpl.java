@@ -169,7 +169,7 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public List<String> getSomaticMutationTipNote(ModCommonNote modCommonNote, Boolean reads, Boolean complex) {
+    public List<String> getSomaticMutationTipNote(ModCommonNote modCommonNote, Boolean reads, Boolean complex, String templateName) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
         String[] notes = commonNote.getNote().split("\r\n");
@@ -177,11 +177,14 @@ public class ModuleServiceImpl implements ModuleService {
         List<String> notesList = new ArrayList<>(Arrays.asList(notes));
         if (!reads) {
             notesList.remove(notesList.size() - 2);
-            notesList.set(notesList.size() - 1,
-                    notesList.get(notesList.size() - 1).replace("13.", "12.")); // 替换编号
+            // notesList.set(notesList.size() - 1, notesList.get(notesList.size() - 1).replace("13.", "12."));
         }
         if (!complex) {
             notesList.remove(notesList.size() - 1);
+        }
+        // 关于拷贝数的提示，根据模板名称删除
+        if (templateName.equals("中国人群BRCA12基因分子分型研究_双样本-盖章版") || templateName.contains("BRCA12基因+同源重组修复缺陷评分")){
+            notesList.remove(9);
         }
         noteList.addAll(notesList);
 

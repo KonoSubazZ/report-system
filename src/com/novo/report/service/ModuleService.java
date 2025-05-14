@@ -153,7 +153,7 @@ public interface ModuleService {
      * @param modCommonNote
      * @return
      */
-    List<String> getSomaticMutationTipNote(ModCommonNote modCommonNote, Boolean reads, Boolean complex);
+    List<String> getSomaticMutationTipNote(ModCommonNote modCommonNote, Boolean reads, Boolean complex,  String templateName);
 
     /**
      * 根据模块 cr_mutation_tip_note 和类型获取  cr_mutation_tip_note
