@@ -167,14 +167,14 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public List<String> getSomaticMutationTipNote(ModCommonNote modCommonNote, Boolean reads, Boolean complex, String templateName) {
+    public List<String> getSomaticMutationTipNote(ModCommonNote modCommonNote, Boolean reads, Boolean complex, String panel) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
         String[] notes = commonNote.getNote().split("\r\n");
         // 所有的提示，根据 reads complex 筛选删除最后一条数据
         List<String> notesList = new ArrayList<>(Arrays.asList(notes));
         if (!reads) {
-            notesList.remove(9);
+//            notesList.remove(9);
             notesList.remove(notesList.size() - 2);
             // notesList.set(notesList.size() - 1, notesList.get(notesList.size() - 1).replace("13.", "12."));
         }
@@ -182,13 +182,13 @@ public class ModuleServiceImpl implements ModuleService {
             notesList.remove(notesList.size() - 1);
         }
         // 关于拷贝数的提示，根据模板名称删除
-        // Map<String,Object> moduleConf = moduleDao.getModuleConf("SOMA_TIP_WITHOUT_CNV");
+         Map<String,Object> moduleConf = moduleDao.getModuleConf("SOMA_TIP_WITHOUT_CNV");
 
         // List<String> templateList = MapUtils.getCommaSeparatedList(moduleConf, "templates");
-        // List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
-//        if (templateList.contains(templateName)){
-//            notesList.remove(9);
-//        }
+         List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
+        if (panelList.contains(panel)){
+            notesList.remove(9);
+        }
         noteList.addAll(notesList);
 
         return noteList;
