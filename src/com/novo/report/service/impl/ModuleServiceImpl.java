@@ -182,11 +182,11 @@ public class ModuleServiceImpl implements ModuleService {
             notesList.remove(notesList.size() - 1);
         }
         // 关于拷贝数的提示，根据模板名称删除
-         Map<String,Object> moduleConf = moduleDao.getModuleConf("SOMA_TIP_WITHOUT_CNV");
+        Map<String, Object> moduleConf = moduleDao.getModuleConf("SOMA_TIP_WITHOUT_CNV");
 
         // List<String> templateList = MapUtils.getCommaSeparatedList(moduleConf, "templates");
-         List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
-        if (panelList.contains(panel)){
+        List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
+        if (panelList.contains(panel)) {
             notesList.remove(9);
         }
         noteList.addAll(notesList);
@@ -238,9 +238,9 @@ public class ModuleServiceImpl implements ModuleService {
 
         // wesplus 不输出reads, RNA panel 才会输出 reads.
         String panel = modCommonNote.getPanel();
-        Map<String,Object> moduleConf = moduleDao.getModuleConf("SARCOMA_WITHOUT_READS");
+        Map<String, Object> moduleConf = moduleDao.getModuleConf("SARCOMA_WITHOUT_READS");
         List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
-        if (panelList.contains(panel)){
+        if (panelList.contains(panel)) {
             notesList.remove(2);
         }
 
@@ -251,12 +251,12 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public List<ModCancer> getSarcomaTypingNote1(ModCancer cancer) {
-        return  moduleDao.getSarcomaNote(cancer);
+        return moduleDao.getSarcomaNote(cancer);
     }
 
     @Override
     public List<String> getconfPanelList(String conf) {
-        Map<String,Object> moduleConf = moduleDao.getModuleConf(conf);
+        Map<String, Object> moduleConf = moduleDao.getModuleConf(conf);
 
         return MapUtils.getCommaSeparatedList(moduleConf, "panels");
     }
