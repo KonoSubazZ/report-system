@@ -157,11 +157,28 @@ public interface ModuleService {
     List<String> getSomaticMutationTipNote(ModCommonNote modCommonNote, Boolean reads, Boolean complex,  String panel);
 
     /**
-     * 根据模块 cr_mutation_tip_note 和类型获取  cr_mutation_tip_note
+     * 单样本
+     * @param modCommonNote
+     * @param reads
+     * @param complex
+     * @param panel
+     * @return
+     */
+    List<String> getSomaticDrugTipNote(ModCommonNote modCommonNote, Boolean reads, Boolean complex,  String panel);
+
+    /**
+     * 根据模块 cr_drug_tip_note 和类型获取  cr_mutation_tip_note
      * @param commonNote
      * @return
      */
     List<String> getcrMutationTipNote(ModCommonNote commonNote);
+
+    /***
+     * 单样本
+     * @param commonNote
+     * @return
+     */
+    List<String> getcrDrugTipNote(ModCommonNote commonNote);
 
     /**
      * 根据模块 chemo1 和类型获取 chemo1 附录

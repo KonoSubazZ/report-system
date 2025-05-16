@@ -4446,6 +4446,24 @@ public class PyReportServiceImpl implements PyReportService {
             res.put("crMutationTipNoteList", crMutationTipNoteList);
         }
 
+        // 单样本 somatic_drug_tip 体细胞变异分级提示
+        if (templateConf != null && templateConf.getSomatic_drug_tip()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setType("单样本");
+            commonNote.setModule("somatic_drug_tip");
+            List<String> somaticMutationTipNoteList = moduleService.getSomaticDrugTipNote(commonNote, rt.isReadsFlag(), rt.isComplex(), productName);
+            res.put("somaticDrugTipNoteList", somaticMutationTipNoteList);
+        }
+
+        // 单样本 cr_drug_tip 肿瘤遗传风险检测
+        if (templateConf != null && templateConf.getCr_drug_tip()) {
+            ModCommonNote commonNote = new ModCommonNote();
+            commonNote.setType("单样本");
+            commonNote.setModule("cr_drug_tip");
+            List<String> crMutationTipNoteList = moduleService.getcrDrugTipNote(commonNote);
+            res.put("crDrugTipNoteList", crMutationTipNoteList);
+        }
+
         // qc 质控附录
         if (templateConf != null && templateConf.getQc()) {
             ModCommonNote commonNote = new ModCommonNote();
@@ -4512,7 +4530,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         return res;
     }
-
+    @Deprecated
     private Map<String, Object> generateTestResultSummary(String templateName) {
         Map<String, Object> res = new HashMap<>();
 
@@ -4567,6 +4585,14 @@ public class PyReportServiceImpl implements PyReportService {
             toRemove = "、免疫药物";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
+        if (!conf.getThyroid_cancer_prognosis()) {
+            toRemove = "、预后评估";
+            productDesc1Str = productDesc1Str.replace(toRemove, "");
+        }
+        if (!conf.getCr_drug_tip()) {
+            toRemove = "和遗传风险";
+            productDesc1Str = productDesc1Str.replace(toRemove, "");
+        }
         productDescList.add(productDesc1Str);
         res.put("productDescList", productDescList);
 
@@ -4596,7 +4622,7 @@ public class PyReportServiceImpl implements PyReportService {
         res.put("conf", templateConf);
         return res;
     }
-
+    @Deprecated
     private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer, String templateName) {
         HashMap<String, Object> res = new HashMap<>();
         ModCancerNoteSummary modCancerNoteSummary = new ModCancerNoteSummary();
