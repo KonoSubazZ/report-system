@@ -146,12 +146,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="getProductNameListByPlatform" resultType="String">
-		select distinct ifnull(b.product_name,a.product_name) as product_name
-		from ((data_file_status a left join analysis_report b on(((b.subbarcode = a.subbarcode) and (b.platform = a.platform) and (b.analysis_date = a.analysis_date)))))
+<!--		select distinct ifnull(b.product_name,a.product_name) as product_name-->
+<!--		from ((data_file_status a left join analysis_report b on(((b.subbarcode = a.subbarcode) and (b.platform = a.platform) and (b.analysis_date = a.analysis_date)))))-->
+<!--		<where>-->
+<!--			and a.subbarcode &lt;&gt; ''-->
+<!--			<if test="platform!=null and platform!=''">-->
+<!--				and a.platform=#{platform}-->
+<!--			</if>-->
+<!--		</where>-->
+		SELECT product_name
+		FROM product
 		<where>
-			and a.subbarcode &lt;&gt; ''
-			<if test="platform!=null and platform!=''">
-				and a.platform=#{platform}
+			<if test="platform != null and platform != ''">
+				AND platform = #{platform}
 			</if>
 		</where>
 		<!--select distinct product_name from ngs_available_data_vw
