@@ -740,7 +740,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 获取基因列表-基因检测列表
         List<String> geneSymbols = analysisReportDao.getGeneSymbols(currentNgsAvailable.getProduct_id());
         Map<String, Object> geneClassification = new HashMap<String, Object>();
-        Map<String, Object> geneMap = getGeneClassification(geneSymbols, geneClassification);
+        Map<String, Object> geneMap = getGeneClassification(geneSymbols, geneClassification, templateConf);
         // 20250214 脑胶质瘤200增加基因list
         if (pr.getProduct_name().equals("novopm2_tis_200")) {
             Object genes = geneMap.get("genes") + ",1p/19q,Chr7/10";
@@ -5991,7 +5991,12 @@ public class PyReportServiceImpl implements PyReportService {
         }
     }
 
-    private Map<String, Object> getGeneClassification(List<String> geneSymbols, Map<String, Object> geneClassification) {
+    /**
+     * 原始实现版本，按字母分类基因信息。
+     * 【注意】该方法为旧版本，已被 getGeneClassificationV2 取代，暂时保留以便回退。
+     */
+    @Deprecated
+    private Map<String, Object> getGeneClassificationOld(List<String> geneSymbols, Map<String, Object> geneClassification, TemplateConf conf) {
         String genes = "", geneA = "", geneB = "", geneC = "", geneD = "", geneE = "", geneF = "", geneG = "", geneH = "", geneI = "", geneJ = "", geneK = "", geneL = "", geneM = "", geneN = "", geneO = "", geneP = "", geneQ = "", geneR = "", geneS = "", geneT = "", geneU = "", geneV = "", geneW = "", geneX = "", geneY = "", geneZ = "";
         for (String geneSymbol : geneSymbols) {
             genes = genes + geneSymbol + ",";
@@ -6078,6 +6083,46 @@ public class PyReportServiceImpl implements PyReportService {
         geneClassification.put("geneZ", "".equals(geneZ) ? "" : geneZ.substring(0, geneZ.length() - 1));
         return geneClassification;
     }
+
+    private Map<String, Object> getGeneClassification(List<String> geneSymbols, Map<String, Object> geneClassification, TemplateConf conf) {
+        StringBuilder allGenes = new StringBuilder();
+        Map<Character, StringBuilder> geneMap = new HashMap<>();
+
+        // 初始化 A-Z 的 StringBuilder
+        for (char c = 'A'; c <= 'Z'; c++) {
+            geneMap.put(c, new StringBuilder());
+        }
+
+        for (String geneSymbol : geneSymbols) {
+            if (geneSymbol == null || geneSymbol.isEmpty()) continue;
+
+            allGenes.append(geneSymbol).append(",");
+            char firstChar = Character.toUpperCase(geneSymbol.charAt(0));
+            if (geneMap.containsKey(firstChar)) {
+                geneMap.get(firstChar).append(geneSymbol).append(",");
+            }
+        }
+
+        // 添加总的 genes 字段
+        if (allGenes.length() > 0) {
+            allGenes.setLength(allGenes.length() - 1); // 去掉末尾 ,
+        }
+        geneClassification.put("genes", allGenes.toString());
+
+        // 添加每个字母的分类字段
+        for (char c = 'A'; c <= 'Z'; c++) {
+            StringBuilder sb = geneMap.get(c);
+            if (sb.length() > 0) {
+                sb.setLength(sb.length() - 1); // 去掉末尾 ,
+                geneClassification.put("gene" + c, sb.toString());
+            } else {
+                geneClassification.put("gene" + c, "");
+            }
+        }
+
+        return geneClassification;
+    }
+
 
     /**
      * 肉瘤分型描述也与这个有关
