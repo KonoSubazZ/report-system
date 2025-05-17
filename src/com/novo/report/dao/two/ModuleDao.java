@@ -29,4 +29,5 @@ public interface ModuleDao {
     List<ModCancer> getSarcomaNote(ModCancer cancer);
     Map<String,Object> getModuleConf(@Param("conf")String conf);
 
+    String getConfGenes(String panel);
 }

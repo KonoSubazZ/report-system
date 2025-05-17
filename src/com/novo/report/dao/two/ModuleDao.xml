@@ -134,5 +134,12 @@
         WHERE conf = #{conf}
     </select>
 
+    <select id="getConfGenes" resultType="java.lang.String">
+        SELECT
+            genes
+        FROM gene_panel
+        WHERE FIND_IN_SET(#{panels}, panel)
+    </select>
+
 
 </mapper>

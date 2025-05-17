@@ -1,6 +1,9 @@
 package com.novo.report.service.impl;
 
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.novo.report.beans.ModCancer;
 import com.novo.report.dao.two.ModuleDao;
 import com.novo.report.mod.ModCancerNoteSummary;
@@ -295,5 +298,41 @@ public class ModuleServiceImpl implements ModuleService {
         Map<String, Object> moduleConf = moduleDao.getModuleConf(conf);
 
         return MapUtils.getCommaSeparatedList(moduleConf, "panels");
+    }
+
+    @Override
+    public String getConfGenes(String panel, List<String> geneSymbols) {
+        String genesJson = moduleDao.getConfGenes(panel);
+        // 特殊配置 gene_panel 是否存在
+        if (genesJson != null && !genesJson.isEmpty()) {
+            return genesJson;
+        }
+
+        // 不存在则根据 panel_gene 构建默认格式
+        return buildDefaultGeneJson(geneSymbols);
+    }
+
+    private String buildDefaultGeneJson(List<String> geneSymbols) {
+
+        Gson gson = new Gson();
+        // 创建基因表对象
+        JsonObject geneTable = new JsonObject();
+
+        // 使用Java 8+的String.join方法简化基因列表构建
+        String genesStr = String.join(",", geneSymbols);
+
+        // 设置基因和标题属性
+        geneTable.addProperty("genes", genesStr);
+        geneTable.addProperty("title", "");
+
+        // 创建基因表数组并添加当前表
+        JsonArray geneTables = new JsonArray();
+        geneTables.add(geneTable);
+
+        // 创建最终JSON对象
+        JsonObject finalJson = new JsonObject();
+        finalJson.add("gene_tables", geneTables);
+
+        return gson.toJson(finalJson);
     }
 }

@@ -1,6 +1,6 @@
 package com.novo.report.service.impl;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.novo.report.beans.*;
 import com.novo.report.dao.two.*;
 import com.novo.report.mod.ModCancerNoteSummary;
@@ -740,7 +740,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 获取基因列表-基因检测列表
         List<String> geneSymbols = analysisReportDao.getGeneSymbols(currentNgsAvailable.getProduct_id());
         Map<String, Object> geneClassification = new HashMap<String, Object>();
-        Map<String, Object> geneMap = getGeneClassification(geneSymbols, geneClassification, templateConf);
+        Map<String, Object> geneMap = getGeneClassification(geneSymbols, geneClassification, templateConf, productName);
         // 20250214 脑胶质瘤200增加基因list
         if (pr.getProduct_name().equals("novopm2_tis_200")) {
             Object genes = geneMap.get("genes") + ",1p/19q,Chr7/10";
@@ -6084,45 +6084,99 @@ public class PyReportServiceImpl implements PyReportService {
         return geneClassification;
     }
 
-    private Map<String, Object> getGeneClassification(List<String> geneSymbols, Map<String, Object> geneClassification, TemplateConf conf) {
-        StringBuilder allGenes = new StringBuilder();
-        Map<Character, StringBuilder> geneMap = new HashMap<>();
+    private Map<String, Object> getGeneClassification(List<String> geneSymbols, Map<String, Object> geneClassification, TemplateConf conf, String panel) {
+        if (conf == null){
+            StringBuilder allGenes = new StringBuilder();
+            Map<Character, StringBuilder> geneMap = new HashMap<>();
 
-        // 初始化 A-Z 的 StringBuilder
-        for (char c = 'A'; c <= 'Z'; c++) {
-            geneMap.put(c, new StringBuilder());
-        }
-
-        for (String geneSymbol : geneSymbols) {
-            if (geneSymbol == null || geneSymbol.isEmpty()) continue;
-
-            allGenes.append(geneSymbol).append(",");
-            char firstChar = Character.toUpperCase(geneSymbol.charAt(0));
-            if (geneMap.containsKey(firstChar)) {
-                geneMap.get(firstChar).append(geneSymbol).append(",");
+            // 初始化 A-Z 的 StringBuilder
+            for (char c = 'A'; c <= 'Z'; c++) {
+                geneMap.put(c, new StringBuilder());
             }
-        }
 
-        // 添加总的 genes 字段
-        if (allGenes.length() > 0) {
-            allGenes.setLength(allGenes.length() - 1); // 去掉末尾 ,
-        }
-        geneClassification.put("genes", allGenes.toString());
+            for (String geneSymbol : geneSymbols) {
+                if (geneSymbol == null || geneSymbol.isEmpty()) continue;
 
-        // 添加每个字母的分类字段
-        for (char c = 'A'; c <= 'Z'; c++) {
-            StringBuilder sb = geneMap.get(c);
-            if (sb.length() > 0) {
-                sb.setLength(sb.length() - 1); // 去掉末尾 ,
-                geneClassification.put("gene" + c, sb.toString());
-            } else {
-                geneClassification.put("gene" + c, "");
+                allGenes.append(geneSymbol).append(",");
+                char firstChar = Character.toUpperCase(geneSymbol.charAt(0));
+                if (geneMap.containsKey(firstChar)) {
+                    geneMap.get(firstChar).append(geneSymbol).append(",");
+                }
             }
+
+            // 添加总的 genes 字段
+            if (allGenes.length() > 0) {
+                allGenes.setLength(allGenes.length() - 1); // 去掉末尾 ,
+            }
+            geneClassification.put("genes", allGenes.toString());
+
+            // 添加每个字母的分类字段
+            for (char c = 'A'; c <= 'Z'; c++) {
+                StringBuilder sb = geneMap.get(c);
+                if (sb.length() > 0) {
+                    sb.setLength(sb.length() - 1); // 去掉末尾 ,
+                    geneClassification.put("gene" + c, sb.toString());
+                } else {
+                    geneClassification.put("gene" + c, "");
+                }
+            }
+        }else{
+           String genesJson = moduleService.getConfGenes(panel, geneSymbols);
+           geneClassification.put("conf_genes", formatGenes(genesJson));
         }
 
         return geneClassification;
     }
 
+    public String formatGenes(String jsonData) {
+        // 解析原始JSON
+        JsonParser parser = new JsonParser();
+        JsonObject originalJson = parser.parse(jsonData).getAsJsonObject();
+
+        JsonArray originalTables = originalJson.getAsJsonArray("gene_tables");
+        // 创建新的基因表数组
+        JsonArray newTables = new JsonArray();
+
+        // 处理每个基因表
+        for (JsonElement tableElement : originalTables) {
+            JsonObject table = tableElement.getAsJsonObject();
+            String genesStr = table.get("genes").getAsString();
+            String title = table.get("title").getAsString();
+
+            // 分割基因字符串
+            String[] geneArray = genesStr.split(",");
+
+            // 创建新的基因二维数组
+            JsonArray newGenes = new JsonArray();
+            int rows = (int) Math.ceil((double) geneArray.length / 8);
+
+            for (int i = 0; i < rows; i++) {
+                JsonArray row = new JsonArray();
+                int startIdx = i * 8;
+                int endIdx = Math.min(startIdx + 8, geneArray.length);
+
+                for (int j = startIdx; j < endIdx; j++) {
+                    row.add(geneArray[j].trim()); // 去除可能的空格
+                }
+
+                newGenes.add(row);
+            }
+
+            // 创建新的基因表对象
+            JsonObject newTable = new JsonObject();
+            newTable.addProperty("title", title);
+            newTable.add("genes", newGenes);
+            newTables.add(newTable);
+        }
+
+        // 创建最终的JSON对象
+        JsonObject finalJson = new JsonObject();
+        finalJson.add("gene_tables", newTables);
+
+        // 格式化为漂亮的JSON字符串
+        Gson gson = new Gson();
+        return gson.toJson(finalJson);
+    }
 
     /**
      * 肉瘤分型描述也与这个有关
