@@ -3458,7 +3458,7 @@ public class PyReportServiceImpl implements PyReportService {
                 "NOVO泛癌种988基因检测报告",
                 "NOVO泛癌种988基因报告",
                 "实体瘤462基因报告-苏州市立医院");*/
-       List<String> urinaryTemplates = moduleService.getconfTemplateList("MOD_WITH_URINARY");
+        List<String> urinaryTemplates = moduleService.getconfTemplateList("MOD_WITH_URINARY");
         if (urinaryTemplates.contains(rt.getTemplate_name()) && (prostateCancerFlag || StringUtils.isNotEmpty(urinaryProstateDisease))) {
             target_cancer = "泌尿系统癌症";
         } else if (rt.getTemplate_name().contains("湘雅")) {
@@ -4520,6 +4520,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         return res;
     }
+
     @Deprecated
     private Map<String, Object> generateTestResultSummary(String templateName) {
         Map<String, Object> res = new HashMap<>();
@@ -4612,6 +4613,7 @@ public class PyReportServiceImpl implements PyReportService {
         res.put("conf", templateConf);
         return res;
     }
+
     @Deprecated
     private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer, String templateName) {
         HashMap<String, Object> res = new HashMap<>();
@@ -6075,7 +6077,7 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
     private Map<String, Object> getGeneClassification(List<String> geneSymbols, Map<String, Object> geneClassification, TemplateConf conf, String panel) {
-        if (conf == null){
+        if (conf == null) {
             StringBuilder allGenes = new StringBuilder();
             Map<Character, StringBuilder> geneMap = new HashMap<>();
 
@@ -6110,9 +6112,9 @@ public class PyReportServiceImpl implements PyReportService {
                     geneClassification.put("gene" + c, "");
                 }
             }
-        }else{
-           String genesJson = moduleService.getConfGenes(panel, geneSymbols);
-           geneClassification.put("conf_genes", formatGenes(genesJson));
+        } else {
+            String genesJson = moduleService.getConfGenes(panel, geneSymbols);
+            geneClassification.put("conf_genes", formatGenes(genesJson));
         }
 
         return geneClassification;
