@@ -301,6 +301,13 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
+    public List<String> getconfTemplateList(String conf) {
+        Map<String, Object> moduleConf = moduleDao.getModuleConf(conf);
+
+        return MapUtils.getCommaSeparatedList(moduleConf, "templates");
+    }
+
+    @Override
     public String getConfGenes(String panel, List<String> geneSymbols) {
         String genesJson = moduleDao.getConfGenes(panel);
         // 特殊配置 gene_panel 是否存在

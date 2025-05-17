@@ -79,6 +79,9 @@ public class GeneMarkerVwController {
     @Autowired
     private SampleFileDao sampleFileDao;
 
+    @Autowired
+    private ModuleService moduleService;
+
 
     @SuppressWarnings("unchecked")
     @RequestMapping("getGeneMarker")
@@ -971,10 +974,13 @@ public class GeneMarkerVwController {
             // 内分泌相关(泌尿系统肿瘤99基因报告)  || 188/462/550/1238/WES/WES plus/988中双样本
             boolean prostateCancerFlag = false;
             boolean urinaryProstateFlag = false;
-            List<String> productList = Arrays.asList("novopm2_blo_1238", "novopm2_tis_1238", "novopm2_tis_188", "novopm2_blo_188", "novopm2_tis_wes", "novopm2_blo_wes", "novopm3_tis_550", "novopm3_blo_550", "novopm2_tis_wesplus", "novopm2_blo_wesplus", "novopm2_tis_462", "novopm2_blo_462", "novopm2_tis_99", "novopm2_blo_99", "novopm2_tis_988", "novopm2_blo_988");
-            boolean b = productList.contains(product_name);
+
+            // 待删除，将泌尿模板记录在数据库，代替静态
+            // List<String> productList = Arrays.asList("novopm2_blo_1238", "novopm2_tis_1238", "novopm2_tis_188", "novopm2_blo_188", "novopm2_tis_wes", "novopm2_blo_wes", "novopm3_tis_550", "novopm3_blo_550", "novopm2_tis_wesplus", "novopm2_blo_wesplus", "novopm2_tis_462", "novopm2_blo_462", "novopm2_tis_99", "novopm2_blo_99", "novopm2_tis_988", "novopm2_blo_988");
+            List<String> productList = moduleService.getconfPanelList("MOD_WITH_URINARY");
+            boolean isUrinaryPanelProduct = productList.contains(product_name);
             // 10283->前列腺癌
-            if (diseaseIdList.contains(10283) && b || currentNgsAvailable.getModuleFlag().contains("前列腺癌内分泌和预后")) {
+            if (diseaseIdList.contains(10283) && isUrinaryPanelProduct || currentNgsAvailable.getModuleFlag().contains("前列腺癌内分泌和预后")) {
                 prostateCancerFlag = true;
                 urinaryProstateFlag = true;
                 // 内分泌治疗相关基因检测结果
@@ -1090,7 +1096,7 @@ public class GeneMarkerVwController {
                     }
                 }
                 model.addAttribute("mmUrinaryProstates", mmUrinaryProstates);
-            } else if (diseaseIdList.contains(263) && b || currentNgsAvailable.getModuleFlag().contains("肾癌预后")) { // 263->肾癌
+            } else if (diseaseIdList.contains(263) && isUrinaryPanelProduct || currentNgsAvailable.getModuleFlag().contains("肾癌预后")) { // 263->肾癌
                 urinaryProstateFlag = true;
                 // 肾癌预后相关基因检测结果
                 List<MmUrinaryProstate> mmUrinaryProstates = moduleModificationAllDao.selectMmUrinaryProstateByReportId(currentNgsAvailable.getReport_id());
@@ -1124,7 +1130,7 @@ public class GeneMarkerVwController {
                     }
                 }
                 model.addAttribute("mmUrinaryProstates", mmUrinaryProstates);
-            } else if (diseaseIdList.contains(4007) && b || currentNgsAvailable.getModuleFlag().contains("尿路上皮癌/膀胱癌预后")) { // 4007->膀胱癌
+            } else if (diseaseIdList.contains(4007) && isUrinaryPanelProduct || currentNgsAvailable.getModuleFlag().contains("尿路上皮癌/膀胱癌预后")) { // 4007->膀胱癌
                 urinaryProstateFlag = true;
                 // 尿路上皮癌/膀胱癌预后相关基因检测结果
                 List<MmUrinaryProstate> mmUrinaryProstates = moduleModificationAllDao.selectMmUrinaryProstateByReportId(currentNgsAvailable.getReport_id());

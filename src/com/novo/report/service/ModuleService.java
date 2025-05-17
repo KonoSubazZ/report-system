@@ -230,11 +230,12 @@ public interface ModuleService {
     List<ModCancer> getSarcomaTypingNote1(ModCancer cancer);
 
     /**
-     * 不展示 基因检测结果解析 模块的 panel
+     * 基因检测结果解析 模块的 panel
      * @param conf
      * @return
      */
     List<String> getconfPanelList(@Param("conf") String conf);
+    List<String> getconfTemplateList(@Param("conf") String conf);
 
     String getConfGenes(@Param("panel") String panel, @Param("geneSymbols") List<String> geneSymbols);
 }
