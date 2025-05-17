@@ -495,6 +495,14 @@ if __name__ == '__main__':
             info_json['note']['sarcomaTypingList3'] = flatten_data(info_json['note']['sarcomaTypingList3'])
             info_json['note']['sarcomaTypingList4'] = flatten_data(info_json['note']['sarcomaTypingList4'])
 
+        # 反序列化 conf_genes
+        if 'gene' in info_json and 'conf_genes' in info_json['gene']:
+            conf_genes_str = info_json['gene']['conf_genes']
+            deserialized_data = json.loads(conf_genes_str)
+            info_json['gene']['conf_genes'] = deserialized_data
+
+        # 处理异常（如使用默认值）
+        info_json['gene']['conf_genes'] = {"gene_tables": []}
         # 模板init过滤器
         jinja_env = jinja2.Environment()
         jinja_env.filters['ms'] = mystyle
