@@ -6145,10 +6145,17 @@ public class PyReportServiceImpl implements PyReportService {
             for (int i = 0; i < rows; i++) {
                 JsonArray row = new JsonArray();
                 int startIdx = i * 8;
-                int endIdx = Math.min(startIdx + 8, geneArray.length);
 
-                for (int j = startIdx; j < endIdx; j++) {
-                    row.add(geneArray[j].trim()); // 去除可能的空格
+                // 遍历当前行的8个位置（不足则补空字符串）
+                for (int j = 0; j < 8; j++) {
+                    int geneIdx = startIdx + j;
+                    if (geneIdx < geneArray.length) {
+                        // 有实际基因数据，添加并去除空格
+                        row.add(geneArray[geneIdx].trim());
+                    } else {
+                        // 超出基因数组长度，补空字符串
+                        row.add("");
+                    }
                 }
 
                 newGenes.add(row);
