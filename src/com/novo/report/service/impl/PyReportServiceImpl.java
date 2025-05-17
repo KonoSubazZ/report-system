@@ -3770,16 +3770,8 @@ public class PyReportServiceImpl implements PyReportService {
         summaryOfRresults.put("pd", pd);
         summaryOfRresults.put("template_name", rt.getTemplate_name());
 
-        // 获取二维码{{ summaryOfRresults.binary | ci(200,200) }}
         String report_id = pr.getReport_id().toString();
-        // String methodUrl = "http://qrcode.novogene.com/index.php/Api/Code/qrcode/uncodeid/";
-        // String qrcode = RandomUtils.getStringRandom(4) + report_id.substring(0, 2) + RandomUtils.getStringRandom(6) + report_id.substring(2) + RandomUtils.getStringRandom(2);
 
-        // 调取接口，上传二维码信息
-        // String ngsQrcode = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/" + sf.getClient() + "/subbarcode/" + sf.getSubbarcode() + "/product_name/" + sf.getProduct_name() + "/username/3/qrcode/" + qrcode + "/report_date/" + pr.getReport_date();
-        // String httpURLGETCase = WebserviceProxyUtils.httpURLGETCase(ngsQrcode);
-        // String binary = CreateQRCode.createQRCode(methodUrl + qrcode, session.getServletContext().getRealPath("/") + "images/tumour-logo.png");
-        // summaryOfRresults.put("binary", binary);
         // 1166产品 中线癌、肾癌分型逻辑
         boolean cancerTyping1166Flag = (diseaseName.contains("肾细胞癌") || "肾癌1166分子分型".equals(module)) || diseaseFlag.get("Midline");
         if ((product_name.equals("novopm2_rna1166_Sarcoma") || product_name.equals("novopm2_rna639_Sarcoma")) && cancerTyping1166Flag) {
