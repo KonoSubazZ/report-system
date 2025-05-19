@@ -3248,6 +3248,7 @@ public class PyReportServiceImpl implements PyReportService {
             summaryOfRresults.put("endocrineDifferentiationSize", endocrineDifferentiationSize);
         }
         rt.setProstateCancerFlag(prostateCancerFlag);
+
         // 泌尿预后相关基因检测结果
         String urinaryProstateDisease = "";
         List<MmUrinaryProstate> mmUrinaryProstates = moduleModificationAllDao.selectMmUrinaryProstateByReportId(currentNgsAvailable.getReport_id());
