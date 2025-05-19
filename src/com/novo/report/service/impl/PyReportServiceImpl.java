@@ -2513,26 +2513,6 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setDiseaseIDList(diseaseIdList);
         rt.setAllGeneSet(allGeneSet);
 
-        //免疫正负相关基因检测结果解析
-//		List<Map> immunoregulation = analysisReportDao.getImmuneRelatedGene("immunoregulation");
-//		List<Map> immunoregulationInfo = getImmunityData(immunoregulation,reportId,siteNotReported);
-//		rt.setImmunoregulationInfo(immunoregulationInfo);
-//		List<Map> immDrugDetectionStr = new ArrayList<Map>();
-//		if (allDrugMutNum != 0) {
-//			List<Map> targetedDrugDetectionStr = rt.getTargetedDrugDetectionStr();
-//			getDrugDetectionData(targetedDrugDetectionStr,immDrugDetectionStr,immunoregulation);
-//		}
-//		rt.setImmDrugDetectionStr(immDrugDetectionStr);
-
-        boolean isSingleSample = false;
-        /*if (currentNgsAvailable.getProduct_name().indexOf("_") != -1) { // 和部分模板上代码有冲突，列如（中国人群BRCA12基因分子分型研究_胚系）中遗传变异解析模块不输出
-            String[] split = currentNgsAvailable.getProduct_name().split("_");
-            if (split[1].indexOf("1") != -1) {
-                isSingleSample = true;
-            }
-        }*/
-        rt.setSingleSample(isSingleSample);
-
         Map tmbMap = new HashMap();
         String TMBGene = isblood ? "bTMB" : "TMB";
         tmbMap.put("gene", TMBGene);
