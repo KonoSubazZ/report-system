@@ -729,7 +729,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setImmunopositiveGeneSet(immunopositiveGeneSet);
         rt.setImmunonegativeGeneSet(immunonegativeGeneSet);
 
-        // 获取基因列表-基因检测列表
+        // MOD 基因检测列表
         List<String> geneSymbols = analysisReportDao.getGeneSymbols(currentNgsAvailable.getProduct_id());
         Map<String, Object> geneClassification = new HashMap<String, Object>();
         Map<String, Object> geneMap = getGeneClassification(geneSymbols, geneClassification, templateConf, productName);
