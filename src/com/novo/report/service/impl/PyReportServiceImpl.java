@@ -709,6 +709,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setReducedGeneSet(reducedGeneSet);
         rt.setProgressionGeneSet(progressionGeneSet);
         rt.setParpinhibitorGeneSet(parpinhibitorGeneSet);
+
         // TEMPLATE WES报告模板-赛福
         HashSet<Object> predictorGeneSet = new HashSet<>(); //疗效预测指标
         HashSet<Object> immunopositiveGeneSet = new HashSet<>(); //疗效影响因素-免疫治疗正相关指标
