@@ -380,6 +380,7 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setHpdImmnue(hpdImmnue);
         }
         boolean isblood = false;
+        // MOD 样本信息
         //获取样本信息
         SampleFile sf = sampleFileService.getSampleFileBySubbarcode(currentNgsAvailable.getSubbarcode());
 
@@ -482,11 +483,6 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setCollectdate(sf.getCollect_date());
         rt.setCustomer(sf.getCustomer());
         String pageHeaderPic = "";
-        boolean sealFlag = false;
-        /*if ("苏州市第九人民医院（苏州市吴江区第一人民医院）".equals(sf.getCustomer())) {
-            pageHeaderPic = session.getServletContext().getRealPath("/") + "images/苏州九院.png";
-            sealFlag = true;
-        }*/
         rt.setPageHeaderPic(pageHeaderPic);
         rt.setSealFlag(sealFlag);
         rt.setFirsttreatment(sf.getFirsttreatment());
