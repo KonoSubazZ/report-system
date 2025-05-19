@@ -3658,7 +3658,8 @@ public class PyReportServiceImpl implements PyReportService {
         brcaGeneSpecification.add(brca1GeneSpecification);
         brcaGeneSpecification.add(brca2GeneSpecification);
         rt.setBrcaGeneSpecification(brcaGeneSpecification);
-        // BRCA1&BRCA2靶向药物研究信息（表格）
+
+        // TODO 待确定是哪个panel需要 BRCA1&BRCA2靶向药物研究信息（表格）
         List<Map> brcaTargetedDrug = analysisReportDao.getBrcaTargetedDrug();
         rt.setBrcaTargetedDrug(brcaTargetedDrug);
 
