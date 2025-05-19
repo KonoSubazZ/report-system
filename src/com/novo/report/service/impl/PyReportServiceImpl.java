@@ -3900,7 +3900,7 @@ public class PyReportServiceImpl implements PyReportService {
             // rt.setTestResultSummary(testResultSummary);
 
             // CUSTOM 生成参考文献信息
-            Map<String, Object> references = generateReferences(templateName, cancerInfo, templateConf);
+            Map<String, Object> references = generateReferences(templateName, cancerInfo, templateConf, urinaryTemplates);
             rt.setReferences(references);
 
             // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结、重要靶向基因汇总
@@ -4308,14 +4308,24 @@ public class PyReportServiceImpl implements PyReportService {
         if (templateConf != null && templateConf.getTest_result_summary()) {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("test_result_summary");
-            // 【全外显子组升级版（WES Plus）基因检测报告】单独附录逻辑
-            if ("全外显子组升级版（WES Plus）基因检测报告".equals(templateName)) {
+
+            /*if ("全外显子组升级版（WES Plus）基因检测报告".equals(templateName)) {
                 commonNote.setType("WESPLUS");
             } else if ("HRR45_HRDscore基因检测报告".equals(templateName)) {
                 commonNote.setType("HRR45_HRDScore");
             } else if ("中国人群BRCA12基因分子分型研究_双样本-盖章版".equals(templateName)) {
                 commonNote.setType("BRAC12");
             } else if ("BRCA12基因+同源重组修复缺陷评分（HRD score）检测报告".equals(templateName)) {
+                commonNote.setType("BRAC12_HRDScore");
+            }*/
+
+            if ("novopm2_tis_wesplus".equals(productName) || "novopm2_blo_wesplus".equals(productName)) {
+                commonNote.setType("WESPLUS");
+            } else if ("novopm2_tis_BRCA45_hrd".equals(productName)) {
+                commonNote.setType("HRR45_HRDScore");
+            } else if ("novopm2_tis_BRCA1_2".equals(templateName) || "novopm2_blo_BRCA1_2".equals(productName) || "novopm2_tis1_BRCA1_2".equals(productName) || "novopm2_blo1_BRCA1_2".equals(productName)) {
+                commonNote.setType("BRAC12");
+            } else if ("novopm2_tis_BRCA1_2_hrd".equals(templateName)) {
                 commonNote.setType("BRAC12_HRDScore");
             }
 
@@ -4501,13 +4511,13 @@ public class PyReportServiceImpl implements PyReportService {
         return res;
     }
 
-    private Map<String, Object> generateReferences(String templateName, Map<String, Object> cancerInfo, TemplateConf templateConf) {
+    private Map<String, Object> generateReferences(String templateName, Map<String, Object> cancerInfo, TemplateConf templateConf, List<String> urinaryTemplates) {
         Map<String, Object> res = new HashMap<>();
 
-        // TODO 暂时这样判断文献的模块，做张关联表
-        List<String> templateList = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告", "NOVO泛癌种1238检测报告-佛山市第一人民医院", "泛实体瘤1238+1166基因检测报告-佛山市第一人民医院", "NOVO泛癌种1238检测报告-湖南省中医研", "泛实体瘤188基因检测报告-湖南省中医研");
+        // TODO 暂时这样判断文献的模块，做张关联表,改为数据库保存泌尿模板，待移除
+        // List<String> templateList = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告", "NOVO泛癌种1238检测报告-佛山市第一人民医院", "泛实体瘤1238+1166基因检测报告-佛山市第一人民医院", "NOVO泛癌种1238检测报告-湖南省中医研", "泛实体瘤188基因检测报告-湖南省中医研");
         String module = "";
-        if (templateList.contains(templateName)) {
+        if (urinaryTemplates.contains(templateName)) {
             module = "通用实体瘤";
             String urinaryProstateDisease = (String) cancerInfo.get("urinaryProstateDisease");
             if (StringUtils.isNotBlank(urinaryProstateDisease)) {
