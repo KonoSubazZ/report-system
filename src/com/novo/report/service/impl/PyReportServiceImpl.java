@@ -3365,7 +3365,8 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setSingleMoreTipLineStr(singleMoreTipLineStr);
         rt.setDetectionMutationSet(detectionMutationSet);
 
-        List<Map> immuneAll = new ArrayList<>();    // 通用免疫表格
+        // 免疫表格
+        List<Map> immuneAll = new ArrayList<>();
         // 获取目前各癌种已批准的免疫治疗药物
         List<Map> immuneTable = analysisReportDao.getImmuneTable();
         // 获取表格第一列内容
