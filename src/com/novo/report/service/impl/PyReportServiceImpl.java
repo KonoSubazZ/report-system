@@ -4580,7 +4580,7 @@ public class PyReportServiceImpl implements PyReportService {
             toRemove = "、预后评估";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
-        if (!conf.getCr_drug_tip()) {
+        if (!conf.getCr_drug_tip() && !conf.getCr_mutation_tip()) {
             toRemove = "和遗传风险";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }

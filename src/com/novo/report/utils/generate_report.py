@@ -105,12 +105,7 @@ class MyRichText(RichText):
                    % (url_id, xml))
         self.xml += xml
 
-# start = time.time()
-# tpl=DocxTemplate('test0613.docx')
-# f = open('test.json', encoding='utf-8')
-# info_json = json.load(f)
-
-
+# @deprecated To be removed
 def check_contain_chinese(check_str):
     for ch in check_str:
         if u'\u4e00' <= ch <= u'\u9fff':
@@ -501,8 +496,6 @@ if __name__ == '__main__':
             deserialized_data = json.loads(conf_genes_str)
             info_json['gene']['conf_genes'] = deserialized_data
 
-        # 处理异常（如使用默认值）
-        info_json['gene']['conf_genes'] = {"gene_tables": []}
         # 模板init过滤器
         jinja_env = jinja2.Environment()
         jinja_env.filters['ms'] = mystyle
