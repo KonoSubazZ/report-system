@@ -3615,7 +3615,7 @@ public class PyReportServiceImpl implements PyReportService {
             }
         }
 
-        // BRCA1&BRCA2基因说明及用药提示 BRCA1&BRCA2基因说明及用药提示（表格）
+        // MOD BRCA1&BRCA2基因说明及用药提示 BRCA1&BRCA2基因说明及用药提示（表格）
         List<Map> brcaGeneSpecification = analysisReportDao.getBrcaGeneSpecification();
         Map brca1GeneSpecification = new HashMap();
         Map brca2GeneSpecification = new HashMap();
