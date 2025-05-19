@@ -3565,7 +3565,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setNegative(negative);
         rt.setHpd(hpd);
 
-        // 20250319 新免疫基因表格提示输出，动态输出根据panel去重
+        // MOD 20250319 新免疫基因表格提示输出，动态输出根据panel去重
         if (templateConf != null && templateConf.getImmunity_P_N()) {
             List<Map> positiveGeneList = handleImmunityGene("positive", product_name, positiveDDRImmnue);
             rt.setPositiveGeneList(positiveGeneList);
