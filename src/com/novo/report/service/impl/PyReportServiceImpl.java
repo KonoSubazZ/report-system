@@ -34,6 +34,8 @@ import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.novo.report.utils.ServiceUtils.getAppellation;
+
 @Service
 public class PyReportServiceImpl implements PyReportService {
 
@@ -503,14 +505,9 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setProduct_name(sf.getProduct_name());
         rt.setSampleremark(sf.getSampleremark());
         rt.setMailingaddress(sf.getMailingaddress());
-        if ("男".equals(sf.getGender())) {
-            rt.setAppellation("先生");
-        } else if ("女".equals(sf.getGender())) {
-            rt.setAppellation("女士");
-        } else {
-            rt.setAppellation("先生/女士");
-        }
+        rt.setAppellation(getAppellation(sf.getGender()));
 
+        // MOD QC
         //生信QC以qc.txt文件为主
         rt.setPlane_data(sf.getPlane_data());
         rt.setSequencing_depth(sf.getSequencing_depth());
