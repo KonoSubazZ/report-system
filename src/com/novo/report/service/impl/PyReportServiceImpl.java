@@ -5366,7 +5366,17 @@ public class PyReportServiceImpl implements PyReportService {
         }
         return HotgeneData;
     }
-
+    /**
+     * 甲状腺检出热点基因逻辑
+     *
+     * @param hotGene
+     * @param thisGeneticmarkerList
+     * @param crList
+     * @param type
+     * @param output
+     * @param template_name
+     * @return
+     */
     @Override
     public List<MmThyroidHotspot> getThyroidCancerHotgeneData(List<Map> thisGeneticmarkerList, List<Map> crList) {
         List<String> hotGene = Arrays.asList("ALK", "BRAF", "NTRK1/2/3", "RET", "HRAS", "KRAS", "NRAS", "PAX8", "TERT");
