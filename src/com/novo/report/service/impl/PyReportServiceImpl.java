@@ -3483,23 +3483,7 @@ public class PyReportServiceImpl implements PyReportService {
                         approvedDrugData = analysisReportDao.getApprovedDrugDataByDiseaseList(diseaseList);
                     }
                 }
-                /*List<String> diseases = Arrays.asList("骨肉瘤", "胶质肉瘤", "淋巴管肉瘤", "骨巨细胞瘤肉瘤", "肉瘤样癌", "膀胱肉瘤", "神经纤维肉瘤");
-                if (diseaseName.contains("肉瘤")) {
-                    boolean flag = true;
-                    for (String disease : diseases) {
-                        if (diseaseName.contains(disease)) {
-                            flag = false;
-                            break;
-                        }
-                    }
-                    if (flag) {
-                        if ("肉瘤".equals(diseaseName) || "软组织肉瘤".equals(diseaseName)) {
-                            approvedDrugData = analysisReportDao.getApprovedDrugDataByLikeSarcoma(diseaseIdList);
-                        } else {
-                            approvedDrugData = analysisReportDao.getApprovedDrugDataBySarcoma(diseaseIdList);
-                        }
-                    }
-                }*/
+
                 if (approvedDrugData.isEmpty()) {
                     approvedDrugData = analysisReportDao.getApprovedDrugDataByDiseaseIdList(diseaseIdList);
                 }
