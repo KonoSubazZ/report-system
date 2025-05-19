@@ -2902,6 +2902,7 @@ public class PyReportServiceImpl implements PyReportService {
             }
             rt.setBc(bc);
         }
+
         // 阅微MSI
         if ("msi".equals(product_name)) {
             List<Map> microsatelliteInstability = analysisReportDao.getMicrosatelliteInstability(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
