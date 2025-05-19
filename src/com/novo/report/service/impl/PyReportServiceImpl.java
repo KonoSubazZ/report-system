@@ -4571,7 +4571,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 获取产品描述第二句，根据癌种判断调整展示内容
         String sampleType = getSampleType(panel);
-        ModProductDesc productDesc1 = moduleService.getProductDesc("通用" + sampleType);
+        ModProductDesc productDesc1 = moduleService.getProductDesc("通用-" + sampleType);
         String upDisease = cancerInfo.get("urinaryProstateDisease").toString();
         String productDesc1Str = productDesc1.getProduct_desc();
         String toRemove = "";
