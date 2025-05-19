@@ -482,9 +482,6 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setTest_number(sf.getTest_number());
         rt.setCollectdate(sf.getCollect_date());
         rt.setCustomer(sf.getCustomer());
-        String pageHeaderPic = "";
-        rt.setPageHeaderPic(pageHeaderPic);
-        rt.setSealFlag(sealFlag);
         rt.setFirsttreatment(sf.getFirsttreatment());
         rt.setSecondtreatment(sf.getSecondtreatment());
         rt.setThirdtreatment(sf.getThirdtreatment());
