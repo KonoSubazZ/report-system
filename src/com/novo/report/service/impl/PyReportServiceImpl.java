@@ -4698,6 +4698,31 @@ public class PyReportServiceImpl implements PyReportService {
         return HenanPeopleCustomInfo;
     }
 
+    /**
+     * 根据 panel 判断样本类型为单样本或双样本
+     *
+     * @param panel
+     * @return
+     */
+    public String getSampleType(String panel) {
+        // 特殊单样本
+        Set<String> singlePanelSet = new HashSet<>(Arrays.asList(
+                "12k_tis_single", "novo_cr_106M", "novo_cr_106F",
+                "novopm2_cr_lynch", "novopm2_rna639_Sarcoma",
+                "novopm2_rna596_Sarcoma", "novopm2_rna62_Sarcoma",
+                "novopm2_rna1166_Sarcoma"
+        ));
+        Set<String> doublePanelSet = new HashSet<>(Arrays.asList(
+                "novopm2_MRD"));
+
+        if (panel.contains("tis1") || panel.contains("blo1") || singlePanelSet.contains(panel)) {
+            return "单样本";
+        } else if (panel.contains("tis") || panel.contains("blo") || doublePanelSet.contains(panel)) {
+            return "双样本";
+        }
+        return "其他";
+    }
+
 
     /**
      * 生成晶赛自定义数据
@@ -5212,6 +5237,7 @@ public class PyReportServiceImpl implements PyReportService {
                 return ExonicFunc;
         }
     }
+
     /**
      * 翻译临床意义 12345->是否致病
      *
@@ -5398,6 +5424,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
         return HotgeneData;
     }
+
     /**
      * 甲状腺检出热点基因逻辑
      *
