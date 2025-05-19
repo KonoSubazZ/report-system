@@ -3581,7 +3581,7 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setHpdGeneList(hpdGeneList);
         }
 
-        // 检测方法与局限性
+        // MOD 检测方法与局限性
         List<Map> productModularizations = analysisReportDao.getProductModularization();
         for (Map productModularization : productModularizations) {
             String panel = productModularization.get("panel").toString();
