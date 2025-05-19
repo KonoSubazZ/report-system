@@ -4356,9 +4356,9 @@ public class PyReportServiceImpl implements PyReportService {
         if (templateConf != null && templateConf.getMsi()) {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("immunity");
-            if (templateConf.getMsi() && templateConf.getMmr() && templateConf.getHpd()) {
+            if (templateConf.getHpd()) {
                 commonNote.setType("HPD");
-            } else if (templateConf.getMsi() && templateConf.getMmr()) {
+            } else if (templateConf.getMmr()) {
                 commonNote.setType("MMR");
             } else if (templateConf.getMsi()) {
                 commonNote.setType("MSI");
