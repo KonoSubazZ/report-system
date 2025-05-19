@@ -255,6 +255,7 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> cNVAll = analysisReportDao.getCNVAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         List<Map> fusionAll = analysisReportDao.getFusionAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
 
+        // MOD TMB逻辑
         // 获取化疗癌种
         String chem_cancer = StringUtils.isEmpty(pr.getChem_cancer()) ? "" : pr.getChem_cancer();
         //获取TMB
@@ -295,6 +296,7 @@ public class PyReportServiceImpl implements PyReportService {
         //获取Clonal_TMB
         String clonal_tmb = analysisReportDao.getClonal_TMB(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
 
+        // MOD MSI逻辑
         //获取MSI
         List<Map> MSIList = analysisReportDao.getMSI(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         String msi = CollectionUtils.isEmpty(MSIList) ? "" : MSIList.get(0).getOrDefault("Score", "").toString();
