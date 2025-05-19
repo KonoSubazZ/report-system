@@ -3403,7 +3403,8 @@ public class PyReportServiceImpl implements PyReportService {
             immuneAll.add(map);
         }
         rt.setImmuneAll(immuneAll);
-        // 肺癌通用免疫表格
+
+        // 肺癌免疫表格
         List<Map> immuneLung = analysisReportDao.getImmuneTableByLung();
         Iterator<Map> immuneLungIterator = immuneLung.iterator();
         while (immuneLungIterator.hasNext()) {
