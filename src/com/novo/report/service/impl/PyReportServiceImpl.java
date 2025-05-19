@@ -742,7 +742,8 @@ public class PyReportServiceImpl implements PyReportService {
             geneMap.put("genes", genes);
         }
         rt.setGene(geneMap);
-
+        
+        // TODO 待移除代码，归结为个性化
         // 变异分级(60基因重肿)
         Map variationGrading = new HashMap<>();
         List<Map> variationGrading1 = new ArrayList<Map>();
