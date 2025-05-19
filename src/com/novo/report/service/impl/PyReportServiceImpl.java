@@ -3892,7 +3892,7 @@ public class PyReportServiceImpl implements PyReportService {
             cancerInfo.put("gastrointestinalStromalTumor", gastrointestinalStromalTumor);
             cancerInfo.put("targetCancer", target_cancer);
             cancerInfo.put("sarcomaFlag", sarcomaFlag);
-            Map<String, Object> productDesc = generateProductDesc(cancerInfo, pd, templateName, templateConf, rt.getType());
+            Map<String, Object> productDesc = generateProductDesc(cancerInfo, pd, templateName, templateConf, rt.getType(), productName);
             rt.setProductDesc(productDesc);
 
             // CUSTOM 生成检测小结信息, 暂时不用合并到 commonNote 中
@@ -4541,45 +4541,44 @@ public class PyReportServiceImpl implements PyReportService {
         return res;
     }
 
-    private Map<String, Object> generateProductDesc(Map<String, Object> cancerInfo, Map pd, String template, TemplateConf conf, String type) {
+    private Map<String, Object> generateProductDesc(
+            Map<String, Object> cancerInfo,
+            Map pd, String template,
+            TemplateConf conf,
+            String type,
+            String panel) {
+
         Map<String, Object> res = new HashMap<>();
         ModProductDesc productDesc = moduleService.getProductDesc(template);
         String productDescStr = productDesc.getProduct_desc();
         List<String> productDescList = new ArrayList();
-        if (template.contains("全外显子组升级版") && "tissue".equals(type)) {
+        // TODO 待移除样本类型 "tissue".equals(type)
+        // wesplus 特殊逻辑
+        if ("novopm2_tis_wesplus".equals(panel) && "tissue".equals(type)) {
             String desc = "，同时，本产品检测基因组不稳定状态（GIS），结合BRCA1/2基因变异情况，综合评估同源重组缺陷状态";
             int lastPeriod = productDescStr.lastIndexOf("。");
             productDescStr = productDescStr.substring(0, lastPeriod) + desc + productDescStr.substring(lastPeriod);
         }
+
+        // pd  产品描述逻辑
         if (pd != null) {
             productDescStr = productDescStr + "通过免疫组化检测 PD-L1 表达。";
         }
+
         // 鼻咽癌产品描述特殊，需要用 \r\n 分割展示
         String[] desc = productDescStr.split("\\r\\n");
         productDescList.addAll(Arrays.asList(desc));
 
         // 获取产品描述第二句，根据癌种判断调整展示内容
-        ModProductDesc productDesc1 = moduleService.getProductDesc("通用");
+        String sampleType = getSampleType(panel);
+        ModProductDesc productDesc1 = moduleService.getProductDesc("通用" + sampleType);
         String upDisease = cancerInfo.get("urinaryProstateDisease").toString();
         String productDesc1Str = productDesc1.getProduct_desc();
         String toRemove = "";
-        if (StringUtils.isEmpty(upDisease)) {
-            toRemove = "内分泌治疗和神经内分泌分化分型以及疾病预后、";
-            productDesc1Str = productDesc1Str.replace(toRemove, "");
-        } else if (!"前列腺癌".equals(upDisease)) {
-            toRemove = "内分泌治疗和神经内分泌分化分型以及";
-            productDesc1Str = productDesc1Str.replace(toRemove, "");
-        }
-        if (!(boolean) cancerInfo.get("endometrialCarcinoma") || !conf.getEndometrial_carcinoma_typing()) {
-            toRemove = "子宫内膜癌TCGA分子分型、";
-            productDesc1Str = productDesc1Str.replace(toRemove, "");
-        }
+
+        // 通用判断
         if (!(boolean) cancerInfo.get("gastrointestinalStromalTumor") || !conf.getChemo_anal()) {
             toRemove = "、化疗药物";
-            productDesc1Str = productDesc1Str.replace(toRemove, "");
-        }
-        if (!(boolean) cancerInfo.get("sarcomaFlag") || !conf.getSarcoma_typing()) {
-            toRemove = "肉瘤辅助诊断提示、";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
         if (!conf.getMsi()) {
@@ -4590,9 +4589,34 @@ public class PyReportServiceImpl implements PyReportService {
             toRemove = "、预后评估";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
-        if (!conf.getCr_drug_tip() && !conf.getCr_mutation_tip()) {
-            toRemove = "和遗传风险";
-            productDesc1Str = productDesc1Str.replace(toRemove, "");
+
+        // 双样本独有
+        if (sampleType.equals("双样本")) {
+            if (StringUtils.isEmpty(upDisease)) {
+                toRemove = "内分泌治疗和神经内分泌分化分型以及疾病预后、";
+                productDesc1Str = productDesc1Str.replace(toRemove, "");
+            } else if (!"前列腺癌".equals(upDisease)) {
+                toRemove = "内分泌治疗和神经内分泌分化分型以及";
+                productDesc1Str = productDesc1Str.replace(toRemove, "");
+            }
+            if (!(boolean) cancerInfo.get("endometrialCarcinoma") || !conf.getEndometrial_carcinoma_typing()) {
+                toRemove = "子宫内膜癌TCGA分子分型、";
+                productDesc1Str = productDesc1Str.replace(toRemove, "");
+            }
+
+            if (!(boolean) cancerInfo.get("sarcomaFlag") || !conf.getSarcoma_typing()) {
+                toRemove = "肉瘤辅助诊断提示、";
+                productDesc1Str = productDesc1Str.replace(toRemove, "");
+            }
+
+
+        } else if (sampleType.equals("单样本")) {
+            // 单样本独有
+            if (!conf.getCr_drug_tip()) {
+                toRemove = "和遗传风险";
+                productDesc1Str = productDesc1Str.replace(toRemove, "");
+            }
+
         }
         productDescList.add(productDesc1Str);
         res.put("productDescList", productDescList);
