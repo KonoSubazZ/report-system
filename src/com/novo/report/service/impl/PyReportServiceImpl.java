@@ -709,7 +709,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setReducedGeneSet(reducedGeneSet);
         rt.setProgressionGeneSet(progressionGeneSet);
         rt.setParpinhibitorGeneSet(parpinhibitorGeneSet);
-        // WES报告模板-赛福
+        // TEMPLATE WES报告模板-赛福
         HashSet<Object> predictorGeneSet = new HashSet<>(); //疗效预测指标
         HashSet<Object> immunopositiveGeneSet = new HashSet<>(); //疗效影响因素-免疫治疗正相关指标
         HashSet<Object> immunonegativeGeneSet = new HashSet<>(); //疗效影响因素-免疫治疗负相关指标
@@ -724,10 +724,12 @@ public class PyReportServiceImpl implements PyReportService {
             List<Map> immunonegativecorrelation = analysisReportDao.gethotGeneDrug("Immunonegativecorrelation", "赛福");
             List<Map> immunonegativeTipLineStr = getSFgeneData(immunonegativecorrelation, thisGeneticmarkerList, crList, "snp_indel", immunonegativeGeneSet);
             immunonegativeSFSize = immunonegativeTipLineStr.size();
+
+            rt.setPredictorGeneSet(predictorGeneSet);
+            rt.setImmunopositiveGeneSet(immunopositiveGeneSet);
+            rt.setImmunonegativeGeneSet(immunonegativeGeneSet);
         }
-        rt.setPredictorGeneSet(predictorGeneSet);
-        rt.setImmunopositiveGeneSet(immunopositiveGeneSet);
-        rt.setImmunonegativeGeneSet(immunonegativeGeneSet);
+
 
         // MOD 基因检测列表
         List<String> geneSymbols = analysisReportDao.getGeneSymbols(currentNgsAvailable.getProduct_id());
