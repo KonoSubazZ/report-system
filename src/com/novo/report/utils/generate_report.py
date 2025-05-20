@@ -422,6 +422,9 @@ def load_template_safely(tpl_path):
     tpl = DocxTemplate(tmp_tpl_file.name)
     return tpl, tmp_tpl_file.name
 
+def safe_get(d, key, default=None):
+    return d.get(key, default)
+
 if __name__ == '__main__':
     if len(sys.argv) != 4:
         print("Usage: python3 {} TemplateWord JsonInfoPath OutputWord".format(__file__))
@@ -474,11 +477,16 @@ if __name__ == '__main__':
         # 单基因多基因模板逻辑
         DetectionMutation_LIST = info_json['detectionMutationSet'] if info_json['detectionMutationSet'] else []
         # 华西模板逻辑  可能促进药物效果标志物、可能导致药物效果降低标志物、可能导致疾病发生超进展标志物、PARP抑制剂相关基因检测结果
-        PromoteGene_LIST = info_json['promoteGeneSet'] if info_json['promoteGeneSet'] else []
-        ReducedGene_LIST = info_json['reducedGeneSet'] if info_json['reducedGeneSet'] else []
-        ProgressionGene_LIST = info_json['progressionGeneSet'] if info_json['progressionGeneSet'] else []
-        ParpinhibitorGene_LIST = info_json['parpinhibitorGeneSet'] if info_json['parpinhibitorGeneSet'] else []
-        PredictorGene_LIST = info_json['predictorGeneSet'] if info_json['predictorGeneSet'] else []
+        # PromoteGene_LIST = info_json['promoteGeneSet'] if info_json['promoteGeneSet'] else []
+        # ReducedGene_LIST = info_json['reducedGeneSet'] if info_json['reducedGeneSet'] else []
+        # ProgressionGene_LIST = info_json['progressionGeneSet'] if info_json['progressionGeneSet'] else []
+        # ParpinhibitorGene_LIST = info_json['parpinhibitorGeneSet'] if info_json['parpinhibitorGeneSet'] else []
+        # PredictorGene_LIST = info_json['predictorGeneSet'] if info_json['predictorGeneSet'] else []
+        PromoteGene_LIST = safe_get(info_json, 'promoteGeneSet', [])
+        ReducedGene_LIST = safe_get(info_json, 'reducedGeneSet', [])
+        ProgressionGene_LIST = safe_get(info_json, 'progressionGeneSet', [])
+        ParpinhibitorGene_LIST = safe_get(info_json, 'parpinhibitorGeneSet', [])
+        PredictorGene_LIST = safe_get(info_json, 'predictorGeneSet', [])
         # 免疫正相关基因是否检出
         ImmunopositiveGene_LIST = info_json['immunopositiveGeneSet'] if info_json['immunopositiveGeneSet'] else []
         # 免疫负相关基因是否检出
