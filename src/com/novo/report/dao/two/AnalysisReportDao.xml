@@ -888,7 +888,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    desc25,
 		    desc26,
 		    desc27,
-		    desc28,
+		    desc28
 		FROM
 		    immune_table
 		ORDER BY id
