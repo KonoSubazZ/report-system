@@ -493,7 +493,7 @@ public interface AnalysisReportDao {
     String getClonal_TMB(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
     //获取免疫表格
-    @Select("SELECT * FROM immune_table")
+
     List<Map> getImmuneTable();
 
     //获取肺癌免疫表格
