@@ -476,7 +476,7 @@ if __name__ == '__main__':
         CancerRiskGene_LIST = info_json['cancerRiskGene'] if info_json['cancerRiskGene'] else []
         # 单基因多基因模板逻辑
         DetectionMutation_LIST = info_json['detectionMutationSet'] if info_json['detectionMutationSet'] else []
-        # 华西模板逻辑  可能促进药物效果标志物、可能导致药物效果降低标志物、可能导致疾病发生超进展标志物、PARP抑制剂相关基因检测结果
+        # 个性化-华西模板逻辑  可能促进药物效果标志物、可能导致药物效果降低标志物、可能导致疾病发生超进展标志物、PARP抑制剂相关基因检测结果
         # PromoteGene_LIST = info_json['promoteGeneSet'] if info_json['promoteGeneSet'] else []
         # ReducedGene_LIST = info_json['reducedGeneSet'] if info_json['reducedGeneSet'] else []
         # ProgressionGene_LIST = info_json['progressionGeneSet'] if info_json['progressionGeneSet'] else []
@@ -487,10 +487,12 @@ if __name__ == '__main__':
         ProgressionGene_LIST = safe_get(info_json, 'progressionGeneSet', [])
         ParpinhibitorGene_LIST = safe_get(info_json, 'parpinhibitorGeneSet', [])
         PredictorGene_LIST = safe_get(info_json, 'predictorGeneSet', [])
-        # 免疫正相关基因是否检出
-        ImmunopositiveGene_LIST = info_json['immunopositiveGeneSet'] if info_json['immunopositiveGeneSet'] else []
-        # 免疫负相关基因是否检出
-        ImmunonegativeGene_LIST = info_json['immunonegativeGeneSet'] if info_json['immunonegativeGeneSet'] else []
+        # 个性化-赛福免疫正负相关基因是否检出
+        # ImmunopositiveGene_LIST = info_json['immunopositiveGeneSet'] if info_json['immunopositiveGeneSet'] else []
+        # ImmunonegativeGene_LIST = info_json['immunonegativeGeneSet'] if info_json['immunonegativeGeneSet'] else []
+
+        ImmunopositiveGene_LIST = safe_get(info_json, 'immunopositiveGeneSet', [])
+        ImmunonegativeGene_LIST = safe_get(info_json, 'immunonegativeGeneSet', [])
         # 肉瘤附录列表逻辑
         if 'sarcomaTypingList1' in info_json.get('note', {}) and info_json['note']['sarcomaTypingList1']:
             info_json['note']['sarcomaTypingList1'] = flatten_data(info_json['note']['sarcomaTypingList1'])
