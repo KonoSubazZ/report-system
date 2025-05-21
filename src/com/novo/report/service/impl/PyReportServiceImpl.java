@@ -172,8 +172,14 @@ public class PyReportServiceImpl implements PyReportService {
         HashSet<Object> bodyGeneSet = new HashSet<>();
         // 记录所有位点基因 包括胚系12345
         HashSet<Object> GeneSet = new HashSet<>();
-        // 免疫检出基因
+
+        // 检出基因 immune somatic snp cnv CR targetDrugGeneSet
         HashSet<String> immuneGeneSet = new HashSet<>();
+        HashSet<String> fusionGeneSet = new HashSet<>();
+        HashSet<String> snpGeneSet = new HashSet<>();
+        HashSet<String> cnvGeneSet = new HashSet<>();
+        HashSet<String> CRGeneSet = new HashSet<>();
+        HashSet<String> targetDrugGeneSet = new HashSet<>();
 
 
         //循环设置临床意义
@@ -219,6 +225,19 @@ public class PyReportServiceImpl implements PyReportService {
         // 遍历体系突变基因
         for (Map a : thisGeneticmarkerVwList) {
             String Gene = a.get("gene").toString();
+            String ExonicFunc = String.valueOf(a.get("ExonicFunc"));
+            String resultTypeDesc = String.valueOf(a.get("resultTypeDesc"));
+
+            if (ExonicFunc.equals("基因扩增")){
+                cnvGeneSet.add(Gene);
+            }else if (ExonicFunc.equals("基因融合")){
+                fusionGeneSet.add(Gene);
+            }else {
+                snpGeneSet.add(Gene);
+            }
+            if (resultTypeDesc.equals("靶向药物")){
+                targetDrugGeneSet.add(Gene);
+            }
 
             // 这里加了一层判断主要为了计数
             if (!GeneSet.contains(Gene)) {
@@ -233,6 +252,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 遍历胚系突变基因
         for (Map a : crAllList) {
             String Gene = a.get("Gene").toString();
+            CRGeneSet.add(Gene);
             if (!crGeneSet.contains(Gene)) {
                 crGeneCount++;
                 crGeneSet.add(Gene);
@@ -251,6 +271,7 @@ public class PyReportServiceImpl implements PyReportService {
             // 胚系致病
             if ("1".equals(Clinical_significance) || "2".equals(Clinical_significance)) {
                 hasPathogenicityCount++;
+                targetDrugGeneSet.add(Gene);
             }
         }
         rt.setEmbryonalGeneSet(embryonalGeneSet);
@@ -361,6 +382,7 @@ public class PyReportServiceImpl implements PyReportService {
                 String varDesc = String.valueOf(immune.get("varDesc"));
                 String gene = String.valueOf(immune.get("gene"));
 
+                // TODO 查了下不会有 / ，下版本移除
                 boolean hasValidVarDesc = !"/".equals(varDesc);
 
                 switch (flag) {
@@ -4607,6 +4629,10 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 增加对于 解析模块的判断
         List<String> panelList = moduleService.getconfPanelList("ANAL_HIDE_IF_NO_DATA");
+        for (Map mutation : allMutation) {
+            String gene = String.valueOf(mutation.get("gene"));
+
+        }
         boolean isShowAnal = true;
         if (panelList.contains(panel) && allMutation.isEmpty()) {
             isShowAnal = false;
