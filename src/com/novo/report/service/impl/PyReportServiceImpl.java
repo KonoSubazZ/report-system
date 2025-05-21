@@ -254,7 +254,6 @@ public class PyReportServiceImpl implements PyReportService {
         // 遍历胚系突变基因
         for (Map a : crAllList) {
             String Gene = a.get("Gene").toString();
-            CRGeneSet.add(Gene);
             if (!crGeneSet.contains(Gene)) {
                 crGeneCount++;
                 crGeneSet.add(Gene);
@@ -269,6 +268,7 @@ public class PyReportServiceImpl implements PyReportService {
             if (!(Clinical_significance.equals("4") || Clinical_significance.equals("5"))) {
                 allGeneSet.add(Gene);
                 embryonalGeneSet.add(Gene);
+                CRGeneSet.add(Gene);
             }
             // 胚系致病
             if ("1".equals(Clinical_significance) || "2".equals(Clinical_significance)) {
@@ -3885,6 +3885,7 @@ public class PyReportServiceImpl implements PyReportService {
             detectedGeneInfo.put("cnv_gene_list", cnvGeneSet);
             detectedGeneInfo.put("cr_gene_list", CRGeneSet);
             detectedGeneInfo.put("immune_gene_list", immuneGeneSet);
+            detectedGeneInfo.put("all_gene_list", allGeneSet);
 
             HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd, allMutation, rt.getPanel(), detectedGeneInfo, hasCRDrug);
             rt.setReportInfo(reportInfo);

@@ -508,6 +508,7 @@ def mark_genes_in_red(gene_tables, detected_gene_info):
         "FUSION": "fusion_gene_list",
         "IMMUNE": "immune_gene_list",
         "CNV": "cnv_gene_list",
+        "ALL": "all_gene_list",
         # 你还可以根据 SNP 做一个标红 if needed
     }
     for table in gene_tables:
