@@ -172,6 +172,9 @@ public class PyReportServiceImpl implements PyReportService {
         HashSet<Object> bodyGeneSet = new HashSet<>();
         // 记录所有位点基因 包括胚系12345
         HashSet<Object> GeneSet = new HashSet<>();
+        // 免疫检出基因
+        HashSet<String> immuneGeneSet = new HashSet<>();
+
 
         //循环设置临床意义
         Map result_map = new HashMap();
@@ -338,44 +341,61 @@ public class PyReportServiceImpl implements PyReportService {
             immnueallDistinguishMutFreqType(immnueall);
 
             // 这里可能一个基因对应多个位点突变
-            positiveImmnue = immnueall.stream().filter(immnue -> immnue.get("flag").toString().equals("1")).collect(Collectors.toList());
-            negativeImmnue = immnueall.stream().filter(immnue -> immnue.get("flag").toString().equals("2")).collect(Collectors.toList());
-            hpdImmnue = immnueall.stream().filter(immnue -> immnue.get("flag").toString().equals("3")).collect(Collectors.toList());
-            positiveImmnueNum = positiveImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
-            negativeImmnueNum = negativeImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
-            hpdImmnueNum = hpdImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
+            // positiveImmnue = immnueall.stream().filter(immnue -> immnue.get("flag").toString().equals("1")).collect(Collectors.toList());
+            // negativeImmnue = immnueall.stream().filter(immnue -> immnue.get("flag").toString().equals("2")).collect(Collectors.toList());
+            // hpdImmnue = immnueall.stream().filter(immnue -> immnue.get("flag").toString().equals("3")).collect(Collectors.toList());
+            // positiveImmnueNum = positiveImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
+            // negativeImmnueNum = negativeImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
+            // hpdImmnueNum = hpdImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
 
             // 20250319 新增 positiveOtherImmnueNum 判断是否其他展示检测意义
             List<String> otherGenes = Arrays.asList("CD274", "KRAS", "PBRM1", "PDCD1LG2", "POLD1", "POLE", "TP53");
-            positiveOtherImmnueNum = (int) positiveImmnue.stream()
+            /*positiveOtherImmnueNum = (int) positiveImmnue.stream()
                     .filter(immnue -> !"/".equals(immnue.get("varDesc").toString()) &&
                             otherGenes.contains(immnue.get("gene").toString()))
-                    .count();
+                    .count();*/
 
             // TODO 待优化 上面用了六个 for ，可优化为一个
-            /*
-            for (Map immnue : immnueall) {
-                String flag = immnue.get("flag").toString();
-                String varDesc = immnue.get("varDesc").toString();
+            for (Map immune : immnueall) {
+                String flag = String.valueOf(immune.get("flag"));
+                String varDesc = String.valueOf(immune.get("varDesc"));
+                String gene = String.valueOf(immune.get("gene"));
 
-                if ("1".equals(flag)) {
-                    positiveImmnue.add(immnue);
-                    if (!"/".equals(varDesc)) {
-                        positiveImmnueNum++;
-                    }
-                } else if ("2".equals(flag)) {
-                    negativeImmnue.add(immnue);
-                    if (!"/".equals(varDesc)) {
-                        negativeImmnueNum++;
-                    }
-                } else if ("3".equals(flag)) {
-                    hpdImmnue.add(immnue);
-                    if (!"/".equals(varDesc)) {
-                        hpdImmnueNum++;
-                    }
+                boolean hasValidVarDesc = !"/".equals(varDesc);
+
+                switch (flag) {
+                    case "1": // 正
+                        positiveImmnue.add(immune);
+                        if (hasValidVarDesc) {
+                            positiveImmnueNum++;
+                            if (otherGenes.contains(gene)) {
+                                positiveOtherImmnueNum++;
+                            }
+                            immuneGeneSet.add(gene);
+                        }
+                        break;
+
+                    case "2": // 负
+                        negativeImmnue.add(immune);
+                        if (hasValidVarDesc) {
+                            negativeImmnueNum++;
+                            immuneGeneSet.add(gene);
+                        }
+                        break;
+
+                    case "3": // HPD
+                        hpdImmnue.add(immune);
+                        if (hasValidVarDesc) {
+                            hpdImmnueNum++;
+                            immuneGeneSet.add(gene);
+                        }
+                        break;
+
+                    default:
+                        // 可以选择记录未知flag类型
+                        break;
                 }
             }
-            */
 
             rt.setPositiveImmnue(positiveImmnue);
             rt.setNegativeImmnue(negativeImmnue);
@@ -7015,6 +7035,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 免疫表 肺癌、肝胆胰、泌尿肿瘤、实体瘤
+     *
      * @param panel
      * @param rt
      * @return
@@ -7040,19 +7061,19 @@ public class PyReportServiceImpl implements PyReportService {
         if (lungPanels.contains(panel)) {
             title = "目前肺癌已批准的免疫治疗药物";
             immuneTable = analysisReportDao.getImmuneLungTable();
-            immuneTables = filterInvalidImmune(immuneTable,"desc7", "desc8", "desc24");
+            immuneTables = filterInvalidImmune(immuneTable, "desc7", "desc8", "desc24");
 
         } else if (hpbPanels.contains(panel)) {
             title = "目前肝胆胰腺肿瘤已批准的免疫治疗药物";
             immuneTable = analysisReportDao.getImmunehpbTable();
-            immuneTables = filterInvalidImmune(immuneTable,"desc17", "desc28", "desc24");
+            immuneTables = filterInvalidImmune(immuneTable, "desc17", "desc28", "desc24");
 
         } else if (urinaryPanels.contains(panel)) {
             title = "目前泌尿系统肿瘤/实体瘤已批准的免疫治疗药物";
             immuneTable = analysisReportDao.getImmuneUrinaryTable();
-            immuneTables = filterInvalidImmune(immuneTable,"desc18", "desc19", "desc24");
+            immuneTables = filterInvalidImmune(immuneTable, "desc18", "desc19", "desc24");
 
-        }else{
+        } else {
             title = "目前各癌种已批准的免疫治疗药物";
             immuneTable = analysisReportDao.getImmuneTable();
             Map immuneTable1 = immuneTable.get(0);
