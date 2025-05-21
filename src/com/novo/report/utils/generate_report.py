@@ -106,12 +106,88 @@ class MyRichText(RichText):
         self.xml += xml
 
 # @deprecated To be removed
+class MyRichTextV1(RichText):
+    def add(self, text,
+            style=None,
+            color=None,
+            highlight=None,
+            size=None,
+            subscript=False,
+            superscript=False,
+            bold=False,
+            italic=False,
+            underline=False,
+            strike=False,
+            cnfont=None,
+            font=None,
+            url_id=None):
+
+        if isinstance(text, RichText):
+            self.xml += text.xml
+            return
+
+        if font and cnfont is None:
+            cnfont = font
+        if not isinstance(text, str):
+            text = str(text)
+        text = escape(text)
+
+        prop = self._build_run_properties(
+            style, color, highlight, size, subscript, superscript,
+            bold, italic, underline, strike, cnfont, font
+        )
+
+        run_xml = f'<w:r>'
+        if prop:
+            run_xml += f'<w:rPr>{prop}</w:rPr>'
+        run_xml += f'<w:t xml:space="preserve">{text}</w:t></w:r>'
+
+        if url_id:
+            run_xml = f'<w:hyperlink r:id="{url_id}" w:tgtFrame="_blank">{run_xml}</w:hyperlink>'
+
+        self.xml += run_xml
+
+    def _build_run_properties(self, style, color, highlight, size,
+                              subscript, superscript, bold, italic,
+                              underline, strike, cnfont, font):
+        props = []
+
+        if style:
+            props.append(f'<w:rStyle w:val="{style}"/>')
+        if color:
+            props.append(f'<w:color w:val="{color.lstrip("#")}"/>')
+        if highlight:
+            props.append(f'<w:highlight w:val="{highlight.lstrip("#")}"/>')
+        if size:
+            props.append(f'<w:sz w:val="{size}"/><w:szCs w:val="{size}"/>')
+        if subscript:
+            props.append('<w:vertAlign w:val="subscript"/>')
+        if superscript:
+            props.append('<w:vertAlign w:val="superscript"/>')
+        if bold:
+            props.append('<w:b/>')
+        if italic:
+            props.append('<w:i/>')
+        if underline:
+            props.append(f'<w:u w:val="{underline if underline in ["single", "double"] else "single"}"/>')
+        if strike:
+            props.append('<w:strike/>')
+        if font:
+            props.append(
+                f'<w:rFonts w:ascii="{font}" w:hAnsi="{font}" w:cs="{font}" w:eastAsia="{cnfont or font}"/>'
+            )
+
+        return ''.join(props)
+
+
 def check_contain_chinese(check_str):
     for ch in check_str:
         if u'\u4e00' <= ch <= u'\u9fff':
             return True
         else:
             return False
+
+
 
 
 def mystyle(value,bold,highlight=False):
@@ -425,6 +501,30 @@ def load_template_safely(tpl_path):
 def safe_get(d, key, default=None):
     return d.get(key, default)
 
+def mark_genes_in_red(gene_tables, detected_gene_info):
+    detected_mapping = {
+        "TARGET": "target_drug_gene_list",
+        "CR": "cr_gene_list",
+        "FUSION": "fusion_gene_list",
+        "IMMUNE": "immune_gene_list",
+        "CNV": "cnv_gene_list",
+        # 你还可以根据 SNP 做一个标红 if needed
+    }
+    for table in gene_tables:
+        gene_type = table["type"]
+        gene_list = table["genes"]
+        detected_gene_list = detected_gene_info.get(detected_mapping.get(gene_type, ""), [])
+        add_gene_rich_text(gene_list, detected_gene_list)
+
+def add_gene_rich_text(gene_list, detected_gene_list):
+    for row_idx, row in enumerate(gene_list):
+        for col_idx, gene in enumerate(row):
+            if gene in detected_gene_list:
+                gene_list[row_idx][col_idx] = MyRichText(gene, color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size='18',italic=italic)
+            else:
+                gene_list[row_idx][col_idx] = MyRichText(gene, cnfont='微软雅黑', font='Times New Roman', size='18',italic=italic)
+
+
 if __name__ == '__main__':
     if len(sys.argv) != 4:
         print("Usage: python3 {} TemplateWord JsonInfoPath OutputWord".format(__file__))
@@ -505,6 +605,9 @@ if __name__ == '__main__':
             conf_genes_str = info_json['gene']['conf_genes']
             deserialized_data = json.loads(conf_genes_str)
             info_json['gene']['conf_genes'] = deserialized_data
+            detected_gene_info = info_json['reportInfo']['detected_gene_info']
+            gene_tables = info_json['gene']['conf_genes']['gene_tables']
+            mark_genes_in_red(gene_tables, detected_gene_info)
 
         # 模板init过滤器
         jinja_env = jinja2.Environment()

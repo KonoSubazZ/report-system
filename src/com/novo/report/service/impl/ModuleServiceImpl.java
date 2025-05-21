@@ -331,6 +331,7 @@ public class ModuleServiceImpl implements ModuleService {
         // 设置基因和标题属性
         geneTable.addProperty("genes", genesStr);
         geneTable.addProperty("title", "");
+        geneTable.addProperty("type", "ALL");
 
         // 创建基因表数组并添加当前表
         JsonArray geneTables = new JsonArray();

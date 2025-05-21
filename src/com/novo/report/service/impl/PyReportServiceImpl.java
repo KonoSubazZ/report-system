@@ -6245,6 +6245,7 @@ public class PyReportServiceImpl implements PyReportService {
             JsonObject table = tableElement.getAsJsonObject();
             String genesStr = table.get("genes").getAsString();
             String title = table.get("title").getAsString();
+            String type = table.get("type").getAsString();
 
             // 分割基因字符串
             String[] geneArray = genesStr.split(",");
@@ -6275,6 +6276,7 @@ public class PyReportServiceImpl implements PyReportService {
             // 创建新的基因表对象
             JsonObject newTable = new JsonObject();
             newTable.addProperty("title", title);
+            newTable.addProperty("type", type);
             newTable.add("genes", newGenes);
             newTables.add(newTable);
         }
