@@ -4645,7 +4645,7 @@ public class PyReportServiceImpl implements PyReportService {
             return mutation.get("type").equals("体系");
         }).count();
         boolean isShowAnal = true;
-        if (panelList.contains(panel) && allMutation.isEmpty()) {
+        if (panelList.contains(panel) && saomaticCount == 0 && !hasCRDrug) {
             isShowAnal = false;
         }
         res.put("show_anal", isShowAnal);
