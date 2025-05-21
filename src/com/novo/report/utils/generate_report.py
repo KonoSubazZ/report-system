@@ -511,21 +511,25 @@ def mark_genes_in_red(gene_tables, detected_gene_info):
         "ALL": "all_gene_list",
         "SNP": "snp_gene_list"
     }
+    show_red_note = True
     for table in gene_tables:
         gene_type = table["type"]
         gene_list = table["genes"]
+        if gene_type not in detected_mapping:
+            show_red_note = False
         detected_gene_list = detected_gene_info.get(detected_mapping.get(gene_type, ""), [])
         if not detected_gene_list:
             continue
         add_gene_rich_text(gene_list, detected_gene_list)
+    return show_red_note
 
 def add_gene_rich_text(gene_list, detected_gene_list):
     for row_idx, row in enumerate(gene_list):
         for col_idx, gene in enumerate(row):
             if gene in detected_gene_list:
-                gene_list[row_idx][col_idx] = MyRichText(gene, color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size='18',italic=italic)
+                gene_list[row_idx][col_idx] = MyRichTextV1(gene, color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size='18', italic=True)
             else:
-                gene_list[row_idx][col_idx] = MyRichText(gene, cnfont='微软雅黑', font='Times New Roman', size='18',italic=italic)
+                gene_list[row_idx][col_idx] = MyRichTextV1(gene, cnfont='微软雅黑', font='Times New Roman', size='18', italic=True)
 
 
 if __name__ == '__main__':
@@ -610,7 +614,8 @@ if __name__ == '__main__':
             info_json['gene']['conf_genes'] = deserialized_data
             detected_gene_info = info_json['reportInfo']['detected_gene_info']
             gene_tables = info_json['gene']['conf_genes']['gene_tables']
-            mark_genes_in_red(gene_tables, detected_gene_info)
+            show_red_note = mark_genes_in_red(gene_tables, detected_gene_info)
+            info_json['reportInfo']['show_red_note'] = show_red_note
 
         # 模板init过滤器
         jinja_env = jinja2.Environment()
