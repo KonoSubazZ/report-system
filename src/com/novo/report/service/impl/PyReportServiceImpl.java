@@ -4642,7 +4642,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 增加对于 解析模块的判断
         List<String> panelList = moduleService.getconfPanelList("ANAL_HIDE_IF_NO_DATA");
         int saomaticCount = (int) allMutation.stream().filter(mutation -> {
-            return mutation.get("gene").equals("ENSG00000157764");
+            return mutation.get("type").equals("体系");
         }).count();
         boolean isShowAnal = true;
         if (panelList.contains(panel) && allMutation.isEmpty()) {
