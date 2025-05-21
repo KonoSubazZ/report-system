@@ -698,4 +698,8 @@ public interface AnalysisReportDao {
 
     String  getReportPageName(@Param("template_name") String template_name);
 
+    List<Map> getImmuneLungTable();
+    List<Map> getImmunehpbTable();
+    List<Map> getImmuneUrinaryTable();
+
 }

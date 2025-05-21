@@ -893,5 +893,46 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    immune_table
 		ORDER BY id
 	</select>
+	<select id="getImmuneLungTable" resultType="java.util.Map">
+		SELECT
+			desc1,
+			desc2,
+			desc3,
+			desc4,
+			desc7,
+			desc8,
+			desc24
+		FROM
+			immune_table
+		ORDER BY id
+	</select>
+
+	<select id="getImmunehpbTable" resultType="java.util.Map">
+		SELECT
+			desc1,
+			desc2,
+			desc3,
+			desc4,
+			desc17,
+			desc28,
+			desc24
+		FROM
+			immune_table
+		ORDER BY id
+	</select>
+
+	<select id="getImmuneUrinaryTable" resultType="java.util.Map">
+		SELECT
+			desc1,
+			desc2,
+			desc3,
+			desc4,
+			desc18,
+			desc19,
+			desc24
+		FROM
+			immune_table
+		ORDER BY id
+	</select>
 
 </mapper>

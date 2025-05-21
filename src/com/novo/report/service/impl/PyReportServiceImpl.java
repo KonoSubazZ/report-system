@@ -742,7 +742,7 @@ public class PyReportServiceImpl implements PyReportService {
             geneMap.put("genes", genes);
         }
         rt.setGene(geneMap);
-        
+
         // TODO 待移除代码，归结为个性化
         // 变异分级(60基因重肿)
         Map variationGrading = new HashMap<>();
@@ -2722,17 +2722,6 @@ public class PyReportServiceImpl implements PyReportService {
                         groupList.add(fooListByDiseaseName);
                     });
             pd.put("pdInfoTable2", groupList);
-            /*if (pd.containsKey("antibody")) {
-                String antibody = pd.get("antibody").toString();
-                List<Map> pdInfoTable = analysisReportDao.getPDInfoTable(antibody);
-                pd.put("pdInfoTable", pdInfoTable);
-                for (Map map : pdInfoTable) {
-                    if (map.get("superscript") != null) {
-                        pd.put("superscript_remark", true);
-                        break;
-                    }
-                }
-            }*/
         }
         rt.setPDInfo(pd);
 
@@ -3341,8 +3330,17 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setSingleMoreTipLineStr(singleMoreTipLineStr);
         rt.setDetectionMutationSet(detectionMutationSet);
 
-        // 免疫表格
+        // MOD 获取目前各癌种已批准的免疫治疗药物
+        // 免疫表格-纵
         List<Map> immuneAll = new ArrayList<>();
+        // 免疫表格-横 肺癌/肝胆胰腺癌/泌尿系统肿瘤
+        List<Map> immuneLung = new ArrayList<>();
+
+        // TODO 待修改免疫表格为动态
+        // processImmuneTables(productName, rt);
+
+
+        List<Map> immuneLung1 = analysisReportDao.getImmuneTableByLung();
         // 获取目前各癌种已批准的免疫治疗药物
         List<Map> immuneTable = analysisReportDao.getImmuneTable();
         // 获取表格第一列内容
@@ -3360,18 +3358,6 @@ public class PyReportServiceImpl implements PyReportService {
             List<Map> immuneList = immuneLists.get(i);
             // 遍历每行内容
             for (int j = 1; j <= immuneTable1.size(); j++) {
-                // 除第一列癌种，其它都是“/”，不输出这一列
-                /*boolean flag = false;
-                for (int k = 1; k < immuneList.size(); k++) {
-                    String desc = immuneList.get(k).get("desc" + j).toString();
-                    if (!"/".equals(desc)) {
-                        flag = true;
-                        break;
-                    }
-                }
-                if (flag) {
-                    immuneTableKey.add("desc"+ j);
-                }*/
                 immuneTableKey.add("desc" + j);
             }
             map.put("immuneList", immuneList);
@@ -3380,9 +3366,8 @@ public class PyReportServiceImpl implements PyReportService {
         }
         rt.setImmuneAll(immuneAll);
 
-        // 肺癌免疫表格
-        List<Map> immuneLung = analysisReportDao.getImmuneTableByLung();
-        Iterator<Map> immuneLungIterator = immuneLung.iterator();
+
+        Iterator<Map> immuneLungIterator = immuneLung1.iterator();
         while (immuneLungIterator.hasNext()) {
             Map map = immuneLungIterator.next();
             String desc7 = map.get("desc7").toString();
@@ -3392,7 +3377,7 @@ public class PyReportServiceImpl implements PyReportService {
                 immuneLungIterator.remove();
             }
         }
-        rt.setImmuneLung(immuneLung);
+        rt.setImmuneLung(immuneLung1);
 
         // 自动化备注输出
         Map<String, Object> rk = new HashMap<String, Object>();
@@ -4551,7 +4536,7 @@ public class PyReportServiceImpl implements PyReportService {
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
         if (!conf.getThyroid_cancer_prognosis()) {
-            toRemove = "、预后评估";
+            toRemove = "、预后";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
 
@@ -7026,6 +7011,85 @@ public class PyReportServiceImpl implements PyReportService {
         String qrCodeImagePath = CreateQRCode.createQRCode(methodUrl + qrcode, logoPath);
 
         return qrCodeImagePath;
+    }
+
+    /**
+     * 免疫表 肺癌、肝胆胰、泌尿肿瘤、实体瘤
+     * @param panel
+     * @param rt
+     * @return
+     */
+    private void processImmuneTables(String panel, ReportTemplate rt) {
+
+        List<String> lungPanels = Arrays.asList(
+                "novopm2_blo1_Lung68", "novopm2_tis1_Lung68",
+                "novopm2_blo1_Lung49", "novopm2_tis1_Lung49",
+                "novopm2_blo1_Lung25", "novopm2_tis1_Lung25",
+                "novopm2_blo1_Lung11", "novopm2_tis1_Lung11");
+
+        List<String> hpbPanels = Arrays.asList(
+                "novopm2_blo_120", "novopm2_tis_120",
+                "novopm2_blo1_120", "novopm2_tis1_120");
+
+        List<String> urinaryPanels = Arrays.asList("novopm2_blo_99", "novopm2_tis_99");
+
+        String title = "";
+        List<Map> immuneTable = new ArrayList<>();
+        List<Map> immuneTables = new ArrayList<>();
+
+        if (lungPanels.contains(panel)) {
+            title = "目前肺癌已批准的免疫治疗药物";
+            immuneTable = analysisReportDao.getImmuneLungTable();
+            immuneTables = filterInvalidImmune(immuneTable,"desc7", "desc8", "desc24");
+
+        } else if (hpbPanels.contains(panel)) {
+            title = "目前肝胆胰腺肿瘤已批准的免疫治疗药物";
+            immuneTable = analysisReportDao.getImmunehpbTable();
+            immuneTables = filterInvalidImmune(immuneTable,"desc17", "desc28", "desc24");
+
+        } else if (urinaryPanels.contains(panel)) {
+            title = "目前泌尿系统肿瘤/实体瘤已批准的免疫治疗药物";
+            immuneTable = analysisReportDao.getImmuneUrinaryTable();
+            immuneTables = filterInvalidImmune(immuneTable,"desc18", "desc19", "desc24");
+
+        }else{
+            title = "目前各癌种已批准的免疫治疗药物";
+            immuneTable = analysisReportDao.getImmuneTable();
+            Map immuneTable1 = immuneTable.get(0);
+            // 获取每个免疫表格数据,10代表表格有10列,后续根据解读人员展示需要修改（规则清楚可实现自动化给取动态数字）
+            int column = 10;
+            for (int i = 1; i < immuneTable.size(); i++) {
+                if (i % column == 0) {
+                    immuneTable.add(i, immuneTable1);
+                }
+            }
+            List<List<Map>> immuneLists = splistList(immuneTable, column);
+            for (int i = 0; i < immuneLists.size(); i++) {
+                Map map = new HashMap();
+                List<String> immuneTableKey = new ArrayList<>();
+                List<Map> immuneList = immuneLists.get(i);
+                // 遍历每行内容
+                for (int j = 1; j <= immuneTable1.size(); j++) {
+                    immuneTableKey.add("desc" + j);
+                }
+                map.put("immuneList", immuneList);
+                map.put("immuneTableKey", immuneTableKey);
+                immuneTables.add(map);
+            }
+        }
+
+        rt.setImmuneAll(immuneTables);
+    }
+
+    public List<Map> filterInvalidImmune(List<Map> dataList, String key1, String key2, String key3) {
+        return dataList.stream()
+                .filter(map -> {
+                    String val1 = String.valueOf(map.getOrDefault(key1, ""));
+                    String val2 = String.valueOf(map.getOrDefault(key2, ""));
+                    String val3 = String.valueOf(map.getOrDefault(key3, ""));
+                    return !("/".equals(val1) && "/".equals(val2) && "/".equals(val3));
+                })
+                .collect(Collectors.toList());
     }
 
 }
