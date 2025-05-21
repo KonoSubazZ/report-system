@@ -3877,7 +3877,16 @@ public class PyReportServiceImpl implements PyReportService {
         // 增加配置，有模块化才使用新模块化逻辑
         if (templateConf != null) {
             // CUSTOM 报告一些基础数据
-            HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd, allMutation, rt.getPanel());
+
+            Map<String, Object> detectedGeneInfo = new HashMap<>();
+            detectedGeneInfo.put("target_drug_gene_list", targetDrugGeneSet);
+            detectedGeneInfo.put("fusion_gene_list", fusionGeneSet);
+            detectedGeneInfo.put("snp_gene_list", snpGeneSet);
+            detectedGeneInfo.put("cnv_gene_list", cnvGeneSet);
+            detectedGeneInfo.put("cr_gene_list", CRGeneSet);
+            detectedGeneInfo.put("immune_gene_list", immuneGeneSet);
+
+            HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd, allMutation, rt.getPanel(), detectedGeneInfo, hasCRDrug);
             rt.setReportInfo(reportInfo);
 
             // CUSTOM 关于癌种判断的一些展示逻辑,生成检测项目信息
@@ -4619,7 +4628,7 @@ public class PyReportServiceImpl implements PyReportService {
         return res;
     }
 
-    private HashMap<String, Object> generateReportInfoData(TemplateConf templateConf, Map pd, List<Map> allMutation, String panel) {
+    private HashMap<String, Object> generateReportInfoData(TemplateConf templateConf, Map pd, List<Map> allMutation, String panel, Map detectedGeneInfo, boolean hasCRDrug) {
         HashMap<String, Object> res = new HashMap<>();
         String reportName = templateConf.getReport_name();
         if (pd != null) {
@@ -4632,10 +4641,9 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 增加对于 解析模块的判断
         List<String> panelList = moduleService.getconfPanelList("ANAL_HIDE_IF_NO_DATA");
-        for (Map mutation : allMutation) {
-            String gene = String.valueOf(mutation.get("gene"));
-
-        }
+        int saomaticCount = (int) allMutation.stream().filter(mutation -> {
+            return mutation.get("gene").equals("ENSG00000157764");
+        }).count();
         boolean isShowAnal = true;
         if (panelList.contains(panel) && allMutation.isEmpty()) {
             isShowAnal = false;
