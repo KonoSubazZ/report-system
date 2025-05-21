@@ -249,6 +249,8 @@ public class PyReportServiceImpl implements PyReportService {
         }
         rt.setBodyGeneSet(bodyGeneSet);
 
+        // 增加关于判断是否有胚系用药，用于目录判断
+        boolean hasCRDrug = false;
         // 遍历胚系突变基因
         for (Map a : crAllList) {
             String Gene = a.get("Gene").toString();
@@ -272,6 +274,7 @@ public class PyReportServiceImpl implements PyReportService {
             if ("1".equals(Clinical_significance) || "2".equals(Clinical_significance)) {
                 hasPathogenicityCount++;
                 targetDrugGeneSet.add(Gene);
+                hasCRDrug = true;
             }
         }
         rt.setEmbryonalGeneSet(embryonalGeneSet);
