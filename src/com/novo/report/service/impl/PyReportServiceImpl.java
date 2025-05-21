@@ -4652,6 +4652,7 @@ public class PyReportServiceImpl implements PyReportService {
         res.put("name", reportName);
         res.put("name1", name1);
         res.put("conf", templateConf);
+        res.put("detected_gene_info", detectedGeneInfo);
         return res;
     }
 
