@@ -890,7 +890,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    desc27,
 		    desc28
 		FROM
-		    immune_table
+		    immune_table1
 		ORDER BY id
 	</select>
 	<select id="getImmuneLungTable" resultType="java.util.Map">
@@ -903,7 +903,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			desc8,
 			desc24
 		FROM
-			immune_table
+			immune_table1
 		ORDER BY id
 	</select>
 
@@ -917,7 +917,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			desc28,
 			desc24
 		FROM
-			immune_table
+			immune_table1
 		ORDER BY id
 	</select>
 
@@ -931,7 +931,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			desc19,
 			desc24
 		FROM
-			immune_table
+			immune_table1
 		ORDER BY id
 	</select>
 
