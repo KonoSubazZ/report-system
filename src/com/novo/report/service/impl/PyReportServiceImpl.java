@@ -5214,7 +5214,7 @@ public class PyReportServiceImpl implements PyReportService {
      * @param ExonicFunc
      * @return
      */
-   /* @Override
+    @Override
     public String translateMutType(String ExonicFunc) {
         switch (ExonicFunc) {
             case "nonsynonymous SNV":
@@ -5246,8 +5246,8 @@ public class PyReportServiceImpl implements PyReportService {
             default:
                 return ExonicFunc;
         }
-    }*/
-    @Override
+    }
+    /*@Override
     public String translateMutType(String ExonicFunc) {
         switch (ExonicFunc) {
             case "nonsynonymous SNV":
@@ -5280,7 +5280,6 @@ public class PyReportServiceImpl implements PyReportService {
                 return ExonicFunc;
         }
     }
-
     /**
      * 翻译临床意义 12345->是否致病
      *
@@ -7060,16 +7059,28 @@ public class PyReportServiceImpl implements PyReportService {
             pageName = pageName.replace("检测报告", "+PD-L1检测报告");
         }
         // Generate the unique QR code string
-        String qrcode = RandomUtils.getStringRandom(4) + report_id.substring(0, 2) + RandomUtils.getStringRandom(6) + report_id.substring(2) + RandomUtils.getStringRandom(2);
+        String qrunicode = RandomUtils.getStringRandom(4) + report_id.substring(0, 2) + RandomUtils.getStringRandom(6) + report_id.substring(2) + RandomUtils.getStringRandom(2);
 
         // Upload QR code via API
-        String ngsQrcodeUrl = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/" + client + "/subbarcode/" + subbarcode + "/product_name/" + pageName + "/username/3/qrcode/" + qrcode + "/report_date/" + report_date;
-        String httpResponse = WebserviceProxyUtils.httpURLGETCase(ngsQrcodeUrl);
-        System.out.println(httpResponse);
+        // String ngsQrcodeUrl = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/" + client + "/subbarcode/" + subbarcode + "/product_name/" + pageName + "/username/3/qrcode/" + qrcode + "/report_date/" + report_date;
+        // String httpResponse = WebserviceProxyUtils.httpURLGETCase(ngsQrcodeUrl);
+        // System.out.println(httpResponse);
+
+        // 改为使用HttpApiClientUtil post
+        String ngsQrcodeUrl = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode";
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("client", client);
+        jsonObject.addProperty("subbarcode", subbarcode);
+        jsonObject.addProperty("product_name", pageName);
+        jsonObject.addProperty("report_date", report_date);
+        jsonObject.addProperty("qrcode", qrunicode);
+
+        HttpApiClientUtil.sendPost(ngsQrcodeUrl, jsonObject.toString(), null);
 
         // Create QR code image
         String methodUrl = "http://qrcode.novogene.com/index.php/Api/Code/qrcode/uncodeid/";
-        String qrCodeImagePath = CreateQRCode.createQRCode(methodUrl + qrcode, logoPath);
+        String qrCodeImagePath = CreateQRCode.createQRCode(methodUrl + qrunicode, logoPath);
 
         return qrCodeImagePath;
     }
