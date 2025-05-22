@@ -321,12 +321,12 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public String getCRTumors(String gene, String gender, String clinicalSignificance) {
-        final String DEFAULT_TUMORS = "-";
-        final String MALE = "男";
-        final String FEMALE = "女";
+         String DEFAULT_TUMORS = "-";
+         String MALE = "男";
+         String FEMALE = "女";
 
         // 未知临床意义
-        if ("3".equals(clinicalSignificance)) {
+        if (clinicalSignificance.equals("3")) {
             return DEFAULT_TUMORS;
         }
         if (!MALE.equals(gender) && !FEMALE.equals(gender)) {
