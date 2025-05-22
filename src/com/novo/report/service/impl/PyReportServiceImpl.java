@@ -6392,6 +6392,7 @@ public class PyReportServiceImpl implements PyReportService {
         jsonObject.addProperty("product_name", pageName);
         jsonObject.addProperty("report_date", report_date);
         jsonObject.addProperty("qrcode", qrunicode);
+
         HttpApiClientUtil.sendPost(ngsQrcodeUrl, jsonObject.toString(), null);
 
         // Create QR code image
