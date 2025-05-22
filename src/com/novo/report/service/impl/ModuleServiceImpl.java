@@ -334,7 +334,7 @@ public class ModuleServiceImpl implements ModuleService {
         }
 
         String CRTumors = moduleDao.getCRTumors(gene, gender);
-        return (CRTumors == null || CRTumors.isEmpty()) ? DEFAULT_TUMORS : CRTumors;
+        return CRTumors == null ? DEFAULT_TUMORS : CRTumors;
     }
 
     private String buildDefaultGeneJson(List<String> geneSymbols) {
