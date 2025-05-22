@@ -4667,7 +4667,7 @@ public class PyReportServiceImpl implements PyReportService {
      * @param ExonicFunc
      * @return
      */
-   /* @Override
+    @Override
     public String translateMutType(String ExonicFunc) {
         switch (ExonicFunc) {
             case "nonsynonymous SNV":
@@ -4699,8 +4699,8 @@ public class PyReportServiceImpl implements PyReportService {
             default:
                 return ExonicFunc;
         }
-    }*/
-    @Override
+    }
+    /*@Override
     public String translateMutType(String ExonicFunc) {
         switch (ExonicFunc) {
             case "nonsynonymous SNV":
@@ -4732,7 +4732,8 @@ public class PyReportServiceImpl implements PyReportService {
             default:
                 return ExonicFunc;
         }
-    }
+    }*/
+
 
     /**
      * 翻译临床意义 12345->是否致病
