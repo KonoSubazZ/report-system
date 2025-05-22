@@ -329,7 +329,6 @@ public class ModuleServiceImpl implements ModuleService {
         if ("3".equals(clinicalSignificance)) {
             return DEFAULT_TUMORS;
         }
-
         if (!MALE.equals(gender) && !FEMALE.equals(gender)) {
             gender = "/";
         }
