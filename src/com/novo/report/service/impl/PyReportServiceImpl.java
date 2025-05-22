@@ -2129,7 +2129,9 @@ public class PyReportServiceImpl implements PyReportService {
                     geneDDR.add(Gene);
                 }
             }
-            if (!(Clinical_significance.equals("4") || Clinical_significance.equals("5"))) {
+            if (!Clinical_significance.equals("4") && !Clinical_significance.equals("5")) {
+                String crTumors = moduleService.getCRTumors(Gene,sf.getGender(),Clinical_significance);
+                crCheckLine.put("cr_tumors", crTumors);
                 crCheckLineStrYF1280.add(crCheckLine);
             }
             if (c1000g2015aug_all.equals(".") || Double.valueOf(c1000g2015aug_all.substring(0, c1000g2015aug_all.length() - 1)) < 5) {

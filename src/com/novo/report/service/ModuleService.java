@@ -238,4 +238,13 @@ public interface ModuleService {
     List<String> getconfTemplateList(@Param("conf") String conf);
 
     String getConfGenes(@Param("panel") String panel, @Param("geneSymbols") List<String> geneSymbols);
+
+    /**
+     * 获取遗传基因相关肿瘤
+     * @param gender
+     * @param gene
+     * @param clinicalSignificance
+     * @return
+     */
+    String getCRTumors(@Param("gender") String gender, @Param("gene") String gene, @Param("clinicalSignificance")String clinicalSignificance);
 }

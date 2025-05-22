@@ -30,4 +30,6 @@ public interface ModuleDao {
     Map<String,Object> getModuleConf(@Param("conf")String conf);
 
     String getConfGenes(String panel);
+
+    String getCRTumors(String gender, String gene);
 }

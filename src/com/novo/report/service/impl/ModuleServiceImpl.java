@@ -319,6 +319,25 @@ public class ModuleServiceImpl implements ModuleService {
         return buildDefaultGeneJson(geneSymbols);
     }
 
+    @Override
+    public String getCRTumors(String gender, String gene, String clinicalSignificance) {
+        final String DEFAULT_TUMORS = "-";
+        final String MALE = "男";
+        final String FEMALE = "女";
+
+        // 未知临床意义
+        if ("3".equals(clinicalSignificance)) {
+            return DEFAULT_TUMORS;
+        }
+
+        if (!MALE.equals(gender) && !FEMALE.equals(gender)) {
+            gender = "/";
+        }
+
+        String CRTumors = moduleDao.getCRTumors(gender, gene);
+        return (CRTumors == null || CRTumors.isEmpty()) ? DEFAULT_TUMORS : CRTumors;
+    }
+
     private String buildDefaultGeneJson(List<String> geneSymbols) {
 
         Gson gson = new Gson();

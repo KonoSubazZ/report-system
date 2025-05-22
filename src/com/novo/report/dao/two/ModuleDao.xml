@@ -141,5 +141,14 @@
         WHERE FIND_IN_SET(#{panels}, panel)
     </select>
 
+    <select id="getCRTumors" resultType="java.lang.String">
+            SELECT
+                tumors
+            FROM cr_related_tumors
+            WHERE gender = #{gender}
+              AND gene = #{gene}
+              AND deleted = 0
+    </select>
+
 
 </mapper>
