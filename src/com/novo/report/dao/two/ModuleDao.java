@@ -18,18 +18,19 @@ public interface ModuleDao {
 
     ModTestResultSummaryNote getTestResultSummaryNote(String templateName);
 
-    ModReferences getReferences(@Param("templateName")String templateName, @Param("module") String module);
+    ModReferences getReferences(@Param("templateName") String templateName, @Param("module") String module);
 
     ModCommonNote getCommonNote(ModCommonNote modCommonNote);
 
     List<ModCancer> getCommonCancerNote(ModCancer cancer);
 
-    List<ModCancer> getImmunityGeneList(@Param("module")String module,@Param("productName") String productName);
+    List<ModCancer> getImmunityGeneList(@Param("module") String module, @Param("productName") String productName);
 
     List<ModCancer> getSarcomaNote(ModCancer cancer);
-    Map<String,Object> getModuleConf(@Param("conf")String conf);
+
+    Map<String, Object> getModuleConf(@Param("conf") String conf);
 
     String getConfGenes(String panel);
 
-    String getCRTumors(String gender, String gene);
+    String getCRTumors(@Param("gene") String gene, @Param("gender") String gender);
 }

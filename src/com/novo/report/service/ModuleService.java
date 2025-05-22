@@ -246,5 +246,5 @@ public interface ModuleService {
      * @param clinicalSignificance
      * @return
      */
-    String getCRTumors(@Param("gender") String gender, @Param("gene") String gene, @Param("clinicalSignificance")String clinicalSignificance);
+    String getCRTumors(String gene, String gender, String clinicalSignificance);
 }

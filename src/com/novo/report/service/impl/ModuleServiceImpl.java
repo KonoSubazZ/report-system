@@ -320,7 +320,7 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public String getCRTumors(String gender, String gene, String clinicalSignificance) {
+    public String getCRTumors(String gene, String gender, String clinicalSignificance) {
         final String DEFAULT_TUMORS = "-";
         final String MALE = "男";
         final String FEMALE = "女";
@@ -334,7 +334,7 @@ public class ModuleServiceImpl implements ModuleService {
             gender = "/";
         }
 
-        String CRTumors = moduleDao.getCRTumors(gender, gene);
+        String CRTumors = moduleDao.getCRTumors(gene, gender);
         return (CRTumors == null || CRTumors.isEmpty()) ? DEFAULT_TUMORS : CRTumors;
     }
 
