@@ -3478,6 +3478,8 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         rt.setImportantTargetedDiseaseName(target_cancer);
+
+        // MOD 精准诊疗相关基因结果汇总
         List<Map> commonTargetedDrug1 = analysisReportDao.getCommonTargetedDrug2(target_cancer);
         // 根据产品基因过滤
         List<Map> importantTargetedGeneFilter = commonTargetedDrug1.stream().filter(s -> geneSymbols.contains(s.get("gene").toString().split("\\\\r\\\\n")[0])).collect(Collectors.toList());
