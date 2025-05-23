@@ -31,4 +31,36 @@ public class VariantServiceImpl implements VariantService {
                 });
 
     }
+
+    @Override
+    public boolean isEGFRExon20Insertion(String gene, Integer mutId) {
+        if (mutId == null) {
+            return false;
+        }
+
+        List<Map> parentMutList = variantDao.getParentMut(gene, mutId);
+
+        return parentMutList.stream()
+                .anyMatch(map -> {
+                    Object parentVariant = map.get("parent_variant");
+                    return parentVariant != null &&
+                            parentVariant.toString().equals("Exon20 Insertion Mutation");
+                });
+    }
+
+    @Override
+    public boolean isMET14Skipping(String gene, Integer mutId) {
+        if (mutId == null) {
+            return false;
+        }
+
+        List<Map> parentMutList = variantDao.getParentMut(gene, mutId);
+
+        return parentMutList.stream()
+                .anyMatch(map -> {
+                    Object parentVariant = map.get("parent_variant");
+                    return parentVariant != null &&
+                            parentVariant.toString().equals("Exon14 Skipping Mutation");
+                });
+    }
 }

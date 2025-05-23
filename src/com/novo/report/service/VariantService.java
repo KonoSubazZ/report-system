@@ -14,4 +14,7 @@ public interface VariantService {
 	 * @return
 	 */
 	boolean isExon19Deletion(String gene, Integer mutId);
+
+	boolean  isEGFRExon20Insertion(String gene, Integer mutId);
+	boolean  isMET14Skipping(String gene, Integer mutId);
 }
