@@ -2064,6 +2064,10 @@ public class PyReportServiceImpl implements PyReportService {
         boolean geneMBD4AndIsozygoty = false; // MBD4 基因   纯合的致病或可能致病突变输出附件中MBD4双等位基因致病变异表格,杂合输出MBD4杂合致病变异表格
         boolean geneMUTYHAndIsozygoty = false; // MUTYH 基因   纯合的致病或可能致病突变输出附件中MUTYH双等位基因致病变异表格,杂合输出MBD4杂合致病变异表格
         int crCount1 = 0;
+        // cr tumors 描述。检测结果小结
+        String crTumorsDesc = "";
+        Set<String> crTumorsSet = new HashSet<>();
+
         for (Map map : crAllList) {
             Map crCheckLine = new HashMap();
             String Gene = map.get("Gene").toString();
@@ -2080,9 +2084,10 @@ public class PyReportServiceImpl implements PyReportService {
             String Transcript = map.get("Transcript").toString();
             String avsnp150 = map.get("avsnp150").toString();
             String ori_variant = map.get("ori_variant").toString();
-            if (dMMRGeneList.contains(Gene) && (Clinical_significance.equals("1") || Clinical_significance.equals("2"))) {
+            // TODO 待移除，已经放到一个循环
+           /* if (dMMRGeneList.contains(Gene) && (Clinical_significance.equals("1") || Clinical_significance.equals("2"))) {
                 mmrNum = mmrNum + 1;
-            }
+            }*/
             crCount1++;
             crCheckLine.put("crCount", crCount1);
             crCheckLine.put("Gene", Gene);
@@ -2105,6 +2110,10 @@ public class PyReportServiceImpl implements PyReportService {
             crCheckLineStr.add(crCheckLine);
 
             if (Clinical_significance.equals("1") || Clinical_significance.equals("2")) {
+                // 优化mmr检测个数逻辑
+                if(dMMRGeneList.contains(Gene)){
+                    mmrNum++;
+                }
                 cancerRiskGene.add(Gene);
                 if ("NTHL1".equals(Gene) && "纯合".equals(Zygosity)) {
                     geneNTHL1AndIsozygoty = true;
@@ -2135,8 +2144,14 @@ public class PyReportServiceImpl implements PyReportService {
                 }
             }
             if (Clinical_significance.equals("1") || Clinical_significance.equals("2") || Clinical_significance.equals("3")) {
+
                 String crTumors = moduleService.getCRTumors(Gene, sf.getGender(), Clinical_significance);
                 crCheckLine.put("cr_tumors", crTumors);
+                if (crTumors != null) {
+                    String[] tumorsArray = crTumors.split("，");
+                    crTumorsSet.addAll(Arrays.asList(tumorsArray));
+                }
+
                 crCheckLineStrYF1280.add(crCheckLine);
             }
             if (c1000g2015aug_all.equals(".") || Double.valueOf(c1000g2015aug_all.substring(0, c1000g2015aug_all.length() - 1)) < 5) {
