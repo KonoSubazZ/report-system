@@ -86,11 +86,15 @@ public class PyReportServiceImpl implements PyReportService {
 
     @Autowired
     private ModuleService moduleService;
+
     @Autowired
     private ModuleDao moduleDao;
 
     @Autowired
     private VariantService variantService;
+
+    @Autowired
+    private GeneAnalysisService geneAnalysisService;
 
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
@@ -180,6 +184,7 @@ public class PyReportServiceImpl implements PyReportService {
         HashSet<String> cnvGeneSet = new HashSet<>();
         HashSet<String> CRGeneSet = new HashSet<>();
         HashSet<String> targetDrugGeneSet = new HashSet<>();
+        HashSet<String> mmrGeneSet = new HashSet<>();
 
 
         //循环设置临床意义
@@ -228,14 +233,14 @@ public class PyReportServiceImpl implements PyReportService {
             String ExonicFunc = String.valueOf(a.get("ExonicFunc"));
             String resultTypeDesc = String.valueOf(a.get("resultTypeDesc"));
 
-            if (ExonicFunc.equals("基因扩增")){
+            if (ExonicFunc.equals("基因扩增")) {
                 cnvGeneSet.add(Gene);
-            }else if (ExonicFunc.equals("基因融合")){
+            } else if (ExonicFunc.equals("基因融合")) {
                 fusionGeneSet.add(Gene);
-            }else {
+            } else {
                 snpGeneSet.add(Gene);
             }
-            if (resultTypeDesc.equals("靶向药物")){
+            if (resultTypeDesc.equals("靶向药物")) {
                 targetDrugGeneSet.add(Gene);
             }
 
@@ -3527,6 +3532,8 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> dMMRinfo = mmDmmrs.stream().map(it -> {
             Map<String, Object> apiMap = new HashMap<>();
             apiMap.put("gene", it.getGene());
+            // 增加 mmr gene set
+            mmrGeneSet.add(it.getGene());
             apiMap.put("ori_variant", it.getOri_variant());
             apiMap.put("mutFreq", it.getMutFreq());
             apiMap.put("mut_type", it.getMut_type());
@@ -3628,6 +3635,10 @@ public class PyReportServiceImpl implements PyReportService {
                 }
             }
         }
+
+        // MOD HRR同源重组基因修复HRR
+        List<Map<String, String>> HRRData = geneAnalysisService.generateHRRData(product_name, list);
+
 
         // MOD BRCA1&BRCA2基因说明及用药提示 BRCA1&BRCA2基因说明及用药提示（表格）
         List<Map> brcaGeneSpecification = analysisReportDao.getBrcaGeneSpecification();
@@ -5251,6 +5262,7 @@ public class PyReportServiceImpl implements PyReportService {
                 return ExonicFunc;
         }
     }
+
     /*@Override
     public String translateMutType(String ExonicFunc) {
         switch (ExonicFunc) {
