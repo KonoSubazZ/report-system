@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.GeneAnalysisDao">
+
+	<select id="getHRRGene" resultType="java.util.Map">
+		SELECT
+			a.gene,
+			a.clinical_significance_desc
+		FROM
+			mod_hrr AS a
+				JOIN panel_gene AS b ON a.gene = b.gene
+		WHERE
+			a.product_name = #{panel}
+		  AND b.deleted = 0
+	</select>
+
+</mapper>
