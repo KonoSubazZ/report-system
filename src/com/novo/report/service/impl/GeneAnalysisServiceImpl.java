@@ -38,9 +38,9 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
             StringBuilder variantsBuilder = new StringBuilder();
             for (Map mutationDrug : mutationDrugList) {
                 String drugGene = String.valueOf(mutationDrug.getOrDefault("gene", ""));
-                String resType = String.valueOf(mutationDrug.getOrDefault("resType", ""));
+                String resType = String.valueOf(mutationDrug.getOrDefault("resultTypeDesc", ""));
                 String oriVariant = String.valueOf(mutationDrug.getOrDefault("ori_variant", ""));
-                // 检查是否为靶向药物且基因匹配
+                // 检查是否为靶向药物且基因匹配且是点突变
                 if (HRRGene.equals(drugGene) && "靶向药物".equals(resType)) {
                     int cIndex = oriVariant.indexOf("c.");
                     if (cIndex >= 0) {
@@ -56,7 +56,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
                 HRRmap.put("variant", defaultIfEmpty(variantsBuilder.toString(), "-"));
             }
         }
-        return Collections.emptyList();
+        return HRRGeneList;
     }
 
 }
