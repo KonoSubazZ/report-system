@@ -96,6 +96,9 @@ public class PyReportServiceImpl implements PyReportService {
     @Autowired
     private GeneAnalysisService geneAnalysisService;
 
+    @Autowired
+    private DiseaseService diseaseService;
+
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
         boolean flag = false;
@@ -2111,7 +2114,7 @@ public class PyReportServiceImpl implements PyReportService {
 
             if (Clinical_significance.equals("1") || Clinical_significance.equals("2")) {
                 // 优化mmr检测个数逻辑
-                if(dMMRGeneList.contains(Gene)){
+                if (dMMRGeneList.contains(Gene)) {
                     mmrNum++;
                 }
                 cancerRiskGene.add(Gene);
@@ -3652,7 +3655,14 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // MOD HRR同源重组基因修复HRR
-        List<Map<String, String>> HRRData = geneAnalysisService.generateHRRData(product_name, list);
+        // 188以上非 HRD panel,卵巢癌、卵巢癌、前列腺癌、乳腺癌
+        if (diseaseService.isFallopianTubeCancer(diseaseId)
+                || diseaseService.isOvarianCancer(diseaseId)
+                || diseaseService.isProstateCancer(diseaseId)
+                || diseaseService.isBreastCarcinoma(diseaseId)) {
+            
+            List<Map<String, String>> HRRData = geneAnalysisService.generateHRRData(product_name, list);
+        }
 
 
         // MOD BRCA1&BRCA2基因说明及用药提示 BRCA1&BRCA2基因说明及用药提示（表格）
