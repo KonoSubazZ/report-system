@@ -557,6 +557,9 @@ def splitlines(value, delimiter=',', strip=True, use_newline=True):
     # 使用分隔符连接元素
     return separator.join(parts)
 
+def split_to_newlines(value, delimiter=',', word_break='<w:br/>'):
+    parts = [p.strip() for p in value.split(delimiter) if p.strip()]
+    return f' {word_break} '.join(parts) + f' {word_break}' if parts else ''
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
