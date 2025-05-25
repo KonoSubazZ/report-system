@@ -3660,9 +3660,13 @@ public class PyReportServiceImpl implements PyReportService {
                 || diseaseService.isOvarianCancer(diseaseId)
                 || diseaseService.isProstateCancer(diseaseId)
                 || diseaseService.isBreastCarcinoma(diseaseId)) {
-            
+
             List<Map<String, String>> HRRData = geneAnalysisService.generateHRRData(product_name, list);
+            int HRRDetectedGeneCount = (int) HRRData.stream()
+                    .filter(map -> !"-".equals(map.get("variant")))
+                    .count();
             rt.setHRRInfoList(HRRData);
+            summaryOfRresults.put("HRRDetectedGeneCount", HRRDetectedGeneCount);
         }
 
 
