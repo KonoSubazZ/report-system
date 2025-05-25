@@ -15,6 +15,19 @@ public interface VariantService {
 	 */
 	boolean isExon19Deletion(String gene, Integer mutId);
 
+	/**
+	 * 判断是否是EGFR Exon20 Insertion
+	 * @param mutId
+	 * @return
+	 */
 	boolean  isEGFRExon20Insertion(String gene, Integer mutId);
+
+	/**
+	 * 判断是否是MET14 Skipping
+	 * @param mutId
+	 * @return
+	 */
 	boolean  isMET14Skipping(String gene, Integer mutId);
+
+	String specialVariantDesc(String gene, Integer mutId);
 }

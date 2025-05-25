@@ -63,4 +63,23 @@ public class VariantServiceImpl implements VariantService {
                             parentVariant.toString().equals("Exon14 Skipping Mutation");
                 });
     }
+
+    @Override
+    public String specialVariantDesc(String gene, Integer mutId) {
+        if (mutId == null) return "";
+
+        if (isExon19Deletion(gene, mutId)) {
+            return "( 19del )";
+        }
+
+        if (isEGFRExon20Insertion(gene, mutId)) {
+            return "( 第二十号外显子插入 )";
+        }
+
+        if (isMET14Skipping(gene, mutId)) {
+            return "( 14号外显子跳跃 )";
+        }
+
+        return "";
+    }
 }
