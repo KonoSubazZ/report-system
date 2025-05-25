@@ -385,6 +385,8 @@ public class PyAnalysisReportTemplateUtil {
         data.put("panel", rt.getPanel());
         // 检出重要基因总表数据
         // data.put("importantTargetedGeneSummary", rt.getImportantTargetedGeneSummary());
+        // 同源重组HRR基因检测
+        data.put("HRRInfoList", rt.getHRRInfoList());
         // 报告-基础信息
         data.put("reportInfo", rt.getReportInfo());
 

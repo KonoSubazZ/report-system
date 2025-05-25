@@ -518,8 +518,8 @@ def mark_genes_in_red(gene_tables, detected_gene_info):
         if gene_type not in detected_mapping:
             show_red_note = False
         detected_gene_list = detected_gene_info.get(detected_mapping.get(gene_type, ""), [])
-        if not detected_gene_list:
-            continue
+        # if not detected_gene_list:
+        #     continue
         add_gene_rich_text(gene_list, detected_gene_list)
     return show_red_note
 
