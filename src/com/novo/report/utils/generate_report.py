@@ -531,6 +531,32 @@ def add_gene_rich_text(gene_list, detected_gene_list):
             else:
                 gene_list[row_idx][col_idx] = MyRichTextV1(gene, cnfont='微软雅黑', font='Times New Roman', size='18', italic=True)
 
+def splitlines(value, delimiter=',', strip=True, use_newline=True):
+    """
+    将字符串按指定分隔符分割，并在元素间添加分隔符（默认是换行符）
+
+    参数:
+        value: 要处理的字符串
+        delimiter: 分割原字符串的分隔符，默认为逗号
+        strip: 是否去除每个元素的前后空格，默认为True
+        use_newline: 是否使用换行符作为元素间的分隔符，默认为True
+    """
+    if not value:
+        return ''
+
+    # 分割字符串
+    parts = value.split(delimiter)
+
+    # 处理每个元素（去除空格）
+    if strip:
+        parts = [part.strip() for part in parts]
+
+    # 根据use_newline参数选择分隔符
+    separator = '\n' if use_newline else ''
+
+    # 使用分隔符连接元素
+    return separator.join(parts)
+
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
@@ -646,6 +672,7 @@ if __name__ == '__main__':
         jinja_env.filters['nb'] = newBold
         jinja_env.filters['split'] = split
         jinja_env.filters['mr'] = markInRed
+        jinja_env.filters['splitlines'] = splitlines
 
         #tpl.add_page_break()
         tpl.render(info_json, jinja_env,autoescape=True)
