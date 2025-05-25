@@ -2147,7 +2147,7 @@ public class PyReportServiceImpl implements PyReportService {
 
                 String crTumors = moduleService.getCRTumors(Gene, sf.getGender(), Clinical_significance);
                 crCheckLine.put("cr_tumors", crTumors);
-                if (crTumors != null) {
+                if (crTumors != null && !crTumors.equals("-")) {
                     String[] tumorsArray = crTumors.split("，");
                     crTumorsSet.addAll(Arrays.asList(tumorsArray));
                 }
