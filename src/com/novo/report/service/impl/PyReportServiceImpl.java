@@ -6809,6 +6809,7 @@ public class PyReportServiceImpl implements PyReportService {
                 List<Map> drugList = map1.get("drugList") == null ? null : (List<Map>) map1.get("drugList");
                 if (!CollectionUtils.isEmpty(drugList)) {
                     if (gene1.equals(gene.split("\\\\r\\\\n")[0]) && flag) {
+                        // 添加variant 19del 20ins met14特殊描述
                         if (mutId != null) {
                             ori_variant = ori_variant + " " + variantService.specialVariantDesc(gene1, mutId);
                         }
