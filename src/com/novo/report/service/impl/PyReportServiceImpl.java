@@ -6788,6 +6788,8 @@ public class PyReportServiceImpl implements PyReportService {
                 String gene1 = map1.get("gene").toString();
                 String ori_variant = removeMutations(transferOriVariant(map1.getOrDefault("ori_variant", "").toString()));
                 String mutFreq = map1.get("mutFreq") == null ? "/" : map1.get("mutFreq").toString();
+                String mutIdStr = (String) map1.getOrDefault("mutId", null);
+                Integer mutId = mutIdStr != null ? Integer.valueOf(mutIdStr) : null;
                 mutFreq = getMutFreq(ori_variant, mutFreq, null);
                 if ("突变/融合".equals(info)) {
                     flag = !ori_variant.equals("Amplification");
@@ -6807,6 +6809,9 @@ public class PyReportServiceImpl implements PyReportService {
                 List<Map> drugList = map1.get("drugList") == null ? null : (List<Map>) map1.get("drugList");
                 if (!CollectionUtils.isEmpty(drugList)) {
                     if (gene1.equals(gene.split("\\\\r\\\\n")[0]) && flag) {
+                        if (mutId != null) {
+                            ori_variant = ori_variant + " " + variantService.specialVariantDesc(gene1, mutId);
+                        }
                         ori_variantList.add(ori_variant);
                         mutFreqList.add(mutFreq);
                     }
