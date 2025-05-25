@@ -46,6 +46,7 @@ public class TemplateConf {
   private Boolean tumorNeoantigen;
   private Boolean pd;
   private Boolean approvedImmunityDrug;
+  private Boolean hrr;
   private Boolean cancerRiskAnal;
   private Boolean hrdStateAnal;
   private Boolean thyroidIymphomaDrugAnal;
@@ -469,6 +470,14 @@ public class TemplateConf {
 
   public void setApproved_immunity_drug(Boolean approvedImmunityDrug) {
     this.approvedImmunityDrug = approvedImmunityDrug;
+  }
+
+  public Boolean getHrr() {
+    return hrr;
+  }
+
+  public void setHrr(Boolean hrr) {
+    this.hrr = hrr;
   }
 
 
