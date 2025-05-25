@@ -1301,6 +1301,9 @@ public class GeneMarkerVwController {
         return geneticMarkerVwService.getDetectionResultList(report_id, product_id);
     }
 
+    /**
+     * 生成报告页面逻辑包括化疗癌种 靶向癌种 本癌种
+     */
     @RequestMapping("produceReport")
     public Object produceReport(CurrentNgsAvailableData currentNgsAvailableData, Model model, HttpServletRequest request) {
         Integer primary_cancer_id = lifeService.getPrimaryCancerIdByRID(currentNgsAvailableData.getReport_id());
