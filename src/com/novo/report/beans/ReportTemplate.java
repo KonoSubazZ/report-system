@@ -445,6 +445,19 @@ public class ReportTemplate {
      */
     private String panel;
 
+    public List<Map<String, String>> getHRRInfoList() {
+        return HRRInfoList;
+    }
+
+    public void setHRRInfoList(List<Map<String, String>> HRRInfoList) {
+        this.HRRInfoList = HRRInfoList;
+    }
+
+    /**
+     * 同源重组HRR基因检测结果
+     */
+    private List<Map<String, String>> HRRInfoList;
+
 
     /**
      * docs: 晶赛报告自定义的 BodyDrugTipCustomList
