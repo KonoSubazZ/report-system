@@ -3662,6 +3662,7 @@ public class PyReportServiceImpl implements PyReportService {
                 || diseaseService.isBreastCarcinoma(diseaseId)) {
             
             List<Map<String, String>> HRRData = geneAnalysisService.generateHRRData(product_name, list);
+            rt.setHRRInfoList(HRRData);
         }
 
 
