@@ -13,8 +13,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			mod_hrr AS a
 				JOIN panel_gene AS b ON a.gene = b.gene
 		WHERE
-			a.product_name = #{panel}
-		  AND b.deleted = 0
+			b.product_name = #{panel}
+		  AND a.deleted = 0
 	</select>
 
 </mapper>
