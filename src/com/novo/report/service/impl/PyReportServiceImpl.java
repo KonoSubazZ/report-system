@@ -208,7 +208,7 @@ public class PyReportServiceImpl implements PyReportService {
         String diseaseName = result_map.get("diseaseName").toString();
 
         // 生成解读癌种标志，需要判断子父级，用于判断做癌种判断
-        Map<String, Boolean> diseaseFlag = generateDiseaseFlag(diseaseName);
+        Map<String, Boolean> diseaseFlag = generateDiseaseFlag(diseaseName, diseaseId);
         rt.setDisease(diseaseFlag);
 
         // 匹配癌种id
@@ -3656,10 +3656,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // MOD HRR同源重组基因修复HRR
         // 188以上非 HRD panel,卵巢癌、卵巢癌、前列腺癌、乳腺癌
-        if (diseaseService.isFallopianTubeCancer(diseaseId)
-                || diseaseService.isOvarianCancer(diseaseId)
-                || diseaseService.isProstateCancer(diseaseId)
-                || diseaseService.isBreastCarcinoma(diseaseId)) {
+        if (diseaseFlag.get("HRR_disease")) {
 
             List<Map<String, String>> HRRData = geneAnalysisService.generateHRRData(product_name, list);
             int HRRDetectedGeneCount = (int) HRRData.stream()
@@ -4056,14 +4053,26 @@ public class PyReportServiceImpl implements PyReportService {
      *
      * @param diseaseName
      */
-    private Map<String, Boolean> generateDiseaseFlag(String diseaseName) {
+    private Map<String, Boolean> generateDiseaseFlag(String diseaseName, Integer diseaseId) {
         // 暂时所有的癌种Flag
         // String[] cancers = {"BrainGlioma", "Sarcoma", "Midline", "Kidney"};
         Map<String, Boolean> disease = new HashMap<>();
+        // TODO 上面为1166使用，待优化
         disease.put("BrainGlioma", diseaseName.contains("脑胶质瘤"));
         disease.put("Sarcoma", diseaseName.contains("肉瘤"));
         disease.put("Midline", diseaseName.contains("中线癌"));
         disease.put("Kidney", diseaseName.contains("肾"));
+
+        // 通用，癌种子父级判断
+        disease.put("BreastCarcinoma", diseaseService.isBreastCarcinoma(diseaseId));
+        disease.put("OvarianCancer", diseaseService.isOvarianCancer(diseaseId));
+        disease.put("FallopianTubeCancer", diseaseService.isFallopianTubeCancer(diseaseId));
+        disease.put("ProstateCancer", diseaseService.isProstateCancer(diseaseId));
+
+        // HRR模块使用的癌种
+        boolean isHRRDisease = disease.get("BreastCarcinoma") || disease.get("OvarianCancer")
+                || disease.get("FallopianTubeCancer") || disease.get("ProstateCancer");
+        disease.put("HRR_disease", isHRRDisease);
 
         return disease;
     }
