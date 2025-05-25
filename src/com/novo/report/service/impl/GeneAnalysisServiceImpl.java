@@ -10,6 +10,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.novo.report.utils.ServiceUtils.defaultIfEmpty;
+import static com.novo.report.utils.ServiceUtils.removeTrailingDots;
+
 @Service
 public class GeneAnalysisServiceImpl implements GeneAnalysisService {
 
@@ -30,17 +33,30 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
     public List<Map<String, String>> generateHRRData(String panel, List<Map> mutationDrugList) {
         List<Map<String, String>> HRRGeneList = geneAnalysisDao.getHRRGene(panel);
 
-        for (Map<String, String> map : HRRGeneList) {
-            String HRRGene = map.get("gene");
+        for (Map<String, String> HRRmap : HRRGeneList) {
+            String HRRGene = HRRmap.get("gene");
+            StringBuilder variantsBuilder = new StringBuilder();
             for (Map mutationDrug : mutationDrugList) {
-                if (HRRGene.equals(mutationDrug.get("gene"))) {
-
-                   map.put("variant", mutationDrug.get("variant").toString());
+                String drugGene = String.valueOf(mutationDrug.getOrDefault("gene", ""));
+                String resType = String.valueOf(mutationDrug.getOrDefault("resType", ""));
+                String oriVariant = String.valueOf(mutationDrug.getOrDefault("ori_variant", ""));
+                // 检查是否为靶向药物且基因匹配
+                if (HRRGene.equals(drugGene) && "靶向药物".equals(resType)) {
+                    int cIndex = oriVariant.indexOf("c.");
+                    if (cIndex >= 0) {
+                        String variant = oriVariant.substring(cIndex);
+                        // 去除p点不存在的情况
+                        variant = removeTrailingDots(variant);
+                        if (variantsBuilder.length() > 0) {
+                            variantsBuilder.append(",");
+                        }
+                        variantsBuilder.append(variant);
+                    }
                 }
+                HRRmap.put("variant", defaultIfEmpty(variantsBuilder.toString(), "-"));
             }
         }
         return Collections.emptyList();
     }
-
 
 }

@@ -19,6 +19,18 @@ public class ServiceUtils {
         }
     }
 
+    /**
+     * 如果输入字符串为空或null，返回默认值
+     */
+    public static String defaultIfEmpty(String value, String defaultValue) {
+        return (value == null || value.isEmpty()) ? defaultValue : value;
+    }
 
+    public static String removeTrailingDots(String str) {
+        while (str.endsWith(".")) {
+            str = str.substring(0, str.length() - 1);
+        }
+        return str;
+    }
 
 }
