@@ -3901,6 +3901,7 @@ public class PyReportServiceImpl implements PyReportService {
             detectedGeneInfo.put("cr_gene_list", CRGeneSet);
             detectedGeneInfo.put("immune_gene_list", immuneGeneSet);
             detectedGeneInfo.put("all_gene_list", allGeneSet);
+            detectedGeneInfo.put("mmr_gene_list", mmrGeneSet);
 
             HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd, allMutation, rt.getPanel(), detectedGeneInfo, hasCRDrug);
             rt.setReportInfo(reportInfo);
