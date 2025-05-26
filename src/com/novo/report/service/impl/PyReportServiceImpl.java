@@ -2167,8 +2167,8 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setCrCheckLineStrPathopoiesia(crCheckLineStrPathopoiesia);
         rt.setCrCheckLineStrYF1280(crCheckLineStrYF1280);
         // cr_tumors逻辑
-        if (!crTumorsSet.isEmpty()){
-             crTumorsDesc = "与" + StringUtils.join(crTumorsSet, "、") + "发生风险相关";
+        if (!crTumorsSet.isEmpty()) {
+            crTumorsDesc = "与" + StringUtils.join(crTumorsSet, "、") + "发生风险相关";
         }
         summaryOfRresults.put("cr_tumors_desc", crTumorsDesc);
         summaryOfRresults.put("crCheckLineStrYF1280Size", crCheckLineStrYF1280.size());
@@ -3663,12 +3663,12 @@ public class PyReportServiceImpl implements PyReportService {
         // 188以上非 HRD panel,卵巢癌、卵巢癌、前列腺癌、乳腺癌
         if (diseaseFlag.get("HRR_disease")) {
 
-            List<Map<String, String>> HRRData = geneAnalysisService.generateHRRData(product_name, list);
-            int HRRDetectedGeneCount = (int) HRRData.stream()
-                    .filter(map -> !"-".equals(map.get("variant")))
-                    .count();
-            rt.setHRRInfoList(HRRData);
-            summaryOfRresults.put("HRRDetectedGeneCount", HRRDetectedGeneCount);
+            Map<String, List<Map<String, String>>> HRRGeneInfo = geneAnalysisService.generateHRRData(product_name, list);
+//            int HRRDetectedGeneCount = (int) HRRData.stream()
+//                    .filter(map -> !"-".equals(map.get("variant")))
+//                    .count();
+//            rt.setHRRInfoList(HRRData);
+            summaryOfRresults.put("HRRDetectedGeneCount", geneAnalysisService.getHRRDetectedGeneCount());
         }
 
 

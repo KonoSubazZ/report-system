@@ -6,9 +6,7 @@ import com.novo.report.service.GeneAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.novo.report.utils.ServiceUtils.defaultIfEmpty;
 import static com.novo.report.utils.ServiceUtils.removeTrailingDots;
@@ -18,6 +16,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
 
     @Autowired
     private GeneAnalysisDao geneAnalysisDao;
+    private int HRRDetectedGeneCount;
 
     /**
      * 检出规则
@@ -30,7 +29,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
      * @return
      */
     @Override
-    public List<Map<String, String>> generateHRRData(String panel, List<Map> mutationDrugList) {
+    public Map<String, List<Map<String, String>>> generateHRRData(String panel, List<Map> mutationDrugList) {
         List<Map<String, String>> HRRGeneList = geneAnalysisDao.getHRRGene(panel);
 
         for (Map<String, String> HRRmap : HRRGeneList) {
@@ -53,10 +52,41 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
                         variantsBuilder.append(variant);
                     }
                 }
-                HRRmap.put("variant", defaultIfEmpty(variantsBuilder.toString(), "-"));
+
+            }
+            HRRmap.put("variant", defaultIfEmpty(variantsBuilder.toString(), "-"));
+        }
+
+        // 为了兼容HRR表格不能合并，把表格拆为两个表
+        Set<String> coreHRRGenes = new HashSet<>(Arrays.asList("BRCA1", "BRCA2"));
+        Map<String, List<Map<String, String>>> HRRGeneInfo = new HashMap<>();
+
+        List<Map<String, String>> HRRGeneList1 = new ArrayList<>();
+        List<Map<String, String>> HRRGeneList2 = new ArrayList<>();
+        // 检出HRR基因数
+        int HRRDetectedGeneCount = 0;
+        for (Map<String, String> map : HRRGeneList) {
+            String gene = map.get("gene");
+            String variant = map.get("variant");
+            if (!"-".equals(variant)) {
+                HRRDetectedGeneCount++;
+            }
+            if (coreHRRGenes.contains(map.get("gene"))) {
+                HRRGeneList1.add(map);
+            } else {
+                HRRGeneList2.add(map);
             }
         }
-        return HRRGeneList;
+        HRRDetectedGeneCount = HRRDetectedGeneCount;
+        HRRGeneInfo.put("HRRGeneList1", HRRGeneList1);
+        HRRGeneInfo.put("HRRGeneList2", HRRGeneList2);
+
+
+        return HRRGeneInfo;
     }
 
+    @Override
+    public int getHRRDetectedGeneCount() {
+        return HRRDetectedGeneCount;
+    }
 }

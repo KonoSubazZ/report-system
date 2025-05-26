@@ -445,18 +445,18 @@ public class ReportTemplate {
      */
     private String panel;
 
-    public List<Map<String, String>> getHRRInfoList() {
-        return HRRInfoList;
+    public Map<String, List<Map<String, String>>> getHRRInfo() {
+        return HRRInfo;
     }
 
-    public void setHRRInfoList(List<Map<String, String>> HRRInfoList) {
-        this.HRRInfoList = HRRInfoList;
+    public void setHRRInfo(Map<String, List<Map<String, String>>> HRRInfo) {
+        this.HRRInfo = HRRInfo;
     }
 
     /**
      * 同源重组HRR基因检测结果
      */
-    private List<Map<String, String>> HRRInfoList;
+    private Map<String, List<Map<String, String>>> HRRInfo;
 
 
     /**
