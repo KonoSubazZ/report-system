@@ -65,9 +65,11 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
         List<Map<String, String>> HRRGeneList2 = new ArrayList<>();
         // 检出HRR基因数
         int HRRDetectedGeneCount = 0;
+        Map<String, String> HRRGeneDetectedInfo = new HashMap<>();
         for (Map<String, String> map : HRRGeneList) {
             String gene = map.get("gene");
             String variant = map.get("variant");
+            HRRGeneDetectedInfo.put(gene, variant);
             if (!"-".equals(variant)) {
                 HRRDetectedGeneCount++;
             }

@@ -20,6 +20,7 @@ public class ChemoJsonUtil2 {
         List<Map<String, Object>> duplicate_temp = new ArrayList<>();
         List<Map<String, Object>> output_detail_result = new ArrayList<>();
         //## 统一基因型
+        // 预处理输入 chem 数据：对等位基因排序（如TC => CT），排除重复项
         List<Map<String, Object>> input = new ArrayList<>();
         for (Map<String, Object> map : chem) {
             String allele = map.get("allele").toString();
@@ -33,12 +34,18 @@ public class ChemoJsonUtil2 {
                 input.add(map);
             }
         }
+
         //## 匹配位点文件和知识库
+        // 遍历样本突变信息和 chemical_data2 药物知识库进行匹配
         for (Map<String, Object> map : input) {
+            // 样本突变信息染色体、位点、等位基因
             String chr = map.get("chr").toString();
             String pos = map.get("pos").toString();
             String allele = map.get("allele").toString();
+
+            // 匹配 chemical_data2
             for (Map<String, Object> map1 : chemicalData) {
+                // 提取知识库字段
                 String drug_name = map1.get("drug_name").toString();
                 String drug_name_chinese = map1.get("drug_name_chinese").toString();
                 String drug_class = map1.get("drug_class").toString();
@@ -62,6 +69,7 @@ public class ChemoJsonUtil2 {
                 String tox3 = map1.get("tox3").toString();
                 String eff3 = map1.get("eff3").toString();
                 String pmid = map1.get("PMID").toString();
+                // 最多只截取前三个PMID
                 String[] split = pmid.split(";");
                 String pmidStr = "[" + StringUtils.join(split, ", ", 0, split.length > 3 ? 3 : split.length) + "]";
                 tox1 = tox1.replace("减弱", "可能较低").replace("增强", "可能较高");
@@ -94,6 +102,7 @@ public class ChemoJsonUtil2 {
                         out_line.put("drug_name_chinese", drug_name_chinese);
                         out_line.put("gene", gene);
                         out_line.put("rs_id", rs_id);
+                        // 下四个字段需要区分 allele123的逻辑
                         out_line.put("allele", allele1);
                         out_line.put("trans_PMID", trans_PMID);
                         out_line.put("tox", tox1);
@@ -200,6 +209,7 @@ public class ChemoJsonUtil2 {
         }
 
         //# 对于同一药物同一基因同一基因型，若知识库中有两条（一条有对应基因型另一条没有），合并
+        // 合并重复位点记录（如某等位基因在知识库中同时出现有/无转录注释的情况）
         for (Map<String, Object> map : duplicate_temp) {
             List<Map<String, Object>> result = new ArrayList<>();
             String drug_class = map.get("drug_class").toString();
