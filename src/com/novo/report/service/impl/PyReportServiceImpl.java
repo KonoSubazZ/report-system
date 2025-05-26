@@ -3667,7 +3667,7 @@ public class PyReportServiceImpl implements PyReportService {
 //            int HRRDetectedGeneCount = (int) HRRData.stream()
 //                    .filter(map -> !"-".equals(map.get("variant")))
 //                    .count();
-//            rt.setHRRInfoList(HRRData);
+            rt.setHRRInfo(HRRGeneInfo);
             summaryOfRresults.put("HRRDetectedGeneCount", geneAnalysisService.getHRRDetectedGeneCount());
         }
 
