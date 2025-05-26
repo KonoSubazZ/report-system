@@ -6789,6 +6789,7 @@ public class PyReportServiceImpl implements PyReportService {
             List<String> ori_variantList = new ArrayList<>();
             List<String> ori_variantList2 = new ArrayList<>();
             List<String> mutFreqList = new ArrayList<>();
+
             for (Map map1 : list) {
                 String gene1 = map1.get("gene").toString();
                 String ori_variant = removeMutations(transferOriVariant(map1.getOrDefault("ori_variant", "").toString()));

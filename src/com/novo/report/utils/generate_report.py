@@ -676,6 +676,7 @@ if __name__ == '__main__':
         jinja_env.filters['split'] = split
         jinja_env.filters['mr'] = markInRed
         jinja_env.filters['splitlines'] = splitlines
+        jinja_env.filters['split_to_newlines'] = split_to_newlines
 
         #tpl.add_page_break()
         tpl.render(info_json, jinja_env,autoescape=True)
