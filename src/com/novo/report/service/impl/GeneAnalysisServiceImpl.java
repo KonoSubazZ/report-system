@@ -1,6 +1,7 @@
 package com.novo.report.service.impl;
 
 
+import com.novo.report.common.CommonQueryVO;
 import com.novo.report.dao.two.GeneAnalysisDao;
 import com.novo.report.service.GeneAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +95,12 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
 
     @Override
     public List<Map<String, String>> generateThyroidData(String subbarcode, String panel, String analysisDate) {
+        CommonQueryVO query = new CommonQueryVO();
+        query.setSubbarcode(subbarcode);
+        query.setAnalysis_date(analysisDate);
+        query.setProduct_name(panel);
+
+        List<Map<String, String>> thyroidGeneList = geneAnalysisDao.getThyroidGene(query);
         return Collections.emptyList();
     }
 }
