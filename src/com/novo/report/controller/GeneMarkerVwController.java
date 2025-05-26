@@ -670,6 +670,11 @@ public class GeneMarkerVwController {
                 List<MmThyroidPrognosis> mmThyroidPrognoses = moduleModificationAllDao.selectMmThyroidPrognosisByReportId(currentNgsAvailable.getReport_id());
                 if (mmThyroidPrognoses.isEmpty()) {
                     List<Map> prognosticEvaluation = analysisReportDao.getPrognosticEvaluation(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+
+                    // 走自己生成甲状腺的逻辑，生信流程没有
+                    if (CollectionUtils.isEmpty(prognosticEvaluation)) {
+
+                    }
                     for (Map map : prognosticEvaluation) {
                         MmThyroidPrognosis mmThyroidPrognosis = new MmThyroidPrognosis();
                         mmThyroidPrognosis.setReport_id(currentNgsAvailable.getReport_id());
