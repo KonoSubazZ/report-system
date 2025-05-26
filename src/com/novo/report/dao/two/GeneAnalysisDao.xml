@@ -17,7 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND a.deleted = 0
 	</select>
 
-    <select id="getThyroidGene" resultType="java.util.Map">
+    <select id="getSNVINDELGeneSite" resultType="java.util.Map">
 		SELECT
 			b.variant,
 			b.ori_variant,
@@ -31,6 +31,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND a.analysis_date = #{analysis_date}
 		  AND a.file_type in ('SNP', 'INDEL')
 		  AND a.status = 'Loaded'
+	</select>
+
+	<select id="getThyroid" resultType="java.util.Map">
+		SELECT
+			a.gene,
+			a.protein,
+			a.prognosis_evaluation,
+			a.prognosis_assessment
+		FROM
+			mod_thyroid AS a
+		WHERE
+		 	a.deleted = 0
 	</select>
 
 </mapper>

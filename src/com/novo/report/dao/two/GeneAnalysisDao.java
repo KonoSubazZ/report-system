@@ -10,5 +10,7 @@ public interface GeneAnalysisDao {
 
     List<Map<String, String>> getHRRGene(@Param("panel") String panel);
 
-    List<Map<String, String>> getThyroidGene(CommonQueryVO query);
+    List<Map<String, String>> getSNVINDELGeneSite(CommonQueryVO query);
+
+    List<Map<String, String>> getThyroid();
 }

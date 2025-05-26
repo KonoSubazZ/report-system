@@ -100,7 +100,8 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
         query.setAnalysis_date(analysisDate);
         query.setProduct_name(panel);
 
-        List<Map<String, String>> thyroidGeneList = geneAnalysisDao.getThyroidGene(query);
+        List<Map<String, String>> SNVINDELGeneSiteList = geneAnalysisDao.getSNVINDELGeneSite(query);
+        List<Map<String, String>> thyroidGeneList = geneAnalysisDao.getThyroid();
         return Collections.emptyList();
     }
 }
