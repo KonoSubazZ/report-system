@@ -77,7 +77,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
                 HRRGeneList2.add(map);
             }
         }
-        HRRDetectedGeneCount = HRRDetectedGeneCount;
+        this.HRRDetectedGeneCount = HRRDetectedGeneCount;
         HRRGeneInfo.put("HRRGeneList1", HRRGeneList1);
         HRRGeneInfo.put("HRRGeneList2", HRRGeneList2);
 
@@ -87,6 +87,6 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
 
     @Override
     public int getHRRDetectedGeneCount() {
-        return HRRDetectedGeneCount;
+        return this.HRRDetectedGeneCount;
     }
 }
