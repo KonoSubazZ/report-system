@@ -3469,10 +3469,22 @@ public class PyReportServiceImpl implements PyReportService {
         SiteResult(siteResult, snpIndelFileAll, cNVAll, fusionAll, crCheckLineStrYF1280);
         rt.setSiteResult(siteResult);
 
-        // 常见靶向药物相关基因检测列表
+        // MOD 常见靶向药物相关基因检测列表
         List<Map> commonTargetedDrug = analysisReportDao.getCommonTargetedDrug("泛癌种");
         // 根据产品基因过滤
-        List<Map> commonTargetedDrugFilter = commonTargetedDrug.stream().filter(s -> geneSymbols.contains(s.get("gene").toString().split("\\\\r\\\\n")[0])).collect(Collectors.toList());
+        // List<Map> commonTargetedDrugFilter = commonTargetedDrug.stream().filter(s -> geneSymbols.contains(s.get("gene").toString().split("\\\\r\\\\n")[0])).collect(Collectors.toList());
+        List<Map> commonTargetedDrugFilter = commonTargetedDrug.stream()
+                .filter(s -> {
+                    Object geneObj = s.get("gene");
+                    Object targetDrug = s.get("target_drug");
+                    if (geneObj == null) return false;
+                    if (targetDrug == null) return false;
+
+                    // ERBB2\r\n(HER2) 为了特殊处理这种情况
+                    String gene = geneObj.toString().split("\\r?\\n")[0]; // 兼容 \r\n 和 \n
+                    return geneSymbols.contains(gene);
+                })
+                .collect(Collectors.toList());
         importantTargetedGene(commonTargetedDrugFilter, list, crCheckLineStrYF1280, readsFlag, false);
         rt.setCommonTargetedDrug(commonTargetedDrugFilter);
 
