@@ -3476,9 +3476,9 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> commonTargetedDrugFilter = commonTargetedDrug.stream()
                 .filter(s -> {
                     Object geneObj = s.get("gene");
-                    Object targetDrug = s.get("target_drug");
+                    Object targetedDrug = s.get("targeted_drug");
                     if (geneObj == null) return false;
-                    if (targetDrug == null) return false;
+                    if (targetedDrug == null) return false;
 
                     // ERBB2\r\n(HER2) 为了特殊处理这种情况
                     String gene = geneObj.toString().split("\\r?\\n")[0]; // 兼容 \r\n 和 \n
