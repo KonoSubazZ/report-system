@@ -11,6 +11,7 @@ import math
 from docx import Document
 from docx.shared import Mm, Pt
 from io import BytesIO
+import time
 # from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWLINE_XML, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
 specific_version_path = "/root/python3-packages"
 sys.path.insert(0, specific_version_path)
@@ -564,6 +565,7 @@ def split_to_newlines(value, delimiter=',', word_break='\n'):
 if __name__ == '__main__':
     if len(sys.argv) != 4:
         print("Usage: python3 {} TemplateWord JsonInfoPath OutputWord".format(__file__))
+    start_time = time.time()
     try:
 
         # 例: python3 generate_report.py \
@@ -682,6 +684,10 @@ if __name__ == '__main__':
         tpl.render(info_json, jinja_env,autoescape=True)
         tpl.save(sys.argv[3])
         set_updatefields_true(sys.argv[3])
+
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"模板生成耗时：{elapsed_time:.2f} 秒")
     except Exception as e:
         raise e
 
