@@ -91,4 +91,9 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
     public int getHRRDetectedGeneCount() {
         return this.HRRDetectedGeneCount;
     }
+
+    @Override
+    public List<Map<String, String>> generateThyroidData(String subbarcode, String panel, String analysisDate) {
+        return Collections.emptyList();
+    }
 }
