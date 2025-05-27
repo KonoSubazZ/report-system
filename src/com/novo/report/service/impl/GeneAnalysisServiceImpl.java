@@ -104,4 +104,9 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
         List<Map<String, String>> thyroidGeneList = geneAnalysisDao.getThyroid();
         return Collections.emptyList();
     }
+
+    @Override
+    public List<Map> getTargetedSomaticMutationAndCR12(List<Map> somaticList, List<Map> crList) {
+        return Collections.emptyList();
+    }
 }

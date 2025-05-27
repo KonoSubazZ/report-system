@@ -16,4 +16,12 @@ public interface GeneAnalysisService {
 	int getHRRDetectedGeneCount();
 
 	List<Map<String, String> > generateThyroidData(String subbarcode, String panel, String analysisDate);
+
+	/**
+	 * 获取体系 I、II 类(有靶药)和胚系致病、可能致病
+	 * @param somaticList
+	 * @param crList
+	 * @return
+	 */
+	List<Map> getTargetedSomaticMutationAndCR12(List<Map> somaticList, List<Map> crList);
 }
