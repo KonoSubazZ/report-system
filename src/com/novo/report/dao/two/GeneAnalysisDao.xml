@@ -22,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    b.gene_symbol as gene,
 			b.variant,
 			b.ori_variant,
-			b.mutFreq
+			b.mutFreq as mut_freq
 		FROM
 			data_file_status AS a
 				JOIN snp_indel_file AS b ON a.file_id = b.file_id

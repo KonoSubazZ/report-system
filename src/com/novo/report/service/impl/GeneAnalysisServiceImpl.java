@@ -100,12 +100,26 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
         query.setProduct_name(panel);
 
         List<Map<String, String>> SNVINDELGeneSiteList = geneAnalysisDao.getSNVINDELGeneSite(query);
-        for (Map<String, String> map : SNVINDELGeneSiteList){
+        List<Map<String, String>> thyroidGeneList = geneAnalysisDao.getThyroid();
+
+        for (Map<String, String> map : SNVINDELGeneSiteList) {
             String gene = map.get("gene");
             String variant = map.get("variant");
             String oriVariant = map.get("ori_variant");
+            String mutFreq = map.get("mut_freq");
+
+            for (Map<String, String> thyroidGeneMap : thyroidGeneList) {
+                String thyroidGene = thyroidGeneMap.get("gene");
+                String protein = thyroidGeneMap.get("protein");
+
+                if (gene.equals(thyroidGene)) {
+                    if ("*".equals(protein) || variant.contains(protein)) {
+
+                    }
+                }
+
+            }
         }
-        List<Map<String, String>> thyroidGeneList = geneAnalysisDao.getThyroid();
         return Collections.emptyList();
     }
 
@@ -130,6 +144,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
         return mutationList;
 
     }
+
     private String getString(Map<String, Object> map, String key) {
         Object value = map.get(key);
         return value != null ? value.toString().trim() : "";

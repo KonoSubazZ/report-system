@@ -460,13 +460,13 @@ public class GeneMarkerVwController {
                             tcga = "低拷贝型（Copy-number Low，CN-L）";
                         }*/
                         if (tcga1) {
-                            tcga = "POLE mut （POLE突变型）";
+                            tcga = "POLE突变型";
                         } else if (tcga2) {
-                            tcga = "dMMR/MSL-H （微卫星不稳定型）";
+                            tcga = "微卫星不稳定型";
                         } else if (tcga3) {
-                            tcga = "p53-aberrant （p53突变型）";
+                            tcga = "p53突变型";
                         } else {
-                            tcga = "NSMP （非特异性分子谱型）";
+                            tcga = "非特异性分子谱型";
                         }
                         moduleModificationAllDao.insertMmTcga(currentNgsAvailable.getReport_id(), tcga, user_account);
                     }
