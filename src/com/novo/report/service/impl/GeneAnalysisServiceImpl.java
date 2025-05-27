@@ -108,9 +108,25 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
     @Override
     public List<Map> getTargetedSomaticMutationAndCR12(List<Map> somaticList, List<Map> crList) {
         List<Map> mutationList = new ArrayList<>();
-        for (Map somatic : somaticList){
 
+        for (Map somatic : somaticList) {
+            String resType = getString(somatic, "resultTypeDesc");
+            if ("靶向药物".equals(resType)) {
+                mutationList.add(somatic);
+            }
         }
-        return Collections.emptyList();
+
+        for (Map cr : crList) {
+            String significance = getString(cr, "Clinical_significance");
+            if ("1".equals(significance) || "2".equals(significance)) {
+                mutationList.add(cr);
+            }
+        }
+
+        return mutationList;
+
     }
-}
+    private String getString(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+        return value != null ? value.toString().trim() : "";
+    }
