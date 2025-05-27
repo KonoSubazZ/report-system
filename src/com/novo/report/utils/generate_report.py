@@ -521,9 +521,9 @@ def mark_genes_in_red(gene_tables, detected_gene_info):
         if gene_type not in detected_mapping:
             show_red_note = False
 
+        detected_gene_list = []
         if gene_type == "IMMUNE":
             # 特殊处理 IMMUNE，拼接多个字段的基因列表
-            detected_gene_list = []
             for key in detected_mapping[gene_type].split(','):
                 detected_gene_list.extend(detected_gene_info.get(key.strip(), []))
         else:
@@ -533,7 +533,7 @@ def mark_genes_in_red(gene_tables, detected_gene_info):
         # detected_gene_list = detected_gene_info.get(detected_mapping.get(gene_type, ""), [])
         # if not detected_gene_list:
         #     continue
-            add_gene_rich_text(gene_list, detected_gene_list)
+        add_gene_rich_text(gene_list, detected_gene_list)
     return show_red_note
 
 def add_gene_rich_text(gene_list, detected_gene_list):
