@@ -73,7 +73,7 @@ public class VariantServiceImpl implements VariantService {
         }
 
         if (isEGFRExon20Insertion(gene, mutId)) {
-            return "( 第二十号外显子插入 )";
+            return "( 第20号外显子插入 )";
         }
 
         if (isMET14Skipping(gene, mutId)) {
