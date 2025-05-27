@@ -107,6 +107,10 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
 
     @Override
     public List<Map> getTargetedSomaticMutationAndCR12(List<Map> somaticList, List<Map> crList) {
+        List<Map> mutationList = new ArrayList<>();
+        for (Map somatic : somaticList){
+
+        }
         return Collections.emptyList();
     }
 }
