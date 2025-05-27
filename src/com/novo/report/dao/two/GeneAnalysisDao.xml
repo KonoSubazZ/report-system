@@ -19,6 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="getSNVINDELGeneSite" resultType="java.util.Map">
 		SELECT
+		    b.gene_symbol as gene,
 			b.variant,
 			b.ori_variant,
 			b.mutFreq

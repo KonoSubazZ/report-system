@@ -84,7 +84,6 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
         HRRGeneInfo.put("HRRGeneList1", HRRGeneList1);
         HRRGeneInfo.put("HRRGeneList2", HRRGeneList2);
 
-
         return HRRGeneDetectedInfo;
     }
 
@@ -101,6 +100,11 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
         query.setProduct_name(panel);
 
         List<Map<String, String>> SNVINDELGeneSiteList = geneAnalysisDao.getSNVINDELGeneSite(query);
+        for (Map<String, String> map : SNVINDELGeneSiteList){
+            String gene = map.get("gene");
+            String variant = map.get("variant");
+            String oriVariant = map.get("ori_variant");
+        }
         List<Map<String, String>> thyroidGeneList = geneAnalysisDao.getThyroid();
         return Collections.emptyList();
     }
