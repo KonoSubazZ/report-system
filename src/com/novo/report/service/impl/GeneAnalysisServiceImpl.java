@@ -130,3 +130,4 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
         Object value = map.get(key);
         return value != null ? value.toString().trim() : "";
     }
+}
