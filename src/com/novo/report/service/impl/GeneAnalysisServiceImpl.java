@@ -123,13 +123,22 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
             String oriVariant = map.get("ori_variant");
             String mutFreq = map.get("mut_freq");
 
+            Map<String, String> matchedRecord = null;
+            boolean isExactMatch = false;
+
             for (Map<String, String> thyroidGeneMap : thyroidGeneList) {
                 String thyroidGene = thyroidGeneMap.get("gene");
                 String protein = thyroidGeneMap.get("protein");
 
                 if (gene.equals(thyroidGene)) {
-                    if ("*".equals(protein) || variant.contains(protein)) {
-
+                    if (variant.contains(protein) && !"*".equals(protein)) {
+                        // 精确匹配，立即使用并跳出循环
+                        matchedRecord = thyroidGeneMap;
+                        isExactMatch = true;
+                        break;
+                    } else if ("*".equals(protein) && matchedRecord == null) {
+                        // fallback 匹配，先保存，但不跳出
+                        matchedRecord = thyroidGeneMap;
                     }
                 }
 
