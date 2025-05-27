@@ -4701,7 +4701,13 @@ public class PyReportServiceImpl implements PyReportService {
         return res;
     }
 
-    private HashMap<String, Object> generateReportInfoData(TemplateConf templateConf, Map pd, List<Map> allMutation, String panel, Map detectedGeneInfo, boolean hasCRDrug) {
+    private HashMap<String, Object> generateReportInfoData(
+            TemplateConf templateConf,
+            Map pd,
+            List<Map> allMutation,
+            String panel,
+            Map detectedGeneInfo,
+            boolean hasCRDrug) {
         HashMap<String, Object> res = new HashMap<>();
         String reportName = templateConf.getReport_name();
         if (pd != null) {
