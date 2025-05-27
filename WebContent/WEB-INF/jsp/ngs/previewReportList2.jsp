@@ -424,7 +424,7 @@
                             <td><label>TCGA分子分型</label></td>
                             <td>
                                 <select id="tcga" onChange="updateTcga()">
-                                    <option value="POLE基因突变型（POLE）"
+                                  <%--  <option value="POLE基因突变型（POLE）"
                                             <c:if test="${tcga == 'POLE基因突变型（POLE）'}">selected</c:if>>
                                         POLE基因突变型（POLE）
                                     </option>
@@ -439,7 +439,23 @@
                                     <option value="低拷贝型（Copy-number Low，CN-L）"
                                             <c:if test="${tcga == '低拷贝型（Copy-number Low，CN-L）'}">selected</c:if>>
                                         低拷贝型（Copy-number Low，CN-L）
-                                    </option>
+                                    </option>--%>
+                                      <option value="POLE mut （POLE突变型）"
+                                              <c:if test="${tcga == 'POLE mut （POLE突变型）'}">selected</c:if>>
+                                          POLE mut （POLE突变型）
+                                      </option>
+                                      <option value="dMMR/MSL-H （微卫星不稳定型）"
+                                              <c:if test="${tcga == 'dMMR/MSL-H （微卫星不稳定型）'}">selected</c:if>>
+                                          dMMR/MSL-H （微卫星不稳定型）
+                                      </option>
+                                      <option value="p53-aberrant （p53突变型）"
+                                              <c:if test="${tcga == 'p53-aberrant （p53突变型）'}">selected</c:if>>
+                                          p53-aberrant （p53突变型）
+                                      </option>
+                                      <option value="NSMP （非特异性分子谱型）"
+                                              <c:if test="${tcga == 'NSMP （非特异性分子谱型）'}">selected</c:if>>
+                                          NSMP （非特异性分子谱型）
+                                      </option>
                                 </select>
                             </td>
                         </tr>
