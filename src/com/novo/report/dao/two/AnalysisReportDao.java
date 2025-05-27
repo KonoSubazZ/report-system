@@ -513,11 +513,11 @@ public interface AnalysisReportDao {
     List<Map> getBrcaTargetedDrug();
 
     //获取常见靶向药物相关基因检测列表
-    @Select("SELECT gene,detection_content,targeted_drug FROM common_targeted_drug WHERE disease_name=#{disease_name}")
+    @Select("SELECT gene,detection_content,targeted_drug FROM common_targeted_drug WHERE disease_name=#{disease_name} ORDER BY gene")
     List<Map> getCommonTargetedDrug(@Param("disease_name") String disease_name);
 
     //获取常见靶向药物相关基因检测列表
-    @Select("SELECT gene,detection_content,targeted_drug FROM common_targeted_drug WHERE disease_name=#{disease_name}")
+    @Select("SELECT gene,detection_content,targeted_drug FROM common_targeted_drug WHERE disease_name=#{disease_name} ORDER BY gene")
     List<Map> getCommonTargetedDrug2(@Param("disease_name") String disease_name);
 
     //检测方法与局限性
