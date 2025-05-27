@@ -526,9 +526,9 @@ def mark_genes_in_red(gene_tables, detected_gene_info):
             detected_gene_list = []
             for key in detected_mapping[gene_type].split(','):
                 detected_gene_list.extend(detected_gene_info.get(key.strip(), []))
-            else:
-                # 正常处理
-                detected_gene_list = detected_gene_info.get(detected_mapping[gene_type], [])
+        else:
+             # 正常处理
+            detected_gene_list = detected_gene_info.get(detected_mapping[gene_type], [])
 
         # detected_gene_list = detected_gene_info.get(detected_mapping.get(gene_type, ""), [])
         # if not detected_gene_list:
