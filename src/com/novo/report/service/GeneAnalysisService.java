@@ -12,7 +12,7 @@ public interface GeneAnalysisService {
 	 * @param mutationDrugList
 	 * @return
 	 */
-	Map<String, List<Map<String, String>>> generateHRRData(String panel, List<Map> mutationDrugList);
+	Map<String, String> generateHRRData(String panel, List<Map> mutationDrugList);
 	int getHRRDetectedGeneCount();
 
 	List<Map<String, String> > generateThyroidData(String subbarcode, String panel, String analysisDate);

@@ -30,7 +30,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
      * @return
      */
     @Override
-    public Map<String, List<Map<String, String>>> generateHRRData(String panel, List<Map> mutationDrugList) {
+    public Map<String, String> generateHRRData(String panel, List<Map> mutationDrugList) {
         List<Map<String, String>> HRRGeneList = geneAnalysisDao.getHRRGene(panel);
 
         for (Map<String, String> HRRmap : HRRGeneList) {
@@ -85,7 +85,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
         HRRGeneInfo.put("HRRGeneList2", HRRGeneList2);
 
 
-        return HRRGeneInfo;
+        return HRRGeneDetectedInfo;
     }
 
     @Override

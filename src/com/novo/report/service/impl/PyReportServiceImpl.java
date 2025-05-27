@@ -3675,7 +3675,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 188以上非 HRD panel,卵巢癌、卵巢癌、前列腺癌、乳腺癌
         if (diseaseFlag.get("HRR_disease")) {
 
-            Map<String, List<Map<String, String>>> HRRGeneInfo = geneAnalysisService.generateHRRData(product_name, list);
+            Map<String, String> HRRGeneInfo = geneAnalysisService.generateHRRData(product_name, list);
 //            int HRRDetectedGeneCount = (int) HRRData.stream()
 //                    .filter(map -> !"-".equals(map.get("variant")))
 //                    .count();
