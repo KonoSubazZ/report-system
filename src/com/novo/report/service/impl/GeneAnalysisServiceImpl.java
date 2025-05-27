@@ -38,7 +38,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
             StringBuilder variantsBuilder = new StringBuilder();
             for (Map mutationDrug : mutationDrugList) {
                 String drugGene = String.valueOf(mutationDrug.getOrDefault("gene", ""));
-//                String resType = String.valueOf(mutationDrug.getOrDefault("resultTypeDesc", ""));
+                // String resType = String.valueOf(mutationDrug.getOrDefault("resultTypeDesc", ""));
                 String oriVariant = String.valueOf(mutationDrug.getOrDefault("ori_variant", ""));
                 // 检查是否为靶向药物且基因匹配且是点突变
                 if (HRRGene.equals(drugGene)) {
@@ -66,6 +66,9 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
         List<Map<String, String>> HRRGeneList2 = new ArrayList<>();
         // 检出HRR基因数
         int HRRDetectedGeneCount = 0;
+        String clinical_significance_desc1 = "-";
+        String clinical_significance_desc2 = "-";
+
         Map<String, String> HRRGeneDetectedInfo = new HashMap<>();
         for (Map<String, String> map : HRRGeneList) {
             String gene = map.get("gene");
@@ -73,6 +76,12 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
             HRRGeneDetectedInfo.put(gene, variant);
             if (!"-".equals(variant)) {
                 HRRDetectedGeneCount++;
+                // 增加动态输出临床意义
+                if (coreHRRGenes.contains(gene)) {
+                    clinical_significance_desc1 = map.get("clinical_significance_desc");
+                } else {
+                    clinical_significance_desc2 = map.get("clinical_significance_desc");
+                }
             }
             if (coreHRRGenes.contains(map.get("gene"))) {
                 HRRGeneList1.add(map);
@@ -81,6 +90,12 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
             }
         }
         this.HRRDetectedGeneCount = HRRDetectedGeneCount;
+
+        HRRGeneDetectedInfo.put("HRRDetectedGeneCount", String.valueOf(HRRDetectedGeneCount));
+        HRRGeneDetectedInfo.put("clinical_significance_desc1", clinical_significance_desc1);
+        HRRGeneDetectedInfo.put("clinical_significance_desc2", clinical_significance_desc2);
+
+
         HRRGeneInfo.put("HRRGeneList1", HRRGeneList1);
         HRRGeneInfo.put("HRRGeneList2", HRRGeneList2);
 
