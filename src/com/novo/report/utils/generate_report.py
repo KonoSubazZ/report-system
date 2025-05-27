@@ -533,7 +533,7 @@ def mark_genes_in_red(gene_tables, detected_gene_info):
         # detected_gene_list = detected_gene_info.get(detected_mapping.get(gene_type, ""), [])
         # if not detected_gene_list:
         #     continue
-                add_gene_rich_text(gene_list, detected_gene_list)
+            add_gene_rich_text(gene_list, detected_gene_list)
     return show_red_note
 
 def add_gene_rich_text(gene_list, detected_gene_list):
