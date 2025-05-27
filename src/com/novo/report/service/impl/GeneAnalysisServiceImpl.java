@@ -38,10 +38,10 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
             StringBuilder variantsBuilder = new StringBuilder();
             for (Map mutationDrug : mutationDrugList) {
                 String drugGene = String.valueOf(mutationDrug.getOrDefault("gene", ""));
-                String resType = String.valueOf(mutationDrug.getOrDefault("resultTypeDesc", ""));
+//                String resType = String.valueOf(mutationDrug.getOrDefault("resultTypeDesc", ""));
                 String oriVariant = String.valueOf(mutationDrug.getOrDefault("ori_variant", ""));
                 // 检查是否为靶向药物且基因匹配且是点突变
-                if (HRRGene.equals(drugGene) && "靶向药物".equals(resType)) {
+                if (HRRGene.equals(drugGene)) {
                     int cIndex = oriVariant.indexOf("c.");
                     if (cIndex >= 0) {
                         String variant = oriVariant.substring(cIndex);

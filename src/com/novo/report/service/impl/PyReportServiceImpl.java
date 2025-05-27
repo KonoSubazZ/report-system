@@ -3674,8 +3674,8 @@ public class PyReportServiceImpl implements PyReportService {
         // MOD HRR同源重组基因修复HRR
         // 188以上非 HRD panel,卵巢癌、卵巢癌、前列腺癌、乳腺癌
         if (diseaseFlag.get("HRR_disease")) {
-            geneAnalysisService.getTargetedSomaticMutationAndCR12(thisGeneticmarkerVwList, crAllList);
-            Map<String, String> HRRGeneInfo = geneAnalysisService.generateHRRData(product_name, list);
+           List<Map> somaticAndCR12List= geneAnalysisService.getTargetedSomaticMutationAndCR12(thisGeneticmarkerVwList, crAllList);
+            Map<String, String> HRRGeneInfo = geneAnalysisService.generateHRRData(product_name, somaticAndCR12List);
 //            int HRRDetectedGeneCount = (int) HRRData.stream()
 //                    .filter(map -> !"-".equals(map.get("variant")))
 //                    .count();
