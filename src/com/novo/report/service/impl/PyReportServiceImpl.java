@@ -3674,7 +3674,7 @@ public class PyReportServiceImpl implements PyReportService {
         // MOD HRR同源重组基因修复HRR
         // 188以上非 HRD panel,卵巢癌、卵巢癌、前列腺癌、乳腺癌
         if (diseaseFlag.get("HRR_disease")) {
-           List<Map> somaticAndCR12List= geneAnalysisService.getTargetedSomaticMutationAndCR12(thisGeneticmarkerVwList, crAllList);
+            List<Map> somaticAndCR12List = geneAnalysisService.getTargetedSomaticMutationAndCR12(thisGeneticmarkerVwList, crAllList);
             Map<String, String> HRRGeneInfo = geneAnalysisService.generateHRRData(product_name, somaticAndCR12List);
 //            int HRRDetectedGeneCount = (int) HRRData.stream()
 //                    .filter(map -> !"-".equals(map.get("variant")))
@@ -6812,7 +6812,7 @@ public class PyReportServiceImpl implements PyReportService {
                 String gene1 = map1.get("gene").toString();
                 String ori_variant = removeMutations(transferOriVariant(map1.getOrDefault("ori_variant", "").toString()));
                 String mutFreq = map1.get("mutFreq") == null ? "/" : map1.get("mutFreq").toString();
-                Object mutIdObj =  map1.getOrDefault("mapped_variant_id", null);
+                Object mutIdObj = map1.getOrDefault("mapped_variant_id", null);
                 Integer mutId = (mutIdObj instanceof Integer) ? (Integer) mutIdObj : null;
                 mutFreq = getMutFreq(ori_variant, mutFreq, null);
                 if ("突变/融合".equals(info)) {
