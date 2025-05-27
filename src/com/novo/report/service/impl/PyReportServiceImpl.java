@@ -2168,7 +2168,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setCrCheckLineStrYF1280(crCheckLineStrYF1280);
         // cr_tumors逻辑
         if (!crTumorsSet.isEmpty()) {
-            crTumorsDesc = "与" + StringUtils.join(crTumorsSet, "、") + "发生风险相关";
+            crTumorsDesc = "，与" + StringUtils.join(crTumorsSet, "、") + "发生风险相关";
         }
         summaryOfRresults.put("cr_tumors_desc", crTumorsDesc);
         summaryOfRresults.put("crCheckLineStrYF1280Size", crCheckLineStrYF1280.size());
