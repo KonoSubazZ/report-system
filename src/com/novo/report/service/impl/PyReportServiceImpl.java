@@ -6800,9 +6800,9 @@ public class PyReportServiceImpl implements PyReportService {
         for (Map map : importantTargetedGeneFilter) {
             String gene = map.get("gene").toString();
             String info = map.get("detection_content").toString().replace("\\r\\n", "/");
-            if ("MET".equals(gene) && !readsFlag && b) {
+            /*if ("MET".equals(gene) && !readsFlag && b) {
                 info = "突变/扩增";
-            }
+            }*/
             boolean flag = false;
             List<String> ori_variantList = new ArrayList<>();
             List<String> ori_variantList2 = new ArrayList<>();
