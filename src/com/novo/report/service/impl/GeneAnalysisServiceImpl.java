@@ -148,7 +148,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
 
                 String prognosisEvaluation = desc1 + matchedRecord.get("prognosis_evaluation");
                 matchedRecord.put("prognosis_evaluation", prognosisEvaluation);
-                matchedRecord.put("mut_freq", mutFreq);
+                matchedRecord.put("mutFreq", mutFreq);
                 matchedRecord.put("ori_variant", oriVariant);
                 thyroidDetectedList.add(matchedRecord);
             }
