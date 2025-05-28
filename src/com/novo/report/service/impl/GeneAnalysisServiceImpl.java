@@ -124,22 +124,33 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
             String mutFreq = map.get("mut_freq");
 
             Map<String, String> matchedRecord = null;
-            boolean isExactMatch = false;
+            // boolean isExactMatch = false;
 
             for (Map<String, String> thyroidGeneMap : thyroidGeneList) {
                 String thyroidGene = thyroidGeneMap.get("gene");
                 String protein = thyroidGeneMap.get("protein");
 
                 if (gene.equals(thyroidGene)) {
+                    String desc1 = "";
+                    String prognosisEvaluation = thyroidGeneMap.get("prognosis_evaluation");
+
                     if (variant.contains(protein) && !"*".equals(protein)) {
+
                         // 精确匹配，立即使用并跳出循环
                         matchedRecord = thyroidGeneMap;
-                        isExactMatch = true;
+                        if (gene.equals("TERT")) {
+                            desc1 = "该样本检测结果显示，TERT基因存在启动子突变。";
+                        }
+                        desc1 = "该样本检测结果显示，" + gene + "基因存在" + variant + "突变。";
+                        // isExactMatch = true;
                         break;
                     } else if ("*".equals(protein) && matchedRecord == null) {
                         // fallback 匹配，先保存，但不跳出
                         matchedRecord = thyroidGeneMap;
+                        desc1 = "该样本检测结果显示，" + gene + "基因存在" + variant + "突变。";
                     }
+
+                    prognosisEvaluation = desc1 + thyroidGeneMap.get("prognosis_evaluation");
                 }
 
             }
