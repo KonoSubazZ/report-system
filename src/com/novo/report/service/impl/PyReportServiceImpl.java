@@ -824,9 +824,9 @@ public class PyReportServiceImpl implements PyReportService {
                     mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
 
                     variation.put("gene", gene);
-                    variation.put("ori_variant", (transferOriVariant(ori_variant)));
+                    variation.put("ori_variant", transferOriVariant(ori_variant));
                     variation.put("mutFreq", mutFreq);
-                    String ori_varian_split = (transferOriVariant(ori_variant));
+                    String ori_varian_split = transferOriVariant(ori_variant);
                     if (!ori_varian_split.equals("Amplification") && !ori_varian_split.contains("Fusion")) {
                         String[] splits = ori_varian_split.split(" ");
                         variation.put("Transcript", splits[0]);
@@ -938,7 +938,7 @@ public class PyReportServiceImpl implements PyReportService {
                         }
                     }
                     targetDrugTipLine.put("gene", gene);
-                    targetDrugTipLine.put("ori_variant", (transferOriVariant(ori_variant)));
+                    targetDrugTipLine.put("ori_variant", transferOriVariant(ori_variant));
                     targetDrugTipLine.put("ExonicFunc", translateMutType(ExonicFunc));
 
                     // 特殊展示突变
@@ -1067,7 +1067,7 @@ public class PyReportServiceImpl implements PyReportService {
                     } else {
                         // 体系靶向药物提示
                         if (!gene.equals("多靶点循证")) {
-                            String ori_variant_split = (transferOriVariant(ori_variant));
+                            String ori_variant_split = transferOriVariant(ori_variant);
                             // snp
                             if (!ori_variant_split.equals("Amplification") && ori_variant_split != null && !ori_variant_split.contains("Fusion")) {
                                 String[] splits = ori_variant_split.split(" ");
@@ -1253,7 +1253,7 @@ public class PyReportServiceImpl implements PyReportService {
                     if ("KPAS".equals(gene) || "NRAS".equals(gene) || "BRAF".equals(gene)) {
                         rt.setBengbuComplex("");
                     }
-                    String ori_varian_split = (transferOriVariant(ori_variant));
+                    String ori_varian_split = transferOriVariant(ori_variant);
                     // 判断 点突变 扩增 融合 snp cnv fusion 的 逻辑，具体涉及到 mutation 的展示
                     if (!ori_varian_split.equals("Amplification") && ori_varian_split != null && !ori_varian_split.contains("Fusion")) {
                         String[] splits = ori_varian_split.split(" ");
@@ -1315,19 +1315,19 @@ public class PyReportServiceImpl implements PyReportService {
                     }
                     unknownTipLine.put("variationClass", "III类");
                     unknownTipLine.put("gene", gene);
-                    unknownTipLine.put("ori_variant", (transferOriVariant(ori_variant)));
+                    unknownTipLine.put("ori_variant", transferOriVariant(ori_variant));
                     unknownTipLine.put("ExonicFunc", translateMutType(ExonicFunc));
-                    unknownTipLine.put("ExonicFunc1", translateMutType(ExonicFunc));
 
-                    // vus 增加14跳跃输出
-                    String InNKB = map.get("InNKB") == null ? "-" : map.get("InNKB").toString();
-                    if (InNKB.equals("true")) {
-                        String mutId = map.get("mapped_variant_id") == null ? "-" : map.get("mapped_variant_id").toString();
-                        List<Integer> parentVariant = analysisReportDao.getParentMutationId(Integer.valueOf(mutId));
-                        if (parentVariant.contains(2936)) {
-                            unknownTipLine.put("ExonicFunc1", "14号外显子跳跃突变");
-                        }
-                    }
+                    // 特殊展示突变
+                    String specialVariantDesc = variantService.specialVariantDesc(gene, null, ori_variant);
+                    String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant);
+                    unknownTipLine.put("ori_variant1", specialVariantDesc);
+                    unknownTipLine.put("ExonicFunc2", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc);
+                    // 同济特殊输出需求
+                    Integer mutId = (Integer) map.get("mapped_variant_id");
+                    boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId);
+                    unknownTipLine.put("ExonicFunc1", isMET14Skipping ? "14号外显子跳跃突变" : translateMutType(ExonicFunc));
+
                     unknownTipLine.put("mutFreq", mutFreq);
                     unknownTipLine.put("result_type", rpUnknownVar.getOrDefault("result_type", "").toString());
                     unknownTipLineStr.add(unknownTipLine);
@@ -1644,7 +1644,7 @@ public class PyReportServiceImpl implements PyReportService {
                 }
                 targetedDrugDetection.put("gene", gene);
                 targetedDrugDetection.put("check_date", check_date);
-                targetedDrugDetection.put("ori_variant", (transferOriVariant(ori_variant)));
+                targetedDrugDetection.put("ori_variant", transferOriVariant(ori_variant));
                 targetedDrugDetection.put("mutFreq", mutFreq);
                 String mutFreqType = distinguishMutFreqTypeUtil(ori_variant, mutFreq);
                 if ("reads数".equals(mutFreqType)) {
@@ -1963,7 +1963,7 @@ public class PyReportServiceImpl implements PyReportService {
                     unknownVarAnalysis.put("variationClass", "III类");
                     unknownVarAnalysis.put("gene", gene);
                     unknownVarAnalysis.put("check_date", check_date);
-                    unknownVarAnalysis.put("ori_variant", (transferOriVariant(ori_variant)));
+                    unknownVarAnalysis.put("ori_variant", transferOriVariant(ori_variant));
                     unknownVarAnalysis.put("mutDesc", mutDesc2);
                     unknownVarAnalysis.put("gene_description_chinese", gene_description_chinese);
                     unknownVarAnalysis.put("mutFreq", mutFreq);
@@ -2083,7 +2083,7 @@ public class PyReportServiceImpl implements PyReportService {
             crCheckLine.put("Pos", Pos);
             crCheckLine.put("Transcript", Transcript);
             crCheckLine.put("avsnp150", avsnp150);
-            crCheckLine.put("ori_variant", (transferOriVariant(ori_variant)));
+            crCheckLine.put("ori_variant", transferOriVariant(ori_variant));
             crCheckLineStr.add(crCheckLine);
 
             if (Clinical_significance.equals("1") || Clinical_significance.equals("2")) {
@@ -2619,7 +2619,7 @@ public class PyReportServiceImpl implements PyReportService {
                     Map map1 = new HashMap();
                     map1.put("Gene", gene);
                     String ori_variant = map.get("ori_variant").toString();
-                    String ori_variant_split = (transferOriVariant(ori_variant));
+                    String ori_variant_split = transferOriVariant(ori_variant);
                     map1.put("ori_variant", ori_variant_split);
                     if (!ori_variant_split.equals("Amplification") && ori_variant_split != null && !ori_variant_split.contains("Fusion")) {
                         String[] splits = ori_variant_split.split(" ");
@@ -3308,9 +3308,9 @@ public class PyReportServiceImpl implements PyReportService {
                     }
                     mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
                     singleMoreTipLine.put("gene", gene);
-                    singleMoreTipLine.put("ori_variant", (transferOriVariant(ori_variant)));
+                    singleMoreTipLine.put("ori_variant", transferOriVariant(ori_variant));
                     singleMoreTipLine.put("mutFreq", mutFreq);
-                    String ori_varian_split = (transferOriVariant(ori_variant));
+                    String ori_varian_split = transferOriVariant(ori_variant);
                     if (!ori_varian_split.equals("Amplification") && ori_varian_split != null && !ori_varian_split.contains("Fusion")) {
                         String[] splits = ori_varian_split.split(" ");
                         if (splits.length >= 1) {
@@ -5340,7 +5340,7 @@ public class PyReportServiceImpl implements PyReportService {
                     mut_type = map.get("ExonicFunc") == null ? symbol : translateMutType(map.get("ExonicFunc").toString());//突变类型
                     hotData.put("gene", gene);
                     hotData.put("info", info);
-                    hotData.put("ori_variant", (transferOriVariant(ori_variant)));
+                    hotData.put("ori_variant", transferOriVariant(ori_variant));
                     hotData.put("mutFreq", mutFreq);
                     hotData.put("mut_type", mut_type);
                     HotgeneData.add(hotData);
@@ -5377,7 +5377,7 @@ public class PyReportServiceImpl implements PyReportService {
                     Map hotData = new HashMap();
                     ori_variant = map.get("ori_variant") == null ? "未检出" : map.get("ori_variant").toString();//检测结果
                     hotData.put("gene", gene);
-                    hotData.put("ori_variant", (transferOriVariant(ori_variant)));
+                    hotData.put("ori_variant", transferOriVariant(ori_variant));
                     if (list.contains(gene)) { //"MDM2", "MDM4", "CCND1", "FGF3", "FGF4", "FGF19"
                         if ("Amplification".equals(ori_variant)) {
                             HotgeneData.add(hotData);
@@ -5412,7 +5412,7 @@ public class PyReportServiceImpl implements PyReportService {
                     ori_variant = map.get("ori_variant") == null ? "未检出" : map.get("ori_variant").toString();//检测结果
                     String type1 = map.get("type").toString();//区分是胚系基因还是体系基因
                     hotData.put("gene", gene);
-                    hotData.put("ori_variant", (transferOriVariant(ori_variant)));
+                    hotData.put("ori_variant", transferOriVariant(ori_variant));
                     if ("胚系".equals(type1)) {
                         if (list2.contains(gene)) {
                             HotgeneData.add(hotData);
