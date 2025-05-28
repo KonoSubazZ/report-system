@@ -76,19 +76,23 @@ public class VariantServiceImpl implements VariantService {
         if (mutId == null) return "";
 
         if (isExon19Deletion(gene, mutId)) {
-            return "( 19del )";
+            return variant + " " + "( 19del )";
         }
 
         if (isEGFRExon20Insertion(gene, mutId)) {
-            return "( 第20号外显子插入 )";
+            return variant + " " + "( 第20号外显子插入 )";
         }
 
-        // RNA融合 MET 不展示14号外显子跳跃
-        if (isMET14Skipping(gene, mutId) && !isMET14SkippingRNA(gene, variant)) {
-            return "( 14号外显子跳跃 )";
+        // RNA融合 MET 14号外显子跳跃
+        if (isMET14SkippingRNA(gene, variant)){
+            return "MET 14号外显子跳跃";
         }
 
-        return "";
+        if (isMET14Skipping(gene, mutId)) {
+            return variant + " " + "( 14号外显子跳跃 )";
+        }
+
+        return variant;
     }
 
     @Override

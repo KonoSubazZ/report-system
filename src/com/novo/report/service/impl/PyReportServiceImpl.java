@@ -6835,7 +6835,7 @@ public class PyReportServiceImpl implements PyReportService {
                     if (gene1.equals(gene.split("\\\\r\\\\n")[0]) && flag) {
                         // 添加variant 19del 20ins met14特殊描述
                         if (mutId != null) {
-                            ori_variant = ori_variant + " " + variantService.specialVariantDesc(gene1, mutId, ori_variant);
+                            ori_variant = variantService.specialVariantDesc(gene1, mutId, ori_variant);
                         }
                         ori_variantList.add(ori_variant);
                         mutFreqList.add(mutFreq);
