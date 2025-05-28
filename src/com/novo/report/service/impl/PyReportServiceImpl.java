@@ -147,6 +147,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setPanel(productName);
         currentNgsAvailable.setProduct_name(productName);
         pr.setProduct_name(productName);
+
         // 用于模块判断
         String module = currentNgsAvailable.getModuleFlag();
         // 获取所有位点信息 包括体系和胚系 （ this_genetic_marker_en7_vw2、 cr_evw rp_cr）
@@ -1397,21 +1398,14 @@ public class PyReportServiceImpl implements PyReportService {
         summaryOfRresults.put("thisGeneticmarkerVwExceptGene6ListSize", bodyDrugTipLineExceptGene6Str.size() + unknownTipLineExceptGene6Str.size());
         summaryOfRresults.put("somaticDrugExceptGene6Count", bodyDrugTipLineExceptGene6Str.size());
         summaryOfRresults.put("fusionSize", fusionAll.size());
-        if (!"".equals(somaticMutationStr)) {
-            summaryOfRresults.put("somaticMutationStr", somaticMutationStr.substring(0, somaticMutationStr.length() - 1));
-        }
-        // 45基因报告模板是否存在MSI
-        boolean isExistMSI = false;
-        String product_name = pr.getProduct_name();
-        if (product_name.indexOf("msi") != -1) {
-            isExistMSI = true;
-        }
+        summaryOfRresults.put("type", !isblood ? "tissue" : "blood");
+        boolean isExistMSI = pr.getProduct_name() != null && pr.getProduct_name().toLowerCase().contains("msi");
         summaryOfRresults.put("isExistMSI", isExistMSI);
-        if (!isblood) {
-            summaryOfRresults.put("type", "tissue");
-        } else {
-            summaryOfRresults.put("type", "blood");
+        if (somaticMutationStr != null && !somaticMutationStr.isEmpty()) {
+            String trimmed = somaticMutationStr.substring(0, somaticMutationStr.length() - 1);
+            summaryOfRresults.put("somaticMutationStr", trimmed);
         }
+
         // tmb信息
         summaryOfRresults.put("tmb", tmb);
         summaryOfRresults.put("tmb_status", tmb_status);
@@ -1425,21 +1419,15 @@ public class PyReportServiceImpl implements PyReportService {
         summaryOfRresults.put("clonal_tmb", clonal_tmb);
         summaryOfRresults.put("msi", msi);
         summaryOfRresults.put("msi_status", msi_status);
-        if ("MSS".equals(msi_status)) {
-            summaryOfRresults.put("msi_status_state", "微卫星稳定型（MSS）");
-        } else if ("MSI-H".equals(msi_status)) {
-            summaryOfRresults.put("msi_status_state", "微卫星高度不稳定型（MSI-H）");
-        } else if ("MSI-L".equals(msi_status)) {
-            summaryOfRresults.put("msi_status_state", "微卫星低度不稳定型（MSI-L）");
-        } else {
-            summaryOfRresults.put("msi_status_state", msi_status);
-        }
-        if (sf.getProduct_name() != null && !"".equals(sf.getProduct_name())) {
-            if (sf.getProduct_name().indexOf("300X") > -1 || sf.getProduct_name().indexOf("30G") > -1) {
+        summaryOfRresults.put("msi_status_state", translateMSIStatusState(msi_status));
+
+        String sfProductName = sf.getProduct_name();
+        if (sfProductName != null && !sfProductName.isEmpty()) {
+            if (sfProductName.contains("300X") || sfProductName.contains("30G")) {
                 summaryOfRresults.put("product_name", "30G");
-            } else if (sf.getProduct_name().indexOf("500X") > -1 || sf.getProduct_name().indexOf("50G") > -1) {
+            } else if (sfProductName.contains("500X") || sfProductName.contains("50G")) {
                 summaryOfRresults.put("product_name", "50G");
-            } else if (sf.getProduct_name().indexOf("20G") > -1) {
+            } else if (sfProductName.contains("20G")) {
                 summaryOfRresults.put("product_name", "20G");
             }
         }
@@ -2821,7 +2809,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setMet(met);
 
         // 20241127 阿克曼外包EWSR1报告
-        if ("ewsr1".equals(product_name)) {
+        if ("ewsr1".equals(productName)) {
             String EWSR1imgBase64Str = analysisReportDao.getEWSR1imgBase64Str(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
             EWSR1File ewsr1File = analysisReportDao.getEWSR1DataInfo(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
             Map<String, Object> ewsr1Info = new HashMap<>();
@@ -2837,7 +2825,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // 20241128 阿克曼外包TROP2报告
-        if ("trop2".equals(product_name)) {
+        if ("trop2".equals(productName)) {
             String subbarcode = currentNgsAvailable.getSubbarcode();
             String analysisDate = currentNgsAvailable.getAnalysis_date();
             String prodName = currentNgsAvailable.getProduct_name();
@@ -2871,7 +2859,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // 20241206 MGMT甲基化检测
-        if ("mgmt".equals(product_name)) {
+        if ("mgmt".equals(productName)) {
             String detection = analysisReportDao.getMGMTDataInfo(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
             Map<String, Object> mgmtInfo = new HashMap();
             mgmtInfo.put("detection", detection);
@@ -2879,7 +2867,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // 阅微乳腺癌21
-        if ("breastcancer_21".equals(product_name)) {
+        if ("breastcancer_21".equals(productName)) {
             Map bc = new HashMap();
             List<Map> ctValue = analysisReportDao.getCtValue(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
             List<Map> nnm = analysisReportDao.getNNM(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
@@ -2930,7 +2918,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // 阅微MSI
-        if ("msi".equals(product_name)) {
+        if ("msi".equals(productName)) {
             List<Map> microsatelliteInstability = analysisReportDao.getMicrosatelliteInstability(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
             if (microsatelliteInstability.size() > 0) {
                 Map yw = microsatelliteInstability.get(0);
@@ -3211,9 +3199,9 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // 脑胶质瘤相关分子标记物检测结果 && 增加1166RNA通用模板
-        boolean brainGlioma1166Flag = (product_name.equals("novopm2_rna1166_Sarcoma") || product_name.equals("novopm2_rna639_Sarcoma")) && (diseaseFlag.get("BrainGlioma") || "脑胶质瘤1166分子分型".equals(module));
+        boolean brainGlioma1166Flag = (productName.equals("novopm2_rna1166_Sarcoma") || productName.equals("novopm2_rna639_Sarcoma")) && (diseaseFlag.get("BrainGlioma") || "脑胶质瘤1166分子分型".equals(module));
         boolean brainGliomaFlag = false;
-        if (product_name.equals("novopm2_tis_200") || brainGlioma1166Flag) {
+        if (productName.equals("novopm2_tis_200") || brainGlioma1166Flag) {
             brainGliomaFlag = true;
             List<MmBrainGlioma> mmBrainGliomas = moduleModificationAllDao.selectMmBrainGliomaByReportId(currentNgsAvailable.getReport_id());
             if (!CollectionUtils.isEmpty(mmBrainGliomas)) {
@@ -3611,17 +3599,17 @@ public class PyReportServiceImpl implements PyReportService {
 
         // MOD 20250319 新免疫基因表格提示输出，动态输出根据panel去重
         if (templateConf != null && templateConf.getImmunity_P_N()) {
-            List<Map> positiveGeneList = handleImmunityGene("positive", product_name, positiveDDRImmnue);
+            List<Map> positiveGeneList = handleImmunityGene("positive", productName, positiveDDRImmnue);
             rt.setPositiveGeneList(positiveGeneList);
 
-            List<Map> positiveOtherGeneList = handleImmunityGene("positive_other", product_name, positiveOtherImmnue);
+            List<Map> positiveOtherGeneList = handleImmunityGene("positive_other", productName, positiveOtherImmnue);
             rt.setPositiveOtherGeneList(positiveOtherGeneList);
 
-            List<Map> negativeGeneList = handleImmunityGene("negative", product_name, negativeImmnueFilter);
+            List<Map> negativeGeneList = handleImmunityGene("negative", productName, negativeImmnueFilter);
             rt.setNegativeGeneList(negativeGeneList);
         }
         if (templateConf != null && templateConf.getHpd()) {
-            List<Map> hpdGeneList = handleImmunityGene("hpd", product_name, hpdImmnueFilter);
+            List<Map> hpdGeneList = handleImmunityGene("hpd", productName, hpdImmnueFilter);
             rt.setHpdGeneList(hpdGeneList);
         }
 
@@ -3630,7 +3618,7 @@ public class PyReportServiceImpl implements PyReportService {
         for (Map productModularization : productModularizations) {
             String panel = productModularization.get("panel").toString();
             // 判断产品名称或者模板名称是否在panel中
-            if (product_name.equals(panel) || rt.getTemplate_name().contains(panel)) {
+            if (productName.equals(panel) || rt.getTemplate_name().contains(panel)) {
                 summaryOfRresults.put("productModularization", productModularization);
                 break;
             }
@@ -3638,9 +3626,9 @@ public class PyReportServiceImpl implements PyReportService {
         // 产品名称或者模板名称不在panel中，则根据规则归类样本
         if (!summaryOfRresults.containsKey("productModularization")) {
             String productPanel = "";
-            if (product_name.indexOf("_") != -1) {
-                String s = product_name.split("_")[1];
-                if ("tis1".equals(s) || "12k_tis_single".equals(product_name)) {
+            if (productName.indexOf("_") != -1) {
+                String s = productName.split("_")[1];
+                if ("tis1".equals(s) || "12k_tis_single".equals(productName)) {
                     productPanel = "DNA panel 组织单样本";
                 } else if ("tis".equals(s)) {
                     productPanel = "DNA panel 组织双样本";
@@ -3663,7 +3651,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 188以上非 HRD panel,卵巢癌、卵巢癌、前列腺癌、乳腺癌
         if (diseaseFlag.get("HRR_disease")) {
             List<Map> somaticAndCR12List = geneAnalysisService.getTargetedSomaticMutationAndCR12(thisGeneticmarkerVwList, crAllList);
-            Map<String, String> HRRGeneInfo = geneAnalysisService.generateHRRData(product_name, somaticAndCR12List);
+            Map<String, String> HRRGeneInfo = geneAnalysisService.generateHRRData(productName, somaticAndCR12List);
 //            int HRRDetectedGeneCount = (int) HRRData.stream()
 //                    .filter(map -> !"-".equals(map.get("variant")))
 //                    .count();
@@ -3721,7 +3709,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setBrcaTargetedDrug(brcaTargetedDrug);
 
         // 林奇综合征和相关基因说明
-        if ("novopm2_cr_lynch".equals(product_name)) {
+        if ("novopm2_cr_lynch".equals(productName)) {
             Map lynchMap = new HashMap();
             for (Map map : crList) {
                 String gene = map.get("gene").toString();
@@ -3816,7 +3804,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 1166产品 中线癌、肾癌分型逻辑
         boolean cancerTyping1166Flag = (diseaseName.contains("肾细胞癌") || "肾癌1166分子分型".equals(module)) || diseaseFlag.get("Midline");
-        if ((product_name.equals("novopm2_rna1166_Sarcoma") || product_name.equals("novopm2_rna639_Sarcoma")) && cancerTyping1166Flag) {
+        if ((productName.equals("novopm2_rna1166_Sarcoma") || productName.equals("novopm2_rna639_Sarcoma")) && cancerTyping1166Flag) {
             // 肾细胞癌 肾癌做的特殊处理
             if (diseaseName.contains("肾")) {
                 diseaseFlag.put("Kidney", true);
@@ -6375,11 +6363,11 @@ public class PyReportServiceImpl implements PyReportService {
      * @param allMutation
      * @param sarcomaProductName
      * @param lang
-     * @param product_name
+     * @param productName
      * @return
      */
     @Override
-    public List<Map> getSarcomaTyping(List<Map> allMutation, String sarcomaProductName, Integer lang, String product_name) {
+    public List<Map> getSarcomaTyping(List<Map> allMutation, String sarcomaProductName, Integer lang, String productName) {
         List<Map> sarcomaTypings = new ArrayList<>();
         TranslateUtil translateUtil = new TranslateUtil();
 //        List<Map> allMutation = analysisReportDao.getAllMutationByReportId(report_id);
@@ -6491,7 +6479,7 @@ public class PyReportServiceImpl implements PyReportService {
             if (!sarcomaTypingGourp.isEmpty()) {
                 String evidence = sarcomaTypingGourp.get(0).get("evidence").toString();
                 if ("WHO".equals(evidence)) {
-                    if (product_name.contains("novopm2_rna62_Sarcoma")) {
+                    if (productName.contains("novopm2_rna62_Sarcoma")) {
                         mutationAnalysis += "在《WHO-涎腺肿瘤指南》中提及";
                     } else {
                         mutationAnalysis += "在《WHO-软组织与骨肿瘤指南》中提及";
@@ -6510,7 +6498,7 @@ public class PyReportServiceImpl implements PyReportService {
                 }
                 mutationAnalysis = mutationAnalysis.substring(0, mutationAnalysis.length() - 1) + "相关。";
             } else {
-                if (product_name.contains("rna") && ori_variant.indexOf("Fusion") != -1) {
+                if (productName.contains("rna") && ori_variant.indexOf("Fusion") != -1) {
                     String molecular_typing = ori_variant.substring(0, ori_variant.indexOf(" "));
                     String gene1 = molecular_typing.split("-")[0];
                     String gene2 = molecular_typing.split("-")[1];
@@ -7148,7 +7136,7 @@ public class PyReportServiceImpl implements PyReportService {
         String qrunicode = RandomUtils.getStringRandom(4) + report_id.substring(0, 2) + RandomUtils.getStringRandom(6) + report_id.substring(2) + RandomUtils.getStringRandom(2);
 
         // Upload QR code via API
-        // String ngsQrcodeUrl = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/" + client + "/subbarcode/" + subbarcode + "/product_name/" + pageName + "/username/3/qrcode/" + qrcode + "/report_date/" + report_date;
+        // String ngsQrcodeUrl = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode/client/" + client + "/subbarcode/" + subbarcode + "/productName/" + pageName + "/username/3/qrcode/" + qrcode + "/report_date/" + report_date;
         // String httpResponse = WebserviceProxyUtils.httpURLGETCase(ngsQrcodeUrl);
         // System.out.println(httpResponse);
 
@@ -7249,6 +7237,23 @@ public class PyReportServiceImpl implements PyReportService {
                     return !("/".equals(val1) && "/".equals(val2) && "/".equals(val3));
                 })
                 .collect(Collectors.toList());
+    }
+
+    public String translateMSIStatusState(String msiStatus) {
+        if (msiStatus == null) {
+            return "";
+        }
+
+        switch (msiStatus) {
+            case "MSS":
+                return "微卫星稳定型（MSS）";
+            case "MSI-H":
+                return "微卫星高度不稳定型（MSI-H）";
+            case "MSI-L":
+                return "微卫星低度不稳定型（MSI-L）";
+            default:
+                return msiStatus; // 保留原始值
+        }
     }
 
 }
