@@ -66,14 +66,12 @@ public class VariantServiceImpl implements VariantService {
     }
 
     @Override
-    public String specialVariantDesc(String gene, Integer mutId, String variant) {
+    public boolean isMET14SkippingRNA(String gene, String variant) {
+        return variant.equals("MET-MET Fusion M13:M15");
+    }
 
-        if (isEGFRvIII(gene, variant)){
-            return "( EGFR vIII )";
-        }
-        if (isCTNNB13Deletion(gene, variant)){
-            return "( CTNNB1 3号外显子缺失 )";
-        }
+    @Override
+    public String specialVariantDesc(String gene, Integer mutId, String variant) {
 
         if (mutId == null) return "";
 
@@ -90,5 +88,16 @@ public class VariantServiceImpl implements VariantService {
         }
 
         return "";
+    }
+
+    @Override
+    public String specialVariantDesc1(String gene, Integer mutId, String oriVariant) {
+        if (isEGFRvIII(gene, oriVariant)){
+            return "EGFR vIII";
+        }
+        if (isCTNNB13Deletion(gene, oriVariant)){
+            return "CTNNB1,3号外显子缺失";
+        }
+        return oriVariant;
     }
 }
