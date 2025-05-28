@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND a.analysis_date = #{analysis_date}
 		  AND a.file_type in ('SNP', 'INDEL')
 		  AND a.status = 'Loaded'
-		  AND b.report != 0
+		  AND (b.report IS NULL OR b.report = '1')
 
 	</select>
 
