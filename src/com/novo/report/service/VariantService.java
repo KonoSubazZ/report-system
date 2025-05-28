@@ -28,6 +28,8 @@ public interface VariantService {
 	 * @return
 	 */
 	boolean  isMET14Skipping(String gene, Integer mutId);
+	boolean  isEGFRvIII(String gene, String variant);
+	boolean  isCTNNB13Deletion(String gene, String variant);
 
-	String specialVariantDesc(String gene, Integer mutId);
+	String specialVariantDesc(String gene, Integer mutId, String oriVariant);
 }

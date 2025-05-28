@@ -65,7 +65,25 @@ public class VariantServiceImpl implements VariantService {
     }
 
     @Override
-    public String specialVariantDesc(String gene, Integer mutId) {
+    public boolean isEGFRvIII(String gene, String variant) {
+        return variant.equals("EGFR-EGFR Fusion E1:E8");
+    }
+
+    @Override
+    public boolean isCTNNB13Deletion(String gene, String variant) {
+        return variant.equals("CTNNB1-CTNNB1 Fusion C2:C4");
+    }
+
+    @Override
+    public String specialVariantDesc(String gene, Integer mutId, String variant) {
+
+        if (isEGFRvIII(gene, variant)){
+            return "( EGFR vIII )";
+        }
+        if (isCTNNB13Deletion(gene, variant)){
+            return "( CTNNB1 3号外显子缺失 )";
+        }
+
         if (mutId == null) return "";
 
         if (isExon19Deletion(gene, mutId)) {
