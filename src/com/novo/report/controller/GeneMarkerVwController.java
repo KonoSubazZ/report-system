@@ -665,9 +665,13 @@ public class GeneMarkerVwController {
             model.addAttribute("lymphomaFlag", lymphomaFlag);
 
             // 甲状腺癌报告模块
+            List<String> thyroidPanelList = moduleService.getconfPanelList("MOD_WITH_THYROID");
             boolean thyroidHotspotFlag = false;
-            if (diseaseName.contains("甲状腺")) {
+            boolean isThyroidPanel = thyroidPanelList.contains(product_name);
+
+            if (diseaseName.contains("甲状腺") || isThyroidPanel) {
                 thyroidHotspotFlag = true;
+
                 // 甲状腺癌热点基因检测结果
                 List<MmThyroidHotspot> mmThyroidHotspots = moduleModificationAllDao.selectMmThyroidHotspotByReportId(currentNgsAvailable.getReport_id());
                 if (mmThyroidHotspots.isEmpty()) {
@@ -681,6 +685,7 @@ public class GeneMarkerVwController {
                     mmThyroidHotspots.addAll(thyroidCancerHotAllGeneDrugTipLineStr);
                 }
                 model.addAttribute("mmThyroidHotspots", mmThyroidHotspots);
+
                 // 预后评估
                 List<MmThyroidPrognosis> mmThyroidPrognoses = moduleModificationAllDao.selectMmThyroidPrognosisByReportId(currentNgsAvailable.getReport_id());
                 if (mmThyroidPrognoses.isEmpty()) {
@@ -690,14 +695,14 @@ public class GeneMarkerVwController {
                     if (CollectionUtils.isEmpty(prognosticEvaluation)) {
                         prognosticEvaluation = geneAnalysisService.generateThyroidData(queryVO);
                     }
-                    for (Map map : prognosticEvaluation) {
+                    for (Map<String, String> map : prognosticEvaluation) {
                         MmThyroidPrognosis mmThyroidPrognosis = new MmThyroidPrognosis();
                         mmThyroidPrognosis.setReport_id(currentNgsAvailable.getReport_id());
-                        mmThyroidPrognosis.setGene(map.get("gene").toString());
-                        mmThyroidPrognosis.setOri_variant(map.get("ori_variant").toString());
-                        mmThyroidPrognosis.setMutFreq(map.get("mutFreq").toString());
-                        mmThyroidPrognosis.setPrognosis_evaluation(map.get("prognosis_evaluation").toString());
-                        mmThyroidPrognosis.setPrognosis_assessment(map.get("prognosis_assessment").toString());
+                        mmThyroidPrognosis.setGene(map.get("gene"));
+                        mmThyroidPrognosis.setOri_variant(map.get("ori_variant"));
+                        mmThyroidPrognosis.setMutFreq(map.get("mutFreq"));
+                        mmThyroidPrognosis.setPrognosis_evaluation(map.get("prognosis_evaluation"));
+                        mmThyroidPrognosis.setPrognosis_assessment(map.get("prognosis_assessment"));
                         mmThyroidPrognosis.setUpdate_by(user_account);
                         mmThyroidPrognosis.setUpdate_date(DateUtil.getSystemTime());
                         moduleModificationAllDao.insertMmThyroidPrognosis(mmThyroidPrognosis);

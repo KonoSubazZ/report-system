@@ -4663,7 +4663,7 @@ public class PyReportServiceImpl implements PyReportService {
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
         if (!conf.getThyroid_cancer_prognosis()) {
-            toRemove = "、预后";
+            toRemove = "、预后评估";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
 
@@ -4683,6 +4683,10 @@ public class PyReportServiceImpl implements PyReportService {
 
             if (!(boolean) cancerInfo.get("sarcomaFlag") || !conf.getSarcoma_typing()) {
                 toRemove = "肉瘤辅助诊断提示、";
+                productDesc1Str = productDesc1Str.replace(toRemove, "");
+            }
+            if (!conf.getMrd()) {
+                toRemove = "和患者MRD动态监测提供参考";
                 productDesc1Str = productDesc1Str.replace(toRemove, "");
             }
 

@@ -54,6 +54,7 @@ public class TemplateConf {
   private Boolean somaticMutationAnal;
   private Boolean crMutationAnal;
   private Boolean variantAnal;
+  private Boolean mrd;
   private Boolean tmbAnal;
   private Boolean msiAnal;
   private Boolean mmrAnal;
@@ -543,7 +544,11 @@ public class TemplateConf {
     this.variantAnal = variantAnal;
   }
 
+  public Boolean getMrd() { return mrd; }
 
+  public void setMrd(Boolean mrd) {
+    this.mrd = mrd;
+  }
   public Boolean getTmb_anal() {
     return tmbAnal;
   }
