@@ -33,6 +33,8 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
     public Map<String, String> generateHRRData(String panel, List<Map> mutationDrugList) {
         List<Map<String, String>> HRRGeneList = geneAnalysisDao.getHRRGene(panel);
 
+        // 检出HRR基因数
+        int HRRDetectedGeneCount = 0;
         for (Map<String, String> HRRmap : HRRGeneList) {
             String HRRGene = HRRmap.get("gene");
             StringBuilder variantsBuilder = new StringBuilder();
@@ -44,6 +46,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
                 if (HRRGene.equals(drugGene)) {
                     int cIndex = oriVariant.indexOf("c.");
                     if (cIndex >= 0) {
+                        HRRDetectedGeneCount++;
                         String variant = oriVariant.substring(cIndex);
                         // 去除p点不存在的情况
                         variant = removeTrailingDots(variant);
@@ -64,8 +67,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
 
         List<Map<String, String>> HRRGeneList1 = new ArrayList<>();
         List<Map<String, String>> HRRGeneList2 = new ArrayList<>();
-        // 检出HRR基因数
-        int HRRDetectedGeneCount = 0;
+
         String clinical_significance_desc1 = "-";
         String clinical_significance_desc2 = "-";
 
@@ -75,7 +77,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
             String variant = map.get("variant");
             HRRGeneDetectedInfo.put(gene, variant);
             if (!"-".equals(variant)) {
-                HRRDetectedGeneCount++;
+
                 // 增加动态输出临床意义
                 if (coreHRRGenes.contains(gene)) {
                     clinical_significance_desc1 = map.get("clinical_significance_desc");
