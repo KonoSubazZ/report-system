@@ -116,6 +116,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
 
         List<Map<String, String>> SNVINDELGeneSiteList = geneAnalysisDao.getSNVINDELGeneSite(query);
         List<Map<String, String>> thyroidGeneList = geneAnalysisDao.getThyroid();
+        List<Map<String, String>> thyroidDetectedList = new ArrayList<>();
 
         for (Map<String, String> map : SNVINDELGeneSiteList) {
             String gene = map.get("gene");
@@ -124,39 +125,41 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
             String mutFreq = map.get("mut_freq");
 
             Map<String, String> matchedRecord = null;
-            // boolean isExactMatch = false;
 
             for (Map<String, String> thyroidGeneMap : thyroidGeneList) {
                 String thyroidGene = thyroidGeneMap.get("gene");
                 String protein = thyroidGeneMap.get("protein");
 
-                if (gene.equals(thyroidGene)) {
-                    String desc1 = "";
-                    String prognosisEvaluation = thyroidGeneMap.get("prognosis_evaluation");
+                if (!gene.equals(thyroidGene)) continue;
 
-                    if (variant.contains(protein) && !"*".equals(protein)) {
+                if (!"*".equals(protein) && variant.contains(protein)) {
+                    // 精确匹配
+                    matchedRecord = new HashMap<>(thyroidGeneMap); // 避免污染原始数据
+                    break;
+                } else if ("*".equals(protein) && matchedRecord == null) {
+                    // 模糊匹配（仅作为备选）
+                    matchedRecord = new HashMap<>(thyroidGeneMap);
+                }
+            }
 
-                        // 精确匹配，立即使用并跳出循环
-                        matchedRecord = thyroidGeneMap;
-                        if (gene.equals("TERT")) {
-                            desc1 = "该样本检测结果显示，TERT基因存在启动子突变。";
-                        }
-                        desc1 = "该样本检测结果显示，" + gene + "基因存在" + variant + "突变。";
-                        // isExactMatch = true;
-                        break;
-                    } else if ("*".equals(protein) && matchedRecord == null) {
-                        // fallback 匹配，先保存，但不跳出
-                        matchedRecord = thyroidGeneMap;
-                        desc1 = "该样本检测结果显示，" + gene + "基因存在" + variant + "突变。";
-                    }
-
-                    prognosisEvaluation = desc1 + thyroidGeneMap.get("prognosis_evaluation");
+            if (matchedRecord != null) {
+                String desc1;
+                if ("TERT".equals(gene)) {
+                    desc1 = "该样本检测结果显示，TERT基因存在启动子突变。";
+                } else {
+                    desc1 = "该样本检测结果显示，" + gene + "基因存在" + variant + "突变。";
                 }
 
+                String prognosisEvaluation = desc1 + matchedRecord.get("prognosis_evaluation");
+                matchedRecord.put("prognosis_evaluation", prognosisEvaluation);
+                matchedRecord.put("mut_freq", mutFreq);
+                matchedRecord.put("ori_variant", oriVariant);
+                thyroidDetectedList.add(matchedRecord);
             }
         }
-        return Collections.emptyList();
+        return thyroidDetectedList;
     }
+
 
     @Override
     public List<Map> getTargetedSomaticMutationAndCR12(List<Map> somaticList, List<Map> crList) {
