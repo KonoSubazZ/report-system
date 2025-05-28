@@ -1433,7 +1433,7 @@ public class PyReportServiceImpl implements PyReportService {
             }
         }
 
-        // *************靶向药物检测解析************
+        // MOD *************靶向药物检测解析************
         int geneRearrangementNum = 0; //基因重排
         List<Map> targetedDrugDetectionStr = new ArrayList<Map>();
         List<Map> embryonalDrugDetectionStr = new ArrayList<Map>();
@@ -1459,11 +1459,12 @@ public class PyReportServiceImpl implements PyReportService {
             boolean isFusion = ori_variant != null && ori_variant.contains("Fusion");
             boolean isLifeTemplate = lifeWithoutNDFTemplates.contains(rt.getTemplate_name());
             if (isLifeTemplate && isFusion) mutFreq = "/";
-
             mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
+
             String varDrugNote = map.get("varDrugNote") == null ? "" : map.get("varDrugNote").toString();
             List<DrugResearch> drugResearchList = map.get("drugResearchList") == null ? null : (List<DrugResearch>) map.get("drugResearchList");
             List<PotentialDrug> potentialDrugList = map.get("potentialDrugList") == null ? null : (List<PotentialDrug>) map.get("potentialDrugList");
+
             // 三峡、重医附二模板删除非A级药物（获批上市、指南推荐）的潜在受益药物研究信息、潜在耐药研究信息
             if (rt.getTemplate_name().contains("三峡") || rt.getTemplate_name().contains("重医附二")) {
                 if (drugResearchList != null) {
@@ -1504,6 +1505,7 @@ public class PyReportServiceImpl implements PyReportService {
                 String type = "hasDrug";
                 generateTongJiData(map, targetedDrugDetection, fusionAll, type);
             }
+
             if (!CollectionUtils.isEmpty(drugList)) {
                 List<Map> clinicalList = map.get("clinicalList") == null ? null : (List<Map>) map.get("clinicalList");
                 for (Map map2 : drugList) {
@@ -1663,6 +1665,8 @@ public class PyReportServiceImpl implements PyReportService {
                 targetedDrugDetection.put("resistantcStr", resistantcStr);
                 targetedDrugDetection.put("resistantdStr", resistantdStr);
                 targetedDrugDetection.put("resistantStr1", resistantStr1);
+
+                // TODO 待优化
                 if (rt.getTemplate_name().contains("广附一")) {
                     List<Map> gfyDrugStr = new ArrayList<Map>();
                     List<Map> gfyResistantStr = new ArrayList<Map>();
@@ -1751,20 +1755,7 @@ public class PyReportServiceImpl implements PyReportService {
                 json2.accumulate("value", mutDesc.trim());
                 array.add(2, json2);
 
-                /*JSONObject drugAnnotation = (JSONObject) array.get(3);
-                String drugAnnotation1 = drugAnnotation.get("value") == null ? "" : drugAnnotation.get("value").toString();
-                drugAnnotation.element("value", nccnInfo1 + drugAnnotation1);*/
-
                 List<Json> listDrugNote = (List<Json>) JSONArray.toCollection(array, Json.class);
-                /*for (Json json : listDrugNote) {
-                    if (json.getKey().equals("recommend:")) {
-                        if (!CollectionUtils.isEmpty(clinicalList)) {
-                            json.setValue("推荐下表所示的临床试验。");
-                        } else {
-                            json.setValue("");
-                        }
-                    }
-                }*/
                 targetedDrugDetection.put("medicationDescription", listDrugNote);
 
                 // ********潜在耐药研究信息********
