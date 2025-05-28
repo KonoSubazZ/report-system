@@ -98,6 +98,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     @Autowired
     private DiseaseService diseaseService;
+
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
         boolean flag = false;
@@ -795,6 +796,9 @@ public class PyReportServiceImpl implements PyReportService {
         }
         rt.setGene(geneMap);
 
+        // life报告模板融合不输出突变丰度和NDF值,改为数据库动态获取
+        List<String> lifeWithoutNDFTemplates = moduleService.getconfTemplateList("LIFE_WITHOUT_NDF");
+
         // TODO 待移除代码，归结为个性化
         // 变异分级(60基因重肿)
         Map variationGrading = new HashMap<>();
@@ -814,22 +818,10 @@ public class PyReportServiceImpl implements PyReportService {
                     Map rpUnknownVar = map.get("rpUnknownVar") == null ? null : (Map) map.get("rpUnknownVar");
 
                     String ori_variant = map.get("ori_variant").toString();
-                    String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
-                    // life报告模板融合不输出突变丰度和NDF值
-                    // 20241115 解读需求输出突变丰度
-                    /*
-                    List<String> templates = lifeNoNDFTemplate();
-                    if (templates.contains(rt.getTemplate_name())) {
-                        if (ori_variant.indexOf("Fusion") != -1) {
-                            mutFreq = "/";
-                        }
-                    }
-                     */
-
-                    if (mutFreq.equals(".")) {
-                        mutFreq = "/";
-                    }
+                    String mutFreqRaw = map.get("mutFreq") != null ? map.get("mutFreq").toString() : null;
+                    String mutFreq = (mutFreqRaw == null || ".".equals(mutFreqRaw)) ? "/" : mutFreqRaw;
                     mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
+
                     variation.put("gene", gene);
                     variation.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
                     variation.put("mutFreq", mutFreq);
@@ -915,7 +907,7 @@ public class PyReportServiceImpl implements PyReportService {
         String somaticMutationStr = "";
         rt.setBengbuComplex("未见变异"); // 蚌埠肠癌共突变逻辑
 
-        // 靶向药物提示输出逻辑
+        // MOD 靶向药物提示输出逻辑
         if (allDrugMutNum != 0) {
             // *****************靶向药物提示表格***************
             for (Map map : list) {
@@ -928,17 +920,14 @@ public class PyReportServiceImpl implements PyReportService {
                     String ori_variant = map.get("ori_variant").toString();
                     String ExonicFunc = map.get("ExonicFunc") == null ? "-" : map.get("ExonicFunc").toString();
                     String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
-                    if (mutFreq.equals(".")) {
-                        mutFreq = "-";
-                    }
-                    // 判断是否是融合突变、life报告模板融合不输出突变丰度和NDF值
-                    List<String> templates = lifeNoNDFTemplate();
-                    if (templates.contains(rt.getTemplate_name())) {
-                        if (ori_variant.indexOf("Fusion") != -1) {
-                            mutFreq = "/";
-                        }
-                    }
+                    if (mutFreq.equals(".")) mutFreq = "-";
+
+                    // 判断是否是融合突变、life报告模板融合不输出突变丰度和NDF值,改为数据库获取
+                    boolean isFusion = ori_variant != null && ori_variant.contains("Fusion");
+                    boolean isLifeTemplate = lifeWithoutNDFTemplates.contains(rt.getTemplate_name());
+                    if (isLifeTemplate && isFusion) mutFreq = "/";
                     mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
+
                     if (gene.equals("Complex")) {
                         gene = "多靶点循证";
                         if (rt.getTemplate_name().contains("银丰")) {
@@ -950,17 +939,17 @@ public class PyReportServiceImpl implements PyReportService {
                     targetDrugTipLine.put("gene", gene);
                     targetDrugTipLine.put("ori_variant", removeMutations(transferOriVariant(ori_variant)));
                     targetDrugTipLine.put("ExonicFunc", translateMutType(ExonicFunc));
-                    targetDrugTipLine.put("ExonicFunc1", translateMutType(ExonicFunc));
 
-                    // 20250413增加14外显子跳跃突变提示
-                    String InNKB = map.get("InNKB") == null ? "-" : map.get("InNKB").toString();
-                    if (InNKB.equals("true")) {
-                        String mutId = map.get("mapped_variant_id") == null ? "-" : map.get("mapped_variant_id").toString();
-                        List<Integer> parentVariant = analysisReportDao.getParentMutationId(Integer.valueOf(mutId));
-                        if (parentVariant.contains(2936)) {
-                            targetDrugTipLine.put("ExonicFunc1", "14号外显子跳跃突变");
-                        }
-                    }
+                    // 特殊展示突变
+                    String specialVariantDesc = variantService.specialVariantDesc(gene, null, ori_variant);
+                    String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant);
+                    targetDrugTipLine.put("ori_variant1", specialVariantDesc);
+                    targetDrugTipLine.put("ExonicFunc2", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc);
+
+                    // 同济特殊输出需求
+                    Integer mutId = (Integer) map.get("mapped_variant_id");
+                    boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId);
+                    targetDrugTipLine.put("ExonicFunc1", isMET14Skipping ? "14号外显子跳跃突变" : translateMutType(ExonicFunc));
                     targetDrugTipLine.put("mutFreq", mutFreq);
 
                     Set drugNameGroup = new HashSet();
@@ -1249,14 +1238,14 @@ public class PyReportServiceImpl implements PyReportService {
                     String ExonicFunc = map.get("ExonicFunc") == null ? "." : map.get("ExonicFunc").toString();
                     String mutFreq = map.get("mutFreq") == null ? "." : map.get("mutFreq").toString();
                     //判断是否是融合突变
-                    List<String> templates = lifeNoNDFTemplate(); //life报告模板融合不输出突变丰度和NDF值
-                    if (templates.contains(rt.getTemplate_name())) {
-                        if (ori_variant.indexOf("Fusion") != -1) {
-                            ExonicFunc = "/";
-                            mutFreq = "/";
-                        }
+                    boolean isFusion = ori_variant != null && ori_variant.contains("Fusion");
+                    boolean isLifeTemplate = lifeWithoutNDFTemplates.contains(rt.getTemplate_name());
+                    if (isLifeTemplate && isFusion) {
+                        mutFreq = "/";
+                        ExonicFunc = "/";
                     }
                     mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
+
                     if (gene.equals("Complex")) {
                         continue;
                     }
@@ -1474,18 +1463,14 @@ public class PyReportServiceImpl implements PyReportService {
             String gene = map.get("gene").toString();
             String ori_variant = map.get("ori_variant").toString();
             String check_date = map.get("check_date") == null ? "" : map.get("check_date").toString();
+
+            // 关于丰度的逻辑，由静态改为动态
             String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
-            // 判断是否是融合突变
-            List<String> templates = lifeNoNDFTemplate();
-            // life报告模板融合不输出突变丰度和NDF值
-            if (templates.contains(rt.getTemplate_name())) {
-                if (ori_variant.indexOf("Fusion") != -1) {
-                    mutFreq = "/";
-                }
-            }
-            if (mutFreq.equals(".")) {
-                mutFreq = "-";
-            }
+            if (mutFreq.equals(".")) mutFreq = "-";
+            boolean isFusion = ori_variant != null && ori_variant.contains("Fusion");
+            boolean isLifeTemplate = lifeWithoutNDFTemplates.contains(rt.getTemplate_name());
+            if (isLifeTemplate && isFusion) mutFreq = "/";
+
             mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
             String varDrugNote = map.get("varDrugNote") == null ? "" : map.get("varDrugNote").toString();
             List<DrugResearch> drugResearchList = map.get("drugResearchList") == null ? null : (List<DrugResearch>) map.get("drugResearchList");
@@ -1958,13 +1943,12 @@ public class PyReportServiceImpl implements PyReportService {
                     String var_drug_desc = rpUnknownVar.get("var_drug_desc") == null ? "" : rpUnknownVar.get("var_drug_desc").toString();
                     String mutFreq = map.get("mutFreq") == null ? "." : map.get("mutFreq").toString();
                     String variantDescription = map.get("variantDescription") == null ? "." : map.get("variantDescription").toString();
-                    //判断是否是融合突变
-                    List<String> templates = lifeNoNDFTemplate(); //life报告模板融合不输出突变丰度和NDF值
-                    if (templates.contains(rt.getTemplate_name())) {
-                        if (ori_variant.indexOf("Fusion") != -1) {
-                            mutFreq = "/";
-                        }
-                    }
+
+                    // 由静态改为动态
+                    boolean isFusion = ori_variant != null && ori_variant.contains("Fusion");
+                    boolean isLifeTemplate = lifeWithoutNDFTemplates.contains(rt.getTemplate_name());
+                    if (isLifeTemplate && isFusion) mutFreq = "/";
+
                     mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
                     if (gene.equals("Complex") || "不报告".equals(rpUnknownVar.getOrDefault("result_type", ""))) {
                         continue;
@@ -6040,6 +6024,7 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
     // life报告模板融合不输出突变丰度和NDF值
+    @Deprecated
     public List<String> lifeNoNDFTemplate() {
         List<String> a = new ArrayList();
         a.add("肺癌6基因报告模板");

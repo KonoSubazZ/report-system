@@ -64,4 +64,14 @@ public interface VariantService {
 	 * @return
 	 */
 	String specialVariantDesc1(String gene, Integer mutId, String oriVariant);
+
+	/**
+	 * 特殊的ExonicFuncDesc MET14、EGFR vIII fusion / CTNNB1 。输出剪切体突变
+	 * @param gene
+	 * @param mutId
+	 * @param oriVariant
+	 * @return
+	 */
+	String specialExonicFuncDesc(String gene, Integer mutId, String oriVariant);
+
 }

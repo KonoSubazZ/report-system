@@ -108,4 +108,14 @@ public class VariantServiceImpl implements VariantService {
         }
         return oriVariant;
     }
+
+    @Override
+    public String specialExonicFuncDesc(String gene, Integer mutId, String oriVariant) {
+        if (isEGFRvIII(gene, oriVariant)
+                || isCTNNB13Deletion(gene, oriVariant)
+                || isMET14SkippingRNA(gene, oriVariant)){
+            return "剪接变异体";
+        }
+        return null;
+    }
 }
