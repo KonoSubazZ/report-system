@@ -394,7 +394,7 @@ public interface AnalysisReportDao {
 
     // 预后评估
     @Select("SELECT gene,ori_variant,mutFreq,prognosis_evaluation,prognosis_assessment FROM omics.pdoftc_file WHERE file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"PDofTC\" and status=\"Loaded\")")
-    List<Map> getPrognosticEvaluation(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
+    List<Map<String,String>> getPrognosticEvaluation(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
     // QC DNA质控信息
     @Select("SELECT file_id,tumorcellcontent,DNA_total,DNA_degradation,outbound_quantity,plane_data,sequencing_depth,coverage_uniformity,coverage,genome_alignment,base_quality FROM omics.qc_file WHERE file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"qc\" and status=\"Loaded\")")

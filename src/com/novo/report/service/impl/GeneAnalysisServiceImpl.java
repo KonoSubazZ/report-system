@@ -108,11 +108,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
     }
 
     @Override
-    public List<Map<String, String>> generateThyroidData(String subbarcode, String panel, String analysisDate) {
-        CommonQueryVO query = new CommonQueryVO();
-        query.setSubbarcode(subbarcode);
-        query.setAnalysis_date(analysisDate);
-        query.setProduct_name(panel);
+    public List<Map<String, String>> generateThyroidData(CommonQueryVO query ) {
 
         List<Map<String, String>> SNVINDELGeneSiteList = geneAnalysisDao.getSNVINDELGeneSite(query);
         List<Map<String, String>> thyroidGeneList = geneAnalysisDao.getThyroid();

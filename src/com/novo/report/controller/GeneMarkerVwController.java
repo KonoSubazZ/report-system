@@ -2,6 +2,7 @@ package com.novo.report.controller;
 
 import com.google.gson.Gson;
 import com.novo.report.beans.*;
+import com.novo.report.common.CommonQueryVO;
 import com.novo.report.dao.two.*;
 import com.novo.report.service.*;
 import com.novo.report.utils.DateUtil;
@@ -82,6 +83,9 @@ public class GeneMarkerVwController {
     @Autowired
     private ModuleService moduleService;
 
+    @Autowired
+    private GeneAnalysisService geneAnalysisService;
+
 
     @SuppressWarnings("unchecked")
     @RequestMapping("getGeneMarker")
@@ -152,13 +156,15 @@ public class GeneMarkerVwController {
         Gson gson = new Gson();
         final boolean isEnglish = isEnglish(currentNgsAvailable.getProduct_name());
         // 1 cn, 2 en
-        Integer lang = 0;
-        if (isEnglish) {
-            lang = 2;
-        } else {
-            lang = 1;
-        }
+        Integer lang = isEnglish ? 2 : 1;
         model.addAttribute("lang", lang);
+
+        // 构建查询参数
+        CommonQueryVO queryVO = new CommonQueryVO();
+        queryVO.setAnalysis_date(currentNgsAvailable.getAnalysis_date());
+        queryVO.setSubbarcode(currentNgsAvailable.getSubbarcode());
+        queryVO.setProduct_name(currentNgsAvailable.getProduct_name());
+
         AnalysisReport analysisReport = analysisReportDao.getReportById(currentNgsAvailable.getReport_id());
 
         // 根据 report_id 获取原发癌种信息
@@ -678,11 +684,11 @@ public class GeneMarkerVwController {
                 // 预后评估
                 List<MmThyroidPrognosis> mmThyroidPrognoses = moduleModificationAllDao.selectMmThyroidPrognosisByReportId(currentNgsAvailable.getReport_id());
                 if (mmThyroidPrognoses.isEmpty()) {
-                    List<Map> prognosticEvaluation = analysisReportDao.getPrognosticEvaluation(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+                    List<Map<String, String>> prognosticEvaluation = analysisReportDao.getPrognosticEvaluation(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
 
                     // 走自己生成甲状腺的逻辑，生信流程没有
                     if (CollectionUtils.isEmpty(prognosticEvaluation)) {
-
+                        prognosticEvaluation = geneAnalysisService.generateThyroidData(queryVO);
                     }
                     for (Map map : prognosticEvaluation) {
                         MmThyroidPrognosis mmThyroidPrognosis = new MmThyroidPrognosis();
