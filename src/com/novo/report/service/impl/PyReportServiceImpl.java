@@ -5653,22 +5653,6 @@ public class PyReportServiceImpl implements PyReportService {
         return gson.toJson(data);
     }
 
-    public String dataToJson2(ReportTemplate rt) {
-        Map data = new HashMap();
-       /* data.put("SampleInfo", rt);
-        data.put("CancerRisk", CancerRisk);
-        data.put("VarDrug", VarDrug);
-        data.put("Analysis", analysisReport);
-        data.put("DMMRinfo", dMMRinfo);
-        data.put("SummaryOfRresults", summaryOfRresults);
-        data.put("targetDrugTipLineStr", targetDrugTipLineStr);
-        data.put("chemoSummary", chemoSummary);
-        data.put("chemoAnalysis", chemoAnalysis);
-        data.put("sarcomaTyping", sarcomaTyping);*/
-        Gson gson = new Gson();
-        return gson.toJson(rt);
-    }
-
     public Map getAnalysisOfImmuneTestResults(StringBuilder sb, Map tmbMap, String user, Integer diseaseId, List<Integer> diseaseIdList, List<Integer> parentdiseaseIdList, Integer lang, String template_name, Integer report_id) {
         Map map = new HashMap();
         try {
