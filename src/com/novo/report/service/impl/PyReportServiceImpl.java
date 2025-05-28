@@ -1116,7 +1116,10 @@ public class PyReportServiceImpl implements PyReportService {
                                 targetDrugTipLine.put("cHGVS", ori_variant_split);
                                 targetDrugTipLine.put("pHGVS", "/");
                                 targetDrugTipLine.put("sf", ori_variant);
-                                bodyDrugStr = bodyDrugStr + (gene + " " + ori_variant_split + "; ");
+
+                                // 小结增加特殊提示 MET14 EGFRvIII CTNNB13
+                                String spercialOriVariant = variantService.specialVariantDesc1(gene, null, ori_variant);
+                                bodyDrugStr = bodyDrugStr + (gene + " " + spercialOriVariant + "; ");
                                 if (!gene6.contains(gene)) {
                                     bodyDrugExceptGene6Str = bodyDrugExceptGene6Str + (gene + " " + ori_variant_split + "; ");
                                 }
