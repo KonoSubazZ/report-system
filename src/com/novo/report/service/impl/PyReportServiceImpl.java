@@ -3430,7 +3430,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
         rt.setImmuneLung(immuneLung1);
 
-        // 自动化备注输出
+        // TODO 待优化移除 自动化备注输出
         Map<String, Object> rk = new HashMap<String, Object>();
         List<Map> remarks = analysisReportDao.getRemarks();
         for (Map remark : remarks) {
@@ -5927,6 +5927,7 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
     // 判断字符串是否是json类型
+    // TODO 待优化
     public boolean isJson(String str) {
         boolean result = false;
         if (StringUtils.isNotBlank(str)) {
