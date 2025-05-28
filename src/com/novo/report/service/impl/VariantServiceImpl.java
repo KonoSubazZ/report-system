@@ -98,6 +98,9 @@ public class VariantServiceImpl implements VariantService {
         if (isCTNNB13Deletion(gene, oriVariant)){
             return "CTNNB1,3号外显子缺失";
         }
+        if (isMET14SkippingRNA(gene, oriVariant)){
+            return "MET,14号外显子跳跃";
+        }
         return oriVariant;
     }
 }
