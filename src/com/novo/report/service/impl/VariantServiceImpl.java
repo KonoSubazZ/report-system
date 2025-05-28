@@ -17,9 +17,6 @@ public class VariantServiceImpl implements VariantService {
 
     @Override
     public boolean isExon19Deletion(String gene, Integer mutId) {
-        if (mutId == null) {
-            return false;
-        }
 
         List<Map> parentMutList = variantDao.getParentMut(gene, mutId);
 
@@ -34,9 +31,6 @@ public class VariantServiceImpl implements VariantService {
 
     @Override
     public boolean isEGFRExon20Insertion(String gene, Integer mutId) {
-        if (mutId == null) {
-            return false;
-        }
 
         List<Map> parentMutList = variantDao.getParentMut(gene, mutId);
 
@@ -50,9 +44,6 @@ public class VariantServiceImpl implements VariantService {
 
     @Override
     public boolean isMET14Skipping(String gene, Integer mutId) {
-        if (mutId == null) {
-            return false;
-        }
 
         List<Map> parentMutList = variantDao.getParentMut(gene, mutId);
 
