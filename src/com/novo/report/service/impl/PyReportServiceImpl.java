@@ -4423,8 +4423,15 @@ public class PyReportServiceImpl implements PyReportService {
             commonNote.setType("通用-" + cancerInfo.get("targetCancer").toString());
             commonNote.setModule("important_targeted_gene_summary");
             ModCommonNote importantTargetedGeneSummary = moduleService.getImportantTargetedGeneSummaryNoteAndTitle(commonNote);
+            // 重要基因列表附录有可能一条，有可能两条
+            if (importantTargetedGeneSummary != null && importantTargetedGeneSummary.getNote() != null) {
+                String note = importantTargetedGeneSummary.getNote();
+                String[] noteParts = note.split("\\r?\\n"); // 支持 \r\n 和 \n 两种换行格式
 
-            importantTargetedGeneSummaryNoteList.add(0, importantTargetedGeneSummary.getNote());
+                for (int i = noteParts.length - 1; i >= 0; i--) {
+                    importantTargetedGeneSummaryNoteList.add(0, noteParts[i]);
+                }
+            }
 
             res.put("importantTargetedGeneSummaryNoteList", importantTargetedGeneSummaryNoteList);
             res.put("cancerTitle", importantTargetedGeneSummary.getCancer_title());
