@@ -1909,7 +1909,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setBodyDrugNoComplexGene6Str(listSort(bodyDrugNoComplexGene6Str));
         rt.setBodyDrugNoComplexExceptGene6Str(listSort(bodyDrugNoComplexExceptGene6Str));
 
-        // ************未知临床意义基因突变解析************
+        // MOD ************未知临床意义基因突变解析************
         List<Map> unknownVarAnalysisStr = new ArrayList<Map>();
         List<Map> unknownVarAnalysisGene6Str = new ArrayList<Map>();
         List<Map> unknownVarAnalysisExceptGene6Str = new ArrayList<Map>();
@@ -1961,6 +1961,10 @@ public class PyReportServiceImpl implements PyReportService {
                     unknownVarAnalysis.put("gene", gene);
                     unknownVarAnalysis.put("check_date", check_date);
                     unknownVarAnalysis.put("ori_variant", transferOriVariant(ori_variant));
+                    // 特殊展示突变
+                    String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant);
+                    unknownVarAnalysis.put("ori_variant1", specialVariantDesc);
+
                     unknownVarAnalysis.put("mutDesc", mutDesc2);
                     unknownVarAnalysis.put("gene_description_chinese", gene_description_chinese);
                     unknownVarAnalysis.put("mutFreq", mutFreq);
@@ -1970,14 +1974,7 @@ public class PyReportServiceImpl implements PyReportService {
                     }
                     unknownVarAnalysis.put("mutFreqType", mutFreqType);
                     unknownVarAnalysis.put("variantDescription", variantDescription);
-                    //未知临床意义用药说明换行
-					/*JSONArray array = JSONArray.fromObject(var_drug_desc);
-					List<Json> listDrugNote = (List<Json>) JSONArray.toCollection(array, Json.class);
-					String str_drug_desc = "";
-					for (Json json : listDrugNote) {
-						str_drug_desc += json.getValue();
-					}
-					unknownVarAnalysis.put("str_drug_desc", str_drug_desc);*/
+
                     if (ori_variant.indexOf("p.") != -1) {
                         unknownVarAnalysis.put("mutation", gene + " " + ori_variant.substring(ori_variant.indexOf("p.") + 2));
                     } else if (ori_variant.equals("Amplification") && ori_variant.indexOf("Fusion") != -1) {
@@ -1998,6 +1995,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setUnknownVarAnalysisStr(listSort(unknownVarAnalysisStr));
         rt.setUnknownVarAnalysisGene6Str(listSort(unknownVarAnalysisGene6Str));
         rt.setUnknownVarAnalysisExceptGene6Str(listSort(unknownVarAnalysisExceptGene6Str));
+
         // 20250304广附一关于MET14跳突变合并的需求
         if (rt.getTemplate_name().contains("广附一")) {
             List<Map> bodyDrugNoComplexGFYStr = geneGFYdata(rt.getBodyDrugNoComplexStr(), snpIndelFileAll);
