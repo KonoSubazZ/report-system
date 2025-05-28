@@ -175,7 +175,7 @@ public class TranslateUtil {
 	public String translate2(String gene, String mutation, String freq) {
 		String dir = this.getClass().getResource("").getPath();
 		String[] cmd = new String[] {"perl", String.format("%stranslate_hgvs.pl", dir), gene, mutation, freq};
-		System.out.println("perl输出结果："+ Arrays.toString(cmd));
+
 		String msg = "";
 		try {
 			Process pro = Runtime.getRuntime().exec(cmd);
