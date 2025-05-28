@@ -98,6 +98,8 @@ public class PyReportServiceImpl implements PyReportService {
 
     @Autowired
     private DiseaseService diseaseService;
+    @Autowired
+    private DiseaseServiceImpl diseaseServiceImpl;
 
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
@@ -3175,7 +3177,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 甲状腺癌热点基因检测结果(甲状腺癌)
         List<String> thyroidPanelList = moduleService.getconfPanelList("MOD_WITH_THYROID");
-        boolean isThyroidPanel = thyroidPanelList.contains(productName);
+        boolean isThyroidPanel = thyroidPanelList.contains(productName) && diseaseServiceImpl.isThyroidCarcinoma(diseaseId);
         String peDrugStr = "";
         if (rt.getTemplate_name().contains("甲状腺") || isThyroidPanel) {
             List<MmThyroidHotspot> thyroidCancerHotAllGeneDrugTipLineStr = moduleModificationAllDao.selectMmThyroidHotspotByReportId(currentNgsAvailable.getReport_id());

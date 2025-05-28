@@ -86,6 +86,9 @@ public class GeneMarkerVwController {
     @Autowired
     private GeneAnalysisService geneAnalysisService;
 
+    @Autowired
+    private DiseaseService diseaseService;
+
 
     @SuppressWarnings("unchecked")
     @RequestMapping("getGeneMarker")
@@ -667,7 +670,7 @@ public class GeneMarkerVwController {
             // 甲状腺癌报告模块
             List<String> thyroidPanelList = moduleService.getconfPanelList("MOD_WITH_THYROID");
             boolean thyroidHotspotFlag = false;
-            boolean isThyroidPanel = thyroidPanelList.contains(product_name);
+            boolean isThyroidPanel = thyroidPanelList.contains(product_name) && diseaseService.isThyroidCarcinoma(diseaseId);
 
             if (diseaseName.contains("甲状腺") || isThyroidPanel) {
                 thyroidHotspotFlag = true;

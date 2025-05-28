@@ -32,4 +32,10 @@ public class DiseaseServiceImpl implements DiseaseService {
         List<Integer> diseaseHierarchyIds = Arrays.asList(1963);
         return diseaseHierarchyIds.contains(dId);
     }
+
+    @Override
+    public boolean isThyroidCarcinoma(Integer dId) {
+        List<Integer> diseaseHierarchyIds = Arrays.asList(3963);
+        return diseaseHierarchyIds.contains(dId);
+    }
 }
