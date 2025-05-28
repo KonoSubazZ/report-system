@@ -3174,8 +3174,10 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setLymphomaFlag(lymphomaFlag);
 
         // 甲状腺癌热点基因检测结果(甲状腺癌)
+        List<String> thyroidPanelList = moduleService.getconfPanelList("MOD_WITH_THYROID");
+        boolean isThyroidPanel = thyroidPanelList.contains(productName);
         String peDrugStr = "";
-        if (rt.getTemplate_name().contains("甲状腺")) {
+        if (rt.getTemplate_name().contains("甲状腺") || isThyroidPanel) {
             List<MmThyroidHotspot> thyroidCancerHotAllGeneDrugTipLineStr = moduleModificationAllDao.selectMmThyroidHotspotByReportId(currentNgsAvailable.getReport_id());
             if (thyroidCancerHotAllGeneDrugTipLineStr.isEmpty()) {
                 thyroidCancerHotAllGeneDrugTipLineStr = getThyroidCancerHotgeneData(thisGeneticmarkerList, crList);
