@@ -942,7 +942,7 @@ public class PyReportServiceImpl implements PyReportService {
                     targetDrugTipLine.put("ExonicFunc", translateMutType(ExonicFunc));
 
                     // 特殊展示突变
-                    String specialVariantDesc = variantService.specialVariantDesc(gene, null, ori_variant);
+                    String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant);
                     String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant);
                     targetDrugTipLine.put("ori_variant1", specialVariantDesc);
                     targetDrugTipLine.put("ExonicFunc2", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc);
@@ -1319,7 +1319,7 @@ public class PyReportServiceImpl implements PyReportService {
                     unknownTipLine.put("ExonicFunc", translateMutType(ExonicFunc));
 
                     // 特殊展示突变
-                    String specialVariantDesc = variantService.specialVariantDesc(gene, null, ori_variant);
+                    String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant);
                     String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant);
                     unknownTipLine.put("ori_variant1", specialVariantDesc);
                     unknownTipLine.put("ExonicFunc2", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc);
@@ -1648,6 +1648,11 @@ public class PyReportServiceImpl implements PyReportService {
                 targetedDrugDetection.put("gene", gene);
                 targetedDrugDetection.put("check_date", check_date);
                 targetedDrugDetection.put("ori_variant", transferOriVariant(ori_variant));
+
+                // 特殊展示突变
+                String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant);
+                targetedDrugDetection.put("ori_variant1", specialVariantDesc);
+
                 targetedDrugDetection.put("mutFreq", mutFreq);
                 String mutFreqType = distinguishMutFreqTypeUtil(ori_variant, mutFreq);
                 if ("reads数".equals(mutFreqType)) {
