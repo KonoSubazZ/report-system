@@ -1343,6 +1343,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setUnknownTipLineGene6Str(listSort(unknownTipLineGene6Str));
         rt.setUnknownTipLineExceptGene6Str(listSort(unknownTipLineExceptGene6Str));
 
+        //  TODO 待确定 nccnInfoStr,根据 panel 或者模板输出
         // ************NCCN肺癌指南推荐临床常规靶向药物相关检测结果***********
         List<Map> nccnRecommend = analysisReportDao.getNccnRecommend(diseaseIdList);
         if (!CollectionUtils.isEmpty(nccnRecommend)) {
