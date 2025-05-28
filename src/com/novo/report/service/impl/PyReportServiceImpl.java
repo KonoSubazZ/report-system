@@ -1769,7 +1769,7 @@ public class PyReportServiceImpl implements PyReportService {
                 targetedDrugDetection.put("drugResearchList", drugResearchList);
                 targetedDrugDetection.put("drugResearchList1", drugResearchList.stream().filter(s -> !"临床前研究".equals(s.getEvidence_phase_chinese())).collect(Collectors.toList()));
 
-                //肺癌60检测结果分析
+                // 肺癌60检测结果分析
                 if ("肺癌60基因重肿".equals(rt.getTemplate_name())) {
                     List<PotentialDrug> potentialDrugGourp = new ArrayList<>();
                     Set<String> potentialDrugSet = new HashSet<String>();
