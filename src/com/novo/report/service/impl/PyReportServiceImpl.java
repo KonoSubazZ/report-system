@@ -4675,9 +4675,9 @@ public class PyReportServiceImpl implements PyReportService {
             case "synonymous SNV":
                 return "同义突变";
             case "nonframeshift insertion":
-                return "非移码突变";
+                return "非移码插入突变";
             case "nonframeshift deletion":
-                return "非移码突变";
+                return "非移码缺失突变";
             case "frameshift deletion":
                 return "移码突变";
             case "frameshift insertion":
