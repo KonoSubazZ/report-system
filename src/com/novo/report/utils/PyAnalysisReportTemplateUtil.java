@@ -378,10 +378,8 @@ public class PyAnalysisReportTemplateUtil {
             data.put("methylationInfo", rt.getMethylation());
         }
 
-        //data.put("FrequencySinglePageData", rt.getFrequencySinglePageData());
         //7、创建一个Writer对象，指定输出文件的路径及文件名。
-//		FileSystemView fsv = FileSystemView.getFileSystemView();
-//		File file = fsv.getHomeDirectory();// 获取系统桌面位置
+
         String webappsPath = new File(path).getParent();
         File file = new File(webappsPath + "/TESTREPORT/" + rt.getPlatforms());
         if (!file.exists()) {//如果有此文件,则不再创建
