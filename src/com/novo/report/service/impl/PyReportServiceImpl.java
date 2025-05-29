@@ -3906,7 +3906,10 @@ public class PyReportServiceImpl implements PyReportService {
             cancerInfo.put("gastrointestinalStromalTumor", gastrointestinalStromalTumor);
             cancerInfo.put("targetCancer", target_cancer);
             cancerInfo.put("sarcomaFlag", sarcomaFlag);
-            Map<String, Object> productDesc = generateProductDesc(cancerInfo, pd, templateName, templateConf, rt.getType(), productName);
+            Map<String, Object> productDesc = generateProductDesc(cancerInfo, pd,
+                    templateName, templateConf,
+                    rt.getType(), productName,
+                    diseaseFlag);
             rt.setProductDesc(productDesc);
 
             // CUSTOM 生成检测小结信息, 暂时不用合并到 commonNote 中
@@ -4580,7 +4583,8 @@ public class PyReportServiceImpl implements PyReportService {
             Map pd, String template,
             TemplateConf conf,
             String type,
-            String panel) {
+            String panel,
+            Map<String, Boolean> diseaseInfo) {
 
         Map<String, Object> res = new HashMap<>();
         ModProductDesc productDesc = moduleService.getProductDesc(template);
@@ -4619,7 +4623,7 @@ public class PyReportServiceImpl implements PyReportService {
             toRemove = "、免疫药物";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
-        if (!conf.getThyroid_cancer_prognosis()) {
+        if (!conf.getThyroid_cancer_prognosis() && !diseaseInfo.get("ThyroidCarcinoma")) {
             toRemove = "、预后评估";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
