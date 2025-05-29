@@ -504,7 +504,7 @@ def safe_get(d, key, default=None):
 
 def mark_genes_in_red(gene_tables, detected_gene_info):
     detected_mapping = {
-        "TARGET": "target_drug_gene_list",
+        "TARGET": "all_gene_list",
         "CR": "cr_gene_list",
         "FUSION": "fusion_gene_list",
         "IMMUNE": "immune_gene_list,mmr_gene_list",
