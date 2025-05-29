@@ -5242,10 +5242,14 @@ public class PyReportServiceImpl implements PyReportService {
     @Override
     public String translateMutType(String ExonicFunc) {
         switch (ExonicFunc) {
+            case "nonsynonymous SNV":
+                return "错义突变";
+            case "synonymous SNV":
+                return "同义突变";
             case "nonframeshift insertion":
                 return "非移码插入突变";
             case "nonframeshift deletion":
-                return "非移码缺失突变";
+                return "非移码缺少突变";
             case "frameshift deletion":
                 return "移码突变";
             case "frameshift insertion":
@@ -5254,11 +5258,20 @@ public class PyReportServiceImpl implements PyReportService {
                 return "移码突变";
             case "nonframeshift indel":
                 return "非移码突变";
+            case "stopgain":
+                return "无义突变";
+            case "stoploss":
+                return "终止子缺失";
+            case "splicing":
+                return "剪接突变";
+            case "promoter":
+                return "启动子区变异";
+            case "unknown":
+                return "未知";
             default:
                 return ExonicFunc;
         }
     }
-
     /**
      * 翻译临床意义 12345->是否致病
      *
