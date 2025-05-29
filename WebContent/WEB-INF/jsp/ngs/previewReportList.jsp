@@ -3048,8 +3048,8 @@ tr {
 		switch(ExonicFunc) {
 			case "nonsynonymous SNV": return "错义突变";
 			case "synonymous SNV": return "同义突变";
-			case "nonframeshift insertion": return "非移码突变";
-			case "nonframeshift deletion": return "非移码突变";
+			case "nonframeshift insertion": return "非移码插入突变";
+			case "nonframeshift deletion": return "非移码缺失突变";
 			case "frameshift deletion": return "移码突变";
 			case "frameshift insertion": return "移码突变";
 			case "frameshift indel": return "移码突变";
