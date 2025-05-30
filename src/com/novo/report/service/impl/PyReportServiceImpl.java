@@ -3193,8 +3193,12 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setPeDrugStr("（" + peDrugStr.substring(0, peDrugStr.length() - 2) + "）");
         }
 
+        // RNA1166 三个分型涉及的panel
+        List<String> RNATPYingPanel = moduleService.getconfPanelList("MOD_RNA_TYPING");
+
         // 脑胶质瘤相关分子标记物检测结果 && 增加1166RNA通用模板
-        boolean brainGlioma1166Flag = (productName.equals("novopm2_rna1166_Sarcoma") || productName.equals("novopm2_rna639_Sarcoma")) && (diseaseFlag.get("BrainGlioma") || "脑胶质瘤1166分子分型".equals(module));
+
+        boolean brainGlioma1166Flag = (RNATPYingPanel.contains(productName)) && (diseaseFlag.get("BrainGlioma") || "脑胶质瘤1166分子分型".equals(module));
         boolean brainGliomaFlag = false;
         if (productName.equals("novopm2_tis_200") || brainGlioma1166Flag) {
             brainGliomaFlag = true;
@@ -3777,7 +3781,6 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 1166产品 中线癌、肾癌分型逻辑
         boolean cancerTyping1166Flag = (diseaseName.contains("肾细胞癌") || "肾癌1166分子分型".equals(module)) || diseaseFlag.get("Midline");
-        List<String> RNATPYingPanel = moduleService.getconfPanelList("MOD_RNA_TYPING");
         boolean isNUTMidlinePanel = RNATPYingPanel.contains(productName) && diseaseService.isNUTMidlineCarcinoma(diseaseId);
         boolean isRenalCellCarcinomaPanel = (RNATPYingPanel.contains(productName) && diseaseService.isRenalCellCarcinoma(diseaseId)) || "肾癌1166分子分型".equals(module);
         if (isNUTMidlinePanel || isRenalCellCarcinomaPanel) {
