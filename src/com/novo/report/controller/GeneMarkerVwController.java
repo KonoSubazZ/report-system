@@ -978,7 +978,7 @@ public class GeneMarkerVwController {
                                     cancerTyping.setCreated_by(user_account);
                                     cancerTyping.setUpdate_by(user_account);
 
-                                    // 获取肾癌分型
+                                    // 获取肾细胞癌分型
                                     for (AllCancerTyping allCancerTyping : midlineTyping) {
                                         String gene1 = allCancerTyping.getGene();
                                         String molecularTyping = allCancerTyping.getMolecular_typing();
