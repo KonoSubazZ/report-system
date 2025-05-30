@@ -4624,7 +4624,7 @@ public class PyReportServiceImpl implements PyReportService {
             toRemove = "、免疫药物";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
-        if (!conf.getThyroid_cancer_prognosis() && !diseaseInfo.get("ThyroidCarcinoma")) {
+        if (!conf.getThyroid_cancer_prognosis() || !diseaseInfo.get("ThyroidCarcinoma")) {
             toRemove = "、预后评估";
             productDesc1Str = productDesc1Str.replace(toRemove, "");
         }
