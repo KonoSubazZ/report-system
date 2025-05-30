@@ -4043,6 +4043,7 @@ public class PyReportServiceImpl implements PyReportService {
         disease.put("FallopianTubeCancer", diseaseService.isFallopianTubeCancer(diseaseId));
         disease.put("ProstateCancer", diseaseService.isProstateCancer(diseaseId));
         disease.put("ThyroidCarcinoma", diseaseService.isThyroidCarcinoma(diseaseId));
+        disease.put("EndometrialCarcinoma", diseaseService.isEndometrialCarcinoma(diseaseId));
 
 
         return disease;
