@@ -79,8 +79,6 @@ public class ChemoJsonUtil2 {
                 eff2 = eff2.replace("减弱", "可能较低").replace("增强", "可能较高");
                 eff3 = eff3.replace("减弱", "可能较低").replace("增强", "可能较高");
 
-                // 20250427 增加TA6/TA7等位基因不反转逻辑
-                List<String> alleleList = Arrays.asList("rs3064744", "rs8175347");
                 if (chr.equals(chr1) && pos.equals(position)) {
                     Map out_line = new HashMap();
                     Map temp_info = new HashMap();
@@ -92,12 +90,7 @@ public class ChemoJsonUtil2 {
                             trans_PMID = "/";
                             evidence = "/";
                         }
-                        // 20250427 增加TA6/TA7等位基因不排序逻辑
-//                        if (!alleleList.contains(rs_id)) {
-//                            char[] chars = allele1.toCharArray();
-//                            Arrays.sort(chars);
-//                            allele1 = new String((chars));
-//                        }
+
                         out_line.put("drug_class", drug_class);
                         out_line.put("drug_name_chinese", drug_name_chinese);
                         out_line.put("gene", gene);
@@ -122,11 +115,7 @@ public class ChemoJsonUtil2 {
                             trans_PMID = "/";
                             evidence = "/";
                         }
-//                        if (!alleleList.contains(rs_id)) {
-//                            char[] chars = allele2.toCharArray();
-//                            Arrays.sort(chars);
-//                            allele2 = new String((chars));
-//                        }
+
                         out_line.put("drug_class", drug_class);
                         out_line.put("drug_name_chinese", drug_name_chinese);
                         out_line.put("gene", gene);
@@ -150,12 +139,7 @@ public class ChemoJsonUtil2 {
                             trans_PMID = "/";
                             evidence = "/";
                         }
-                        // 20250427 增加TA6/TA7等位基因不排序逻辑
-//                        if (!alleleList.contains(rs_id)) {
-//                            char[] chars = allele3.toCharArray();
-//                            Arrays.sort(chars);
-//                            allele3 = new String((chars));
-//                        }
+
                         out_line.put("drug_class", drug_class);
                         out_line.put("drug_name_chinese", drug_name_chinese);
                         out_line.put("gene", gene);
@@ -173,12 +157,7 @@ public class ChemoJsonUtil2 {
                         temp_info.put("allele", allele3);
                         temp_info.put("cancer_type", cancer_type);
                     } else {
-                        // 20250427 增加TA6/TA7等位基因不排序逻辑
-//                        if (!alleleList.contains(rs_id)) {
-//                            char[] chars = allele.toCharArray();
-//                            Arrays.sort(chars);
-//                            allele = new String((chars));
-//                        }
+
                         out_line.put("drug_class", drug_class);
                         out_line.put("drug_name_chinese", drug_name_chinese);
                         out_line.put("gene", gene);
