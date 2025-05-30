@@ -3777,8 +3777,12 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 1166产品 中线癌、肾癌分型逻辑
         boolean cancerTyping1166Flag = (diseaseName.contains("肾细胞癌") || "肾癌1166分子分型".equals(module)) || diseaseFlag.get("Midline");
-        if ((productName.equals("novopm2_rna1166_Sarcoma") || productName.equals("novopm2_rna639_Sarcoma")) && cancerTyping1166Flag) {
+        List<String> RNATPYingPanel = moduleService.getconfPanelList("MOD_RNA_TYPING");
+        boolean isNUTMidlinePanel = RNATPYingPanel.contains(productName) && diseaseService.isNUTMidlineCarcinoma(diseaseId);
+        boolean isRenalCellCarcinomaPanel = (RNATPYingPanel.contains(productName) && diseaseService.isRenalCellCarcinoma(diseaseId)) || "肾癌1166分子分型".equals(module);
+        if (isNUTMidlinePanel || isRenalCellCarcinomaPanel) {
             // 肾细胞癌 肾癌做的特殊处理
+            // 待移除，更新大报告和小报告关于这个的逻辑
             if (diseaseName.contains("肾")) {
                 diseaseFlag.put("Kidney", true);
                 diseaseFlag.put("KidneyFlag", true);
@@ -5275,6 +5279,7 @@ public class PyReportServiceImpl implements PyReportService {
                 return ExonicFunc;
         }
     }
+
     /**
      * 翻译临床意义 12345->是否致病
      *
