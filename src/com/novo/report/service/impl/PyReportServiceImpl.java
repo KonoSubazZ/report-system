@@ -4042,10 +4042,6 @@ public class PyReportServiceImpl implements PyReportService {
         disease.put("ProstateCancer", diseaseService.isProstateCancer(diseaseId));
         disease.put("ThyroidCarcinoma", diseaseService.isThyroidCarcinoma(diseaseId));
 
-        // TODO HRR模块使用的癌种,HRR新增不判断癌种，待移除
-        boolean isHRRDisease = disease.get("BreastCarcinoma") || disease.get("OvarianCancer")
-                || disease.get("FallopianTubeCancer") || disease.get("ProstateCancer");
-        disease.put("HRR_disease", isHRRDisease);
 
         return disease;
     }
