@@ -3452,7 +3452,7 @@ public class PyReportServiceImpl implements PyReportService {
                     if (targetedDrug == null) return false;
 
                     // ERBB2\r\n(HER2) 为了特殊处理这种情况
-                    String gene = geneObj.toString().split("\\r?\\n")[0]; // 兼容 \r\n 和 \n
+                    String gene = geneObj.toString().split("\\R")[0].trim(); // 兼容 \r\n 和 \n
                     return geneSymbols.contains(gene);
                 })
                 .collect(Collectors.toList());
