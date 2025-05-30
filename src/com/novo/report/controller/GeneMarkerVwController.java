@@ -846,7 +846,10 @@ public class GeneMarkerVwController {
 
             // 脑胶质瘤1166相关分子标记物检测结果
             boolean brainGlioma1166Flag = false;
-            if ((product_name.equals("novopm2_rna1166_Sarcoma") || product_name.equals("novopm2_rna639_Sarcoma")) && diseaseName.contains("脑胶质瘤") || module.contains("脑胶质瘤1166分子分型")) {
+            List<String> RNATYPINGPanels = moduleService.getconfPanelList("MOD_RNA_TYPING");
+            boolean isBrainGliomaPanel = RNATYPINGPanels.contains(product_name) && diseaseService.isBrainGlioma(diseaseId);
+
+            if (isBrainGliomaPanel || module.contains("脑胶质瘤1166分子分型")) {
                 brainGlioma1166Flag = true;
                 List<MmBrainGlioma> mmBrainGliomas = moduleModificationAllDao.selectMmBrainGliomaByReportId(currentNgsAvailable.getReport_id());
                 if (mmBrainGliomas.isEmpty()) {
@@ -903,17 +906,14 @@ public class GeneMarkerVwController {
                 model.addAttribute("brainGliomaFlag", brainGlioma1166Flag);
             }
 
-            // 1166 中线癌分型、肾脏分型模块，暂不清楚是否是通用逻辑
-            boolean cancerTyping1166Flag = false;
-
-            if (product_name.equals("novopm2_rna1166_Sarcoma") && (diseaseName.contains("肾细胞癌") || diseaseName.contains("中线癌")) || module.equals("肾癌1166分子分型")) {
-
+            // RNA 中线癌分型、肾脏分型模块，暂不清楚是否是通用逻辑
+            boolean isRNATYPINGPanel = RNATYPINGPanels.contains(product_name);
+            if (isRNATYPINGPanel) {
                 List<CancerTyping> cancerTypings = moduleModificationAllDao.getCancerTypingById(currentNgsAvailable.getReport_id());
                 if (cancerTypings.isEmpty()) {
                     // 中线癌分型
                     List<Map> fusionAll = analysisReportDao.getFusionAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
-                    if (diseaseName.contains("中线癌")) {
-                        cancerTyping1166Flag = true;
+                    if (diseaseService.isNUTMidlineCarcinoma(diseaseId)) {
                         List<AllCancerTyping> midlineTyping = analysisReportDao.getTypingInfo(product_name, "Midline");
 
                         fusionAll.stream()
@@ -953,9 +953,9 @@ public class GeneMarkerVwController {
                                 });
                     }
 
-                    // 肾癌分型
-                    if (diseaseName.contains("肾细胞癌") || module.contains("肾癌1166分子分型")) {
-                        cancerTyping1166Flag = true;
+                    // 肾细胞癌分型
+                    if (diseaseService.isRenalCellCarcinoma(diseaseId) || module.contains("肾癌1166分子分型")) {
+
                         List<AllCancerTyping> midlineTyping = analysisReportDao.getTypingInfo(product_name, "Kidney");
                         fusionAll.stream()
                                 .forEach(fusionAllMap -> {

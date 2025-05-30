@@ -10,4 +10,9 @@ public interface DiseaseService {
     boolean isProstateCancer(Integer dId);
     boolean isFallopianTubeCancer(Integer dId);
     boolean isThyroidCarcinoma(Integer dId);
+    boolean isBrainGlioma(Integer dId);
+    boolean isRenalCellCarcinoma(Integer dId);
+    boolean isNUTMidlineCarcinoma(Integer dId);
+    boolean isGastrointestinalStromalTumor(Integer dId);
+    boolean isEndometrialCarcinoma(Integer dId);
 }

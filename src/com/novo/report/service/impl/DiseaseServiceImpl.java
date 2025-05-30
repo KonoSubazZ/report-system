@@ -38,4 +38,34 @@ public class DiseaseServiceImpl implements DiseaseService {
         List<Integer> diseaseHierarchyIds = Arrays.asList(3963);
         return diseaseHierarchyIds.contains(dId);
     }
+
+    @Override
+    public boolean isBrainGlioma(Integer dId) {
+        List<Integer> diseaseHierarchyIds = Arrays.asList(60108, 3068);
+        return diseaseHierarchyIds.contains(dId);
+    }
+
+    @Override
+    public boolean isRenalCellCarcinoma(Integer dId) {
+        List<Integer> diseaseHierarchyIds = Arrays.asList(4450, 4465, 4467);
+        return diseaseHierarchyIds.contains(dId);
+    }
+
+    @Override
+    public boolean isNUTMidlineCarcinoma(Integer dId) {
+        List<Integer> diseaseHierarchyIds = Arrays.asList(60463);
+        return diseaseHierarchyIds.contains(dId);
+    }
+
+    @Override
+    public boolean isGastrointestinalStromalTumor(Integer dId) {
+        List<Integer> diseaseHierarchyIds = Arrays.asList(9253);
+        return diseaseHierarchyIds.contains(dId);
+    }
+
+    @Override
+    public boolean isEndometrialCarcinoma(Integer dId) {
+        List<Integer> diseaseHierarchyIds = Arrays.asList(2871, 1380);
+        return diseaseHierarchyIds.contains(dId);
+    }
 }

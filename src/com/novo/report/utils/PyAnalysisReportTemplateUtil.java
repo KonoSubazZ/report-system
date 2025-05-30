@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class PyAnalysisReportTemplateUtil {
 
@@ -364,10 +366,9 @@ public class PyAnalysisReportTemplateUtil {
             data.put("bodyDrugNoComplexGFYStr", rt.getBodyDrugNoComplexGFYStr());
         }
 
-        // 1166产品分型结果
-        if (rt.getTemplate_name().contains("肿瘤融合基因RNA检测报告") || rt.getTemplate_name().contains("肿瘤融合基因RNA报告") || rt.getTemplate_name().contains("肿瘤融合基因RNA报告-中肿")) {
-            data.put("cancerTyping1166", rt.getCancerTyping1166());
-        }
+        // RNA产品分型结果
+        data.put("cancerTyping1166", rt.getCancerTyping1166());
+
 
         // MRD产品
         if (rt.getTemplate_name().contains("MRD")) {
