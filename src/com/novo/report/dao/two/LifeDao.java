@@ -61,5 +61,5 @@ public interface LifeDao {
 	Integer getClassIdByDiseaseClassChinese(String disease_class_chinese);
 
 	Integer getPendingAndErrorCount(@Param("subbarcode")String subbarcode, @Param("analysis_date")String analysis_date);
-	Map<String, String> getProductInfo(@Param("report_id")Integer reportId);
+	Map<String, String>  getProductInfo(@Param("product_id")Integer product_id);
 }
