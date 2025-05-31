@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.ChemoDao">
+
+    <select id="getChemoDBData" resultType="java.util.Map">
+           SELECT drug_name,
+                  drug_name_chinese,
+                  drug_class,
+                  rs_id,
+                  chr,
+                  position,
+                  ref,
+                  calling,
+                  evidence,
+                  type,
+                  gene,
+                  phenotype,
+                  translation,
+                  cancer_type,
+                  allele_info1,
+                  allele1,
+                  trans1,
+                  tox1,
+                  eff1,
+                  allele_info2,
+                  allele2,
+                  trans2,
+                  tox2,
+                  eff2,
+                  allele_info3,
+                  allele3,
+                  trans3,
+                  tox3,
+                  eff3,
+                  PMID
+           FROM chemical_data2
+           WHERE chr = #{chr}
+             and position = #{position}
+    </select>
+</mapper>
