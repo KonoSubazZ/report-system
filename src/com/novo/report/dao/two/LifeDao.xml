@@ -139,4 +139,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getPendingAndErrorCount" resultType="Integer">
 		select count(file_id) from data_file_status where subbarcode = #{subbarcode} and analysis_date = #{analysis_date} and (status = 'Pending' or status = 'Error')
 	</select>
+
+	<select id="getProductInfo" resultType="java.util.Map">
+		select
+		    product_name,
+			type as product_type
+		from
+		    product
+		where
+		    product_id=#{product_id}
+	</select>
 </mapper>

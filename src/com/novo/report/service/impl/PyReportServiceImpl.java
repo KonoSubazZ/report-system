@@ -143,7 +143,12 @@ public class PyReportServiceImpl implements PyReportService {
         // 获取模板配置项
         TemplateConf templateConf = templateConfService.get(rt.getTemplate_name());
         // 获取产品名称
-        String productName = lifeDao.getProductByProductId(currentNgsAvailable.getProduct_id());
+        // String productName = lifeDao.getProductByProductId(currentNgsAvailable.getProduct_id());
+        // 增加产品类型 panel
+        Map<String, String> productInfo = lifeDao.getProductInfo(currentNgsAvailable.getProduct_id());
+        String productName = productInfo.get("product_name");
+        String panelType = productInfo.get("product_type");
+
         rt.setPanel(productName);
         currentNgsAvailable.setProduct_name(productName);
         pr.setProduct_name(productName);
@@ -3902,7 +3907,10 @@ public class PyReportServiceImpl implements PyReportService {
             detectedGeneInfo.put("all_gene_list", allGeneSet);
             detectedGeneInfo.put("mmr_gene_list", mmrGeneSet);
 
-            HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd, allMutation, rt.getPanel(), detectedGeneInfo, hasCRDrug);
+            HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd,
+                    allMutation, rt.getPanel(),
+                    detectedGeneInfo, hasCRDrug,
+                    panelType);
             rt.setReportInfo(reportInfo);
 
             // CUSTOM 关于癌种判断的一些展示逻辑,生成检测项目信息
@@ -4674,7 +4682,8 @@ public class PyReportServiceImpl implements PyReportService {
             List<Map> allMutation,
             String panel,
             Map detectedGeneInfo,
-            boolean hasCRDrug) {
+            boolean hasCRDrug,
+            String panelType) {
         HashMap<String, Object> res = new HashMap<>();
         String reportName = templateConf.getReport_name();
         if (pd != null) {
@@ -4699,6 +4708,7 @@ public class PyReportServiceImpl implements PyReportService {
         res.put("name1", name1);
         res.put("conf", templateConf);
         res.put("detected_gene_info", detectedGeneInfo);
+        res.put("panel_type", panelType);
         return res;
     }
 

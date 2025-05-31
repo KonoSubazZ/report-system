@@ -1,6 +1,7 @@
 package com.novo.report.dao.two;
 
 import java.util.List;
+import java.util.Map;
 
 import com.novo.report.beans.AnalysisReport;
 import com.novo.report.beans.DataFileStatus;
@@ -60,4 +61,5 @@ public interface LifeDao {
 	Integer getClassIdByDiseaseClassChinese(String disease_class_chinese);
 
 	Integer getPendingAndErrorCount(@Param("subbarcode")String subbarcode, @Param("analysis_date")String analysis_date);
+	Map<String, String> getProductInfo(@Param("subbarcode")Integer reportId);
 }
