@@ -9,24 +9,24 @@ import six
 import sys
 import math
 from docx import Document
-from docx.shared import Mm, Pt
+from docx.shared import Pt
 from io import BytesIO
-import time
+import assess_sample_quality
+
 # from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWLINE_XML, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
 specific_version_path = "/root/python3-packages"
 sys.path.insert(0, specific_version_path)
 # import docxtpl
 # from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
-from docxtpl import DocxTemplate, R, RichText, InlineImage
+from docxtpl import DocxTemplate, RichText, InlineImage
 import time
-from unicodedata import name
-from six import iteritems, text_type
 
 try:
     from html import escape
 except ImportError:
     # cgi.escape is deprecated in python 3.7
     from cgi import escape
+
 
 class MyRichText(RichText):
     def add(self, text,
@@ -57,11 +57,11 @@ class MyRichText(RichText):
         if not isinstance(text, six.text_type):
             text = text.decode('utf-8', errors='ignore')
             text = (escape(text))
-#         text = (escape(text)
-#                 .replace('\n', NEWLINE_XML)
-#                 .replace('\a', NEWPARAGRAPH_XML)
-#                 .replace('\t', TAB_XML)
-#                 .replace('\f', PAGE_BREAK))
+        #         text = (escape(text)
+        #                 .replace('\n', NEWLINE_XML)
+        #                 .replace('\a', NEWPARAGRAPH_XML)
+        #                 .replace('\t', TAB_XML)
+        #                 .replace('\f', PAGE_BREAK))
 
         prop = u''
 
@@ -94,7 +94,7 @@ class MyRichText(RichText):
             prop += u'<w:strike/>'
         if font:
             prop += (u'<w:rFonts w:ascii="{font}" w:hAnsi="{font}" w:cs="{font}" w:eastAsia="{cnfont}"/>'
-                     .format(font=font,cnfont=cnfont))
+                     .format(font=font, cnfont=cnfont))
             # prop += (u'<w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:eastAsia="微软雅黑" w:cs="Times New Roman"/>')
 
         xml = u'<w:r>'
@@ -105,6 +105,7 @@ class MyRichText(RichText):
             xml = (u'<w:hyperlink r:id="%s" w:tgtFrame="_blank">%s</w:hyperlink>'
                    % (url_id, xml))
         self.xml += xml
+
 
 # @deprecated To be removed
 class MyRichTextV1(RichText):
@@ -189,31 +190,33 @@ def check_contain_chinese(check_str):
             return False
 
 
-
-
-def mystyle(value,bold,highlight=False):
+def mystyle(value, bold, highlight=False):
     if highlight:
-        return MyRichText(value,bold=bold,cnfont='微软雅黑', font='Times New Roman', size=18,highlight='lightGray')
+        return MyRichText(value, bold=bold, cnfont='微软雅黑', font='Times New Roman', size=18, highlight='lightGray')
     else:
-        return MyRichText(value,bold=bold,cnfont='微软雅黑', font='Times New Roman', size=18)
+        return MyRichText(value, bold=bold, cnfont='微软雅黑', font='Times New Roman', size=18)
 
-def mystyle2(value,bold,size,cnfont,font,highlight=False):
-    if highlight:
-        return MyRichText(value,bold=bold,cnfont=cnfont, font=font, size=size,highlight='lightGray')
-    else:
-        return MyRichText(value,bold=bold,cnfont=cnfont, font=font, size=size)
 
-def mystyleSong(value,bold,highlight=False):
+def mystyle2(value, bold, size, cnfont, font, highlight=False):
     if highlight:
-        return MyRichText(value,bold=bold,cnfont='宋体', font='Times New Roman', size=18,highlight='lightGray')
+        return MyRichText(value, bold=bold, cnfont=cnfont, font=font, size=size, highlight='lightGray')
     else:
-        return MyRichText(value,bold=bold,cnfont='宋体', font='Times New Roman', size=18)
+        return MyRichText(value, bold=bold, cnfont=cnfont, font=font, size=size)
 
-def mystyleSong2(value,bold,highlight=False):
+
+def mystyleSong(value, bold, highlight=False):
     if highlight:
-        return MyRichText(value,bold=bold,cnfont='宋体', font='Times New Roman', size=21,highlight='lightGray')
+        return MyRichText(value, bold=bold, cnfont='宋体', font='Times New Roman', size=18, highlight='lightGray')
     else:
-        return MyRichText(value,bold=bold,cnfont='宋体', font='Times New Roman', size=21)
+        return MyRichText(value, bold=bold, cnfont='宋体', font='Times New Roman', size=18)
+
+
+def mystyleSong2(value, bold, highlight=False):
+    if highlight:
+        return MyRichText(value, bold=bold, cnfont='宋体', font='Times New Roman', size=21, highlight='lightGray')
+    else:
+        return MyRichText(value, bold=bold, cnfont='宋体', font='Times New Roman', size=21)
+
 
 def myimage(value):
     imgdata = base64.b64decode(value)
@@ -223,13 +226,15 @@ def myimage(value):
     myimage = InlineImage(tpl, 'a.png', width=Pt(283.5), height=Pt(225))
     return myimage
 
-def pdimage(value,width,height):
+
+def pdimage(value, width, height):
     imgdata = base64.b64decode(value)
     image_stream = BytesIO(imgdata)
     pdimage = InlineImage(tpl, image_stream, width=Pt(width), height=Pt(height))
     return pdimage
 
-def currencyimage(value,width,height):
+
+def currencyimage(value, width, height):
     imgdata = base64.b64decode(value)
     file = open('aa.png', 'wb')
     file.write(imgdata)
@@ -237,105 +242,112 @@ def currencyimage(value,width,height):
     currencyimage = InlineImage(tpl, 'aa.png', width=Pt(width), height=Pt(height))
     return currencyimage
 
-def red_gene(value,line_num,size=18,italic=True):
-    red_list = []
-    b = value.split(',')
-    for i in range(math.ceil(len(b)/int(line_num))):
-        line =  b[i*int(line_num):(i+1)*int(line_num)]
-        if len(b[i*int(line_num):(i+1)*int(line_num)]) < int(line_num):
-            for x in range(int(line_num)-len(b[i*int(line_num):(i+1)*int(line_num)])):
-                line.append('')
-        new_line = []
-        for li in line:
-            if li.replace('*','') in GENE_LIST:
-                new_line.append(MyRichText(li,color='#ff0000',cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
-            else:
-                new_line.append(MyRichText(li,cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
-        red_list.append(new_line)
-    return red_list
 
-def red_gene2(value,line_num,size,cnfont,font,italic=True):
+def red_gene(value, line_num, size=18, italic=True):
     red_list = []
     b = value.split(',')
-    for i in range(math.ceil(len(b)/int(line_num))):
-        line =  b[i*int(line_num):(i+1)*int(line_num)]
-        if len(b[i*int(line_num):(i+1)*int(line_num)]) < int(line_num):
-            for x in range(int(line_num)-len(b[i*int(line_num):(i+1)*int(line_num)])):
+    for i in range(math.ceil(len(b) / int(line_num))):
+        line = b[i * int(line_num):(i + 1) * int(line_num)]
+        if len(b[i * int(line_num):(i + 1) * int(line_num)]) < int(line_num):
+            for x in range(int(line_num) - len(b[i * int(line_num):(i + 1) * int(line_num)])):
                 line.append('')
         new_line = []
         for li in line:
-            if li.replace('*','') in GENE_LIST:
-                new_line.append(MyRichText(li,color='#ff0000',cnfont=cnfont, font=font, size=size,italic=italic))
+            if li.replace('*', '') in GENE_LIST:
+                new_line.append(MyRichText(li, color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size=size,
+                                           italic=italic))
             else:
-                new_line.append(MyRichText(li,cnfont=cnfont, font=font, size=size,italic=italic))
-        red_list.append(new_line)
-    return red_list
-
-def red_bodyGene(value,line_num,size=18,italic=True):
-    red_list = []
-    b = value.split(',')
-    for i in range(math.ceil(len(b)/int(line_num))):
-        line =  b[i*int(line_num):(i+1)*int(line_num)]
-        if len(b[i*int(line_num):(i+1)*int(line_num)]) < int(line_num):
-            for x in range(int(line_num)-len(b[i*int(line_num):(i+1)*int(line_num)])):
-                line.append('')
-        new_line = []
-        for li in line:
-            if li.replace('*','') in BodyGene_LIST:
-                new_line.append(MyRichText(li,color='#ff0000',cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
-            else:
-                new_line.append(MyRichText(li,cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
+                new_line.append(MyRichText(li, cnfont='微软雅黑', font='Times New Roman', size=size, italic=italic))
         red_list.append(new_line)
     return red_list
 
 
-def red_embryonalGene(value,line_num,size=18,italic=True):
+def red_gene2(value, line_num, size, cnfont, font, italic=True):
     red_list = []
     b = value.split(',')
-    for i in range(math.ceil(len(b)/int(line_num))):
-        line =  b[i*int(line_num):(i+1)*int(line_num)]
-        if len(b[i*int(line_num):(i+1)*int(line_num)]) < int(line_num):
-            for x in range(int(line_num)-len(b[i*int(line_num):(i+1)*int(line_num)])):
+    for i in range(math.ceil(len(b) / int(line_num))):
+        line = b[i * int(line_num):(i + 1) * int(line_num)]
+        if len(b[i * int(line_num):(i + 1) * int(line_num)]) < int(line_num):
+            for x in range(int(line_num) - len(b[i * int(line_num):(i + 1) * int(line_num)])):
                 line.append('')
         new_line = []
         for li in line:
-            if li.replace('*','') in EmbryonalGene_LIST:
-                new_line.append(MyRichText(li,color='#ff0000',cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
+            if li.replace('*', '') in GENE_LIST:
+                new_line.append(MyRichText(li, color='#ff0000', cnfont=cnfont, font=font, size=size, italic=italic))
             else:
-                new_line.append(MyRichText(li,cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
+                new_line.append(MyRichText(li, cnfont=cnfont, font=font, size=size, italic=italic))
         red_list.append(new_line)
     return red_list
 
 
-def red_chemoGene(value,line_num,size=18,italic=True):
+def red_bodyGene(value, line_num, size=18, italic=True):
     red_list = []
     b = value.split(',')
-    for i in range(math.ceil(len(b)/int(line_num))):
-        line =  b[i*int(line_num):(i+1)*int(line_num)]
-        if len(b[i*int(line_num):(i+1)*int(line_num)]) < int(line_num):
-            for x in range(int(line_num)-len(b[i*int(line_num):(i+1)*int(line_num)])):
+    for i in range(math.ceil(len(b) / int(line_num))):
+        line = b[i * int(line_num):(i + 1) * int(line_num)]
+        if len(b[i * int(line_num):(i + 1) * int(line_num)]) < int(line_num):
+            for x in range(int(line_num) - len(b[i * int(line_num):(i + 1) * int(line_num)])):
                 line.append('')
         new_line = []
         for li in line:
-            if li.replace('*','') in ChemoGene_LIST:
-                new_line.append(MyRichText(li,color='#ff0000',cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
+            if li.replace('*', '') in BodyGene_LIST:
+                new_line.append(MyRichText(li, color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size=size,
+                                           italic=italic))
             else:
-                new_line.append(MyRichText(li,cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
+                new_line.append(MyRichText(li, cnfont='微软雅黑', font='Times New Roman', size=size, italic=italic))
         red_list.append(new_line)
     return red_list
 
 
-def genes(value,line_num,size=18,italic=True):
+def red_embryonalGene(value, line_num, size=18, italic=True):
+    red_list = []
+    b = value.split(',')
+    for i in range(math.ceil(len(b) / int(line_num))):
+        line = b[i * int(line_num):(i + 1) * int(line_num)]
+        if len(b[i * int(line_num):(i + 1) * int(line_num)]) < int(line_num):
+            for x in range(int(line_num) - len(b[i * int(line_num):(i + 1) * int(line_num)])):
+                line.append('')
+        new_line = []
+        for li in line:
+            if li.replace('*', '') in EmbryonalGene_LIST:
+                new_line.append(MyRichText(li, color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size=size,
+                                           italic=italic))
+            else:
+                new_line.append(MyRichText(li, cnfont='微软雅黑', font='Times New Roman', size=size, italic=italic))
+        red_list.append(new_line)
+    return red_list
+
+
+def red_chemoGene(value, line_num, size=18, italic=True):
+    red_list = []
+    b = value.split(',')
+    for i in range(math.ceil(len(b) / int(line_num))):
+        line = b[i * int(line_num):(i + 1) * int(line_num)]
+        if len(b[i * int(line_num):(i + 1) * int(line_num)]) < int(line_num):
+            for x in range(int(line_num) - len(b[i * int(line_num):(i + 1) * int(line_num)])):
+                line.append('')
+        new_line = []
+        for li in line:
+            if li.replace('*', '') in ChemoGene_LIST:
+                new_line.append(MyRichText(li, color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size=size,
+                                           italic=italic))
+            else:
+                new_line.append(MyRichText(li, cnfont='微软雅黑', font='Times New Roman', size=size, italic=italic))
+        red_list.append(new_line)
+    return red_list
+
+
+def genes(value, line_num, size=18, italic=True):
     genes = []
     b = value.split(',')
-    for i in range(math.ceil(len(b)/int(line_num))):
-        line =  b[i*int(line_num):(i+1)*int(line_num)]
-        if len(b[i*int(line_num):(i+1)*int(line_num)]) < int(line_num):
-            for x in range(int(line_num)-len(b[i*int(line_num):(i+1)*int(line_num)])):
+    for i in range(math.ceil(len(b) / int(line_num))):
+        line = b[i * int(line_num):(i + 1) * int(line_num)]
+        if len(b[i * int(line_num):(i + 1) * int(line_num)]) < int(line_num):
+            for x in range(int(line_num) - len(b[i * int(line_num):(i + 1) * int(line_num)])):
                 line.append('')
         new_line = []
         for li in line:
-            new_line.append(MyRichText(li,cnfont='微软雅黑', font='Times New Roman', size=size,italic=italic))
+            new_line.append(MyRichText(li, cnfont='微软雅黑', font='Times New Roman', size=size, italic=italic))
         genes.append(new_line)
     return genes
 
@@ -344,8 +356,8 @@ def cancerRisk(value):
     red_list = "普通风险"
     b = value.split(',')
     for li in b:
-        if li.replace('*','') in CancerRiskGene_LIST:
-            red_list = MyRichText("风险升高",color='#ff0000',cnfont='微软雅黑', font='Times New Roman', size='18')
+        if li.replace('*', '') in CancerRiskGene_LIST:
+            red_list = MyRichText("风险升高", color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size='18')
             break
     return red_list
 
@@ -353,7 +365,7 @@ def cancerRisk(value):
 def detectionMutation(value):
     red_list = "阴性"
     if value in DetectionMutation_LIST:
-        red_list = MyRichText("阳性",color='#ff0000',cnfont='微软雅黑', font='Times New Roman', size='28')
+        red_list = MyRichText("阳性", color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size='28')
     return red_list
 
 
@@ -406,10 +418,10 @@ def immunonegativeGene(value):
     return s
 
 
-def overallQualityAssessment(value,qualified,alert):
+def overallQualityAssessment(value, qualified, alert):
     overall_quality_assessment = ""
     if len(value) != 0:
-        value = str(value).replace('X','')
+        value = str(value).replace('X', '')
         if float(value) >= float(qualified):
             overall_quality_assessment = "合格"
         elif float(value) >= float(alert):
@@ -427,14 +439,15 @@ def newBold(value):
     return value.split("|")
 
 
-def split(value,regex):
+def split(value, regex):
     return value.split(regex)
 
 
 def markInRed(value):
     if value == "阳性" or value == "检出":
-        value = MyRichText(value,color='#ff0000',cnfont='微软雅黑', font='Times New Roman', size='21')
+        value = MyRichText(value, color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size='21')
     return value
+
 
 def set_updatefields_true(docx_path):
     """ Opens the docx and adds <w:updateFields w:val="true"/> to
@@ -453,10 +466,11 @@ def set_updatefields_true(docx_path):
     # doc.updateFields()
     # add child to doc.settings element
     element_updatefields = lxml.etree.SubElement(
-        doc.settings.element, namespace+"updateFields"
+        doc.settings.element, namespace + "updateFields"
     )
-    element_updatefields.set(namespace+"val", "true")
+    element_updatefields.set(namespace + "val", "true")
     doc.save(docx_path)
+
 
 # 20250310 扁平化数据
 def flatten_data(data):
@@ -465,6 +479,8 @@ def flatten_data(data):
         desc2s = item['desc2'].split(',')
         result.append({'desc1': item['desc1'], 'desc2': desc2s})
     return result
+
+
 def load_template_config(config_path="report_config.json"):
     try:
         # 获取当前 Python 文件所在目录
@@ -479,6 +495,8 @@ def load_template_config(config_path="report_config.json"):
         sys.exit(1)
 
     return config
+
+
 def determine_template_file(template_name, config):
     single_common = config["common_templates"]["single_sample"]
     double_common = config["common_templates"]["double_sample"]
@@ -493,14 +511,17 @@ def determine_template_file(template_name, config):
     else:
         return f"{template_name}.docx"
 
+
 def load_template_safely(tpl_path):
     tmp_tpl_file = tempfile.NamedTemporaryFile(delete=False, suffix=".docx")
     shutil.copy2(tpl_path, tmp_tpl_file.name)
     tpl = DocxTemplate(tmp_tpl_file.name)
     return tpl, tmp_tpl_file.name
 
+
 def safe_get(d, key, default=None):
     return d.get(key, default)
+
 
 def mark_genes_in_red(gene_tables, detected_gene_info):
     detected_mapping = {
@@ -527,7 +548,7 @@ def mark_genes_in_red(gene_tables, detected_gene_info):
             for key in detected_mapping[gene_type].split(','):
                 detected_gene_list.extend(detected_gene_info.get(key.strip(), []))
         else:
-             # 正常处理
+            # 正常处理
             detected_gene_list = detected_gene_info.get(detected_mapping.get(gene_type, ""), [])
 
         # detected_gene_list = detected_gene_info.get(detected_mapping.get(gene_type, ""), [])
@@ -536,13 +557,17 @@ def mark_genes_in_red(gene_tables, detected_gene_info):
         add_gene_rich_text(gene_list, detected_gene_list)
     return show_red_note
 
+
 def add_gene_rich_text(gene_list, detected_gene_list):
     for row_idx, row in enumerate(gene_list):
         for col_idx, gene in enumerate(row):
             if gene in detected_gene_list:
-                gene_list[row_idx][col_idx] = MyRichTextV1(gene, color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size='18', italic=True)
+                gene_list[row_idx][col_idx] = MyRichTextV1(gene, color='#ff0000', cnfont='微软雅黑',
+                                                           font='Times New Roman', size='18', italic=True)
             else:
-                gene_list[row_idx][col_idx] = MyRichTextV1(gene, cnfont='微软雅黑', font='Times New Roman', size='18', italic=True)
+                gene_list[row_idx][col_idx] = MyRichTextV1(gene, cnfont='微软雅黑', font='Times New Roman', size='18',
+                                                           italic=True)
+
 
 def splitlines(value, delimiter=',', strip=True, use_newline=True):
     """
@@ -570,9 +595,11 @@ def splitlines(value, delimiter=',', strip=True, use_newline=True):
     # 使用分隔符连接元素
     return separator.join(parts)
 
+
 def split_to_newlines(value, delimiter=',', word_break='\n'):
     parts = [p.strip() for p in value.split(delimiter) if p.strip()]
     return f' {word_break} '.join(parts) + f' {word_break}' if parts else ''
+
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
@@ -660,47 +687,75 @@ if __name__ == '__main__':
             show_red_note = mark_genes_in_red(gene_tables, detected_gene_info)
             info_json['reportInfo']['show_red_note'] = show_red_note
 
-        # 模板init过滤器
-        jinja_env = jinja2.Environment()
-        jinja_env.filters['ms'] = mystyle
-        jinja_env.filters['ms2'] = mystyle2
-        jinja_env.filters['mss'] = mystyleSong
-        jinja_env.filters['mss2'] = mystyleSong2
-        jinja_env.filters['mi'] = myimage
-        jinja_env.filters['pdi'] = pdimage
-        jinja_env.filters['ci'] = currencyimage
-        jinja_env.filters['red'] = red_gene
-        jinja_env.filters['red2'] = red_gene2
-        jinja_env.filters['redBody'] = red_bodyGene
-        jinja_env.filters['redEmbryonal'] = red_embryonalGene
-        jinja_env.filters['redChemo'] = red_chemoGene
-        jinja_env.filters['genes'] = genes
-        jinja_env.filters['cancerRisk'] = cancerRisk
-        jinja_env.filters['detectionMutation'] = detectionMutation
-        jinja_env.filters['promoteGene'] = promoteGene
-        jinja_env.filters['reducedGene'] = reducedGene
-        jinja_env.filters['progressionGene'] = progressionGene
-        jinja_env.filters['parpinhibitorGene'] = parpinhibitorGene
-        jinja_env.filters['predictorGene'] = predictorGene
-        jinja_env.filters['immunopositiveGene'] = immunopositiveGene
-        jinja_env.filters['immunonegativeGene'] = immunonegativeGene
-        jinja_env.filters['oqa'] = overallQualityAssessment
-        jinja_env.filters['nl'] = newline
-        jinja_env.filters['nb'] = newBold
-        jinja_env.filters['split'] = split
-        jinja_env.filters['mr'] = markInRed
-        jinja_env.filters['splitlines'] = splitlines
-        jinja_env.filters['split_to_newlines'] = split_to_newlines
+        # 样本总体评估
+        # 样本总体评估
+        if 'reportInfo' in info_json:
+            panel_type = info_json['reportInfo'].get('panel_type', '')
+            sample_type = info_json['reportInfo'].get('sample_type', '')
 
-        #tpl.add_page_break()
-        tpl.render(info_json, jinja_env,autoescape=True)
-        tpl.save(sys.argv[3])
-        set_updatefields_true(sys.argv[3])
+            # 初始化信息字典
+            rna_info = info_json['reportInfo'].get('rna_info', {})
+            hrd_info = info_json['reportInfo'].get('hrd_info', {})
 
-        end_time = time.time()
-        elapsed_time = end_time - start_time
-        print(f"模板生成耗时：{elapsed_time:.2f} 秒")
-    except Exception as e:
-        raise e
+            if panel_type == 'DNA':
+                # 从info_json中获取DNA相关信息
+                dna_sequencing_depth = float(info_json.get('sequencing_depth', 0))
+            # 根据panel_type补充信息
+            elif panel_type == 'RNA':
+                # 从info_json中获取RNA相关信息
+                total_reads = float(info_json.get('rna', {}).get('total_reads', 0))
+            elif panel_type == 'DNA_HRD' or panel_type == 'HRD':
+                # 从info_json中获取HRD相关信息
+                hrd_sequencing_depth = hrd_info = info_json.get('hrd', {}).get ('sequencing_depth', 0)
 
+            # 调用评估函数
+            info_json['sample_quality'] = assess_sample_quality(
+                panel_type,
+                sample_type,
+                dna_sequencing_depth,
+                total_reads,
+                hrd_sequencing_depth
+                )
 
+    # 模板init过滤器
+    jinja_env = jinja2.Environment()
+    jinja_env.filters['ms'] = mystyle
+    jinja_env.filters['ms2'] = mystyle2
+    jinja_env.filters['mss'] = mystyleSong
+    jinja_env.filters['mss2'] = mystyleSong2
+    jinja_env.filters['mi'] = myimage
+    jinja_env.filters['pdi'] = pdimage
+    jinja_env.filters['ci'] = currencyimage
+    jinja_env.filters['red'] = red_gene
+    jinja_env.filters['red2'] = red_gene2
+    jinja_env.filters['redBody'] = red_bodyGene
+    jinja_env.filters['redEmbryonal'] = red_embryonalGene
+    jinja_env.filters['redChemo'] = red_chemoGene
+    jinja_env.filters['genes'] = genes
+    jinja_env.filters['cancerRisk'] = cancerRisk
+    jinja_env.filters['detectionMutation'] = detectionMutation
+    jinja_env.filters['promoteGene'] = promoteGene
+    jinja_env.filters['reducedGene'] = reducedGene
+    jinja_env.filters['progressionGene'] = progressionGene
+    jinja_env.filters['parpinhibitorGene'] = parpinhibitorGene
+    jinja_env.filters['predictorGene'] = predictorGene
+    jinja_env.filters['immunopositiveGene'] = immunopositiveGene
+    jinja_env.filters['immunonegativeGene'] = immunonegativeGene
+    jinja_env.filters['oqa'] = overallQualityAssessment
+    jinja_env.filters['nl'] = newline
+    jinja_env.filters['nb'] = newBold
+    jinja_env.filters['split'] = split
+    jinja_env.filters['mr'] = markInRed
+    jinja_env.filters['splitlines'] = splitlines
+    jinja_env.filters['split_to_newlines'] = split_to_newlines
+
+    # tpl.add_page_break()
+    tpl.render(info_json, jinja_env, autoescape=True)
+    tpl.save(sys.argv[3])
+    set_updatefields_true(sys.argv[3])
+
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"模板生成耗时：{elapsed_time:.2f} 秒")
+except Exception as e:
+raise e
