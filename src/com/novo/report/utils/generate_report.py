@@ -11,7 +11,7 @@ import math
 from docx import Document
 from docx.shared import Pt
 from io import BytesIO
-import assess_sample_quality
+from assess_sample_quality import assess_sample_quality
 
 # from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWLINE_XML, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
 specific_version_path = "/root/python3-packages"
@@ -688,7 +688,6 @@ if __name__ == '__main__':
             info_json['reportInfo']['show_red_note'] = show_red_note
 
         # 样本总体评估
-        # 样本总体评估
         if 'reportInfo' in info_json:
             panel_type = info_json['reportInfo'].get('panel_type', '')
             sample_type = info_json['reportInfo'].get('sample_type', '')
@@ -696,6 +695,11 @@ if __name__ == '__main__':
             # 初始化信息字典
             rna_info = info_json['reportInfo'].get('rna_info', {})
             hrd_info = info_json['reportInfo'].get('hrd_info', {})
+
+            # 初始化所有必要的参数
+            dna_sequencing_depth = 0
+            total_reads = 0
+            hrd_sequencing_depth = 0
 
             if panel_type == 'DNA':
                 # 从info_json中获取DNA相关信息
@@ -706,7 +710,7 @@ if __name__ == '__main__':
                 total_reads = float(info_json.get('rna', {}).get('total_reads', 0))
             elif panel_type == 'DNA_HRD' or panel_type == 'HRD':
                 # 从info_json中获取HRD相关信息
-                hrd_sequencing_depth = hrd_info = info_json.get('hrd', {}).get ('sequencing_depth', 0)
+                hrd_sequencing_depth = hrd_info = info_json.get('hrd', {}).get('sequencing_depth', 0)
 
             # 调用评估函数
             info_json['sample_quality'] = assess_sample_quality(
@@ -715,47 +719,49 @@ if __name__ == '__main__':
                 dna_sequencing_depth,
                 total_reads,
                 hrd_sequencing_depth
-                )
+            )
 
-    # 模板init过滤器
-    jinja_env = jinja2.Environment()
-    jinja_env.filters['ms'] = mystyle
-    jinja_env.filters['ms2'] = mystyle2
-    jinja_env.filters['mss'] = mystyleSong
-    jinja_env.filters['mss2'] = mystyleSong2
-    jinja_env.filters['mi'] = myimage
-    jinja_env.filters['pdi'] = pdimage
-    jinja_env.filters['ci'] = currencyimage
-    jinja_env.filters['red'] = red_gene
-    jinja_env.filters['red2'] = red_gene2
-    jinja_env.filters['redBody'] = red_bodyGene
-    jinja_env.filters['redEmbryonal'] = red_embryonalGene
-    jinja_env.filters['redChemo'] = red_chemoGene
-    jinja_env.filters['genes'] = genes
-    jinja_env.filters['cancerRisk'] = cancerRisk
-    jinja_env.filters['detectionMutation'] = detectionMutation
-    jinja_env.filters['promoteGene'] = promoteGene
-    jinja_env.filters['reducedGene'] = reducedGene
-    jinja_env.filters['progressionGene'] = progressionGene
-    jinja_env.filters['parpinhibitorGene'] = parpinhibitorGene
-    jinja_env.filters['predictorGene'] = predictorGene
-    jinja_env.filters['immunopositiveGene'] = immunopositiveGene
-    jinja_env.filters['immunonegativeGene'] = immunonegativeGene
-    jinja_env.filters['oqa'] = overallQualityAssessment
-    jinja_env.filters['nl'] = newline
-    jinja_env.filters['nb'] = newBold
-    jinja_env.filters['split'] = split
-    jinja_env.filters['mr'] = markInRed
-    jinja_env.filters['splitlines'] = splitlines
-    jinja_env.filters['split_to_newlines'] = split_to_newlines
+        # 模板初始化过滤器
+        jinja_env = jinja2.Environment()
+        jinja_env.filters['ms'] = mystyle
+        jinja_env.filters['ms2'] = mystyle2
+        jinja_env.filters['mss'] = mystyleSong
+        jinja_env.filters['mss2'] = mystyleSong2
+        jinja_env.filters['mi'] = myimage
+        jinja_env.filters['pdi'] = pdimage
+        jinja_env.filters['ci'] = currencyimage
+        jinja_env.filters['red'] = red_gene
+        jinja_env.filters['red2'] = red_gene2
+        jinja_env.filters['redBody'] = red_bodyGene
+        jinja_env.filters['redEmbryonal'] = red_embryonalGene
+        jinja_env.filters['redChemo'] = red_chemoGene
+        jinja_env.filters['genes'] = genes
+        jinja_env.filters['cancerRisk'] = cancerRisk
+        jinja_env.filters['detectionMutation'] = detectionMutation
+        jinja_env.filters['promoteGene'] = promoteGene
+        jinja_env.filters['reducedGene'] = reducedGene
+        jinja_env.filters['progressionGene'] = progressionGene
+        jinja_env.filters['parpinhibitorGene'] = parpinhibitorGene
+        jinja_env.filters['predictorGene'] = predictorGene
+        jinja_env.filters['immunopositiveGene'] = immunopositiveGene
+        jinja_env.filters['immunonegativeGene'] = immunonegativeGene
+        jinja_env.filters['oqa'] = overallQualityAssessment
+        jinja_env.filters['nl'] = newline
+        jinja_env.filters['nb'] = newBold
+        jinja_env.filters['split'] = split
+        jinja_env.filters['mr'] = markInRed
+        jinja_env.filters['splitlines'] = splitlines
+        jinja_env.filters['split_to_newlines'] = split_to_newlines
 
-    # tpl.add_page_break()
-    tpl.render(info_json, jinja_env, autoescape=True)
-    tpl.save(sys.argv[3])
-    set_updatefields_true(sys.argv[3])
+        # 渲染模板
+        tpl.render(info_json, jinja_env, autoescape=True)
+        tpl.save(output_path)
+        set_updatefields_true(output_path)
 
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    print(f"模板生成耗时：{elapsed_time:.2f} 秒")
-except Exception as e:
-raise e
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"模板生成耗时：{elapsed_time:.2f} 秒")
+
+    except Exception as e:
+        print(f"❌ 发生错误: {e}")
+        raise e
