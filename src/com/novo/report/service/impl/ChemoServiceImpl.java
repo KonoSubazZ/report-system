@@ -1,6 +1,7 @@
 package com.novo.report.service.impl;
 
 
+import com.novo.report.dao.two.ChemoDao;
 import com.novo.report.dao.two.VariantDao;
 import com.novo.report.service.ChemoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.util.*;
 public class ChemoServiceImpl implements ChemoService {
 
     @Autowired
-    private VariantDao variantDao;
+    private ChemoDao chemoDao;
 
 
     @Override
