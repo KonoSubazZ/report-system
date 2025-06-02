@@ -2,12 +2,12 @@ package com.novo.report.service.impl;
 
 
 import com.novo.report.dao.two.ChemoDao;
-import com.novo.report.dao.two.VariantDao;
 import com.novo.report.service.ChemoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ChemoServiceImpl implements ChemoService {
@@ -17,11 +17,78 @@ public class ChemoServiceImpl implements ChemoService {
 
 
     @Override
-    public List<Map<String, String>> getChemoData(List<Map<String, String>> chemoVariantList) {
+    public List<Map<String, String>> getChemoData(List<Map<String, String>> chemoVariantList, String chemoCancer) {
         // 对等位基因进行排序去重AG/GA属于重复
         List<Map<String, String>> uniqueChemoVariants = deduplicateVariants(chemoVariantList);
+
         // 获取药物信息
-        return Collections.emptyList();
+        List<Map<String, String>> chemoDrugInfoList = chemoDao.batchGetChemoDBData(uniqueChemoVariants);
+
+        // 针对同一位点药物信息根据癌种的子父级去重
+        List<Map<String, String>> uniqueChemoDrugInfoList = deduplicateDrugInfoByCancerType(chemoDrugInfoList, chemoCancer);
+
+        // 根据具体基因型获取毒副作用等相关信息
+        List<Map<String, String>> chemoVariantsDrugInfo = new ArrayList<>();
+
+        for (Map<String, String> uniqueChemoVariant : uniqueChemoVariants) {
+            String chr = uniqueChemoVariant.get("chr");
+            String position = uniqueChemoVariant.get("position");
+            String allele = uniqueChemoVariant.get("allele");
+
+            for (Map<String, String> chemoDrugInfo : uniqueChemoDrugInfoList) {
+                String chr1 = chemoDrugInfo.get("chr");
+                String position1 = chemoDrugInfo.get("position");
+                String rs_id = chemoDrugInfo.get("rs_id");
+                String evidence = chemoDrugInfo.get("evidence");
+                String gene = chemoDrugInfo.get("gene");
+                String drug_class = chemoDrugInfo.get("drug_class");
+                String drug_name_chinese = chemoDrugInfo.get("drug_name_chinese");
+                String cancer_type = chemoDrugInfo.get("cancer_type");
+                String PMID = chemoDrugInfo.get("PMID");
+                String PMIDStr = formatPMID(PMID);
+
+                if (chr.equals(chr1) && position.equals(position1)) {
+                    Map<String, String> res = new HashMap<>();
+                    // 设置其他字段
+                    res.put("drug_class", drug_class);
+                    res.put("drug_name_chinese", drug_name_chinese);
+                    res.put("evidence", evidence);
+                    res.put("gene", gene);
+                    res.put("rs_id", rs_id);
+                    res.put("cancer_type", cancer_type);
+
+                    if (allele.equals(chemoDrugInfo.get("allele1")) || sortString(allele).equals(chemoDrugInfo.get("allele1"))) {
+                        String tran1 = chemoDrugInfo.get("tran1");
+                        res.put("allele", chemoDrugInfo.get("allele1"));
+                        res.put("tox", translateSpecial(chemoDrugInfo.get("tox1")));
+                        res.put("eff", translateSpecial(chemoDrugInfo.get("eff1")));
+                        res.put("trans_PMID", tran1 + " " + PMIDStr);
+                    } else if (allele.equals(chemoDrugInfo.get("allele2")) || sortString(allele).equals(chemoDrugInfo.get("allele2"))) {
+                        String tran2 = chemoDrugInfo.get("tran2");
+                        res.put("allele", chemoDrugInfo.get("allele2"));
+                        res.put("tox", translateSpecial(chemoDrugInfo.get("tox2")));
+                        res.put("eff", translateSpecial(chemoDrugInfo.get("eff2")));
+                        res.put("trans_PMID", tran2 + " " + PMIDStr);
+                    } else if (allele.equals(chemoDrugInfo.get("allele3")) || sortString(allele).equals(chemoDrugInfo.get("allele3"))) {
+                        String tran3 = chemoDrugInfo.get("tran3");
+                        res.put("allele", chemoDrugInfo.get("allele3"));
+                        res.put("tox", translateSpecial(chemoDrugInfo.get("tox3")));
+                        res.put("eff", translateSpecial(chemoDrugInfo.get("eff3")));
+                        res.put("trans_PMID", tran3 + " " + PMIDStr);
+
+                    }
+                    if (res.containsKey("allele")) chemoVariantsDrugInfo.add(res);
+                }
+            }
+        }
+
+        // 排序，先根据 drug_class 进行排序,对一同一 drug_class 根据 drug_name_chinese
+        chemoVariantsDrugInfo.sort(Comparator
+                .comparing((Map<String, String> map) -> map.get("drug_class"))
+                .thenComparing(map -> map.get("drug_name_chinese")));
+
+
+        return chemoVariantsDrugInfo;
     }
 
     /**
@@ -64,6 +131,107 @@ public class ChemoServiceImpl implements ChemoService {
         char[] chars = input.toCharArray();
         Arrays.sort(chars);
         return new String(chars);
+    }
+
+
+    /**
+     * 根据化疗癌种和实体瘤优先级对同一位点的药物信息进行去重
+     *
+     * @param drugInfoList 药物信息列表
+     * @param chemoCancer  当前化疗癌种
+     * @return 去重后的药物信息列表
+     */
+    private List<Map<String, String>> deduplicateDrugInfoByCancerType(List<Map<String, String>> drugInfoList, String chemoCancer) {
+        // 按位点分组
+        Map<String, List<Map<String, String>>> variantsByPosition = drugInfoList.stream()
+                .collect(Collectors.groupingBy(drug -> drug.get("rs_id")));
+
+        // 处理每个位点的药物信息
+        return variantsByPosition.values().stream()
+                .map(drugsAtPosition -> {
+                    // 如果该位点只有一条药物信息，直接返回
+                    if (drugsAtPosition.size() <= 1) {
+                        return drugsAtPosition.isEmpty() ? null : drugsAtPosition.get(0);
+                    }
+
+                    // 优先查找与当前化疗癌种匹配的记录
+                    Optional<Map<String, String>> chemoMatch = drugsAtPosition.stream()
+                            .filter(drug -> chemoCancer.equals(translateCancerType(drug.get("cancer_type"))))
+                            .findFirst();
+
+                    if (chemoMatch.isPresent()) {
+                        return chemoMatch.get();
+                    }
+
+                    // 如果没有找到匹配的化疗癌种，查找实体瘤记录
+                    Optional<Map<String, String>> solidTumorMatch = drugsAtPosition.stream()
+                            .filter(drug -> "实体瘤".equals(drug.get("cancer_type")))
+                            .findFirst();
+
+                    if (solidTumorMatch.isPresent()) {
+                        return solidTumorMatch.get();
+                    }
+
+                    // 没有匹配
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    private boolean isOtherCaner(String cancerType) {
+        List<String> chemoCancers = Arrays.asList("非小细胞肺癌", "结直肠癌", "乳腺癌", "胃癌",
+                "卵巢癌", "睾丸癌", "骨肉瘤", "前列腺癌",
+                "胰腺癌", "间皮瘤", "小细胞肺癌", "骨肉瘤", "实体瘤");
+        return !chemoCancers.contains(cancerType);
+    }
+
+    private String translateCancerType(String cancerType) {
+        if (isOtherCaner(cancerType)) return "其他癌种";
+        return cancerType;
+    }
+
+    private String translateSpecial(String str) {
+        if ("无".equals(str)) return "/";
+        if ("减弱".equals(str)) return "可能较低";
+        if ("增强".equals(str)) return "可能较高";
+        return str;
+    }
+
+    private String formatPMID(String pmidList) {
+        if (pmidList == null || pmidList.trim().isEmpty()) {
+            return "";
+        }
+
+        // 分割字符串并去除首尾空格
+        String[] pmids = pmidList.split(";");
+
+        // 使用Set去重
+        Set<String> uniquePmids = new HashSet<>();
+        for (String pmid : pmids) {
+            String trimmedPmid = pmid.trim();
+            if (!trimmedPmid.isEmpty()) {
+                uniquePmids.add(trimmedPmid);
+            }
+        }
+
+        // 转换为List并限制数量为3
+        List<String> resultList = new ArrayList<>(uniquePmids);
+        if (resultList.size() > 3) {
+            resultList = resultList.subList(0, 3);
+        }
+
+        // 构建结果字符串
+        StringBuilder result = new StringBuilder("[");
+        for (int i = 0; i < resultList.size(); i++) {
+            result.append(resultList.get(i));
+            if (i < resultList.size() - 1) {
+                result.append(",");
+            }
+        }
+        result.append("]");
+
+        return result.toString();
     }
 
 }
