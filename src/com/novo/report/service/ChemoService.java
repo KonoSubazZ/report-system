@@ -6,6 +6,6 @@ import java.util.Map;
 
 public interface ChemoService {
 
-    List<Map<String, String>> getChemoData(List<Map<String, String>> chemoVariantList, String chemoCancer);
+    List<Map<String, Object>> getChemoData(List<Map<String, String>> chemoVariantList, String chemoCancer);
 
 }

@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ChemoJsonUtil {
-    public static String getChemoResult(List<Map<String, Object>> chemicalData, List<Map<String,Object>> chem, String diseaseName) {
+    public static String getChemoResult(List<Map<String, Object>> chemicalData, List<Map<String,String>> chem, String diseaseName) {
         // 确定癌种
         /* 1. 筛选癌种
          肺化疗：字段包含"肺"且不等于"小细胞肺癌"，或者不包含"肺神经内分泌"，=> 非小细胞肺癌
@@ -162,7 +162,7 @@ public class ChemoJsonUtil {
         return chemoJson;
     }
 
-    public static String getChemoJson(List<Map<String,Object>> rs, List<List<String>> summaryList, List<List<String>> tox_list, List<List<String>> eff_list) {
+    public static String getChemoJson(List<Map<String,String>> rs, List<List<String>> summaryList, List<List<String>> tox_list, List<List<String>> eff_list) {
         // 1. 化疗小结
         String dict_drug = "";
         String list_drug = JSONArray.fromObject(summaryList).toString();
@@ -178,7 +178,7 @@ public class ChemoJsonUtil {
         String s2 = "\"化疗药物检测解析\":{\"SideEffects\":"+list_tox+",\"Effectiveness\":"+list_eff+"}";
         // 3. 伊立替康用药剂量参考
         String dosage = "";
-        for (Map<String,Object> map : rs) {
+        for (Map<String,String> map : rs) {
             if ("234668881".equals(map.get("pos").toString())) {
                 if ("(TA)6/(TA)6".equals(map.get("allele").toString())) {
                     dosage = "正常剂量使用";
@@ -195,7 +195,7 @@ public class ChemoJsonUtil {
     /* 2. 计算单条得分
      （1）Level1 : ±5分，Level2 : ±3分，Level3 : ±1分，Level4 : 0
      （2）毒副作用/有效性：增强-加分，减弱-减分，无-无，/-/*/
-    public static List<Map<String,Object>> trans_score(List<Map<String,Object>> chemical, List<Map<String, Object>> chemicalData) {
+    public static List<Map<String,Object>> trans_score(List<Map<String,String>> chemical, List<Map<String, Object>> chemicalData) {
         List<Map<String,Object>> search_result = new ArrayList<>();
         for (Map map : chemical) {
             String pos = map.get("pos").toString();

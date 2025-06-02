@@ -486,7 +486,7 @@ public interface AnalysisReportDao {
 
     //获取化疗文件
     @Select("SELECT chr,pos,allele FROM chem_file where file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"Chem\" and status=\"Loaded\")")
-    List<Map<String, Object>> getChem(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
+    List<Map<String, String>> getChem(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
     //获取Clonal_TMB
     @Select("SELECT Clonal_TMB FROM clonal_tmb_stat_file where file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"Clonal_TMB_stat\" and status=\"Loaded\")")

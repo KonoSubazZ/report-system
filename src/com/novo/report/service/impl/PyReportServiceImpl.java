@@ -98,6 +98,8 @@ public class PyReportServiceImpl implements PyReportService {
 
     @Autowired
     private DiseaseService diseaseService;
+    @Autowired
+    private ChemoService chemoService;
 
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
@@ -2270,7 +2272,7 @@ public class PyReportServiceImpl implements PyReportService {
         Map<String, Object> chemoSummary = new HashMap<>(); // 新版化疗小结输出结果
         Map<String, Object> chemoSummaryCY = new HashMap<>(); // 重医附二化疗小结输出结果
         List<List<Map<String, Object>>> chemoAnalysis = new ArrayList<>(); // 新版化疗解析输出结果
-        List<Map<String, Object>> chem = analysisReportDao.getChem(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        List<Map<String, String>> chem = analysisReportDao.getChem(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         // 新版化疗逻辑输出
         if (!chem.isEmpty()) {
             // 重写化疗调取逻辑，方便癌种更换调取
@@ -2280,7 +2282,8 @@ public class PyReportServiceImpl implements PyReportService {
             }
             summaryOfRresults.put("chem_cancer", chem_cancer);
 //            chemoJson = ChemoJsonUtil.getChemoResult(chemicalData, chem, chem_cancer);
-            List<Map<String, Object>> chemoResult = ChemoJsonUtil2.getChemoResult(chemicalData, chem);
+//            List<Map<String, Object>> chemoResult = ChemoJsonUtil2.getChemoResult(chemicalData, chem);
+            List<Map<String, Object>> chemoResult = chemoService.getChemoData(chem, chem_cancer);
             // 化疗小结
             chemoSummary = ChemoJsonUtil2.getChemoSummary(chemoResult, chem_cancer, rt.getTemplate_name());
             // 重医附二化疗输出结果逻辑 || 泛癌种50基因检测检测报告-完整版-病理科
