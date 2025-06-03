@@ -228,7 +228,7 @@ public class ChemoJsonUtil2 {
     }
 
     // 输出化疗小结
-    public static Map<String, Object> getChemoSummary(List<Map<String, Object>> detail_df, String diseaseName, String template_name) {
+    public static Map<String, String> getChemoSummary(List<Map<String, String>> detail_df, String diseaseName, String template_name) {
         // 确定癌种
          /*1. 筛选癌种
          肺化疗：字段包含"肺"且不等于"小细胞肺癌"，或者不包含"肺神经内分泌"，=> 非小细胞肺癌
@@ -249,15 +249,15 @@ public class ChemoJsonUtil2 {
         //# 3. 生成化疗小结
         //# (1) 根据癌种区分"本癌种"和"其他癌种"
         //# 单独处理：修改"更年期乳腺癌" -> "乳腺癌"
-        for (Map<String, Object> map : detail_df) {
+        for (Map<String, String> map : detail_df) {
             if ("更年期乳腺癌".equals(map.get("cancer_type").toString())) {
                 map.put("cancer_type", "乳腺癌");
             }
         }
 
-        List<Map<String, Object>> certain_cancer_df = new ArrayList<>();
-        List<Map<String, Object>> other_cancer_df = new ArrayList<>();
-        for (Map<String, Object> map : detail_df) {
+        List<Map<String, String>> certain_cancer_df = new ArrayList<>();
+        List<Map<String, String>> other_cancer_df = new ArrayList<>();
+        for (Map<String, String> map : detail_df) {
             List<String> cancer_types = Arrays.asList(map.get("cancer_type").toString().split("；"));
             if (cancer_types.contains(diseaseName)) {
                 certain_cancer_df.add(map);
@@ -309,7 +309,7 @@ public class ChemoJsonUtil2 {
         String other_cancer_toxStr = "可能毒副作用风险较低：" + (other_cancer_tox.isEmpty() ? "暂无，详见化疗药物用药解析。" : StringUtils.join(other_cancer_tox, "，"));
         String other_cancer_effStr = "可能药物敏感性较高：" + (other_cancer_eff.isEmpty() ? "暂无，详见化疗药物用药解析。" : StringUtils.join(other_cancer_eff, "，"));
 
-        Map<String, Object> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         map.put("certain_cancer_toxStr", certain_cancer_toxStr);
         map.put("certain_cancer_effStr", certain_cancer_effStr);
         map.put("other_cancer_toxStr", other_cancer_toxStr);
@@ -336,17 +336,17 @@ public class ChemoJsonUtil2 {
     }
 
     //# (2) 合并某一药物的所有毒性/有效性
-    private static List<Map<String, Object>> combine_drug(List<Map<String, Object>> df) {
+    private static List<Map<String, Object>> combine_drug(List<Map<String, String>> df) {
         List<Map<String, Object>> combine_result = new ArrayList<>();
         Set<String> drug = new HashSet<>();
-        for (Map<String, Object> map : df) {
+        for (Map<String, String> map : df) {
             String drug_name_chinese = map.get("drug_name_chinese").toString();
             drug.add(drug_name_chinese);
         }
         for (String s : drug) {
             List<String> toxs = new ArrayList<>();
             List<String> effs = new ArrayList<>();
-            for (Map<String, Object> map : df) {
+            for (Map<String, String> map : df) {
                 String drug_name_chinese = map.get("drug_name_chinese").toString();
                 if (drug_name_chinese.equals(s)) {
                     String tox = map.get("tox").toString();
@@ -390,8 +390,8 @@ public class ChemoJsonUtil2 {
     }
 
     // 输出化疗解析结果
-    public static List<List<Map<String, Object>>> getChemoAnalysis(List<Map<String, Object>> chemoResult) {
-        for (Map<String, Object> map : chemoResult) {
+    public static List<List<Map<String, String>>> getChemoAnalysis(List<Map<String, String>> chemoResult) {
+        for (Map<String, String> map : chemoResult) {
             String tox = map.get("tox").toString();
             if ("无".equals(tox)) {
                 map.put("tox", "/");
@@ -404,7 +404,7 @@ public class ChemoJsonUtil2 {
         // 药物排序
         listSort2(chemoResult, "drug_name_chinese");
         // 药物归类
-        List<List<Map<String, Object>>> groupList = new ArrayList<>();
+        List<List<Map<String, String>>> groupList = new ArrayList<>();
         chemoResult.stream().collect(Collectors.groupingBy(map -> map.get("drug_class"), Collectors.toList())).
                 forEach((map, fooListByAge) -> {
                     groupList.add(fooListByAge);
@@ -426,10 +426,10 @@ public class ChemoJsonUtil2 {
     }
 
     //将结果按照中文顺序排序输出
-    public static void listSort2(List<Map<String, Object>> resultList, String key) {
-        Collections.sort(resultList, new Comparator<Map<String, Object>>() {
+    public static void listSort2(List<Map<String, String>> resultList, String key) {
+        Collections.sort(resultList, new Comparator<Map<String, String>>() {
             @Override
-            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+            public int compare(Map<String, String> o1, Map<String, String> o2) {
                 String drug_name_chinese1 = o1.get(key).toString();
                 String drug_name_chinese2 = o2.get(key).toString();
                 Collator instance = Collator.getInstance(Locale.CHINA);
@@ -439,10 +439,10 @@ public class ChemoJsonUtil2 {
     }
 
     //将结果按照中文顺序排序输出
-    public static void listSort3(List<List<Map<String, Object>>> resultList, String key) {
-        Collections.sort(resultList, new Comparator<List<Map<String, Object>>>() {
+    public static void listSort3(List<List<Map<String, String>>> resultList, String key) {
+        Collections.sort(resultList, new Comparator<List<Map<String, String>>>() {
             @Override
-            public int compare(List<Map<String, Object>> o1, List<Map<String, Object>> o2) {
+            public int compare(List<Map<String, String>> o1, List<Map<String, String>> o2) {
                 String drug_name_chinese1 = o1.get(0).get(key).toString();
                 String drug_name_chinese2 = o2.get(0).get(key).toString();
                 Collator instance = Collator.getInstance(Locale.CHINA);

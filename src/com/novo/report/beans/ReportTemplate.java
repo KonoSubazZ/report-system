@@ -368,9 +368,9 @@ public class ReportTemplate {
     private List<Map> bodyDrugNoComplexGFYStr;
 
     private String importantTargetedDiseaseName;
-    private Map<String, Object> chemoSummary;
-    private Map<String, Object> chemoSummaryCY;
-    private List<List<Map<String, Object>>> chemoAnalysis;
+    private Map<String, String> chemoSummary;
+    private Map<String, String> chemoSummaryCY;
+    private List<List<Map<String, String>>> chemoAnalysis;
     private Map variationGrading; // 变异分级(60基因重肿)
     private List<Map> siteResult; // 检测结果小结(安为康个性化模块)
     private String sample_barcode; // 样本条码
@@ -3051,27 +3051,27 @@ public class ReportTemplate {
         this.importantTargetedDiseaseName = importantTargetedDiseaseName;
     }
 
-    public Map<String, Object> getChemoSummary() {
+    public Map<String, String> getChemoSummary() {
         return chemoSummary;
     }
 
-    public void setChemoSummary(Map<String, Object> chemoSummary) {
+    public void setChemoSummary(Map<String, String> chemoSummary) {
         this.chemoSummary = chemoSummary;
     }
 
-    public Map<String, Object> getChemoSummaryCY() {
+    public Map<String, String> getChemoSummaryCY() {
         return chemoSummaryCY;
     }
 
-    public void setChemoSummaryCY(Map<String, Object> chemoSummaryCY) {
+    public void setChemoSummaryCY(Map<String, String> chemoSummaryCY) {
         this.chemoSummaryCY = chemoSummaryCY;
     }
 
-    public List<List<Map<String, Object>>> getChemoAnalysis() {
+    public List<List<Map<String, String>>> getChemoAnalysis() {
         return chemoAnalysis;
     }
 
-    public void setChemoAnalysis(List<List<Map<String, Object>>> chemoAnalysis) {
+    public void setChemoAnalysis(List<List<Map<String, String>>> chemoAnalysis) {
         this.chemoAnalysis = chemoAnalysis;
     }
 

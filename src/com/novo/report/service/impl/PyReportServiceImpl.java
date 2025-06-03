@@ -2269,9 +2269,9 @@ public class PyReportServiceImpl implements PyReportService {
         HashSet<Object> chemoGeneSet = new HashSet<>();
         HashSet<String> chemoSingleDrugset = new HashSet(); // （银丰-华西）不需要多药物展示
 
-        Map<String, Object> chemoSummary = new HashMap<>(); // 新版化疗小结输出结果
-        Map<String, Object> chemoSummaryCY = new HashMap<>(); // 重医附二化疗小结输出结果
-        List<List<Map<String, Object>>> chemoAnalysis = new ArrayList<>(); // 新版化疗解析输出结果
+        Map<String, String> chemoSummary = new HashMap<>(); // 新版化疗小结输出结果
+        Map<String, String> chemoSummaryCY = new HashMap<>(); // 重医附二化疗小结输出结果
+        List<List<Map<String, String>>> chemoAnalysis = new ArrayList<>(); // 新版化疗解析输出结果
         List<Map<String, String>> chem = analysisReportDao.getChem(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         // 新版化疗逻辑输出
         if (!chem.isEmpty()) {
@@ -2283,7 +2283,7 @@ public class PyReportServiceImpl implements PyReportService {
             summaryOfRresults.put("chem_cancer", chem_cancer);
 //            chemoJson = ChemoJsonUtil.getChemoResult(chemicalData, chem, chem_cancer);
 //            List<Map<String, Object>> chemoResult = ChemoJsonUtil2.getChemoResult(chemicalData, chem);
-            List<Map<String, Object>> chemoResult = chemoService.getChemoData(chem, chem_cancer);
+            List<Map<String, String>> chemoResult = chemoService.getChemoData(chem, chem_cancer);
             // 化疗小结
             chemoSummary = ChemoJsonUtil2.getChemoSummary(chemoResult, chem_cancer, rt.getTemplate_name());
             // 重医附二化疗输出结果逻辑 || 泛癌种50基因检测检测报告-完整版-病理科
@@ -3865,8 +3865,8 @@ public class PyReportServiceImpl implements PyReportService {
         String qrCodeBase64Str = generateAndUploadQRCode(report_id, sf.getClient(), sf.getSubbarcode(), rt.getTemplate_name(), pr.getReport_date(), logoPath, methylationTitle, pd);
         summaryOfRresults.put("binary", qrCodeBase64Str);
 
-        String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
-        analysisReportDao.updateReportDetail(dataToJson, currentNgsAvailable.getReport_id());
+        // String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
+        // analysisReportDao.updateReportDetail(dataToJson, currentNgsAvailable.getReport_id());
 
         // NOTE: 从这里新增个性化模板逻辑
 
@@ -5638,7 +5638,7 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
     //将数据转换为json
-    public String dataToJson(List<Map> CancerRisk, List<Map> VarDrug, SampleFile sf, List<Map> dMMRinfo, Map<String, Object> summaryOfRresults, List<Map> targetDrugTipLineStr, Map<String, Object> chemoSummary, List<List<Map<String, Object>>> chemoAnalysis, List<Map> sarcomaTyping, Map<String, Object> positiveDDR, Map<String, Object> positiveOther, Map<String, Object> negative, Map<String, Object> hpd, Integer report_id) {
+    public String dataToJson(List<Map> CancerRisk, List<Map> VarDrug, SampleFile sf, List<Map> dMMRinfo, Map<String, String> summaryOfRresults, List<Map> targetDrugTipLineStr, Map<String, Object> chemoSummary, List<List<Map<String, Object>>> chemoAnalysis, List<Map> sarcomaTyping, Map<String, Object> positiveDDR, Map<String, Object> positiveOther, Map<String, Object> negative, Map<String, Object> hpd, Integer report_id) {
         AnalysisReport analysisReport = analysisReportDao.getReportById(report_id);
         String primary_cancer = lifeDao.getDiseaseClassChineseById(analysisReport.getPrimary_cancer_id());
         analysisReport.setPrimary_cancer(primary_cancer);
@@ -6677,9 +6677,9 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
     // 化疗小结（重医附二）
-    private Map<String, Object> CYChemo(List<Map<String, Object>> chemoResult, List<Map<String, Object>> result, Map<String, Object> chemoSummary) {
+    private Map<String, String> CYChemo(List<Map<String, String>> chemoResult, List<Map<String, String>> result, Map<String, String> chemoSummary) {
         Set<String> chemoDrug = new HashSet<>();
-        for (Map<String, Object> map : chemoResult) {
+        for (Map<String, String> map : chemoResult) {
             chemoDrug.add(map.get("drug_name_chinese").toString());
         }
         List<Map<String, Object>> certain_cancer_effs = new ArrayList<>();
@@ -6696,11 +6696,11 @@ public class PyReportServiceImpl implements PyReportService {
         CYDrugBold(chemoDrug, other_cancer_effs, other_cancer_effStr);
         CYDrugBold(chemoDrug, other_cancer_toxs, other_cancer_toxStr);
 
-        Map<String, Object> chemoSummaryCY = new HashMap<>();
-        chemoSummaryCY.put("certain_cancer_effs", certain_cancer_effs);
-        chemoSummaryCY.put("certain_cancer_toxs", certain_cancer_toxs);
-        chemoSummaryCY.put("other_cancer_effs", other_cancer_effs);
-        chemoSummaryCY.put("other_cancer_toxs", other_cancer_toxs);
+        Map<String, String> chemoSummaryCY = new HashMap<>();
+        chemoSummaryCY.put("certain_cancer_effs", certain_cancer_effs.toString());
+        chemoSummaryCY.put("certain_cancer_toxs", certain_cancer_toxs.toString());
+        chemoSummaryCY.put("other_cancer_effs", other_cancer_effs.toString());
+        chemoSummaryCY.put("other_cancer_toxs", other_cancer_toxs.toString());
         return chemoSummaryCY;
     }
 

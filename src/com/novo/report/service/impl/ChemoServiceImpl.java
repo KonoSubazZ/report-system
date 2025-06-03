@@ -17,7 +17,7 @@ public class ChemoServiceImpl implements ChemoService {
 
 
     @Override
-    public List<Map<String, Object>> getChemoData(List<Map<String, String>> chemoVariantList, String chemoCancer) {
+    public List<Map<String, String>> getChemoData(List<Map<String, String>> chemoVariantList, String chemoCancer) {
         // 对等位基因进行排序去重AG/GA属于重复
         List<Map<String, String>> uniqueChemoVariants = deduplicateVariants(chemoVariantList);
 
@@ -86,11 +86,12 @@ public class ChemoServiceImpl implements ChemoService {
         chemoVariantsDrugInfo.sort(Comparator
                 .comparing((Map<String, String> map) -> map.get("drug_class"))
                 .thenComparing(map -> map.get("drug_name_chinese")));
+        return chemoVariantsDrugInfo;
 
         // 兼容之前老逻辑 转为List<Map<String, Object>> 类型
-        return chemoVariantsDrugInfo.stream()
+        /*return chemoVariantsDrugInfo.stream()
                 .map(map -> (Map<String, Object>) new HashMap<String, Object>(map))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
     }
 
     /**
