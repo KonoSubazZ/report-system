@@ -3469,7 +3469,7 @@ public class PyReportServiceImpl implements PyReportService {
                     Object targetedDrug = s.get("targeted_drug");
                     if (geneObj == null) return false;
                     if (targetedDrug == null) return false;
-                    System.out.println("geneObj:" + geneObj);
+
                     // ERBB2\r\n(HER2) 为了特殊处理这种情况
                     String raw = geneObj.toString();
                     // 将字面字符串 \r\n 转换为真实换行符 \n，再截取
