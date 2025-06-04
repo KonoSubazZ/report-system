@@ -1,6 +1,8 @@
 package com.novo.report.service.impl;
 
 
+import com.novo.report.beans.ChemoVariant;
+import com.novo.report.common.CommonQueryVO;
 import com.novo.report.dao.two.ChemoDao;
 import com.novo.report.service.ChemoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +19,9 @@ public class ChemoServiceImpl implements ChemoService {
 
 
     @Override
-    public List<Map<String, String>> getChemoData(List<Map<String, String>> chemoVariantList, String chemoCancer) {
+    public List<Map<String, String>> getChemoData(List<ChemoVariant> chemoVariantList, String chemoCancer) {
         // 对等位基因进行排序去重AG/GA属于重复
+
         List<Map<String, String>> uniqueChemoVariants = deduplicateVariants(chemoVariantList);
 
         // 获取药物信息
@@ -99,6 +102,11 @@ public class ChemoServiceImpl implements ChemoService {
         return Collections.emptyList();
     }
 
+    @Override
+    public List<ChemoVariant> getChemoVariant(CommonQueryVO query) {
+        return chemoDao.getChemoVariantFileData(query);
+    }
+
     /**
      * 对包含变异信息的Map列表进行去重
      * 根据chr、position和排序后的allele进行去重
@@ -106,16 +114,16 @@ public class ChemoServiceImpl implements ChemoService {
      * @param variantList 包含变异信息的Map列表
      * @return 去重后的列表
      */
-    private List<Map<String, String>> deduplicateVariants(List<Map<String, String>> variantList) {
+    private List<Map<String, String>> deduplicateVariants(List<ChemoVariant> variantList) {
         // 使用Set来跟踪唯一的变异
         Set<String> uniqueKeys = new HashSet<>();
         List<Map<String, String>> result = new ArrayList<>();
 
-        for (Map<String, String> variant : variantList) {
+        for (ChemoVariant variant : variantList) {
             // 获取关键信息
-            String chr = variant.get("chr");
-            String position = variant.get("position");
-            String allele = variant.get("allele");
+            String chr = variant.getChr();
+            String position = variant.getPosition();
+            String allele = variant.getAllele();
 
             // 对等位基因进行排序，使"AG"和"GA"变成相同的表示
             String sortedAllele = sortString(allele);
@@ -241,7 +249,8 @@ public class ChemoServiceImpl implements ChemoService {
 
         return result.toString();
     }
-    private  String removePrefix(String input) {
+
+    private String removePrefix(String input) {
         if (input == null) return "";
         // 从"Level "之后的位置开始截取
         if (input.startsWith("Level ")) {

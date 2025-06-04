@@ -2,6 +2,7 @@ package com.novo.report.service.impl;
 
 import com.google.gson.*;
 import com.novo.report.beans.*;
+import com.novo.report.common.CommonQueryVO;
 import com.novo.report.dao.two.*;
 import com.novo.report.mod.ModCancerNoteSummary;
 import com.novo.report.mod.ModCommonNote;
@@ -154,6 +155,12 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setPanel(productName);
         currentNgsAvailable.setProduct_name(productName);
         pr.setProduct_name(productName);
+
+        // 构建公共查询参数 analysis_date subbarcode product_name
+        CommonQueryVO query = new CommonQueryVO();
+        query.setAnalysis_date(currentNgsAvailable.getAnalysis_date());
+        query.setProduct_name(productName);
+        query.setSubbarcode(currentNgsAvailable.getSubbarcode());
 
         // 用于模块判断
         String module = currentNgsAvailable.getModuleFlag();
@@ -2273,6 +2280,7 @@ public class PyReportServiceImpl implements PyReportService {
         Map<String, String> chemoSummaryCY = new HashMap<>(); // 重医附二化疗小结输出结果
         List<List<Map<String, String>>> chemoAnalysis = new ArrayList<>(); // 新版化疗解析输出结果
         List<Map<String, String>> chem = analysisReportDao.getChem(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        List<ChemoVariant> chem1 = chemoService.getChemoVariant(query);
         // 新版化疗逻辑输出
         if (!chem.isEmpty()) {
             // 重写化疗调取逻辑，方便癌种更换调取
@@ -2283,7 +2291,7 @@ public class PyReportServiceImpl implements PyReportService {
             summaryOfRresults.put("chem_cancer", chem_cancer);
 //            chemoJson = ChemoJsonUtil.getChemoResult(chemicalData, chem, chem_cancer);
 //            List<Map<String, Object>> chemoResult = ChemoJsonUtil2.getChemoResult(chemicalData, chem);
-            List<Map<String, String>> chemoResult = chemoService.getChemoData(chem, chem_cancer);
+            List<Map<String, String>> chemoResult = chemoService.getChemoData(chem1, chem_cancer);
             // 化疗小结
             chemoSummary = ChemoJsonUtil2.getChemoSummary(chemoResult, chem_cancer, rt.getTemplate_name());
             // 重医附二化疗输出结果逻辑 || 泛癌种50基因检测检测报告-完整版-病理科

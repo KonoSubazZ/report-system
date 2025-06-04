@@ -80,4 +80,24 @@
             </if>
         </where>
     </select>
+
+    <select id="getChemoVariantFileData" resultType="com.novo.report.beans.ChemoVariant">
+        SELECT
+            cf.chr,
+            cf.pos AS position,
+            cf.allele
+        FROM
+            chem_file cf
+                JOIN omics.data_file_status dfs ON cf.file_id = dfs.file_id
+        WHERE
+            dfs.subbarcode = #{subbarcode}
+
+          AND dfs.analysis_date = #{analysis_date}
+
+          AND dfs.product_name = #{product_name}
+
+          AND dfs.file_type = 'Chem'
+          AND dfs.STATUS = 'Loaded';
+
+    </select>
 </mapper>
