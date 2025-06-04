@@ -61,19 +61,19 @@ public class ChemoServiceImpl implements ChemoService {
                     res.put("cancer_type", cancer_type);
 
                     if (allele.equals(chemoDrugInfo.get("allele1")) || sortString(allele).equals(chemoDrugInfo.get("allele1"))) {
-                        String tran1 = chemoDrugInfo.get("tran1");
+                        String tran1 = chemoDrugInfo.get("trans1");
                         res.put("allele", chemoDrugInfo.get("allele1"));
                         res.put("tox", translateSpecial(chemoDrugInfo.get("tox1")));
                         res.put("eff", translateSpecial(chemoDrugInfo.get("eff1")));
                         res.put("trans_PMID", tran1 + " " + PMIDStr);
                     } else if (allele.equals(chemoDrugInfo.get("allele2")) || sortString(allele).equals(chemoDrugInfo.get("allele2"))) {
-                        String tran2 = chemoDrugInfo.get("tran2");
+                        String tran2 = chemoDrugInfo.get("trans2");
                         res.put("allele", chemoDrugInfo.get("allele2"));
                         res.put("tox", translateSpecial(chemoDrugInfo.get("tox2")));
                         res.put("eff", translateSpecial(chemoDrugInfo.get("eff2")));
                         res.put("trans_PMID", tran2 + " " + PMIDStr);
                     } else if (allele.equals(chemoDrugInfo.get("allele3")) || sortString(allele).equals(chemoDrugInfo.get("allele3"))) {
-                        String tran3 = chemoDrugInfo.get("tran3");
+                        String tran3 = chemoDrugInfo.get("trans3");
                         res.put("allele", chemoDrugInfo.get("allele3"));
                         res.put("tox", translateSpecial(chemoDrugInfo.get("tox3")));
                         res.put("eff", translateSpecial(chemoDrugInfo.get("eff3")));
