@@ -101,6 +101,7 @@ public class ChemoServiceImpl implements ChemoService {
     public List<Map<String, Object>> getChemoAnalysisInfo(List<Map<String, String>> chemoVariantList, String chemoCancer) {
         return Collections.emptyList();
     }
+
     @Override
     public List<ChemoVariant> getChemoVariant(CommonQueryVO query) {
         return chemoDao.getChemoVariantFileData(query);
@@ -159,7 +160,9 @@ public class ChemoServiceImpl implements ChemoService {
     private List<Map<String, String>> deduplicateDrugInfoByCancerType(List<Map<String, String>> drugInfoList, String chemoCancer) {
         // 按位点分组
         Map<String, List<Map<String, String>>> variantsByPosition = drugInfoList.stream()
-                .collect(Collectors.groupingBy(drug -> drug.get("rs_id")));
+                .collect(Collectors.groupingBy(drug ->
+                        drug.get("rs_id") + "_" + drug.get("drug_class") + "_" + drug.get("drug_name")
+                ));
 
         // 处理每个位点的药物信息
         return variantsByPosition.values().stream()
