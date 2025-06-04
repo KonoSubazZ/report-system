@@ -25,8 +25,9 @@ import java.io.File;
             gs.setBackground(Color.WHITE);
             gs.clearRect(0, 0, 140, 140);
             // 设定图像颜色 > BLACK
-//            gs.setColor(Color.black);
-            gs.setColor(new Color(97,150,76));
+            // gs.setColor(new Color(97,150,76));
+
+            gs.setColor(new Color(0,131,195));
             // 设置偏移量 不设置可能导致解析出错
             int pixoff = 2;
             // 输出内容 > 二维码
