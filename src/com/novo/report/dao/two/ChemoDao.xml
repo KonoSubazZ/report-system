@@ -73,9 +73,9 @@
             PMID
         FROM chemical_data2
         <where>
-            <if test="chemoVariantList != null">
-                <foreach collection="chemoVariantList" item="item" separator="or">
-                    (chr = #{item.chr} and position = #{item.position})
+            <if test="chemoVariantList != null and chemoVariantList.size() > 0">
+                <foreach collection="chemoVariantList" item="item" separator=" or " open="(" close=")">
+                    (chr = #{item["chr"]} and position = #{item["position"]})
                 </foreach>
             </if>
         </where>
