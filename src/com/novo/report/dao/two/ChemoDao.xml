@@ -75,7 +75,7 @@
         <where>
             <if test="chemoVariantList != null and chemoVariantList.size() > 0">
                 <foreach collection="chemoVariantList" item="item" separator=" or " open="(" close=")">
-                    (chr = #{item["chr"]} and position = #{item["pos"]})
+                    (chr = #{item.chr} and position = #{item.position})
                 </foreach>
             </if>
         </where>
