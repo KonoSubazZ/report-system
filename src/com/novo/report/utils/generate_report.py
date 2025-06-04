@@ -690,7 +690,7 @@ if __name__ == '__main__':
         # 样本总体评估
         if 'reportInfo' in info_json:
             panel_type = info_json['reportInfo'].get('panel_type', '')
-            sample_type = info_json['reportInfo'].get('type', '')
+            sample_type = info_json.get('type', '')
 
             # 从info_json中获取DNA相关信息
             dna_sequencing_depth = float(info_json.get('sequencing_depth', 0))

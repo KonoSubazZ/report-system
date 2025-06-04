@@ -101,7 +101,6 @@ public class ChemoServiceImpl implements ChemoService {
     public List<Map<String, Object>> getChemoAnalysisInfo(List<Map<String, String>> chemoVariantList, String chemoCancer) {
         return Collections.emptyList();
     }
-
     @Override
     public List<ChemoVariant> getChemoVariant(CommonQueryVO query) {
         return chemoDao.getChemoVariantFileData(query);
