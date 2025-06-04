@@ -205,7 +205,7 @@ public class ModuleServiceImpl implements ModuleService {
         List<String> notesList = new ArrayList<>(Arrays.asList(notes));
         if (!reads) {
 //            notesList.remove(9);
-            notesList.remove(notesList.size() - 2);
+            notesList.remove(notesList.size() - 3);
             // notesList.set(notesList.size() - 1, notesList.get(notesList.size() - 1).replace("13.", "12."));
         }
         if (!complex) {

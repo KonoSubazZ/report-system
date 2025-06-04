@@ -692,25 +692,12 @@ if __name__ == '__main__':
             panel_type = info_json['reportInfo'].get('panel_type', '')
             sample_type = info_json['reportInfo'].get('type', '')
 
-            # 初始化信息字典
-            rna_info = info_json['reportInfo'].get('rna_info', {})
-            hrd_info = info_json['reportInfo'].get('hrd_info', {})
-
-            # 初始化所有必要的参数
-            dna_sequencing_depth = 0
-            total_reads = 0
-            hrd_sequencing_depth = 0
-
-            if panel_type == 'DNA':
-                # 从info_json中获取DNA相关信息
-                dna_sequencing_depth = float(info_json.get('sequencing_depth', 0))
-            # 根据panel_type补充信息
-            elif panel_type == 'RNA':
-                # 从info_json中获取RNA相关信息
-                total_reads = float(info_json.get('rna', {}).get('total_reads', 0))
-            elif panel_type == 'DNA_HRD' or panel_type == 'HRD':
-                # 从info_json中获取HRD相关信息
-                hrd_sequencing_depth = hrd_info = info_json.get('hrd', {}).get('sequencing_depth', 0)
+            # 从info_json中获取DNA相关信息
+            dna_sequencing_depth = float(info_json.get('sequencing_depth', 0))
+            # 从info_json中获取RNA相关信息
+            total_reads = float(info_json.get('rna', {}).get('total_reads', 0))
+            # 从info_json中获取HRD相关信息
+            hrd_sequencing_depth = hrd_info = float(info_json.get('hrd', {}).get('sequencing_depth', 0))
 
             # 调用评估函数
             info_json['sample_quality'] = assess_sample_quality(
