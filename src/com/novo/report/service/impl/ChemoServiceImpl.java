@@ -8,6 +8,7 @@ import com.novo.report.service.ChemoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.Collator;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -86,9 +87,15 @@ public class ChemoServiceImpl implements ChemoService {
         }
 
         // 排序，先根据 drug_class 进行排序,对一同一 drug_class 根据 drug_name_chinese
+        // 获取中文排序器
+        Collator collator = Collator.getInstance(Locale.CHINA);
+        System.out.println("排序前：");
+        chemoVariantsDrugInfo.forEach(System.out::println);
         chemoVariantsDrugInfo.sort(Comparator
-                .comparing((Map<String, String> map) -> map.get("drug_class"))
-                .thenComparing(map -> map.get("drug_name_chinese")));
+                .comparing((Map<String, String> map) -> map.get("drug_class"), collator::compare)
+                .thenComparing(map -> map.get("drug_name_chinese"), collator::compare));
+        System.out.println("排序前后：");
+        chemoVariantsDrugInfo.forEach(System.out::println);
         return chemoVariantsDrugInfo;
 
         // 兼容之前老逻辑 转为List<Map<String, Object>> 类型

@@ -12,6 +12,7 @@ from docx import Document
 from docx.shared import Pt
 from io import BytesIO
 from assess_sample_quality import assess_sample_quality
+import logging
 
 # from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWLINE_XML, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
 specific_version_path = "/root/python3-packages"
@@ -748,6 +749,25 @@ if __name__ == '__main__':
         end_time = time.time()
         elapsed_time = end_time - start_time
         print(f"模板生成耗时：{elapsed_time:.2f} 秒")
+
+        # === 添加如下日志 ===
+        # 配置 logging
+        log_path = '/data/soft/apache-tomcat-8.5.43/logs'
+        os.makedirs(log_path, exist_ok=True)
+        log_file = os.path.join(log_path, "report_generation.log")
+
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s [%(levelname)s] %(message)s',
+            handlers=[
+                logging.FileHandler(log_file, mode='a', encoding='utf-8'),
+                logging.StreamHandler(sys.stdout)
+            ]
+        )
+        input_template = os.path.basename(input_template_path)
+        matched_template_name = os.path.basename(tpl_path)
+        current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + f",{int((time.time() % 1) * 1000):03d}"
+        logging.info(f"[SUCCESS] current_time | 生成模板: {input_template} | 实际匹配模板: {matched_template_name} | 模板生成耗时: {elapsed_time}")
 
     except Exception as e:
         print(f"❌ 发生错误: {e}")

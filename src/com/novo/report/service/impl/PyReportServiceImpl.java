@@ -2282,9 +2282,10 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map<String, String>> chem = analysisReportDao.getChem(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         List<ChemoVariant> chem1 = chemoService.getChemoVariant(query);
         // 新版化疗逻辑输出
-        if (!chem.isEmpty()) {
+        if (!chem1.isEmpty()) {
             // 重写化疗调取逻辑，方便癌种更换调取
-            List<Map<String, Object>> chemicalData = analysisReportDao.getChemicalData2(); // 使用新版化疗数据
+            // List<Map<String, Object>> chemicalData = analysisReportDao.getChemicalData2(); // 使用新版化疗数据
+            List<Map<String, Object>> chemicalData;
             if ("脑胶质瘤200基因报告-三峡".equals(rt.getTemplate_name())) {
                 chemicalData = analysisReportDao.getChemicalData2ByCancerType("实体瘤"); // 脑胶质瘤200基因报告-三峡（特殊情况）
             }
@@ -2316,7 +2317,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 旧版化疗逻辑输出
         String chemoJson = "";
-        if (chem.isEmpty()) {
+        if (chem1.isEmpty()) {
             List<String> chemoJsonList = analysisReportDao.getChemoJson(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
             if (!chemoJsonList.isEmpty() && !"".equals(chemoJsonList.get(0))) {
                 chemoJson = chemoJsonList.get(0);
