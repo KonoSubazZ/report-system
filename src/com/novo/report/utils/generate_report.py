@@ -697,7 +697,7 @@ if __name__ == '__main__':
             # 从info_json中获取RNA相关信息
             total_reads = float(info_json.get('rna', {}).get('total_reads', 0))
             # 从info_json中获取HRD相关信息
-            hrd_sequencing_depth = hrd_info = float(info_json.get('hrd', {}).get('sequencing_depth', 0))
+            hrd_sequencing_depth = float(info_json.get('hrd', {}).get('sequencing_depth', 0))
 
             # 调用评估函数
             info_json['sample_quality'] = assess_sample_quality(
