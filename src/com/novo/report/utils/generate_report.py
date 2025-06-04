@@ -690,7 +690,7 @@ if __name__ == '__main__':
         # 样本总体评估
         if 'reportInfo' in info_json:
             panel_type = info_json['reportInfo'].get('panel_type', '')
-            sample_type = info_json['reportInfo'].get('sample_type', '')
+            sample_type = info_json['reportInfo'].get('type', '')
 
             # 初始化信息字典
             rna_info = info_json['reportInfo'].get('rna_info', {})
