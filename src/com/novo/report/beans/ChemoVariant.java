@@ -95,11 +95,11 @@ public class ChemoVariant {
     }
 
     public String getAllele() {
-        return allele1;
+        return allele;
     }
 
-    public void setAllele(String allele1) {
-        this.allele1 = allele1;
+    public void setAllele(String allele) {
+        this.allele = allele;
     }
 
     public String getRef() {
