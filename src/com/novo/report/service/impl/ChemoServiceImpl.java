@@ -114,10 +114,10 @@ public class ChemoServiceImpl implements ChemoService {
      * @param variantList 包含变异信息的Map列表
      * @return 去重后的列表
      */
-    private List<Map<String, String>> deduplicateVariants(List<ChemoVariant> variantList) {
+    private List<ChemoVariant> deduplicateVariants(List<ChemoVariant> variantList) {
         // 使用Set来跟踪唯一的变异
         Set<String> uniqueKeys = new HashSet<>();
-        List<Map<String, String>> result = new ArrayList<>();
+        List<ChemoVariant> result = new ArrayList<>();
 
         for (ChemoVariant variant : variantList) {
             // 获取关键信息
