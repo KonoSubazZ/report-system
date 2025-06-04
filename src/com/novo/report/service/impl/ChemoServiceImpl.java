@@ -184,12 +184,9 @@ public class ChemoServiceImpl implements ChemoService {
                             .filter(drug -> "实体瘤".equals(drug.get("cancer_type")))
                             .findFirst();
 
-                    if (solidTumorMatch.isPresent()) {
-                        return solidTumorMatch.get();
-                    }
+                    return solidTumorMatch.orElse(null);
 
                     // 没有匹配
-                    return null;
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
