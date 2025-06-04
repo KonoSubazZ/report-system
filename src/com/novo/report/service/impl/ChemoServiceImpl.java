@@ -22,7 +22,7 @@ public class ChemoServiceImpl implements ChemoService {
     public List<Map<String, String>> getChemoData(List<ChemoVariant> chemoVariantList, String chemoCancer) {
         // 对等位基因进行排序去重AG/GA属于重复
 
-        List<Map<String, String>> uniqueChemoVariants = deduplicateVariants(chemoVariantList);
+        List<ChemoVariant> uniqueChemoVariants = deduplicateVariants(chemoVariantList);
 
         // 获取药物信息
         List<Map<String, String>> chemoDrugInfoList = chemoDao.batchGetChemoDBData(uniqueChemoVariants);
@@ -33,10 +33,10 @@ public class ChemoServiceImpl implements ChemoService {
         // 根据具体基因型获取毒副作用等相关信息
         List<Map<String, String>> chemoVariantsDrugInfo = new ArrayList<>();
 
-        for (Map<String, String> uniqueChemoVariant : uniqueChemoVariants) {
-            String chr = uniqueChemoVariant.get("chr");
-            String position = uniqueChemoVariant.get("position");
-            String allele = uniqueChemoVariant.get("allele");
+        for (ChemoVariant uniqueChemoVariant : uniqueChemoVariants) {
+            String chr = uniqueChemoVariant.getChr();
+            String position = uniqueChemoVariant.getPosition();
+            String allele = uniqueChemoVariant.getAllele();
 
             for (Map<String, String> chemoDrugInfo : uniqueChemoDrugInfoList) {
                 String chr1 = chemoDrugInfo.get("chr");
