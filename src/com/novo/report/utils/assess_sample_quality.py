@@ -90,6 +90,17 @@ def assess_sample_quality(panel_type, sample_type, dna_sequencing_depth=0, total
         else:
             return "合格"
 
+    elif panel_type == "SPECIAL_SINGLE_BRCA":
+        # BRCA_12、BRCA_45 胚系质控逻辑
+        depth = dna_sequencing_depth
+
+        if depth >= 100:
+            return "合格"
+        elif depth >= 50:
+            return "警戒"
+        else:
+            return "不合格"
+
     else:
         return "未知的panel类型"
 
