@@ -32,9 +32,8 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+import java.util.logging.Formatter;
+import java.util.logging.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -42,10 +41,39 @@ import java.util.zip.ZipOutputStream;
 @RequestMapping("ngs")
 public class NgsReportController {
     // 创建一个 Logger 实例
+    // 主 logger（可以继续使用原来的）
     private static final Logger logger = Logger.getLogger(NgsReportController.class.getName());
 
-//    @Value("${server.base.url}")
-//    private Integer BASE_URL;
+    // 专用于 createReport 方法的 logger
+    private static final Logger specialLogger = Logger.getLogger("ReportErrorLogger");
+
+    static {
+        try {
+            // 创建 FileHandler，指定写入路径
+            FileHandler fileHandler = new FileHandler("/data/soft/apache-tomcat-8.5.43/logs/report_error.log", true);
+
+            // 设置日志格式（可选）
+            fileHandler.setFormatter(new Formatter() {
+                @Override
+                public String format(LogRecord record) {
+                    return String.format("[%s] [%s] %s%n",
+                            new Date(record.getMillis()),
+                            record.getLevel().getName(), // 使用 getName() 获取字符串形式的级别名
+                            record.getMessage()
+                    );
+                }
+            });
+
+            // 添加 handler 到 logger
+            specialLogger.addHandler(fileHandler);
+            specialLogger.setLevel(Level.SEVERE);
+            specialLogger.setUseParentHandlers(false);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Autowired
     private NgsReportService ngsReportService;
@@ -72,29 +100,11 @@ public class NgsReportController {
             }
             return reportId;
         } catch (Exception e) {
+            // 增加日志输出
+            String subbarcode = currentNgsAvailable.getSubbarcode();
+            User user = (User) httpServletRequest.getSession().getAttribute("user");
+            specialLogger.log(Level.SEVERE, "用户" + user.getUser_account() + "生成报告失败，报告编号：" + subbarcode, e);
 
-            // 记录 report 生成错误日志
-            FileHandler fileHandler = null;
-            try {
-                // 创建 FileHandler，将日志写入指定文件
-                fileHandler = new FileHandler("/data/soft/apache-tomcat-8.5.43/logs/report.log", true);
-                fileHandler.setFormatter(new SimpleFormatter()); // 设置日志格式
-                logger.addHandler(fileHandler); // 将文件处理器添加到 Logger 中
-
-                // 记录异常信息
-                logger.severe("Error occurred while generating report: " + rt.toString() + e.getMessage());
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
-                e.printStackTrace(pw);
-                logger.severe("Error Report generation failed: " + e.getMessage() + "\n" + sw.toString());
-
-            } catch (IOException ioException) {
-                ioException.printStackTrace(); // 如果创建日志文件失败，输出异常堆栈信息
-            } finally {
-                if (fileHandler != null) {
-                    fileHandler.close(); // 关闭文件处理器，释放资源
-                }
-            }
             e.printStackTrace();
             return -1;
         }
@@ -265,7 +275,7 @@ public class NgsReportController {
                     "重庆艾迪康医学检验实验室有限公司",
                     "青岛艾迪康医学检验实验室有限公司",
                     "济南艾迪康医学检验中心有限公司");
-            if (DIANcustomerList.contains(sf.getCustomer())){
+            if (DIANcustomerList.contains(sf.getCustomer())) {
                 subject = "请查收诺禾致源的检测报告，姓名：" + sf.getPerson_name() + "-" + sf.getSampleremark();
             }
             //内容
