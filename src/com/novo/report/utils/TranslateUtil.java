@@ -188,7 +188,6 @@ public class TranslateUtil {
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("perlmsg输出结果：" + msg);
 		return msg;
 	}
 	
