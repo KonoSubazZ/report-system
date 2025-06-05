@@ -1,18 +1,19 @@
 import base64
-import json
-import os
-import tempfile
-import shutil
 import jinja2
+import json
+import logging
 import lxml
+import math
+import os
+import shutil
 import six
 import sys
-import math
+import tempfile
 from docx import Document
 from docx.shared import Pt
 from io import BytesIO
+
 from assess_sample_quality import assess_sample_quality
-import logging
 
 # from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWLINE_XML, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
 specific_version_path = "/root/python3-packages"
@@ -28,7 +29,36 @@ except ImportError:
     # cgi.escape is deprecated in python 3.7
     from cgi import escape
 
+def setup_logging():
+    """
+    初始化日志系统，创建两个 logger：
+    - main_logger: 用于主程序日志，输出到 report_generation.log 和控制台
+    - sample_quality_logger: 专门记录样本质控相关日志，输出到 sample_quality.log
+    """
+    log_path = '/data/soft/apache-tomcat-8.5.43/logs'
+    os.makedirs(log_path, exist_ok=True)
 
+    # 主日志文件路径
+    main_log_file = os.path.join(log_path, "report_generation.log")
+    sample_quality_log_file = os.path.join(log_path, "sample_quality.log")
+
+    # 创建主 logger
+    main_logger = logging.getLogger("main")
+    main_logger.setLevel(logging.INFO)
+    main_handler = logging.FileHandler(main_log_file, mode='a', encoding='utf-8')
+    main_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
+    main_logger.addHandler(main_handler)
+    main_logger.addHandler(logging.StreamHandler(sys.stdout))
+
+    # 创建 sample quality 专用 logger
+    sample_quality_logger = logging.getLogger("sample_quality")
+    sample_quality_logger.setLevel(logging.INFO)
+    sq_handler = logging.FileHandler(sample_quality_log_file, mode='a', encoding='utf-8')
+    sq_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
+    sample_quality_logger.addHandler(sq_handler)
+    sample_quality_logger.propagate = False  # 禁止传播到 root logger
+
+    return main_logger, sample_quality_logger
 class MyRichText(RichText):
     def add(self, text,
             style=None,
@@ -617,10 +647,14 @@ if __name__ == '__main__':
         json_path = sys.argv[2]
         output_path = sys.argv[3]
 
+        # 初始化日志系统
+        main_logger, sample_quality_logger = setup_logging()
+
         # 加载模块化配置文件
         config = load_template_config()
         enabled = config.get("module_enabled", False)
 
+        # ... 其他逻辑不变 ...
         # 是否使用模块化模板
         if enabled:
             template_name = os.path.basename(input_template_path).replace(".docx", "")
@@ -640,6 +674,45 @@ if __name__ == '__main__':
         # 加载输出文件
         f = open(sys.argv[2], encoding='utf-8')
         info_json = json.load(f)
+
+        # # 配置 logging
+        # log_path = '/data/soft/apache-tomcat-8.5.43/logs'
+        # os.makedirs(log_path, exist_ok=True)
+        # log_file = os.path.join(log_path, "report_generation.log")
+        #
+        # logging.basicConfig(
+        #     level=logging.INFO,
+        #     format='%(asctime)s [%(levelname)s] %(message)s',
+        #     handlers=[
+        #         logging.FileHandler(log_file, mode='a', encoding='utf-8'),
+        #         logging.StreamHandler(sys.stdout)
+        #     ]
+        # )
+        # # ====== 日志配置 ======
+        # log_path = '/data/soft/apache-tomcat-8.5.43/logs'
+        # os.makedirs(log_path, exist_ok=True)
+        #
+        # # 主日志文件路径
+        # main_log_file = os.path.join(log_path, "report_generation.log")
+        # sample_quality_log_file = os.path.join(log_path, "sample_quality.log")
+        #
+        # # 创建主 logger
+        # main_logger = logging.getLogger("main")
+        # main_logger.setLevel(logging.INFO)
+        # main_handler = logging.FileHandler(main_log_file, mode='a', encoding='utf-8')
+        # main_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
+        # main_logger.addHandler(main_handler)
+        # main_logger.addHandler(logging.StreamHandler(sys.stdout))
+        #
+        # # 创建 sample quality 专用 logger
+        # sample_quality_logger = logging.getLogger("sample_quality")
+        # sample_quality_logger.setLevel(logging.INFO)
+        # sq_handler = logging.FileHandler(sample_quality_log_file, mode='a', encoding='utf-8')
+        # sq_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
+        # sample_quality_logger.addHandler(sq_handler)
+        #
+        # # 禁止向上传递日志给 root logger，避免重复打印
+        # sample_quality_logger.propagate = False
 
         # 初始化 【pyfn】 使用变量
         # 所有检出基因列表-标红
@@ -671,6 +744,8 @@ if __name__ == '__main__':
 
         ImmunopositiveGene_LIST = safe_get(info_json, 'immunopositiveGeneSet', [])
         ImmunonegativeGene_LIST = safe_get(info_json, 'immunonegativeGeneSet', [])
+        subbarcode = info_json['subbarcode'] if info_json['subbarcode'] else ''
+
         # 肉瘤附录列表逻辑
         if 'sarcomaTypingList1' in info_json.get('note', {}) and info_json['note']['sarcomaTypingList1']:
             info_json['note']['sarcomaTypingList1'] = flatten_data(info_json['note']['sarcomaTypingList1'])
@@ -708,6 +783,8 @@ if __name__ == '__main__':
                 total_reads,
                 hrd_sequencing_depth
             )
+            sample_quality_logger.info(
+                f"[{subbarcode}] | panel_type: {panel_type} | sample_type: {sample_type} | dna_sequencing_depth: {dna_sequencing_depth} | total_reads: {total_reads} | hrd_sequencing_depth: {hrd_sequencing_depth} | sample_quality: {info_json['sample_quality']}")
 
         # 模板初始化过滤器
         jinja_env = jinja2.Environment()
@@ -751,23 +828,12 @@ if __name__ == '__main__':
         print(f"模板生成耗时：{elapsed_time:.2f} 秒")
 
         # === 添加如下日志 ===
-        # 配置 logging
-        log_path = '/data/soft/apache-tomcat-8.5.43/logs'
-        os.makedirs(log_path, exist_ok=True)
-        log_file = os.path.join(log_path, "report_generation.log")
 
-        logging.basicConfig(
-            level=logging.INFO,
-            format='%(asctime)s [%(levelname)s] %(message)s',
-            handlers=[
-                logging.FileHandler(log_file, mode='a', encoding='utf-8'),
-                logging.StreamHandler(sys.stdout)
-            ]
-        )
         input_template = os.path.basename(input_template_path)
         matched_template_name = os.path.basename(tpl_path)
         current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + f",{int((time.time() % 1) * 1000):03d}"
-        logging.info(f"[SUCCESS] | 生成模板: {input_template} | 实际匹配模板: {matched_template_name} | 模板生成耗时: {elapsed_time:.2f} 秒")
+        main_logger.info(
+            f"[{subbarcode}] | 生成模板: {input_template} | 实际匹配模板: {matched_template_name} | 模板生成耗时: {elapsed_time:.2f} 秒")
 
     except Exception as e:
         print(f"❌ 发生错误: {e}")
