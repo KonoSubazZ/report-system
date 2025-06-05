@@ -40,7 +40,7 @@ def assess_sample_quality(panel_type, sample_type, dna_sequencing_depth=0, total
         else:
             return "不合格"
 
-    elif panel_type == "WES":
+    elif panel_type == "WES+":
         # WES评估逻辑
         depth = dna_sequencing_depth
 
