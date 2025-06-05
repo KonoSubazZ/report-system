@@ -767,7 +767,7 @@ if __name__ == '__main__':
         input_template = os.path.basename(input_template_path)
         matched_template_name = os.path.basename(tpl_path)
         current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + f",{int((time.time() % 1) * 1000):03d}"
-        logging.info(f"[SUCCESS] current_time | 生成模板: {input_template} | 实际匹配模板: {matched_template_name} | 模板生成耗时: {elapsed_time}")
+        logging.info(f"[SUCCESS] | 生成模板: {input_template} | 实际匹配模板: {matched_template_name} | 模板生成耗时: {elapsed_time}")
 
     except Exception as e:
         print(f"❌ 发生错误: {e}")
