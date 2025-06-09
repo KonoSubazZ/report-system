@@ -53,16 +53,36 @@ public class NgsReportController {
             FileHandler fileHandler = new FileHandler("/data/soft/apache-tomcat-8.5.43/logs/report_error.log", true);
 
             // 设置日志格式（可选）
+//            fileHandler.setFormatter(new Formatter() {
+//                @Override
+//                public String format(LogRecord record) {
+//                    return String.format("[%s] [%s] %s%n",
+//                            new Date(record.getMillis()),
+//                            record.getLevel().getName(), // 使用 getName() 获取字符串形式的级别名
+//                            record.getMessage()
+//                    );
+//                }
+//            });
             fileHandler.setFormatter(new Formatter() {
                 @Override
                 public String format(LogRecord record) {
-                    return String.format("[%s] [%s] %s%n",
-                            new Date(record.getMillis()),
-                            record.getLevel().getName(), // 使用 getName() 获取字符串形式的级别名
-                            record.getMessage()
-                    );
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("[").append(new Date(record.getMillis())).append("] ");
+                    sb.append("[").append(record.getLevel().getName()).append("] ");
+                    sb.append(record.getMessage()).append("\n");
+
+                    // 如果有异常，输出 stack trace
+                    if (record.getThrown() != null) {
+                        StringWriter sw = new StringWriter();
+                        PrintWriter pw = new PrintWriter(sw);
+                        record.getThrown().printStackTrace(pw);
+                        sb.append("Exception:\n").append(sw.toString());
+                    }
+
+                    return sb.toString();
                 }
             });
+
 
             // 添加 handler 到 logger
             specialLogger.addHandler(fileHandler);
