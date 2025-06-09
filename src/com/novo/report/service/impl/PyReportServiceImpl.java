@@ -4819,7 +4819,7 @@ public class PyReportServiceImpl implements PyReportService {
                 "novopm2_rna1166_Sarcoma"
         ));
         Set<String> doublePanelSet = new HashSet<>(Arrays.asList(
-                "novopm2_MRD"));
+                "novopm2_MRD", "novo_hrd"));
 
         if (panel.contains("tis1") || panel.contains("blo1") || singlePanelSet.contains(panel)) {
             return "单样本";
