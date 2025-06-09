@@ -4367,23 +4367,13 @@ public class PyReportServiceImpl implements PyReportService {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("test_result_summary");
 
-            /*if ("全外显子组升级版（WES Plus）基因检测报告".equals(templateName)) {
-                commonNote.setType("WESPLUS");
-            } else if ("HRR45_HRDscore基因检测报告".equals(templateName)) {
-                commonNote.setType("HRR45_HRDScore");
-            } else if ("中国人群BRCA12基因分子分型研究_双样本-盖章版".equals(templateName)) {
-                commonNote.setType("BRAC12");
-            } else if ("BRCA12基因+同源重组修复缺陷评分（HRD score）检测报告".equals(templateName)) {
-                commonNote.setType("BRAC12_HRDScore");
-            }*/
-
             if ("novopm2_tis_wesplus".equals(productName) || "novopm2_blo_wesplus".equals(productName)) {
                 commonNote.setType("WESPLUS");
             } else if ("novopm2_tis_BRCA45_hrd".equals(productName)) {
                 commonNote.setType("HRR45_HRDScore");
-            } else if ("novopm2_tis_BRCA1_2".equals(templateName) || "novopm2_blo_BRCA1_2".equals(productName) || "novopm2_tis1_BRCA1_2".equals(productName) || "novopm2_blo1_BRCA1_2".equals(productName)) {
+            } else if ("novopm2_tis_BRCA1_2".equals(productName) || "novopm2_blo_BRCA1_2".equals(productName) || "novopm2_tis1_BRCA1_2".equals(productName) || "novopm2_blo1_BRCA1_2".equals(productName)) {
                 commonNote.setType("BRAC12");
-            } else if ("novopm2_tis_BRCA1_2_hrd".equals(templateName)) {
+            } else if ("novopm2_tis_BRCA1_2_hrd".equals(productName)) {
                 commonNote.setType("BRAC12_HRDScore");
             }
 
