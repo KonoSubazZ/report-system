@@ -3380,7 +3380,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 常见靶向药物相关基因检测列表
         List<Map> commonTargetedDrug = analysisReportDao.getCommonTargetedDrug("泛癌种");
         // 根据产品基因过滤
-        List<Map> commonTargetedDrugFilter = commonTargetedDrug.stream().filter(s -> geneSymbols.contains(s.get("gene").toString().split("\\\\r\\\\n")[0])).collect(Collectors.toList());
+        List<Map> commonTargetedDrugFilter = commonTargetedDrug.stream().filter(s -> geneSymbols.contains(s.get("gene").toString().split("\\\\r\\\\n")[0]) && s.get("targeted_drug") != null).collect(Collectors.toList());
         importantTargetedGene(commonTargetedDrugFilter, list, crCheckLineStrYF1280, readsFlag, false);
         rt.setCommonTargetedDrug(commonTargetedDrugFilter);
 
