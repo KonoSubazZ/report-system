@@ -49,8 +49,13 @@ public class NgsReportController {
 
     static {
         try {
-            // 创建 FileHandler，指定写入路径
-            FileHandler fileHandler = new FileHandler("/data/soft/apache-tomcat-8.5.43/logs/report_error.log", true);
+            // 最大每个文件 10MB，最多保留 5 个历史文件
+            FileHandler fileHandler = new FileHandler(
+                    "/data/soft/apache-tomcat-8.5.43/logs/report_error.log",
+                    10 * 1024 * 1024,   // 10 MB
+                    5,                   // 最多保留 5 个文件
+                    true                 // append 模式
+            );
 
             // 设置日志格式（可选）
 //            fileHandler.setFormatter(new Formatter() {
