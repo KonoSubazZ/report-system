@@ -4528,17 +4528,21 @@ public class PyReportServiceImpl implements PyReportService {
         if (templateConf != null && templateConf.getQc()) {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("qc");
-            commonNote.setType("通用");
-            // 判断是否为 D+R 产品
-            if (rt.isReadsFlag()) {
-                commonNote.setType("RNA");
-            } else if (query.getPanel_type().contains("HRD")) {
-                commonNote.setType("HRD");
+
+            String panelType = query.getPanel_type();
+            String type1 = "DNA"; // 默认类型
+
+            if (panelType.contains("RNA")) {
+                type1 = "RNA";
+            } else if (panelType.contains("HRD")) {
+                type1 = "HRD";
             }
+
+            commonNote.setType(type1);
+
             List<String> qcNoteList = moduleService.getQcNote(commonNote);
             res.put("qcNoteList", qcNoteList);
         }
-
 
         // 肉瘤辅助诊断提示-肉瘤分型
         if (templateConf != null && templateConf.getSarcoma_typing()) {
