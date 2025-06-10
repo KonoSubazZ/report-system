@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE configuration   
-    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
-    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <settings>
         <!-- 打印查询语句 -->
-        <setting name="logImpl" value="STDOUT_LOGGING" />
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
         <!--解决，查询返回结果含null没有对应字段值问题-->
-		<setting name="callSettersOnNulls" value="true"/>
-<!--        <setting name="mapUnderscoreToCamelCase" value="true" />-->
+        <setting name="callSettersOnNulls" value="true"/>
+        <!--        <setting name="mapUnderscoreToCamelCase" value="true" />-->
     </settings>
-    <plugins>
-        <plugin interceptor="com.novo.report.interceptor.SqlErrorInterceptor"/>
-    </plugins>
+<!--    <plugins>-->
+<!--        <plugin interceptor="com.novo.report.interceptor.SqlErrorInterceptor"/>-->
+<!--    </plugins>-->
 </configuration>
