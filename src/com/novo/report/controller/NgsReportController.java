@@ -40,53 +40,9 @@ import java.util.zip.ZipOutputStream;
 @Controller
 @RequestMapping("ngs")
 public class NgsReportController {
-    // 创建一个 Logger 实例
-    // 主 logger（可以继续使用原来的）
-    private static final Logger logger = Logger.getLogger(NgsReportController.class.getName());
 
-    // 专用于 createReport 方法的 logger
-    private static final Logger specialLogger = Logger.getLogger("ReportErrorLogger");
-
-    static {
-        try {
-            // 最大每个文件 10MB，最多保留 5 个历史文件
-            FileHandler fileHandler = new FileHandler(
-                    "/data/soft/apache-tomcat-8.5.43/logs/report_error.log",
-                    10 * 1024 * 1024,   // 10 MB
-                    5,                   // 最多保留 5 个文件
-                    true                 // append 模式
-            );
-            fileHandler.setFormatter(new Formatter() {
-                @Override
-                public String format(LogRecord record) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("[").append(new Date(record.getMillis())).append("] ");
-                    sb.append("[").append(record.getLevel().getName()).append("] ");
-                    sb.append(record.getMessage()).append("\n");
-
-                    // 如果有异常，输出 stack trace
-                    if (record.getThrown() != null) {
-                        StringWriter sw = new StringWriter();
-                        PrintWriter pw = new PrintWriter(sw);
-                        record.getThrown().printStackTrace(pw);
-                        sb.append("Exception:\n").append(sw.toString());
-                    }
-
-                    return sb.toString();
-                }
-            });
-
-
-            // 添加 handler 到 logger
-            specialLogger.addHandler(fileHandler);
-            specialLogger.setLevel(Level.SEVERE);
-            specialLogger.setUseParentHandlers(false);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+    // 使用工具类获取 specialLogger
+    private static final Logger specialLogger = LogUtils.getReportErrorLogger();
 
     @Autowired
     private NgsReportService ngsReportService;
