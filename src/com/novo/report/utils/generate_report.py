@@ -675,45 +675,6 @@ if __name__ == '__main__':
         f = open(sys.argv[2], encoding='utf-8')
         info_json = json.load(f)
 
-        # # 配置 logging
-        # log_path = '/data/soft/apache-tomcat-8.5.43/logs'
-        # os.makedirs(log_path, exist_ok=True)
-        # log_file = os.path.join(log_path, "report_generation.log")
-        #
-        # logging.basicConfig(
-        #     level=logging.INFO,
-        #     format='%(asctime)s [%(levelname)s] %(message)s',
-        #     handlers=[
-        #         logging.FileHandler(log_file, mode='a', encoding='utf-8'),
-        #         logging.StreamHandler(sys.stdout)
-        #     ]
-        # )
-        # # ====== 日志配置 ======
-        # log_path = '/data/soft/apache-tomcat-8.5.43/logs'
-        # os.makedirs(log_path, exist_ok=True)
-        #
-        # # 主日志文件路径
-        # main_log_file = os.path.join(log_path, "report_generation.log")
-        # sample_quality_log_file = os.path.join(log_path, "sample_quality.log")
-        #
-        # # 创建主 logger
-        # main_logger = logging.getLogger("main")
-        # main_logger.setLevel(logging.INFO)
-        # main_handler = logging.FileHandler(main_log_file, mode='a', encoding='utf-8')
-        # main_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
-        # main_logger.addHandler(main_handler)
-        # main_logger.addHandler(logging.StreamHandler(sys.stdout))
-        #
-        # # 创建 sample quality 专用 logger
-        # sample_quality_logger = logging.getLogger("sample_quality")
-        # sample_quality_logger.setLevel(logging.INFO)
-        # sq_handler = logging.FileHandler(sample_quality_log_file, mode='a', encoding='utf-8')
-        # sq_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
-        # sample_quality_logger.addHandler(sq_handler)
-        #
-        # # 禁止向上传递日志给 root logger，避免重复打印
-        # sample_quality_logger.propagate = False
-
         # 初始化 【pyfn】 使用变量
         # 所有检出基因列表-标红
         GENE_LIST = info_json['allGeneSet'] if info_json['allGeneSet'] else []
