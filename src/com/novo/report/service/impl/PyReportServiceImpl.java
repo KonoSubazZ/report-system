@@ -204,6 +204,7 @@ public class PyReportServiceImpl implements PyReportService {
         HashSet<String> CRGeneSet = new HashSet<>();
         HashSet<String> targetDrugGeneSet = new HashSet<>();
         HashSet<String> mmrGeneSet = new HashSet<>();
+        HashSet<String> mrdGeneSet = new HashSet<>();
 
 
         //循环设置临床意义
@@ -3842,7 +3843,8 @@ public class PyReportServiceImpl implements PyReportService {
                 String lastValue = mrd_td.get(mrd_td.size() - 1);
                 if (!"-".equals(lastValue)) {
                     isNegative = false;
-                    break;
+                    mrdGeneSet.add(mrd_td.get(0));
+                    // break;
                 }
             }
             Map<String, Object> mrdInfo = new HashMap<>();
