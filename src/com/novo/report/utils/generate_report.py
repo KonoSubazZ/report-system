@@ -564,7 +564,8 @@ def mark_genes_in_red(gene_tables, detected_gene_info):
         "ALL": "all_gene_list",
         "SNP": "snp_gene_list",
         "MMR": "mmr_gene_list",
-        "OTHER": "all_gene_list"
+        "OTHER": "all_gene_list",
+        "MRD": "mrd_gene_list"
     }
     show_red_note = True
     for table in gene_tables:
