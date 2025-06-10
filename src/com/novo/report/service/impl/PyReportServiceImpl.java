@@ -161,6 +161,7 @@ public class PyReportServiceImpl implements PyReportService {
         query.setAnalysis_date(currentNgsAvailable.getAnalysis_date());
         query.setProduct_name(productName);
         query.setSubbarcode(currentNgsAvailable.getSubbarcode());
+        query.setPanel_type(panelType);
 
         // 用于模块判断
         String module = currentNgsAvailable.getModuleFlag();
@@ -3953,7 +3954,7 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setReferences(references);
 
             // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结、重要靶向基因汇总
-            Map<String, Object> commonNote = generateCommonNote(templateConf, productName, rt, cancerInfo);
+            Map<String, Object> commonNote = generateCommonNote(templateConf, productName, rt, cancerInfo, query);
             rt.setCommonNote(commonNote);
         }
 
@@ -4356,7 +4357,11 @@ public class PyReportServiceImpl implements PyReportService {
         return immunityGeneList;
     }
 
-    private Map<String, Object> generateCommonNote(TemplateConf templateConf, String productName, ReportTemplate rt, Map cancerInfo) {
+    private Map<String, Object> generateCommonNote(TemplateConf templateConf,
+                                                   String productName,
+                                                   ReportTemplate rt,
+                                                   Map cancerInfo,
+                                                   CommonQueryVO query) {
         Map<String, Object> res = new HashMap<>();
         String templateName = rt.getTemplate_name();
         Object type = rt.getSummaryOfRresults().get("type");
@@ -4527,6 +4532,8 @@ public class PyReportServiceImpl implements PyReportService {
             // 判断是否为 D+R 产品
             if (rt.isReadsFlag()) {
                 commonNote.setType("RNA");
+            } else if (query.getPanel_type().contains("HRD")) {
+                commonNote.setType("HRD");
             }
             List<String> qcNoteList = moduleService.getQcNote(commonNote);
             res.put("qcNoteList", qcNoteList);
