@@ -804,6 +804,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // MOD 基因检测列表
         List<String> geneSymbols = analysisReportDao.getGeneSymbols(currentNgsAvailable.getProduct_id());
+        boolean hasMET = geneSymbols.contains("MET");
         Map<String, Object> geneClassification = new HashMap<String, Object>();
         Map<String, Object> geneMap = getGeneClassification(geneSymbols, geneClassification, templateConf, productName);
         // 20250214 脑胶质瘤200增加基因list
@@ -3958,7 +3959,7 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setReferences(references);
 
             // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结、重要靶向基因汇总
-            Map<String, Object> commonNote = generateCommonNote(templateConf, productName, rt, cancerInfo, query);
+            Map<String, Object> commonNote = generateCommonNote(templateConf, productName, rt, cancerInfo, query, hasMET);
             rt.setCommonNote(commonNote);
         }
 
@@ -4365,7 +4366,8 @@ public class PyReportServiceImpl implements PyReportService {
                                                    String productName,
                                                    ReportTemplate rt,
                                                    Map cancerInfo,
-                                                   CommonQueryVO query) {
+                                                   CommonQueryVO query,
+                                                   boolean hasMET) {
         Map<String, Object> res = new HashMap<>();
         String templateName = rt.getTemplate_name();
         Object type = rt.getSummaryOfRresults().get("type");
@@ -4407,7 +4409,9 @@ public class PyReportServiceImpl implements PyReportService {
                 String note = importantTargetedGeneSummary.getNote();
                 String[] noteParts = note.split("\\r?\\n"); // 支持 \r\n 和 \n 两种换行格式
 
-                for (int i = noteParts.length - 1; i >= 0; i--) {
+                // 增加关于 met 的特殊逻辑
+                int len = noteParts.length - (hasMET ? 1 : 2);
+                for (int i = len; i >= 0; i--) {
                     importantTargetedGeneSummaryNoteList.add(0, noteParts[i]);
                 }
             }
