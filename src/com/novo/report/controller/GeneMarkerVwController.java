@@ -1158,7 +1158,7 @@ public class GeneMarkerVwController {
                     }
                 }
                 model.addAttribute("mmUrinaryProstates", mmUrinaryProstates);
-            } else if (diseaseIdList.contains(4007) && isUrinaryPanelProduct || currentNgsAvailable.getModuleFlag().contains("尿路上皮癌/膀胱癌预后")) { // 4007->膀胱癌
+            } else if ((diseaseIdList.contains(4007) || diseaseIdList.contains(11812)) && isUrinaryPanelProduct || currentNgsAvailable.getModuleFlag().contains("尿路上皮癌/膀胱癌预后")) { // 4007->膀胱癌
                 urinaryProstateFlag = true;
                 // 尿路上皮癌/膀胱癌预后相关基因检测结果
                 List<MmUrinaryProstate> mmUrinaryProstates = moduleModificationAllDao.selectMmUrinaryProstateByReportId(currentNgsAvailable.getReport_id());

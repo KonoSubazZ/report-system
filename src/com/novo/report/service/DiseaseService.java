@@ -15,4 +15,7 @@ public interface DiseaseService {
     boolean isNUTMidlineCarcinoma(Integer dId);
     boolean isGastrointestinalStromalTumor(Integer dId);
     boolean isEndometrialCarcinoma(Integer dId);
+    boolean isVulvaCarcinoma(Integer dId);
+    boolean isMaleReproductiveRrganCancer(Integer dId);
+    boolean isUrinarySystemCancer(Integer dId);
 }

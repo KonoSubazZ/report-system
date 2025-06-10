@@ -68,7 +68,14 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         List<Integer> diseaseIdList = new ArrayList<>();
         // 获取癌种对应的父级癌种
         List<Integer> parentdiseaseIdList = new ArrayList<>();
+        List<Integer> sondiseaseIdList = new ArrayList<>();
         getDiseaseList(diseaseId, diseaseIdList, parentdiseaseIdList);
+
+        // 获取癌种对应的子级癌种+自身
+        int startIndex = diseaseIdList.indexOf(diseaseId);
+        if (startIndex != -1 && startIndex < diseaseIdList.size()) {
+            sondiseaseIdList = new ArrayList<>(diseaseIdList.subList(startIndex, diseaseIdList.size()));
+        }
 
         // 体系突变
         List<Map> thisGeneticmarkerVwList = new ArrayList<>();
@@ -84,6 +91,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
 
         result.put("diseaseIdList", diseaseIdList);
         result.put("parentdiseaseIdList", parentdiseaseIdList);
+        result.put("sondiseaseIdList", sondiseaseIdList);
         result.put("thisGeneticmarkerVwList", thisGeneticmarkerVwList);
         result.put("diseaseId", diseaseId);
         result.put("diseaseName", diseaseClass.getDisease_class_chinese());
@@ -711,7 +719,6 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
      * @param parentdiseaseIdList 父级疾病id list(包括自己)
      */
     public void getDiseaseList(Integer diseaseId, List<Integer> diseaseIdList, List<Integer> parentdiseaseIdList) {
-        diseaseIdList.add(diseaseId);
         parentdiseaseIdList.add(diseaseId);
 
         List<Map> parentDiseaseList = analysisReportDao.getParentDiseaseList(diseaseId);
@@ -721,6 +728,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         List<Integer> sonIdList = new ArrayList<>();
         getSonId(sonDiseaseList, sonIdList);
         diseaseIdList.addAll(parentIdList);
+        diseaseIdList.add(diseaseId);
         diseaseIdList.addAll(sonIdList);
         parentdiseaseIdList.addAll(parentIdList);
     }

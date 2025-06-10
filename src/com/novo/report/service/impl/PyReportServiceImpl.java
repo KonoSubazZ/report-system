@@ -221,11 +221,13 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> thisGeneticmarkerVwList = (List<Map>) result_map.get("thisGeneticmarkerVwList");
         // 癌种list
         List<Integer> diseaseIdList = (List<Integer>) result_map.get("diseaseIdList");
+        // disease and sub disease
+        List<Integer> diseaseAndSubDiseaseList = (List<Integer>) result_map.get("sondiseaseIdList");
         Integer diseaseId = (Integer) result_map.get("diseaseId");
         String diseaseName = result_map.get("diseaseName").toString();
 
         // 生成解读癌种标志，需要判断子父级，用于判断做癌种判断
-        Map<String, Boolean> diseaseFlag = generateDiseaseFlag(diseaseName, diseaseId);
+        Map<String, Boolean> diseaseFlag = generateDiseaseFlag(diseaseName, diseaseId, diseaseAndSubDiseaseList);
         rt.setDisease(diseaseFlag);
 
         // 匹配癌种id
@@ -3498,6 +3500,11 @@ public class PyReportServiceImpl implements PyReportService {
             target_cancer = "泛癌种";
         }
 
+        boolean isUrinaryCancer = diseaseService.isUrinarySystemCancer(diseaseId)
+                || diseaseService.isVulvaCarcinoma(diseaseId)
+                || diseaseService.isMaleReproductiveRrganCancer(diseaseId);
+        if (isUrinaryCancer) target_cancer = "泌尿系统癌症";
+
         rt.setImportantTargetedDiseaseName(target_cancer);
 
         // MOD 精准诊疗相关基因结果汇总
@@ -4060,7 +4067,7 @@ public class PyReportServiceImpl implements PyReportService {
      *
      * @param diseaseName
      */
-    private Map<String, Boolean> generateDiseaseFlag(String diseaseName, Integer diseaseId) {
+    private Map<String, Boolean> generateDiseaseFlag(String diseaseName, Integer diseaseId, List<Integer> diseaseAndSubDiseaseList) {
 
         Map<String, Boolean> disease = new HashMap<>();
         // TODO 上面为1166使用，待优化
@@ -4076,6 +4083,9 @@ public class PyReportServiceImpl implements PyReportService {
         disease.put("ProstateCancer", diseaseService.isProstateCancer(diseaseId));
         disease.put("ThyroidCarcinoma", diseaseService.isThyroidCarcinoma(diseaseId));
         disease.put("EndometrialCarcinoma", diseaseService.isEndometrialCarcinoma(diseaseId));
+        // TODO 待优化，提为一个 service 实现
+        disease.put("VulvaCarcinoma", diseaseAndSubDiseaseList.contains(1294));
+        disease.put("VulvaCarcinoma", diseaseAndSubDiseaseList.contains(1294));
 
 
         return disease;
