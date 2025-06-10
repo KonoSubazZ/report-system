@@ -3914,19 +3914,21 @@ public class PyReportServiceImpl implements PyReportService {
         }
         String templateName = rt.getTemplate_name();
 
+        // 各类型检出基因汇总
+        Map<String, Object> detectedGeneInfo = new HashMap<>();
+        detectedGeneInfo.put("target_drug_gene_list", targetDrugGeneSet);
+        detectedGeneInfo.put("fusion_gene_list", fusionGeneSet);
+        detectedGeneInfo.put("snp_gene_list", snpGeneSet);
+        detectedGeneInfo.put("cnv_gene_list", cnvGeneSet);
+        detectedGeneInfo.put("cr_gene_list", CRGeneSet);
+        detectedGeneInfo.put("immune_gene_list", immuneGeneSet);
+        detectedGeneInfo.put("all_gene_list", allGeneSet);
+        detectedGeneInfo.put("mmr_gene_list", mmrGeneSet);
+        detectedGeneInfo.put("mrd_gene_list", mrdGeneSet);
+
         // 增加配置，有模块化才使用新模块化逻辑
         if (templateConf != null) {
             // CUSTOM 报告一些基础数据
-
-            Map<String, Object> detectedGeneInfo = new HashMap<>();
-            detectedGeneInfo.put("target_drug_gene_list", targetDrugGeneSet);
-            detectedGeneInfo.put("fusion_gene_list", fusionGeneSet);
-            detectedGeneInfo.put("snp_gene_list", snpGeneSet);
-            detectedGeneInfo.put("cnv_gene_list", cnvGeneSet);
-            detectedGeneInfo.put("cr_gene_list", CRGeneSet);
-            detectedGeneInfo.put("immune_gene_list", immuneGeneSet);
-            detectedGeneInfo.put("all_gene_list", allGeneSet);
-            detectedGeneInfo.put("mmr_gene_list", mmrGeneSet);
 
             HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd,
                     allMutation, rt.getPanel(),
