@@ -56,18 +56,6 @@ public class NgsReportController {
                     5,                   // 最多保留 5 个文件
                     true                 // append 模式
             );
-
-            // 设置日志格式（可选）
-//            fileHandler.setFormatter(new Formatter() {
-//                @Override
-//                public String format(LogRecord record) {
-//                    return String.format("[%s] [%s] %s%n",
-//                            new Date(record.getMillis()),
-//                            record.getLevel().getName(), // 使用 getName() 获取字符串形式的级别名
-//                            record.getMessage()
-//                    );
-//                }
-//            });
             fileHandler.setFormatter(new Formatter() {
                 @Override
                 public String format(LogRecord record) {
