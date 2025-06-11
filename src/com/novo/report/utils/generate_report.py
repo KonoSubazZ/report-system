@@ -571,7 +571,7 @@ def mark_genes_in_red(gene_tables, detected_gene_info):
     for table in gene_tables:
         gene_type = table["type"]
         gene_list = table["genes"]
-        if gene_type not in detected_mapping:
+        if gene_type == "DNA" or gene_type == "RNA":
             show_red_note = False
 
         detected_gene_list = []
