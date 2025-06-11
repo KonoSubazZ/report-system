@@ -4580,7 +4580,7 @@ public class PyReportServiceImpl implements PyReportService {
         if (urinaryTemplates.contains(templateName)) {
             module = "通用实体瘤";
             // String urinaryProstateDisease = (String) cancerInfo.get("urinaryProstateDisease");
-            String targetCancer = (String) cancerInfo.get("target_cancer");
+            String targetCancer = (String) cancerInfo.get("targetCancer");
             module = "泌尿系统癌症".equals(targetCancer) ? "通用泌尿" : "通用实体瘤";
             /* if (StringUtils.isNotBlank(urinaryProstateDisease)) {
                 module = "通用泌尿";
