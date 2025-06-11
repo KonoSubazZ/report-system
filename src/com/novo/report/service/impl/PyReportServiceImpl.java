@@ -4552,7 +4552,7 @@ public class PyReportServiceImpl implements PyReportService {
 
             if (panelType.contains("RNA")) {
                 type1 = "RNA";
-            } else if (panelType.contains("HRD")) {
+            } else if (panelType.contains("HRD") || "tissue".equals(sampleType)) {
                 type1 = "HRD";
             }
 
