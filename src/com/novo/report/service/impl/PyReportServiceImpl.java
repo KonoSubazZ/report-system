@@ -4311,29 +4311,7 @@ public class PyReportServiceImpl implements PyReportService {
     private List<Map> handleImmunityGene(String module, String productName, List<Map> immunityMutGeneList) {
         List<ModCancer> geneList = moduleDao.getImmunityGeneList(module, productName);
         List<Map> immunityGeneList = new ArrayList<>();
-//        for (ModCancer modCancer : geneList) {
-//            Map<String, String> immunityMap = new HashMap<>();
-//
-//            String gene = modCancer.getDesc1();
-//            String geneDesc = modCancer.getDesc2();
-//            String oriVariant = "-";
-//            for (Map immunityMutGene : immunityMutGeneList) {
-//                String gene1 = immunityMutGene.get("gene").toString();
-//                String variant = immunityMutGene.get("variant").toString();
-//                if (!"/".equals(variant)) {
-//                    if (gene.equals(gene1) && oriVariant.equals("-")) {
-//                        oriVariant = variant;
-//                    } else if (gene.equals(gene1) && !oriVariant.equals("-")) {
-//                        oriVariant = oriVariant + "," + variant;
-//                    }
-//                }
-//            }
-//            immunityMap.put("gene", gene);
-//            immunityMap.put("geneDesc", geneDesc);
-//            immunityMap.put("oriVariant", oriVariant);
-//
-//            immunityGeneList.add(immunityMap);
-//        }
+
         // 将免疫突变基因列表转换为 Map，便于快速查找
         Map<String, List<String>> geneVariantMap = new HashMap<>();
         for (Map immunityMutGene : immunityMutGeneList) {
