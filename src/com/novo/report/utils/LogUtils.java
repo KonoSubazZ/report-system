@@ -18,7 +18,8 @@ public class LogUtils {
 
 	// 动态获取 Tomcat logs 目录路径
 	private static final String LOG_DIR = getTomcatLogsPath();
-	private static final String LOG_FILE_PATH = LOG_DIR + File.separator + LOG_FILE_NAME;
+//	private static final String LOG_FILE_PATH = LOG_DIR + File.separator + LOG_FILE_NAME;
+	private static final String LOG_FILE_PATH = "/data/soft/apache-tomcat-8.5.43/logs" + File.separator + LOG_FILE_NAME;
 
 	// 静态初始化 logger
 	private static final Logger reportErrorLogger = initLogger();
