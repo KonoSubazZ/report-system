@@ -4579,10 +4579,12 @@ public class PyReportServiceImpl implements PyReportService {
         String module = "";
         if (urinaryTemplates.contains(templateName)) {
             module = "通用实体瘤";
-            String urinaryProstateDisease = (String) cancerInfo.get("urinaryProstateDisease");
-            if (StringUtils.isNotBlank(urinaryProstateDisease)) {
+            // String urinaryProstateDisease = (String) cancerInfo.get("urinaryProstateDisease");
+            String targetCancer = (String) cancerInfo.get("target_cancer");
+            module = "泌尿系统癌症".equals(targetCancer) ? "通用泌尿" : "通用实体瘤";
+            /* if (StringUtils.isNotBlank(urinaryProstateDisease)) {
                 module = "通用泌尿";
-            }
+            }*/
         }
 
         List<String> referenceList = moduleService.getReferences(templateName, module);
