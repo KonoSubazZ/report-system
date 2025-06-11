@@ -4598,8 +4598,6 @@ public class PyReportServiceImpl implements PyReportService {
     private Map<String, Object> generateReferences(String templateName, Map<String, Object> cancerInfo, TemplateConf templateConf, List<String> urinaryTemplates) {
         Map<String, Object> res = new HashMap<>();
 
-        // TODO 暂时这样判断文献的模块，做张关联表,改为数据库保存泌尿模板，待移除
-        // List<String> templateList = Arrays.asList("泛实体瘤188基因报告", "泛实体瘤188基因检测报告", "实体瘤462基因检测报告", "NovoPM1.0报告", "NovoPM1.0检测报告", "NOVO泛癌种1238报告", "NOVO泛癌种1238检测报告", "WES报告", "全外显子组升级版（WES Plus）基因报告", "全外显子组升级版（WES Plus）基因检测报告", "NOVO泛癌种1238检测报告-佛山市第一人民医院", "泛实体瘤1238+1166基因检测报告-佛山市第一人民医院", "NOVO泛癌种1238检测报告-湖南省中医研", "泛实体瘤188基因检测报告-湖南省中医研");
         String module = "";
         if (urinaryTemplates.contains(templateName)) {
             module = "通用实体瘤";
