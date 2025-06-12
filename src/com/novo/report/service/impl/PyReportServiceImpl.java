@@ -4300,9 +4300,7 @@ public class PyReportServiceImpl implements PyReportService {
         targetedDrugDetection.put("TJmutation", TJmutation);
     }
 
-    private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer) {
-        return null;
-    }
+
 
     /**
      * 处理生成免疫正负超进展表格
@@ -4363,6 +4361,7 @@ public class PyReportServiceImpl implements PyReportService {
         String templateName = rt.getTemplate_name();
         Object type = rt.getSummaryOfRresults().get("type");
         String sampleType = (type instanceof String) ? (String) type : "blood";
+        String panelType = query.getPanel_type();
 
         // 检测结果小结
         if (templateConf != null && templateConf.getTest_result_summary()) {
@@ -4533,7 +4532,6 @@ public class PyReportServiceImpl implements PyReportService {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("qc");
 
-            String panelType = query.getPanel_type();
             String type1 = "DNA"; // 默认类型
 
             if (panelType.contains("RNA")) {
@@ -4553,6 +4551,9 @@ public class PyReportServiceImpl implements PyReportService {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setPanel(rt.getPanel());
             commonNote.setModule("sarcoma_typing");
+            String type2 = "WES+";
+            if (panelType.contains("RNA")) type2 = "DNA_RNA";
+
             List<String> sarcomaTypingNoteList = moduleService.getSarcomaTypingNote(commonNote);
 
             ModCancer cancer = new ModCancer();
@@ -4728,25 +4729,6 @@ public class PyReportServiceImpl implements PyReportService {
         res.put("conf", templateConf);
         res.put("detected_gene_info", detectedGeneInfo);
         res.put("panel_type", panelType);
-        return res;
-    }
-
-    @Deprecated
-    private HashMap<String, Object> generateImportantTargetedGeneSummary(String targetCancer, String templateName) {
-        HashMap<String, Object> res = new HashMap<>();
-        ModCancerNoteSummary modCancerNoteSummary = new ModCancerNoteSummary();
-        modCancerNoteSummary.setCancer(targetCancer);
-        modCancerNoteSummary.setTemplate_name(templateName);
-        modCancerNoteSummary.setModule("important_targeted_gene_summary");
-
-        ModCancerNoteSummary title = moduleService.getCancerTitle(modCancerNoteSummary);
-
-        List<String> noteList = new ArrayList<>();
-        ModCancerNoteSummary note = moduleService.getCancerNote(modCancerNoteSummary);
-        if (note != null) {
-            noteList.add(note.getNote());
-        }
-
         return res;
     }
 

@@ -31,17 +31,6 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public ModCancerNoteSummary getCancerNote(ModCancerNoteSummary modCancerNoteSummary) {
-
-        return moduleDao.getCancerNote(modCancerNoteSummary);
-    }
-
-    @Override
-    public ModCancerNoteSummary getCancerTitle(ModCancerNoteSummary modCancerNoteSummary) {
-        return moduleDao.getCancerTitle(modCancerNoteSummary);
-    }
-
-    @Override
     public List<String> getImportantTargetedGeneSummaryNote(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
