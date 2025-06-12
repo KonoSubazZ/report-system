@@ -4398,7 +4398,12 @@ public class PyReportServiceImpl implements PyReportService {
                 String[] noteParts = note.split("\\r?\\n"); // 支持 \r\n 和 \n 两种换行格式
 
                 // 增加关于 met 的特殊逻辑
-                int len = noteParts.length - (hasMET ? 1 : 2);
+                Set<String> SPECIAL_CANCERS = new HashSet<>(Arrays.asList("肺癌", "泛癌种"));
+                boolean isSpecialDisease = SPECIAL_CANCERS.contains(cancerInfo.get("targetCancer").toString());
+                int len = noteParts.length - 1;
+                if (isSpecialDisease && !hasMET) {
+                    len = len - 1;
+                }
                 for (int i = len; i >= 0; i--) {
                     importantTargetedGeneSummaryNoteList.add(0, noteParts[i]);
                 }
