@@ -43,7 +43,7 @@ public interface DiseaseService {
     boolean isNUTMidlineCarcinoma(Integer dId);
 
     /**
-     * 胃肠道间质瘤
+     * 胃肠道间质瘤v1
      */
     boolean isGastrointestinalStromalTumor(Integer dId);
 
