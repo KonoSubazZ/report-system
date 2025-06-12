@@ -4585,14 +4585,10 @@ public class PyReportServiceImpl implements PyReportService {
         Map<String, Object> res = new HashMap<>();
 
         String module = "";
+        // 包含泌尿模块的模板输出泌尿文献
         if (urinaryTemplates.contains(templateName)) {
-            module = "通用实体瘤";
-            // String urinaryProstateDisease = (String) cancerInfo.get("urinaryProstateDisease");
             String targetCancer = (String) cancerInfo.get("targetCancer");
             module = "泌尿系统癌症".equals(targetCancer) ? "通用泌尿" : "通用实体瘤";
-            /* if (StringUtils.isNotBlank(urinaryProstateDisease)) {
-                module = "通用泌尿";
-            }*/
         }
 
         List<String> referenceList = moduleService.getReferences(templateName, module);
