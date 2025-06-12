@@ -4,7 +4,6 @@ import com.google.gson.*;
 import com.novo.report.beans.*;
 import com.novo.report.common.CommonQueryVO;
 import com.novo.report.dao.two.*;
-import com.novo.report.mod.ModCancerNoteSummary;
 import com.novo.report.mod.ModCommonNote;
 import com.novo.report.mod.ModProductDesc;
 import com.novo.report.service.*;
@@ -3500,9 +3499,11 @@ public class PyReportServiceImpl implements PyReportService {
             target_cancer = "泛癌种";
         }
 
+        // 泌尿系统指南
         boolean isUrinaryCancer = diseaseService.isUrinarySystemCancer(diseaseId)
                 || diseaseService.isVulvaCarcinoma(diseaseId)
-                || diseaseService.isMaleReproductiveRrganCancer(diseaseId);
+                || diseaseService.isMaleReproductiveRrganCancer(diseaseId)
+                || diseaseService.isRenalCellCarcinoma(diseaseId);
         if (isUrinaryCancer) target_cancer = "泌尿系统癌症";
 
         rt.setImportantTargetedDiseaseName(target_cancer);
@@ -4301,7 +4302,6 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
 
-
     /**
      * 处理生成免疫正负超进展表格
      *
@@ -4551,8 +4551,14 @@ public class PyReportServiceImpl implements PyReportService {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setPanel(rt.getPanel());
             commonNote.setModule("sarcoma_typing");
-            String type2 = "WES+";
-            if (panelType.contains("RNA")) type2 = "DNA_RNA";
+            // 关于 WES+ DNA_RNA 不同展示
+            String type2 = "";
+            if ("DNA_RNA".equals(panelType)) {
+                type2 = "DNA_RNA";
+            } else if ("WES+".equals(panelType)) {
+                type2 = "WES+";
+            }
+            commonNote.setType(type2);
 
             List<String> sarcomaTypingNoteList = moduleService.getSarcomaTypingNote(commonNote);
 
