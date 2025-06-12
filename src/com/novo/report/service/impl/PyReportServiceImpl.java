@@ -3510,7 +3510,10 @@ public class PyReportServiceImpl implements PyReportService {
         // MOD 精准诊疗相关基因结果汇总
         List<Map> commonTargetedDrug1 = analysisReportDao.getCommonTargetedDrug2(target_cancer);
         // 根据产品基因过滤
-        List<Map> importantTargetedGeneFilter = commonTargetedDrug1.stream().filter(s -> geneSymbols.contains(s.get("gene").toString().split("\\\\r\\\\n")[0])).collect(Collectors.toList());
+        List<Map> importantTargetedGeneFilter = commonTargetedDrug1.stream()
+                .filter(s -> geneSymbols.contains(s.get("gene").toString().split("\r\n")[0]))
+                .collect(Collectors.toList());
+
         importantTargetedGene(importantTargetedGeneFilter, list, crCheckLineStrYF1280, readsFlag, true);
         // 实体瘤76基因报告-安为康-黄山人民肺癌23 ”删除FGFR3、IDH1、NTRK2/3，四个基因
         if ("实体瘤76基因报告-安为康-黄山人民肺癌23".equals(rt.getTemplate_name())) {
