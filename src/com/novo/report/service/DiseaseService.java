@@ -13,7 +13,7 @@ public interface DiseaseService {
     boolean isOvarianCancer(Integer dId);
 
     /**
-     * 前列腺癌
+     * 前列腺癌v1
      */
     boolean isProstateCancer(Integer dId);
 
@@ -23,7 +23,7 @@ public interface DiseaseService {
     boolean isFallopianTubeCancer(Integer dId);
 
     /**
-     * 甲状腺癌
+     * 甲状腺癌v1
      */
     boolean isThyroidCarcinoma(Integer dId);
 
@@ -33,12 +33,12 @@ public interface DiseaseService {
     boolean isBrainGlioma(Integer dId);
 
     /**
-     * 肾细胞癌
+     * 肾细胞癌v1
      */
     boolean isRenalCellCarcinoma(Integer dId);
 
     /**
-     * 中线癌
+     * 中线癌v1
      */
     boolean isNUTMidlineCarcinoma(Integer dId);
 
@@ -53,22 +53,22 @@ public interface DiseaseService {
     boolean isEndometrialCarcinoma(Integer dId);
 
     /**
-     * 外阴癌
+     * 外阴癌v1
      */
     boolean isVulvaCarcinoma(Integer dId);
 
     /**
-     * 男性生殖器官癌症
+     * 男性生殖器官癌症v1
      */
     boolean isMaleReproductiveRrganCancer(Integer dId);
 
     /**
-     * 泌尿系统癌症
+     * 泌尿系统癌症v1
      */
     boolean isUrinarySystemCancer(Integer dId);
 
     /**
-     * 肾癌
+     * 肾癌v1
      */
     boolean isKidneyCancer(Integer dId);
 }
