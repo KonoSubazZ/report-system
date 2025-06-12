@@ -23,7 +23,7 @@ public class DiseaseServiceImpl implements DiseaseService {
 
     @Override
     public boolean isProstateCancer(Integer dId) {
-        List<Integer> diseaseHierarchyIds = Arrays.asList(10283);
+        List<Integer> diseaseHierarchyIds = Arrays.asList(10283, 2992, 10286, 2526, 5634);
         return diseaseHierarchyIds.contains(dId);
     }
 
@@ -35,7 +35,7 @@ public class DiseaseServiceImpl implements DiseaseService {
 
     @Override
     public boolean isThyroidCarcinoma(Integer dId) {
-        List<Integer> diseaseHierarchyIds = Arrays.asList(3963);
+        List<Integer> diseaseHierarchyIds = Arrays.asList(1781, 3963, 3962, 3969, 3973);
         return diseaseHierarchyIds.contains(dId);
     }
 
@@ -85,5 +85,10 @@ public class DiseaseServiceImpl implements DiseaseService {
     public boolean isUrinarySystemCancer(Integer dId) {
         List<Integer> diseaseHierarchyIds = Arrays.asList(3996, 263, 734, 11054, 11819, 4007, 11812, 11817);
         return diseaseHierarchyIds.contains(dId);
+    }
+
+    @Override
+    public boolean isKidneyCancer(Integer dId) {
+        return false;
     }
 }
