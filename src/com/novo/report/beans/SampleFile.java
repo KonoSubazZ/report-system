@@ -117,6 +117,16 @@ public class SampleFile {
 	private String inspection_number;	//送检次数
 	private String receiv_ertele_phone;	//送检电话
 	private String customertype;	//客户类别
+	private String FAMILYFIRST;
+
+	public String getFAMILYFIRST() {
+		return FAMILYFIRST;
+	}
+
+	public void setFAMILYFIRST(String FAMILYFIRST) {
+		this.FAMILYFIRST = FAMILYFIRST;
+	}
+
 
 	public String getLaboratoryname() {
 		return laboratoryname;
