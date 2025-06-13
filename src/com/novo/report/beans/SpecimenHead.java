@@ -40,7 +40,16 @@ public class SpecimenHead {
 	private String genetype;  //检测基因
 	private String generesult;  //检测结果
 	private String birthplace;  //籍贯 出生地
-	private String familyfirst;  //家族史1
+
+	public String getFAMILYFIRST() {
+		return FAMILYFIRST;
+	}
+
+	public void setFAMILYFIRST(String FAMILYFIRST) {
+		this.FAMILYFIRST = FAMILYFIRST;
+	}
+
+	private String FAMILYFIRST;  //家族史1
 	private String familyfirst_cancertype;  //家族史1 肿瘤类型
 	private String familyfirst_confirmtime;  //家族史1 确认时间
 	private String familyfirst_age;  //家族史1 年龄
@@ -362,12 +371,7 @@ public class SpecimenHead {
 	public void setBirthplace(String birthplace) {
 		this.birthplace = birthplace;
 	}
-	public String getFamilyfirst() {
-		return familyfirst;
-	}
-	public void setFamilyfirst(String familyfirst) {
-		this.familyfirst = familyfirst;
-	}
+
 	public String getFamilyfirst_cancertype() {
 		return familyfirst_cancertype;
 	}

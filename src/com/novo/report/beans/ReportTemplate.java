@@ -6,6 +6,15 @@ import java.util.Map;
 import java.util.Set;
 
 public class ReportTemplate {
+    public SampleFile getSample() {
+        return sample;
+    }
+
+    public void setSample(SampleFile sample) {
+        this.sample = sample;
+    }
+
+    private SampleFile sample;
     private String client; // 委 托人
     private String contact; // 联 系人
     private String customer; // 送 检

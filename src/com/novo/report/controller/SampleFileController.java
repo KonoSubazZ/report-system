@@ -111,6 +111,7 @@ public class SampleFileController {
 							age="";
 						}
 					}
+					sf.setFAMILYFIRST(sh.getFAMILYFIRST());
 					sf.setEmailaddress(sh.getEmailaddress());
 					sf.setSaleremail(sh.getSaleremail());
 					sf.setSupportemail(sh.getSupportemail());

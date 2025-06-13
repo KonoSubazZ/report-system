@@ -1,6 +1,15 @@
 package com.novo.report.beans;
 
 public class SampleFile {
+	public String getFAMILYFIRST() {
+		return FAMILYFIRST;
+	}
+
+	public void setFAMILYFIRST(String FAMILYFIRST) {
+		this.FAMILYFIRST = FAMILYFIRST;
+	}
+
+	private String FAMILYFIRST;
 	private Integer sample_id;// 主鍵
 	private String person_id;
 	private String person_name;// PATIENTNAME 姓名

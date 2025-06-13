@@ -97,6 +97,7 @@ public class PyAnalysisReportTemplateUtil {
             data.put("thirdtreatment", StringUtils.isEmpty(rt.getThirdtreatment()) ? "-" : rt.getThirdtreatment());
             data.put("specimentype", StringUtils.isEmpty(rt.getSpecimentype()) ? "-" : rt.getSpecimentype());
         }
+        data.put("sample", rt.getSample());
         data.put("specimenquantity", rt.getSpecimenquantity());
         data.put("zeroDrugTipInfo", rt.getZeroDrugTipInfo());
         data.put("geneCount", rt.getGeneCount());
