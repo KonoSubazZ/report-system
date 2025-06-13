@@ -3512,7 +3512,7 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> commonTargetedDrug1 = analysisReportDao.getCommonTargetedDrug2(target_cancer);
         // 根据产品基因过滤
         List<Map> importantTargetedGeneFilter = commonTargetedDrug1.stream()
-                .filter(s -> geneSymbols.contains(s.get("gene").toString().split("\r\n")[0]))
+                .filter(s -> geneSymbols.contains(s.get("gene").toString().split("\\\\r\\\\n")[0]))
                 .collect(Collectors.toList());
 
         importantTargetedGene(importantTargetedGeneFilter, list, crCheckLineStrYF1280, readsFlag, true);
