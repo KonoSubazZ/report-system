@@ -561,7 +561,7 @@ public class SpecimenHead {
 				", genetype='" + genetype + '\'' +
 				", generesult='" + generesult + '\'' +
 				", birthplace='" + birthplace + '\'' +
-				", familyfirst='" + familyfirst + '\'' +
+				", familyfirst='" + FAMILYFIRST + '\'' +
 				", familyfirst_cancertype='" + familyfirst_cancertype + '\'' +
 				", familyfirst_confirmtime='" + familyfirst_confirmtime + '\'' +
 				", familyfirst_age='" + familyfirst_age + '\'' +
