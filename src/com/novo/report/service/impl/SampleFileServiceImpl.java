@@ -46,12 +46,6 @@ public class SampleFileServiceImpl implements SampleFileService {
 
     @Override
     public void addSampleFile(SampleFile sampleFile) {
-		/*String specimen_type = sampleFile.getSpecimen_type();
-		if(specimen_type!=null && specimen_type.contains("血") || "白细胞".equals(specimen_type) || "脑脊液".equals(specimen_type) || "骨髓".equals(specimen_type) || "胸腹水（上清）".equals(specimen_type)){
-			sampleFile.setSample_type("blood");
-		}else if(specimen_type!=null && specimen_type.contains("组织") || "石蜡卷片".equals(specimen_type) || "石蜡贴片".equals(specimen_type) || "贴片+卷片".equals(specimen_type) || "蜡块".equals(specimen_type) || "蜡块（对照）".equals(specimen_type) || "口腔拭子".equals(specimen_type) || "胸腹水".equals(specimen_type)){
-			sampleFile.setSample_type("tissue");
-		}*/
         sampleFileDao.insertSampleFile(sampleFile);
     }
 

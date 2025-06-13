@@ -25,7 +25,7 @@
 			run_id,I5,I7,test_product,ward,consultation,DNANucleic,RNANucleic,DNALibrary,RNALibrary,DNAPlaneData,
 			meanSequencingDepth,targetAreaCoverage,RNAPlaneData,ReadsNumber,review_doctor,test_number,carcinoma,clinicaldiagnosis,
 			sampleremark,firsttreatment,secondtreatment,thirdtreatment,specimenno,serial_number,registration_number,recordercode,
-			mailingaddress,sample_barcode,tnm_periodization,inspection_number,receiv_ertele_phone,customertype,laboratoryname)
+			mailingaddress,sample_barcode,tnm_periodization,inspection_number,receiv_ertele_phone,customertype,laboratoryname,FAMILYFIRST)
 			values(#{person_id},#{person_name},#{age},#{patient_phone},#{gender},#{birthday},
 			#{patient_id},#{barcode},#{subbarcode},#{hospital},#{received_date},
 			#{specimen_type},#{specimen_quantity},#{testing_program},
@@ -42,7 +42,7 @@
 			#{run_id},#{I5},#{I7},#{test_product},#{ward},#{consultation},#{DNANucleic},#{RNANucleic},#{DNALibrary},#{RNALibrary},#{DNAPlaneData},
 			#{meanSequencingDepth},#{targetAreaCoverage},#{RNAPlaneData},#{ReadsNumber},#{review_doctor},#{test_number},#{carcinoma},#{clinicaldiagnosis},
 			#{sampleremark},#{firsttreatment},#{secondtreatment},#{thirdtreatment},#{specimenno},#{serial_number},#{registration_number},#{recordercode},
-			#{mailingaddress},#{sample_barcode},#{tnm_periodization},#{inspection_number},#{receiv_ertele_phone},#{customertype},#{laboratoryname})
+			#{mailingaddress},#{sample_barcode},#{tnm_periodization},#{inspection_number},#{receiv_ertele_phone},#{customertype},#{laboratoryname},#{FAMILYFIRST})
 		</if>
 		<if test="count > 0">
 			update sample_file set barcode=#{barcode},person_id=#{person_id},person_name=#{person_name},age=#{age},

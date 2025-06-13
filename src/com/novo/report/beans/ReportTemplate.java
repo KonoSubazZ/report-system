@@ -3,6 +3,15 @@ package com.novo.report.beans;
 import java.util.*;
 
 public class ReportTemplate {
+    public SampleFile getSample() {
+        return sample;
+    }
+
+    public void setSample(SampleFile sample) {
+        this.sample = sample;
+    }
+
+    private SampleFile sample;
     private String client; // 委 托人
     private String contact; // 联 系人
     private String customer; // 送 检
@@ -1574,14 +1583,6 @@ public class ReportTemplate {
         this.template_name = template_name;
     }
 
-    public String getShort_name() {
-        return short_name;
-    }
-
-    public void setShort_name(String short_name) {
-        this.short_name = short_name;
-    }
-
     public String getAge() {
         return age;
     }
@@ -1639,10 +1640,6 @@ public class ReportTemplate {
     }
 
     public String getSpecimentestingpicture() {
-		/*if(specimentestingpicture!=null && !"".equals(specimentestingpicture)){
-			return specimentestingpicture.split(",")[1];
-		}else {
-		}*/
         return specimentestingpicture;
     }
 
@@ -1651,10 +1648,6 @@ public class ReportTemplate {
     }
 
     public String getControltestingpicture() {
-		/*if(controltestingpicture!=null && !"".equals(controltestingpicture)){
-			return controltestingpicture.split(",")[1];
-		}else{
-		}*/
         return controltestingpicture;
     }
 
@@ -1679,10 +1672,6 @@ public class ReportTemplate {
     }
 
     public String getTumorpuritypictureone() {
-		/*if(tumorpuritypictureone!=null && !"".equals(tumorpuritypictureone)){
-			return tumorpuritypictureone.split(",")[1];
-		}else{
-		}*/
         return tumorpuritypictureone;
     }
 
@@ -1691,10 +1680,6 @@ public class ReportTemplate {
     }
 
     public String getTumorpuritypicturetwo() {
-		/*if(tumorpuritypicturetwo!=null && !"".equals(tumorpuritypicturetwo)){
-			return tumorpuritypicturetwo.split(",")[1];
-		}else{
-		}*/
         return tumorpuritypicturetwo;
     }
 
