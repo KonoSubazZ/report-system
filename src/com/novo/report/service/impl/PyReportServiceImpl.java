@@ -456,6 +456,7 @@ public class PyReportServiceImpl implements PyReportService {
         // MOD 样本信息
         //获取样本信息
         SampleFile sf = sampleFileService.getSampleFileBySubbarcode(currentNgsAvailable.getSubbarcode());
+        rt.setSample(sf);
 
         // 设置样本类型
         rt.setType(sf.getSample_type());
