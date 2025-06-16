@@ -66,7 +66,8 @@ public class SampleFileController {
                 // newLims BARCODE为唯一ID
                 sh = newLimsSampleService.getNewLimsSampleByBarcode(subbarcode);
                 if (sh != null) {
-                    sh.setSubBarcode(sh.getBarcode());
+                    sf.setSubbarcode(sh.getBarcode());
+                    sf.setSpecimen_type(StringUtils.isEmpty(sh.getSampletype()) ? (StringUtils.isEmpty(sh.getShsampletype()) ? (StringUtils.isEmpty(sh.getSrsampletype()) ? sh.getSrsampletype() : sh.getSrsampletype().trim()) : sh.getShsampletype().trim()) : sh.getSampletype());
 
                     String specimen_type = sf.getSpecimen_type();
                     if (StringUtils.isNotEmpty(specimen_type) && specimen_type.contains("血") || "白细胞".equals(specimen_type) || "脑脊液".equals(specimen_type) || "骨髓".equals(specimen_type) || "胸腹水（上清）".equals(specimen_type)) {
@@ -100,7 +101,6 @@ public class SampleFileController {
                     sf.setPerson_name(sh.getPatientname());
                     sf.setGender("男".equals(sh.getSex()) || "女".equals(sh.getSex()) ? sh.getSex() : "");
                     sf.setBarcode(sh.getBarcode());
-                    sf.setSubbarcode(sh.getSubBarcode());
                     sf.setBirthday(StringUtils.isEmpty(sh.getBirthday()) ? "" : sh.getBirthday().substring(0, 10));
                     sf.setCustomer(sh.getCustomedesc());
                     if (StringUtils.isEmpty(sh.getClinicalremark())) {
@@ -116,7 +116,6 @@ public class SampleFileController {
                     }
 
                     sf.setReport_receiver(sh.getReportreceiver());
-                    sf.setSpecimen_type(StringUtils.isEmpty(sh.getSampletype()) ? (StringUtils.isEmpty(sh.getShsampletype()) ? (StringUtils.isEmpty(sh.getSrsampletype()) ? sh.getSrsampletype() : sh.getSrsampletype().trim()) : sh.getShsampletype().trim()) : sh.getSampletype());
                     String specimennum = sh.getSpecimennum();
                     String samplenum = sh.getSamplenum();
                     String unit = sh.getUnit();
