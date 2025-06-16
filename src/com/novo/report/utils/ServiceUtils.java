@@ -33,4 +33,12 @@ public class ServiceUtils {
         return str;
     }
 
+    public static Integer toInteger(Object obj) {
+        if (obj instanceof Number) {
+            return ((Number) obj).intValue();
+        }
+        return null;
+    }
+
+
 }

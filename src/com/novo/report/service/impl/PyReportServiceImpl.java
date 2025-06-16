@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.novo.report.utils.ServiceUtils.getAppellation;
+import static com.novo.report.utils.ServiceUtils.toInteger;
 
 @Service
 public class PyReportServiceImpl implements PyReportService {
@@ -967,7 +968,7 @@ public class PyReportServiceImpl implements PyReportService {
                     targetDrugTipLine.put("ExonicFunc2", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc);
 
                     // 同济特殊输出需求
-                    Integer mutId = (Integer) map.get("mapped_variant_id");
+                    Integer mutId = toInteger(map.get("mapped_variant_id"));
                     boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId);
                     targetDrugTipLine.put("ExonicFunc1", isMET14Skipping ? "14号外显子跳跃突变" : translateMutType(ExonicFunc));
                     targetDrugTipLine.put("mutFreq", mutFreq);
@@ -1343,7 +1344,8 @@ public class PyReportServiceImpl implements PyReportService {
                     unknownTipLine.put("ori_variant1", specialVariantDesc);
                     unknownTipLine.put("ExonicFunc2", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc);
                     // 同济特殊输出需求
-                    Integer mutId = (Integer) map.get("mapped_variant_id");
+                    // fix Long ==> Integer失败，有可能为Long Integer Null
+                    Integer mutId = toInteger(map.get("mapped_variant_id"));
                     boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId);
                     unknownTipLine.put("ExonicFunc1", isMET14Skipping ? "14号外显子跳跃突变" : translateMutType(ExonicFunc));
 
