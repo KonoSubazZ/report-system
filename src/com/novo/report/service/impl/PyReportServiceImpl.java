@@ -4596,7 +4596,10 @@ public class PyReportServiceImpl implements PyReportService {
         // 包含泌尿模块的模板输出泌尿文献
         if (urinaryTemplates.contains(templateName)) {
             String targetCancer = (String) cancerInfo.get("targetCancer");
-            module = "泌尿系统癌症".equals(targetCancer) ? "通用泌尿" : "通用实体瘤";
+            String commonModule = "通用实体瘤";
+            if (templateName.contains("550+596") || templateName.contains("1238+1166")) commonModule = "DR实体瘤";
+
+            module = "泌尿系统癌症".equals(targetCancer) ? "通用泌尿" : commonModule;
         }
 
         List<String> referenceList = moduleService.getReferences(templateName, module);
