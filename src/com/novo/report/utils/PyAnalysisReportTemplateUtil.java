@@ -303,6 +303,7 @@ public class PyAnalysisReportTemplateUtil {
         data.put("up", rt.getUp()); // 泌尿预后相关基因检测结果
         data.put("urinaryProstateDisease", rt.getUrinaryProstateDisease());
         data.put("cnvBe", rt.getCnvBe());
+        data.put("sample", rt.getSample());
         // 报告中关于癌种的判断
         data.put("disease", rt.getDisease());
         // 癌种id
