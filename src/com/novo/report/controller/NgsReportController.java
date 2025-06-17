@@ -43,6 +43,7 @@ public class NgsReportController {
 
     // 使用工具类获取 specialLogger
     private static final Logger specialLogger = LogUtils.getLogger("ReportErrorLogger");
+    private static final Logger pythonLogger = LogUtils.getLogger("ReportUploadPythonLogger");
 
     @Autowired
     private NgsReportService ngsReportService;
@@ -336,6 +337,8 @@ public class NgsReportController {
                                                 reportId,
                                                 index
                                         };
+                                        // 记录日志
+                                        pythonLogger.log(Level.INFO, Arrays.toString(cmds));
 
                                         Runtime.getRuntime().exec(cmds);
                                         try {
