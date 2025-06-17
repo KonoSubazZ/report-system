@@ -70,14 +70,21 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
 
         String clinical_significance_desc1 = "-";
         String clinical_significance_desc2 = "-";
-
+        StringBuilder short_report_desc = new StringBuilder("共检出" + HRRDetectedGeneCount + "个基因失活突变");
+        if (HRRDetectedGeneCount == 0) {
+            short_report_desc.append("。");
+        }else{
+            short_report_desc.append("，包括");
+        }
+        StringBuilder descBuilder = new StringBuilder();
         Map<String, String> HRRGeneDetectedInfo = new HashMap<>();
         for (Map<String, String> map : HRRGeneList) {
             String gene = map.get("gene");
             String variant = map.get("variant");
             HRRGeneDetectedInfo.put(gene, variant);
             if (!"-".equals(variant)) {
-
+                String formattedVariant = variant.replace(",", "、");
+                descBuilder.append(gene).append(" 突变").append(formattedVariant).append("；");
                 // 增加动态输出临床意义
                 if (coreHRRGenes.contains(gene)) {
                     clinical_significance_desc1 = map.get("clinical_significance_desc");
@@ -91,11 +98,16 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
                 HRRGeneList2.add(map);
             }
         }
+        if (HRRDetectedGeneCount > 0){
+            short_report_desc.append(descBuilder);
+            short_report_desc.append("可能与PARP抑制剂获益相关。");
+        }
         this.HRRDetectedGeneCount = HRRDetectedGeneCount;
 
         HRRGeneDetectedInfo.put("HRRDetectedGeneCount", String.valueOf(HRRDetectedGeneCount));
         HRRGeneDetectedInfo.put("clinical_significance_desc1", clinical_significance_desc1);
         HRRGeneDetectedInfo.put("clinical_significance_desc2", clinical_significance_desc2);
+        HRRGeneDetectedInfo.put("short_report_desc", String.valueOf(short_report_desc));
 
 
         HRRGeneInfo.put("HRRGeneList1", HRRGeneList1);
@@ -110,7 +122,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
     }
 
     @Override
-    public List<Map<String, String>> generateThyroidData(CommonQueryVO query ) {
+    public List<Map<String, String>> generateThyroidData(CommonQueryVO query) {
 
         List<Map<String, String>> SNVINDELGeneSiteList = geneAnalysisDao.getSNVINDELGeneSite(query);
         List<Map<String, String>> thyroidGeneList = geneAnalysisDao.getThyroid();
