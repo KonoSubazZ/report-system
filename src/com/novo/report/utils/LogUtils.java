@@ -37,6 +37,9 @@ public class LogUtils {
 		String logFilePath = LOG_DIR + File.separator + logFileName + ".log";
 
 		try {
+			// FileHandler fileHandler = new FileHandler(logFilePath, MAX_FILE_SIZE, MAX_BACKUP_INDEX, true);
+
+			// 修改日志文件不自动拆分
 			FileHandler fileHandler = new FileHandler(logFilePath, true);
 			fileHandler.setFormatter(new Formatter() {
 				@Override
