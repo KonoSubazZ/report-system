@@ -32,8 +32,8 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Formatter;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -318,10 +318,25 @@ public class NgsReportController {
                                 List<Object> ips = Arrays.asList(IpUtil.getLocalIp4Address().toArray());
                                 if (ips.contains(ServerConfig.getServerFormalIP())) {
                                     // 调取python脚本发送报告到小程序
+                                    String pythonScriptPath = "/home/cyc/report_url1.py";
+                                    String subbarcode = analysisReport.getSubbarcode();
+                                    String reportId = String.valueOf(analysisReport.getReport_id());
+
                                     for (int i = 0; i < fileList.length; i++) {
-//                                        String cmds = "python /home/cyc/report_url.py " + analysisReport.getSubbarcode() + " " + fileList[0];
-                                        String cmds = "python /home/cyc/report_url1.py " + analysisReport.getSubbarcode() + " " + fileList[i] + " " + analysisReport.getReport_id() + " " + i;
-                                        System.out.println(cmds);
+                                        // String cmds = "python /home/cyc/report_url1.py " + analysisReport.getSubbarcode() + " " + fileList[i] + " " + analysisReport.getReport_id() + " " + i;
+
+                                        String file = fileList[i];
+                                        String index = String.valueOf(i);
+
+                                        String[] cmds = new String[]{
+                                                "python",
+                                                pythonScriptPath,
+                                                subbarcode,
+                                                file,
+                                                reportId,
+                                                index
+                                        };
+
                                         Runtime.getRuntime().exec(cmds);
                                         try {
                                             TimeUnit.SECONDS.sleep(2); //小程序接收数据更新时出现死锁，添加2秒延迟
