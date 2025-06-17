@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -24,6 +25,22 @@ public class ModuleServiceImpl implements ModuleService {
     @Autowired
     private ModuleDao moduleDao;
 
+    /**
+     * 拆分 note 内容，支持真实换行符（\r\n, \n, \r）和字符串形式的 \r\n
+     *
+     * @param rawNote 原始 note 字符串
+     * @return 拆分后的 note 列表，自动去除空行和首尾空格
+     */
+    public static List<String> splitNote(String rawNote) {
+        if (rawNote == null || rawNote.trim().isEmpty()) {
+            return Collections.emptyList(); // 返回空列表
+        }
+
+        return Arrays.stream(rawNote.split("(\r\n|\r|\n|\\\\r\\\\n)"))
+                .map(String::trim)         // 去除每行前后空格
+                .filter(s -> !s.isEmpty()) // 去除空行
+                .collect(Collectors.toList());
+    }
     @Override
     public ModProductDesc getProductDesc(String templateName) {
 
@@ -35,8 +52,8 @@ public class ModuleServiceImpl implements ModuleService {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
         if (commonNote != null) {
-            String[] notes = commonNote.getNote().split("\r\n");
-            noteList.addAll(Arrays.asList(notes));
+            List<String> notes = splitNote(commonNote.getNote());
+            noteList.addAll(notes);
         }
         return noteList;
     }
@@ -46,8 +63,10 @@ public class ModuleServiceImpl implements ModuleService {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
         if (commonNote != null) {
-            String[] notes = commonNote.getNote().split("\r\n");
-            noteList.addAll(Arrays.asList(notes));
+            // String[] notes = commonNote.getNote().split("\r\n");
+            // noteList.addAll(Arrays.asList(notes));
+            List<String> notes = splitNote(commonNote.getNote());
+            noteList.addAll(notes);
         }
         return noteList;
     }
