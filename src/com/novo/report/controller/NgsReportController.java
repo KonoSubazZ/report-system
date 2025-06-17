@@ -42,7 +42,7 @@ import java.util.zip.ZipOutputStream;
 public class NgsReportController {
 
     // 使用工具类获取 specialLogger
-    private static final Logger specialLogger = LogUtils.getReportErrorLogger();
+    private static final Logger specialLogger = LogUtils.getLogger("ReportErrorLogger");
 
     @Autowired
     private NgsReportService ngsReportService;

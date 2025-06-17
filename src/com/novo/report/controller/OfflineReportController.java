@@ -356,13 +356,12 @@ public class OfflineReportController {
             if (sf.getEmailaddress().contains("cdyyjyjczx@163.com")) {
                 copyto = null;
             }
-            //主题
-            // String subject = "请查收诺禾致源的检测报告，姓名：" + sf.getPerson_name() + "-" + offlineReport.getSubbarcode() + ", 送检单位：" + sf.getCustomer();
 
             // 20250412取消送检单位
             String subject = "请查收诺禾致源的检测报告，姓名：" + sf.getPerson_name() + "-" + offlineReport.getSubbarcode();
             // 20250427 迪安输出备注
-            List<String> DIANcustomerList = Arrays.asList("杭州迪安医学检验中心有限公司",
+            List<String> DIANcustomerList = Arrays.asList(
+                    "杭州迪安医学检验中心有限公司",
                     "杭州艾迪康医学检验中心有限公司",
                     "重庆艾迪康医学检验实验室有限公司",
                     "青岛艾迪康医学检验实验室有限公司",
@@ -372,21 +371,7 @@ public class OfflineReportController {
             }
             //内容
             String content = "尊敬的客户：<br>您好！<br>请您查收附件的检测报告<br>祝好~";
-            //附件
-            /*String[] fileList = null;
-            if (offlineReport.getReport_filenameone() != null && offlineReport.getReport_filenametwo() != null) {
-                fileList = new String[2];
-                fileList[0] = offlineReport.getReport_file_path() + offlineReport.getReport_filenameone();
-                fileList[1] = offlineReport.getReport_file_path() + offlineReport.getReport_filenametwo();
-            } else if (offlineReport.getReport_filenameone() != null && offlineReport.getReport_filenametwo() == null) {
-                fileList = new String[1];
-                fileList[0] = offlineReport.getReport_file_path() + offlineReport.getReport_filenameone();
-            } else if (offlineReport.getReport_filenameone() == null && offlineReport.getReport_filenametwo() != null) {
-                fileList = new String[1];
-                fileList[0] = offlineReport.getReport_file_path() + offlineReport.getReport_filenametwo();
-            } else {
-                success = false;
-            }*/
+
             List<String> fileList = new ArrayList<>();
             if (offlineReport.getReport_filenameone() != null) {
                 fileList.add(offlineReport.getReport_file_path() + offlineReport.getReport_filenameone());
@@ -423,13 +408,28 @@ public class OfflineReportController {
                             List<Object> ips = Arrays.asList(IpUtil.getLocalIp4Address().toArray());
                             if (ips.contains(ServerConfig.getServerFormalIP())) {
                                 // 调取python脚本发送报告到小程序
+                                String pythonScriptPath = "/home/cyc/report_url1.py";
+                                String subbarcode = offlineReport.getSubbarcode();
+                                String reportId = String.valueOf(offlineReport.getReport_id());
                                 for (String file : finalFiles) {
-//                                    String cmds = "python /home/cyc/report_url.py " + offlineReport.getSubbarcode() + " " + file;
+
                                     int i = 0;
                                     if (file.contains("报告解读-")) {
                                         i = 1;
                                     }
-                                    String cmds = "python /home/cyc/report_url1.py " + offlineReport.getSubbarcode() + " " + file + " " + offlineReport.getReport_id() + " " + i;
+                                    // String cmds = "python /home/cyc/report_url1.py " + offlineReport.getSubbarcode() + " " + file + " " + offlineReport.getReport_id() + " " + i;
+                                    String index = String.valueOf(i);
+
+                                    // 构造命令数组
+                                    String[] cmds = new String[] {
+                                            "python",
+                                            pythonScriptPath,
+                                            subbarcode,
+                                            file,
+                                            reportId,
+                                            index
+                                    };
+
                                     System.out.println(cmds);
                                     Runtime.getRuntime().exec(cmds);
                                     try {

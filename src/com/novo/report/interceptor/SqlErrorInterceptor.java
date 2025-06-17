@@ -17,7 +17,7 @@ import org.apache.ibatis.plugin.*;
 public class SqlErrorInterceptor implements Interceptor {
 
     // 使用工具类获取 specialLogger
-    private static final Logger logger = LogUtils.getReportErrorLogger();
+    private static final Logger logger = LogUtils.getLogger("ReportErrorLogger");
 
 
     @Override
