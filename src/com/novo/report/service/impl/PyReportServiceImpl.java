@@ -31,6 +31,8 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -39,6 +41,9 @@ import static com.novo.report.utils.ServiceUtils.toInteger;
 
 @Service
 public class PyReportServiceImpl implements PyReportService {
+
+    private static final Logger qrcodeLogger = LogUtils.getLogger("ReportQrcodeLogger");
+
 
     @Autowired
     private AnalysisReportDao analysisReportDao;
@@ -7098,6 +7103,10 @@ public class PyReportServiceImpl implements PyReportService {
 
         HttpApiClientUtil.sendPost(ngsQrcodeUrl, jsonObject.toString(), null);
 
+        // 增加日志记录
+        String logMessage = String.format("subbarcode:%s, client:%s, product_name:%s, report_date:%s, qrcode:%s",
+                subbarcode, client, pageName, report_date, qrunicode);
+        qrcodeLogger.log(Level.INFO, logMessage);
         // Create QR code image
         String methodUrl = "http://qrcode.novogene.com/index.php/Api/Code/qrcode/uncodeid/";
         String qrCodeImagePath = CreateQRCode.createQRCode(methodUrl + qrunicode, logoPath);
