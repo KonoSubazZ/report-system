@@ -6,7 +6,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.novo.report.beans.ModCancer;
 import com.novo.report.dao.two.ModuleDao;
-import com.novo.report.mod.ModCancerNoteSummary;
 import com.novo.report.mod.ModCommonNote;
 import com.novo.report.mod.ModProductDesc;
 import com.novo.report.mod.ModReferences;
@@ -41,6 +40,7 @@ public class ModuleServiceImpl implements ModuleService {
                 .filter(s -> !s.isEmpty()) // 去除空行
                 .collect(Collectors.toList());
     }
+
     @Override
     public ModProductDesc getProductDesc(String templateName) {
 
@@ -73,12 +73,13 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public List<String> getReferences(String templateName, String module) {
-        ModReferences references = moduleDao.getReferences(templateName, module);
-        if (references != null) {
-            String[] referencesList = references.getReferences().split("\r\n");
-            return Arrays.asList(referencesList);
+        ModReferences modReferences = moduleDao.getReferences(templateName, module);
+        List<String> noteList = new ArrayList<>();
+        if (modReferences != null) {
+            List<String> notes = splitNote(modReferences.getReferences());
+            noteList.addAll(notes);
         }
-        return Collections.emptyList();
+        return noteList;
     }
 
     @Override
@@ -99,8 +100,10 @@ public class ModuleServiceImpl implements ModuleService {
     public List<String> getTMB3(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        noteList.addAll(Arrays.asList(notes));
+        if (commonNote != null) {
+            List<String> notes = splitNote(commonNote.getNote());
+            noteList.addAll(notes);
+        }
 
         return noteList;
     }
@@ -116,8 +119,10 @@ public class ModuleServiceImpl implements ModuleService {
     public List<String> getMSI2(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        noteList.addAll(Arrays.asList(notes));
+        if (commonNote != null) {
+            List<String> notes = splitNote(commonNote.getNote());
+            noteList.addAll(notes);
+        }
 
         return noteList;
     }
@@ -126,8 +131,10 @@ public class ModuleServiceImpl implements ModuleService {
     public List<String> getMSI3(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        noteList.addAll(Arrays.asList(notes));
+        if (commonNote != null) {
+            List<String> notes = splitNote(commonNote.getNote());
+            noteList.addAll(notes);
+        }
 
         return noteList;
     }
@@ -151,8 +158,10 @@ public class ModuleServiceImpl implements ModuleService {
     public List<String> getMMR3(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        noteList.addAll(Arrays.asList(notes));
+        if (commonNote != null) {
+            List<String> notes = splitNote(commonNote.getNote());
+            noteList.addAll(notes);
+        }
 
         return noteList;
     }
@@ -161,8 +170,10 @@ public class ModuleServiceImpl implements ModuleService {
     public List<String> getChemo1List(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        noteList.addAll(Arrays.asList(notes));
+        if (commonNote != null) {
+            List<String> notes = splitNote(commonNote.getNote());
+            noteList.addAll(notes);
+        }
 
         return noteList;
     }
@@ -171,8 +182,10 @@ public class ModuleServiceImpl implements ModuleService {
     public List<String> getChemo2List(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        noteList.addAll(Arrays.asList(notes));
+        if (commonNote != null) {
+            List<String> notes = splitNote(commonNote.getNote());
+            noteList.addAll(notes);
+        }
 
         return noteList;
     }
@@ -181,26 +194,27 @@ public class ModuleServiceImpl implements ModuleService {
     public List<String> getSomaticMutationTipNote(ModCommonNote modCommonNote, Boolean reads, Boolean complex, String panel) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        // 所有的提示，根据 reads complex 筛选删除最后一条数据
-        List<String> notesList = new ArrayList<>(Arrays.asList(notes));
-        if (!reads) {
-//            notesList.remove(9);
-            notesList.remove(notesList.size() - 3);
-            // notesList.set(notesList.size() - 1, notesList.get(notesList.size() - 1).replace("13.", "12."));
-        }
-        if (!complex) {
-            notesList.remove(notesList.size() - 1);
-        }
-        // 关于拷贝数的提示，根据模板名称删除
-        Map<String, Object> moduleConf = moduleDao.getModuleConf("SOMA_TIP_WITHOUT_CNV");
+        if (commonNote != null) {
+            List<String> notes = splitNote(commonNote.getNote());
+            if (!notes.isEmpty()) {
+                // 所有的提示，根据 reads complex 筛选删除最后一条数据
+                if (!reads) {
+                    notes.remove(notes.size() - 3);
+                }
+                if (!complex) {
+                    notes.remove(notes.size() - 1);
+                }
+                // 关于拷贝数的提示，根据模板名称删除
+                Map<String, Object> moduleConf = moduleDao.getModuleConf("SOMA_TIP_WITHOUT_CNV");
 
-        // List<String> templateList = MapUtils.getCommaSeparatedList(moduleConf, "templates");
-        List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
-        if (panelList.contains(panel)) {
-            notesList.remove(9);
+                // List<String> templateList = MapUtils.getCommaSeparatedList(moduleConf, "templates");
+                List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
+                if (panelList.contains(panel)) {
+                    notes.remove(9);
+                }
+                noteList.addAll(notes);
+            }
         }
-        noteList.addAll(notesList);
 
         return noteList;
     }
@@ -208,26 +222,27 @@ public class ModuleServiceImpl implements ModuleService {
     public List<String> getSomaticDrugTipNote(ModCommonNote modCommonNote, Boolean reads, Boolean complex, String panel) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        // 所有的提示，根据 reads complex 筛选删除最后一条数据
-        List<String> notesList = new ArrayList<>(Arrays.asList(notes));
-        if (!reads) {
-//            notesList.remove(9);
-            notesList.remove(notesList.size() - 3);
-            // notesList.set(notesList.size() - 1, notesList.get(notesList.size() - 1).replace("13.", "12."));
-        }
-        if (!complex) {
-            notesList.remove(notesList.size() - 1);
-        }
-        // 关于拷贝数的提示，根据模板名称删除
-        Map<String, Object> moduleConf = moduleDao.getModuleConf("SOMA_TIP_WITHOUT_CNV");
+        if (commonNote != null) {
+            List<String> notes = splitNote(commonNote.getNote());
+            if (!notes.isEmpty()) {
+                // 所有的提示，根据 reads complex 筛选删除最后一条数据
+                if (!reads) {
+                    notes.remove(notes.size() - 3);
+                }
+                if (!complex) {
+                    notes.remove(notes.size() - 1);
+                }
+                // 关于拷贝数的提示，根据模板名称删除
+                Map<String, Object> moduleConf = moduleDao.getModuleConf("SOMA_TIP_WITHOUT_CNV");
 
-        // List<String> templateList = MapUtils.getCommaSeparatedList(moduleConf, "templates");
-        List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
-        if (panelList.contains(panel)) {
-            notesList.remove(9);
+                // List<String> templateList = MapUtils.getCommaSeparatedList(moduleConf, "templates");
+                List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
+                if (panelList.contains(panel)) {
+                    notes.remove(9);
+                }
+                noteList.addAll(notes);
+            }
         }
-        noteList.addAll(notesList);
 
         return noteList;
     }
@@ -236,8 +251,10 @@ public class ModuleServiceImpl implements ModuleService {
     public List<String> getcrMutationTipNote(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        noteList.addAll(Arrays.asList(notes));
+        if (commonNote != null) {
+            List<String> notes = splitNote(commonNote.getNote());
+            noteList.addAll(notes);
+        }
         return noteList;
     }
 
@@ -245,8 +262,10 @@ public class ModuleServiceImpl implements ModuleService {
     public List<String> getcrDrugTipNote(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        noteList.addAll(Arrays.asList(notes));
+        if (commonNote != null) {
+            List<String> notes = splitNote(commonNote.getNote());
+            noteList.addAll(notes);
+        }
         return noteList;
     }
 
@@ -254,9 +273,10 @@ public class ModuleServiceImpl implements ModuleService {
     public List<String> getImmunityNote(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        noteList.addAll(Arrays.asList(notes));
-
+        if (commonNote != null) {
+            List<String> notes = splitNote(commonNote.getNote());
+            noteList.addAll(notes);
+        }
         return noteList;
     }
 
@@ -264,9 +284,10 @@ public class ModuleServiceImpl implements ModuleService {
     public List<String> getQcNote(ModCommonNote modCommonNote) {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
-        String[] notes = commonNote.getNote().split("\r\n");
-        noteList.addAll(Arrays.asList(notes));
-
+        if (commonNote != null) {
+            List<String> notes = splitNote(commonNote.getNote());
+            noteList.addAll(notes);
+        }
         return noteList;
     }
 
@@ -280,18 +301,18 @@ public class ModuleServiceImpl implements ModuleService {
         ModCommonNote commonNote = moduleDao.getCommonNote(modCommonNote);
         List<String> noteList = new ArrayList<>();
 
-        String[] notes = commonNote.getNote().split("\r\n");
-        List<String> notesList = new ArrayList<>(Arrays.asList(notes));
+        if (commonNote != null) {
+            List<String> notesList = splitNote(commonNote.getNote());
+            // wesplus 不输出reads, RNA panel 才会输出 reads.
+            String panel = modCommonNote.getPanel();
+            Map<String, Object> moduleConf = moduleDao.getModuleConf("SARCOMA_WITHOUT_READS");
+            List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
+            if (panelList.contains(panel)) {
+                notesList.remove(2);
+            }
 
-        // wesplus 不输出reads, RNA panel 才会输出 reads.
-        String panel = modCommonNote.getPanel();
-        Map<String, Object> moduleConf = moduleDao.getModuleConf("SARCOMA_WITHOUT_READS");
-        List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
-        if (panelList.contains(panel)) {
-            notesList.remove(2);
+            noteList.addAll(notesList);
         }
-
-        noteList.addAll(notesList);
 
         return noteList;
     }
@@ -329,9 +350,9 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public String getCRTumors(String gene, String gender, String clinicalSignificance) {
-         String DEFAULT_TUMORS = "-";
-         String MALE = "男";
-         String FEMALE = "女";
+        String DEFAULT_TUMORS = "-";
+        String MALE = "男";
+        String FEMALE = "女";
 
         // 未知临床意义
         if (clinicalSignificance.equals("3")) {
