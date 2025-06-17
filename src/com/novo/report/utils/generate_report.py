@@ -679,6 +679,17 @@ if __name__ == '__main__':
         # 初始化 【pyfn】 使用变量
         # 所有检出基因列表-标红
         GENE_LIST = info_json['allGeneSet'] if info_json['allGeneSet'] else []
+        # MRD产品特殊标红逻辑
+        product_name = info_json.get('product_name', '')
+        allGeneSet = info_json.get('allGeneSet', [])
+        if product_name == '血液双样本-实体瘤分子残留病灶MRD检测' or 'mrd' in info_json:
+            allGeneSet = []
+            mrd_tds = info_json.get('mrd', {}).get('mrdJson', {}).get('mrd_tds', [[]])
+            for td in mrd_tds:
+                if len(td) > 0 and td[-1] != '-':
+                    allGeneSet.append(td[0])
+        GENE_LIST = allGeneSet
+
         # 体系基因列表-标红
         BodyGene_LIST = info_json['bodyGeneSet'] if info_json['bodyGeneSet'] else []
         # 胚系（所有）基因列表-标红
