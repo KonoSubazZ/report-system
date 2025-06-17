@@ -37,7 +37,7 @@ public class LogUtils {
 		String logFilePath = LOG_DIR + File.separator + logFileName + ".log";
 
 		try {
-			FileHandler fileHandler = new FileHandler(logFilePath, MAX_FILE_SIZE, MAX_BACKUP_INDEX, true);
+			FileHandler fileHandler = new FileHandler(logFilePath, true);
 			fileHandler.setFormatter(new Formatter() {
 				@Override
 				public String format(LogRecord record) {
