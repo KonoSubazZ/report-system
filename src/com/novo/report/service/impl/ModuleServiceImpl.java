@@ -36,7 +36,7 @@ public class ModuleServiceImpl implements ModuleService {
         }
 
         return Arrays.stream(rawNote.split("(\r\n|\r|\n|\\\\r\\\\n)"))
-                .map(String::trim)         // 去除每行前后空格
+                // .map(String::trim)         // 去除每行前后空格
                 .filter(s -> !s.isEmpty()) // 去除空行
                 .collect(Collectors.toList());
     }
