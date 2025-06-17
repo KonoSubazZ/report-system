@@ -33,6 +33,19 @@ public class LogUtils {
 	 */
 	private static Logger createLogger(String loggerName) {
 		Logger logger = Logger.getLogger(loggerName);
+
+
+		// 移除旧的 Handler，避免重复写入和 .1 .lck 文件
+		Handler[] existingHandlers = logger.getHandlers();
+		for (Handler handler : existingHandlers) {
+			logger.removeHandler(handler);
+			try {
+				handler.close();  // 关闭旧 Handler 的资源
+			} catch (Exception e) {
+				System.err.println("Failed to close old handler: " + e.getMessage());
+			}
+		}
+
 		String logFileName = loggerName.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase();
 		String logFilePath = LOG_DIR + File.separator + logFileName + ".log";
 
