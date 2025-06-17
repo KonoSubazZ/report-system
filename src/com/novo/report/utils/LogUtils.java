@@ -33,7 +33,7 @@ public class LogUtils {
 	 */
 	private static Logger createLogger(String loggerName) {
 		Logger logger = Logger.getLogger(loggerName);
-		String logFileName = loggerName.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase() + ".log";
+		String logFileName = loggerName.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase();
 		String logFilePath = LOG_DIR + File.separator + logFileName + ".log";
 
 		try {
