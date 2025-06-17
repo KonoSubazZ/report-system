@@ -26,6 +26,8 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("offlineReport")
@@ -37,6 +39,8 @@ public class OfflineReportController {
     private SampleFileService sampleFileService;
     @Autowired
     private AnalysisReportDao analysisReportDao;
+
+    private static final Logger pythonLogger = LogUtils.getLogger("ReportUploadPythonLogger");
 
     // 跳转到list页面
     @RequestMapping("offlineReportList")
@@ -430,7 +434,9 @@ public class OfflineReportController {
                                             index
                                     };
 
-                                    System.out.println(cmds);
+                                    // 增加离线发送报告日志记录
+                                    pythonLogger.log(Level.INFO, Arrays.toString(cmds));
+
                                     Runtime.getRuntime().exec(cmds);
                                     try {
                                         TimeUnit.SECONDS.sleep(2); //小程序接收数据更新时出现死锁，添加2秒延迟
