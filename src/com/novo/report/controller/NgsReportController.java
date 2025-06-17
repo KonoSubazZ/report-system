@@ -339,7 +339,7 @@ public class NgsReportController {
                                         };
                                         // 记录日志
                                         pythonLogger.log(Level.INFO, Arrays.toString(cmds));
-
+                                        System.out.println(Arrays.toString(cmds));
                                         Runtime.getRuntime().exec(cmds);
                                         try {
                                             TimeUnit.SECONDS.sleep(2); //小程序接收数据更新时出现死锁，添加2秒延迟

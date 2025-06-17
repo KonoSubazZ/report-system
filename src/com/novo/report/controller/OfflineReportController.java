@@ -436,7 +436,7 @@ public class OfflineReportController {
 
                                     // 增加离线发送报告日志记录
                                     pythonLogger.log(Level.INFO, Arrays.toString(cmds));
-
+                                    System.out.println(Arrays.toString(cmds));
                                     Runtime.getRuntime().exec(cmds);
                                     try {
                                         TimeUnit.SECONDS.sleep(2); //小程序接收数据更新时出现死锁，添加2秒延迟
