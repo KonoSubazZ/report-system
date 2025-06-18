@@ -11,6 +11,7 @@ import com.novo.report.utils.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -43,6 +44,7 @@ import static com.novo.report.utils.ServiceUtils.toInteger;
 public class PyReportServiceImpl implements PyReportService {
 
     private static final Logger qrcodeLogger = LogUtils.getLogger("ReportQrcodeLogger");
+    public static final org.slf4j.Logger QRCODE_LOGGER = LoggerFactory.getLogger("qrcode");
 
 
     @Autowired
@@ -7107,6 +7109,7 @@ public class PyReportServiceImpl implements PyReportService {
         String logMessage = String.format("subbarcode:%s, client:%s, product_name:%s, report_date:%s, qrcode:%s",
                 subbarcode, client, pageName, report_date, qrunicode);
         qrcodeLogger.log(Level.INFO, logMessage);
+        // QRCODE_LOGGER.info(logMessage);
         // Create QR code image
         String methodUrl = "http://qrcode.novogene.com/index.php/Api/Code/qrcode/uncodeid/";
         String qrCodeImagePath = CreateQRCode.createQRCode(methodUrl + qrunicode, logoPath);
