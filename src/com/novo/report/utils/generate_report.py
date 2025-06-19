@@ -480,6 +480,7 @@ def markInRed(value):
     return value
 
 
+# @Deprecated 自动更新目录页码，没起作用，下版本待移除
 def set_updatefields_true(docx_path):
     """ Opens the docx and adds <w:updateFields w:val="true"/> to
        (docx_path)/word/settings.xml to enforce update of TOC (and
@@ -791,7 +792,7 @@ if __name__ == '__main__':
         # 渲染模板
         tpl.render(info_json, jinja_env, autoescape=True)
         tpl.save(output_path)
-        set_updatefields_true(output_path)
+        # set_updatefields_true(output_path)
 
         end_time = time.time()
         elapsed_time = end_time - start_time
