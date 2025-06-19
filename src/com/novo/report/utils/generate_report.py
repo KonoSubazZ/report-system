@@ -479,7 +479,6 @@ def markInRed(value):
         value = MyRichText(value, color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size='21')
     return value
 
-
 # @Deprecated 自动更新目录页码，没起作用，下版本待移除
 def set_updatefields_true(docx_path):
     """ Opens the docx and adds <w:updateFields w:val="true"/> to
@@ -557,6 +556,26 @@ def load_template_safely(tpl_path):
     shutil.copy2(tpl_path, tmp_tpl_file.name)
     tpl = DocxTemplate(tmp_tpl_file.name)
     return tpl, tmp_tpl_file.name
+
+
+def load_template_safelyV1(tpl_path):
+    """
+    安全地以 BytesIO 方式加载 docx 模板，防止并发时状态污染。
+
+    :param tpl_path: 模板文件路径
+    :return: 模板的 BytesIO 内存流副本
+    :raises FileNotFoundError: 模板文件不存在
+    :raises RuntimeError: 其他加载失败
+    """
+    if not os.path.isfile(tpl_path):
+        raise FileNotFoundError(f"模板文件不存在: {tpl_path}")
+
+    try:
+        with open(tpl_path, "rb") as f:
+            tpl_bytes = f.read()
+        return BytesIO(tpl_bytes)
+    except Exception as e:
+        raise RuntimeError(f"加载模板失败: {e}")
 
 
 def safe_get(d, key, default=None):
@@ -679,7 +698,8 @@ if __name__ == '__main__':
             print(f"[INFO] 未启用模板替换逻辑，直接使用输入路径模板: {tpl_path}")
 
         # 加载模板
-        tpl = DocxTemplate(tpl_path)
+        # tpl = DocxTemplate(tpl_path)
+        tpl = DocxTemplate(load_template_safelyV1(tpl_path))
 
         # 加载输出文件
         f = open(sys.argv[2], encoding='utf-8')
@@ -792,6 +812,7 @@ if __name__ == '__main__':
         # 渲染模板
         tpl.render(info_json, jinja_env, autoescape=True)
         tpl.save(output_path)
+        # 注释更新页码，未生效
         # set_updatefields_true(output_path)
 
         end_time = time.time()
