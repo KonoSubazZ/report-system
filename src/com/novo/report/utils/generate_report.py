@@ -531,14 +531,22 @@ def load_template_config(config_path="report_config.json"):
 def determine_template_file(template_name, config):
     single_common = config["common_templates"]["single_sample"]
     double_common = config["common_templates"]["double_sample"]
+    single_common_nostamp = config["common_templates"]["single_sample_nostamp"]
+    double_common_nostamp = config["common_templates"]["double_sample_nostamp"]
 
     single_list = set(config["advanced_templates"]["single_sample"])
     double_list = set(config["advanced_templates"]["double_sample"])
+    single_list_nostamp = set(config["advanced_templates"]["single_sample_nostamp"])
+    double_list_nostamp = set(config["advanced_templates"]["double_sample_nostamp"])
 
     if template_name in double_list:
         return double_common
     elif template_name in single_list:
         return single_common
+    elif template_name in single_list_nostamp:
+        return single_common_nostamp
+    elif template_name in double_list_nostamp:
+        return double_common_nostamp
     else:
         return f"{template_name}.docx"
 
