@@ -73,7 +73,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
         StringBuilder short_report_desc = new StringBuilder("共检出" + HRRDetectedGeneCount + "个基因失活突变");
         if (HRRDetectedGeneCount == 0) {
             short_report_desc.append("。");
-        }else{
+        } else {
             short_report_desc.append("，包括");
         }
         StringBuilder descBuilder = new StringBuilder();
@@ -98,7 +98,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
                 HRRGeneList2.add(map);
             }
         }
-        if (HRRDetectedGeneCount > 0){
+        if (HRRDetectedGeneCount > 0) {
             short_report_desc.append(descBuilder);
             short_report_desc.append("可能与PARP抑制剂获益相关。");
         }
@@ -132,7 +132,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
             String gene = map.get("gene");
             String variant = map.get("variant");
             String oriVariant = map.get("ori_variant");
-            String mutFreq = map.get("mut_freq");
+            String mutFreq = map.get("mut_freq") + "%";
 
             Map<String, String> matchedRecord = null;
 
