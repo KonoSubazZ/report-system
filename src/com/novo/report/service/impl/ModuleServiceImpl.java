@@ -303,14 +303,6 @@ public class ModuleServiceImpl implements ModuleService {
 
         if (commonNote != null) {
             List<String> notesList = splitNote(commonNote.getNote());
-            // wesplus 不输出reads, RNA panel 才会输出 reads.
-            String panel = modCommonNote.getPanel();
-            Map<String, Object> moduleConf = moduleDao.getModuleConf("SARCOMA_WITHOUT_READS");
-            List<String> panelList = MapUtils.getCommaSeparatedList(moduleConf, "panels");
-            if (panelList.contains(panel)) {
-                notesList.remove(2);
-            }
-
             noteList.addAll(notesList);
         }
 
