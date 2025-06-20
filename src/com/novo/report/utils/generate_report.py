@@ -255,10 +255,11 @@ def mystyleSong2(value, bold, highlight=False):
 
 def myimage(value):
     imgdata = base64.b64decode(value)
-    file = open('a.png', 'wb')
-    file.write(imgdata)
-    file.close()
-    myimage = InlineImage(tpl, 'a.png', width=Pt(283.5), height=Pt(225))
+    # file = open('a.png', 'wb')
+    # file.write(imgdata)
+    # file.close()
+    image_stream = BytesIO(imgdata)
+    myimage = InlineImage(tpl, image_stream, width=Pt(283.5), height=Pt(225))
     return myimage
 
 
@@ -271,10 +272,11 @@ def pdimage(value, width, height):
 
 def currencyimage(value, width, height):
     imgdata = base64.b64decode(value)
-    file = open('aa.png', 'wb')
-    file.write(imgdata)
-    file.close()
-    currencyimage = InlineImage(tpl, 'aa.png', width=Pt(width), height=Pt(height))
+    # file = open('aa.png', 'wb')
+    # file.write(imgdata)
+    # file.close()
+    image_stream = BytesIO(imgdata)
+    currencyimage = InlineImage(tpl, image_stream, width=Pt(width), height=Pt(height))
     return currencyimage
 
 
