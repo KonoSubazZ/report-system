@@ -70,7 +70,7 @@ public class SampleFileController {
                     sf.setSpecimen_type(StringUtils.isEmpty(sh.getSampletype()) ? (StringUtils.isEmpty(sh.getShsampletype()) ? (StringUtils.isEmpty(sh.getSrsampletype()) ? sh.getSrsampletype() : sh.getSrsampletype().trim()) : sh.getShsampletype().trim()) : sh.getSampletype());
 
                     String specimen_type = sf.getSpecimen_type();
-                    if (StringUtils.isNotEmpty(specimen_type) && specimen_type.contains("血") || "白细胞".equals(specimen_type) || "脑脊液".equals(specimen_type) || "骨髓".equals(specimen_type) || "胸腹水（上清）".equals(specimen_type)) {
+                    if (StringUtils.isNotEmpty(specimen_type) && specimen_type.contains("血") || "白细胞".equals(specimen_type) || "脑脊液".equals(specimen_type) || "骨髓".equals(specimen_type) || "胸腹水(上清)".equals(specimen_type)) {
                         sf.setSample_type("blood");
                     } else if (StringUtils.isNotEmpty(specimen_type) && specimen_type.contains("组织") || "石蜡卷片".equals(specimen_type) || "石蜡贴片".equals(specimen_type) || "贴片+卷片".equals(specimen_type) || "蜡块".equals(specimen_type) || "蜡块（对照）".equals(specimen_type) || "口腔拭子".equals(specimen_type) || "胸腹水".equals(specimen_type)) {
                         sf.setSample_type("tissue");
