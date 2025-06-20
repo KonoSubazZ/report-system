@@ -1427,6 +1427,7 @@ public class ReportCrServiceImpl implements ReportCrService {
         return result;
     }
 
+    // 处理药物研究信息、证据
     public Map<String, List> PotentialInformation(List<Integer> mutationIdList, List<Integer> diseaseIdList, Integer lang, String mutation_type, ReportVarDrug reportVarDrug) {
         List<Map> drugList = new ArrayList<Map>();
         if (reportVarDrug != null) {
@@ -1464,7 +1465,8 @@ public class ReportCrServiceImpl implements ReportCrService {
                                 if (split.startsWith(drugAndDiseaseName)) {
                                     String s = drugAndDiseaseName + "：";
                                     String replaceFirst = split.replace(s, "");
-                                    anno += replaceFirst + "\n";
+                                    // anno += replaceFirst + "\n";
+                                    anno += replaceFirst;
                                 }
                             }
                             if (!anno.equals("")) {
@@ -1490,7 +1492,8 @@ public class ReportCrServiceImpl implements ReportCrService {
                                 if (split.startsWith(drugAndDiseaseName, 8)) {
                                     String s = "(" + anno_disease_name + ")";
                                     String replaceFirst = split.replace(s, "");
-                                    anno += replaceFirst + "\n";
+                                    // anno += replaceFirst + "\n";
+                                    anno += replaceFirst;
                                 }
                             }
                             if (!anno.equals("")) {
@@ -1509,7 +1512,8 @@ public class ReportCrServiceImpl implements ReportCrService {
                                     if (split.startsWith(drugAndDiseaseName)) {
                                         String s = drugAndDiseaseName + "：";
                                         String replaceFirst = split.replace(s, "");
-                                        anno += replaceFirst + "\n";
+                                        // anno += replaceFirst + "\n";
+                                        anno += replaceFirst;
                                     }
                                 }
                                 if (!anno.equals("")) {
