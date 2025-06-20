@@ -5180,6 +5180,7 @@ public class PyReportServiceImpl implements PyReportService {
             String evidence_phase = map2.get("evidence_phase") == null ? "" : map2.get("evidence_phase").toString();
             map.put("evidence_phase", evidence_phase);
 
+            // TODO 获取是否批准，作用在药物 + *，待优化
             // 获取是否获批药物
             Integer approvedDrugNum = reportUnknownVarDao.getApprovedDrugNum(drugName, 1);
             // cfda 是否获批 0 未获批 1 获批
