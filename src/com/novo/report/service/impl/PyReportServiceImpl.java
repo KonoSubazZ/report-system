@@ -6241,10 +6241,12 @@ public class PyReportServiceImpl implements PyReportService {
                     geneClassification.put("gene" + c, "");
                 }
             }
-        } else {
-            String genesJson = moduleService.getConfGenes(panel, geneSymbols);
-            geneClassification.put("conf_genes", formatGenes(genesJson));
         }
+
+        // 默认都会输出
+        String genesJson = moduleService.getConfGenes(panel, geneSymbols);
+        geneClassification.put("conf_genes", formatGenes(genesJson));
+
 
         return geneClassification;
     }
