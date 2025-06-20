@@ -1024,10 +1024,12 @@ public class PyReportServiceImpl implements PyReportService {
                     drugNameList.addAll(DrugBStr);
                     drugNameList.addAll(DrugCStr);
                     drugNameList.addAll(DrugDStr);
-                    for (Map map1 : drugNameList) {
-                        map1.put("nameLevel", StringUtils.remove(map1.get("name").toString(), '#'));
 
-                    }
+                    // TODO 已在通用方法增加 nameLevel 字段，待移除
+//                    for (Map map1 : drugNameList) {
+//                        map1.put("nameLevel", StringUtils.remove(map1.get("name").toString(), '#'));
+//
+//                    }
                     targetDrugTipLine.put("drugNameList", drugNameList);
                     //合并耐药ABCD级药物
                     List<Map> ResistantDrug = new ArrayList<Map>();
@@ -1035,10 +1037,12 @@ public class PyReportServiceImpl implements PyReportService {
                     ResistantDrug.addAll(ResistantBDrug);
                     ResistantDrug.addAll(ResistantCDrug);
                     ResistantDrug.addAll(ResistantDDrug);
-                    for (Map map1 : ResistantDrug) {
-                        map1.put("nameLevel", StringUtils.remove(map1.get("name").toString(), '#'));
 
-                    }
+                    // TODO 已在通用方法增加 nameLevel 字段，待移除
+//                    for (Map map1 : ResistantDrug) {
+//                        map1.put("nameLevel", StringUtils.remove(map1.get("name").toString(), '#'));
+//
+//                    }
                     targetDrugTipLine.put("ResistantDrug", ResistantDrug);
                     // 个性化模板 获益C级输出（合并C/D且去掉临床前研究）
                     List<Map> DrugCStr1 = new ArrayList<Map>();
@@ -5186,6 +5190,10 @@ public class PyReportServiceImpl implements PyReportService {
             String approval_desc = map2.get("approval_desc") == null ? "" : map2.get("approval_desc").toString();
             String other_test_required = map2.get("other_test_required") == null ? "" : map2.get("other_test_required").toString();
             if (DrugType.equals(approve_range)) {
+                String nameLevel = drug_name.replace("#", "");
+                map.put("nameLevel", nameLevel);
+                // 增加通用报告展示字段便于统一展示
+                map.put("name_level", nameLevel + translateLevel2Grade(approve_range));
 
                 // 20250313 A级药物增加获批机构
                 if (approve_range.equals("1") && "获批上市".equals(evidence_phase)) {
@@ -7200,6 +7208,23 @@ public class PyReportServiceImpl implements PyReportService {
                 return "微卫星低度不稳定型（MSI-L）";
             default:
                 return msiStatus; // 保留原始值
+        }
+    }
+
+    private String translateLevel2Grade(String level) {
+        String levelStr = String.valueOf(level);
+        switch (levelStr) {
+            case "1":
+            case "5":
+                return "（A级）";
+            case "2":
+                return "（B级）";
+            case "3":
+                return "（C级）";
+            case "4":
+                return "（D级）";
+            default:
+                return levelStr; // 返回原始值
         }
     }
 
