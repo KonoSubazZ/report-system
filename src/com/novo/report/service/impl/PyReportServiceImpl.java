@@ -6113,98 +6113,13 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
     /**
-     * 原始实现版本，按字母分类基因信息。
-     * 【注意】该方法为旧版本，已被 getGeneClassificationV2 取代，暂时保留以便回退。
+     * 检出基因列表
+     * @param geneSymbols
+     * @param geneClassification
+     * @param conf
+     * @param panel
+     * @return
      */
-    @Deprecated
-    private Map<String, Object> getGeneClassificationOld(List<String> geneSymbols, Map<String, Object> geneClassification, TemplateConf conf) {
-        String genes = "", geneA = "", geneB = "", geneC = "", geneD = "", geneE = "", geneF = "", geneG = "", geneH = "", geneI = "", geneJ = "", geneK = "", geneL = "", geneM = "", geneN = "", geneO = "", geneP = "", geneQ = "", geneR = "", geneS = "", geneT = "", geneU = "", geneV = "", geneW = "", geneX = "", geneY = "", geneZ = "";
-        for (String geneSymbol : geneSymbols) {
-            genes = genes + geneSymbol + ",";
-            if (geneSymbol.startsWith("A")) {
-                geneA = geneA + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("B")) {
-                geneB = geneB + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("C")) {
-                geneC = geneC + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("D")) {
-                geneD = geneD + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("E")) {
-                geneE = geneE + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("F")) {
-                geneF = geneF + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("G")) {
-                geneG = geneG + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("H")) {
-                geneH = geneH + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("I")) {
-                geneI = geneI + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("J")) {
-                geneJ = geneJ + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("K")) {
-                geneK = geneK + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("L")) {
-                geneL = geneL + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("M")) {
-                geneM = geneM + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("N")) {
-                geneN = geneN + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("O")) {
-                geneO = geneO + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("P")) {
-                geneP = geneP + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("Q")) {
-                geneQ = geneQ + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("R")) {
-                geneR = geneR + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("S")) {
-                geneS = geneS + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("T")) {
-                geneT = geneT + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("U")) {
-                geneU = geneU + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("V")) {
-                geneV = geneV + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("W")) {
-                geneW = geneW + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("X")) {
-                geneX = geneX + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("Y")) {
-                geneY = geneY + geneSymbol + ",";
-            } else if (geneSymbol.startsWith("Z")) {
-                geneZ = geneZ + geneSymbol + ",";
-            }
-        }
-        geneClassification.put("genes", "".equals(genes) ? "" : genes.substring(0, genes.length() - 1));
-        geneClassification.put("geneA", "".equals(geneA) ? "" : geneA.substring(0, geneA.length() - 1));
-        geneClassification.put("geneB", "".equals(geneB) ? "" : geneB.substring(0, geneB.length() - 1));
-        geneClassification.put("geneC", "".equals(geneC) ? "" : geneC.substring(0, geneC.length() - 1));
-        geneClassification.put("geneD", "".equals(geneD) ? "" : geneD.substring(0, geneD.length() - 1));
-        geneClassification.put("geneE", "".equals(geneE) ? "" : geneE.substring(0, geneE.length() - 1));
-        geneClassification.put("geneF", "".equals(geneF) ? "" : geneF.substring(0, geneF.length() - 1));
-        geneClassification.put("geneG", "".equals(geneG) ? "" : geneG.substring(0, geneG.length() - 1));
-        geneClassification.put("geneH", "".equals(geneH) ? "" : geneH.substring(0, geneH.length() - 1));
-        geneClassification.put("geneI", "".equals(geneI) ? "" : geneI.substring(0, geneI.length() - 1));
-        geneClassification.put("geneJ", "".equals(geneJ) ? "" : geneJ.substring(0, geneJ.length() - 1));
-        geneClassification.put("geneK", "".equals(geneK) ? "" : geneK.substring(0, geneK.length() - 1));
-        geneClassification.put("geneL", "".equals(geneL) ? "" : geneL.substring(0, geneL.length() - 1));
-        geneClassification.put("geneM", "".equals(geneM) ? "" : geneM.substring(0, geneM.length() - 1));
-        geneClassification.put("geneN", "".equals(geneN) ? "" : geneN.substring(0, geneN.length() - 1));
-        geneClassification.put("geneO", "".equals(geneO) ? "" : geneO.substring(0, geneO.length() - 1));
-        geneClassification.put("geneP", "".equals(geneP) ? "" : geneP.substring(0, geneP.length() - 1));
-        geneClassification.put("geneQ", "".equals(geneQ) ? "" : geneQ.substring(0, geneQ.length() - 1));
-        geneClassification.put("geneR", "".equals(geneR) ? "" : geneR.substring(0, geneR.length() - 1));
-        geneClassification.put("geneS", "".equals(geneS) ? "" : geneS.substring(0, geneS.length() - 1));
-        geneClassification.put("geneT", "".equals(geneT) ? "" : geneT.substring(0, geneT.length() - 1));
-        geneClassification.put("geneU", "".equals(geneU) ? "" : geneU.substring(0, geneU.length() - 1));
-        geneClassification.put("geneV", "".equals(geneV) ? "" : geneV.substring(0, geneV.length() - 1));
-        geneClassification.put("geneW", "".equals(geneW) ? "" : geneW.substring(0, geneW.length() - 1));
-        geneClassification.put("geneX", "".equals(geneX) ? "" : geneX.substring(0, geneX.length() - 1));
-        geneClassification.put("geneY", "".equals(geneY) ? "" : geneY.substring(0, geneY.length() - 1));
-        geneClassification.put("geneZ", "".equals(geneZ) ? "" : geneZ.substring(0, geneZ.length() - 1));
-        return geneClassification;
-    }
-
     private Map<String, Object> getGeneClassification(List<String> geneSymbols, Map<String, Object> geneClassification, TemplateConf conf, String panel) {
         if (conf == null) {
             StringBuilder allGenes = new StringBuilder();
