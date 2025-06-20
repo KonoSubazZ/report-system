@@ -829,6 +829,8 @@ public class PyReportServiceImpl implements PyReportService {
 
         // TODO 待移除代码，归结为个性化
         // 变异分级(60基因重肿)
+        if (rt.getTemplate_name().contains("60基因重肿")){
+
         Map variationGrading = new HashMap<>();
         List<Map> variationGrading1 = new ArrayList<Map>();
         List<Map> variationGrading2 = new ArrayList<Map>();
@@ -895,6 +897,7 @@ public class PyReportServiceImpl implements PyReportService {
         variationGrading.put("variationGrading2", variationGrading2);
         variationGrading.put("variationGrading3", variationGrading3);
         rt.setVariationGrading(variationGrading);
+        }
 
         // PARP抑制剂用药提示--(1238基因报告模版-奕检)
         List<String> geneListHRR1 = Arrays.asList("ATM", "BARD1", "BRCA1", "BRCA2", "BRIP1", "CDK12", "CHEK1", "CHEK2", "FANCA", "FANCL", "PALB2", "RAD51B", "RAD51C", "RAD51D", "RAD54L"); // HRR 通路相关基因 (I 级证据)
