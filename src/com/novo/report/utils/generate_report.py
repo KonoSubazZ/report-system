@@ -739,7 +739,8 @@ if __name__ == '__main__':
 
         ImmunopositiveGene_LIST = safe_get(info_json, 'immunopositiveGeneSet', [])
         ImmunonegativeGene_LIST = safe_get(info_json, 'immunonegativeGeneSet', [])
-        subbarcode = info_json['subbarcode'] if info_json['subbarcode'] else ''
+
+        subbarcode = safe_get(info_json, 'subbarcode', '')
 
         # 肉瘤附录列表逻辑
         if 'sarcomaTypingList1' in info_json.get('note', {}) and info_json['note']['sarcomaTypingList1']:
