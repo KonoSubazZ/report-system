@@ -7219,10 +7219,13 @@ public class PyReportServiceImpl implements PyReportService {
             case "5":
                 return "（A级）";
             case "2":
+            case "6":
                 return "（B级）";
             case "3":
+            case "7":
                 return "（C级）";
             case "4":
+            case "8":
                 return "（D级）";
             default:
                 return levelStr; // 返回原始值
