@@ -12,22 +12,26 @@ import tempfile
 from docx import Document
 from docx.shared import Pt
 from io import BytesIO
+import time
+from html import escape
 
+# @deprecated 兼容 Python 2,下版本待移除
+# try:
+#     from html import escape
+# except ImportError:
+#     # cgi.escape is deprecated in python 3.7
+#     from cgi import escape
+# 样本质量评估
 from assess_sample_quality import assess_sample_quality
 
-# from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWLINE_XML, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
-specific_version_path = "/root/python3-packages"
-sys.path.insert(0, specific_version_path)
+
 # import docxtpl
 # from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
+specific_version_path = "/root/python3-packages"
+sys.path.insert(0, specific_version_path)
 from docxtpl import DocxTemplate, RichText, InlineImage
-import time
 
-try:
-    from html import escape
-except ImportError:
-    # cgi.escape is deprecated in python 3.7
-    from cgi import escape
+
 
 def setup_logging():
     """
@@ -812,6 +816,7 @@ if __name__ == '__main__':
         # 渲染模板
         tpl.render(info_json, jinja_env, autoescape=True)
         tpl.save(output_path)
+
         # 注释更新页码，未生效
         # set_updatefields_true(output_path)
 
@@ -819,7 +824,7 @@ if __name__ == '__main__':
         elapsed_time = end_time - start_time
         print(f"模板生成耗时：{elapsed_time:.2f} 秒")
 
-        # === 添加如下日志 ===
+        # === 添加生成模板日志 ===
 
         input_template = os.path.basename(input_template_path)
         matched_template_name = os.path.basename(tpl_path)
