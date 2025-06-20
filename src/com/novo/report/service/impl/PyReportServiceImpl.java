@@ -397,23 +397,9 @@ public class PyReportServiceImpl implements PyReportService {
         if (immnueall != null && immnueall.size() > 0) {
             // 区分 mutFreq 类型
             immnueallDistinguishMutFreqType(immnueall);
-
-            // 这里可能一个基因对应多个位点突变
-            // positiveImmnue = immnueall.stream().filter(immnue -> immnue.get("flag").toString().equals("1")).collect(Collectors.toList());
-            // negativeImmnue = immnueall.stream().filter(immnue -> immnue.get("flag").toString().equals("2")).collect(Collectors.toList());
-            // hpdImmnue = immnueall.stream().filter(immnue -> immnue.get("flag").toString().equals("3")).collect(Collectors.toList());
-            // positiveImmnueNum = positiveImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
-            // negativeImmnueNum = negativeImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
-            // hpdImmnueNum = hpdImmnue.stream().filter(immnue -> !immnue.get("varDesc").toString().equals("/")).collect(Collectors.toList()).size();
-
             // 20250319 新增 positiveOtherImmnueNum 判断是否其他展示检测意义
             List<String> otherGenes = Arrays.asList("CD274", "KRAS", "PBRM1", "PDCD1LG2", "POLD1", "POLE", "TP53");
-            /*positiveOtherImmnueNum = (int) positiveImmnue.stream()
-                    .filter(immnue -> !"/".equals(immnue.get("varDesc").toString()) &&
-                            otherGenes.contains(immnue.get("gene").toString()))
-                    .count();*/
 
-            // TODO 待优化 上面用了六个 for ，可优化为一个
             for (Map immune : immnueall) {
                 String flag = String.valueOf(immune.get("flag"));
                 String varDesc = String.valueOf(immune.get("varDesc"));
@@ -829,74 +815,74 @@ public class PyReportServiceImpl implements PyReportService {
 
         // TODO 待移除代码，归结为个性化
         // 变异分级(60基因重肿)
-        if (rt.getTemplate_name().contains("60基因重肿")){
+        if (rt.getTemplate_name().contains("60基因重肿")) {
 
-        Map variationGrading = new HashMap<>();
-        List<Map> variationGrading1 = new ArrayList<Map>();
-        List<Map> variationGrading2 = new ArrayList<Map>();
-        List<Map> variationGrading3 = new ArrayList<Map>();
+            Map variationGrading = new HashMap<>();
+            List<Map> variationGrading1 = new ArrayList<Map>();
+            List<Map> variationGrading2 = new ArrayList<Map>();
+            List<Map> variationGrading3 = new ArrayList<Map>();
 
-        // TODO 待优化 list 整合到一个遍历里
-        for (Map map : list) {
-            String gene = map.get("gene").toString();
-            String has_drug = map.get("has_drug") == null ? "" : map.get("has_drug").toString();
-            if (has_drug.equals("") && !(has_drug.equals("true") || has_drug.equals("1"))) {
-                if (!gene.equals("Complex")) {
-                    Map variation = new HashMap();
-                    List<Map> drugList = map.get("drugList") == null ? null : (List<Map>) map.get("drugList");
-                    List<Map> clinicalList = map.get("clinicalList") == null ? null : (List<Map>) map.get("clinicalList");
-                    Map rpUnknownVar = map.get("rpUnknownVar") == null ? null : (Map) map.get("rpUnknownVar");
+            // TODO 待优化 list 整合到一个遍历里
+            for (Map map : list) {
+                String gene = map.get("gene").toString();
+                String has_drug = map.get("has_drug") == null ? "" : map.get("has_drug").toString();
+                if (has_drug.equals("") && !(has_drug.equals("true") || has_drug.equals("1"))) {
+                    if (!gene.equals("Complex")) {
+                        Map variation = new HashMap();
+                        List<Map> drugList = map.get("drugList") == null ? null : (List<Map>) map.get("drugList");
+                        List<Map> clinicalList = map.get("clinicalList") == null ? null : (List<Map>) map.get("clinicalList");
+                        Map rpUnknownVar = map.get("rpUnknownVar") == null ? null : (Map) map.get("rpUnknownVar");
 
-                    String ori_variant = map.get("ori_variant").toString();
-                    String mutFreqRaw = map.get("mutFreq") != null ? map.get("mutFreq").toString() : null;
-                    String mutFreq = (mutFreqRaw == null || ".".equals(mutFreqRaw)) ? "/" : mutFreqRaw;
-                    mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
+                        String ori_variant = map.get("ori_variant").toString();
+                        String mutFreqRaw = map.get("mutFreq") != null ? map.get("mutFreq").toString() : null;
+                        String mutFreq = (mutFreqRaw == null || ".".equals(mutFreqRaw)) ? "/" : mutFreqRaw;
+                        mutFreq = getMutFreq(ori_variant, mutFreq, rt.getTemplate_name());
 
-                    variation.put("gene", gene);
-                    variation.put("ori_variant", transferOriVariant(ori_variant));
-                    variation.put("mutFreq", mutFreq);
-                    String ori_varian_split = transferOriVariant(ori_variant);
-                    if (!ori_varian_split.equals("Amplification") && !ori_varian_split.contains("Fusion")) {
-                        String[] splits = ori_varian_split.split(" ");
-                        variation.put("Transcript", splits[0]);
-                        variation.put("Exon", splits[1]);
-                        variation.put("cHGVS", splits[2]);
-                        if (splits.length >= 4) {
-                            String pHGVS = ori_varian_split.substring(ori_varian_split.indexOf("p."));
-                            variation.put("pHGVS", pHGVS);
+                        variation.put("gene", gene);
+                        variation.put("ori_variant", transferOriVariant(ori_variant));
+                        variation.put("mutFreq", mutFreq);
+                        String ori_varian_split = transferOriVariant(ori_variant);
+                        if (!ori_varian_split.equals("Amplification") && !ori_varian_split.contains("Fusion")) {
+                            String[] splits = ori_varian_split.split(" ");
+                            variation.put("Transcript", splits[0]);
+                            variation.put("Exon", splits[1]);
+                            variation.put("cHGVS", splits[2]);
+                            if (splits.length >= 4) {
+                                String pHGVS = ori_varian_split.substring(ori_varian_split.indexOf("p."));
+                                variation.put("pHGVS", pHGVS);
+                            } else {
+                                variation.put("pHGVS", "-");
+                            }
+                            variation.put("flag", false);
                         } else {
-                            variation.put("pHGVS", "-");
+                            variation.put("flag", true);
                         }
-                        variation.put("flag", false);
-                    } else {
-                        variation.put("flag", true);
-                    }
-                    if (!CollectionUtils.isEmpty(drugList)) {
-                        Set drugNameGroup = new HashSet();
-                        // drugsA药物列
-                        List<Map> DrugAStr = getDrugName("1", drugList, clinicalList, drugNameGroup);
-                        // drugsB药物列
-                        List<Map> DrugBStr = getDrugName("2", drugList, clinicalList, drugNameGroup);
-                        // drugsC药物列
+                        if (!CollectionUtils.isEmpty(drugList)) {
+                            Set drugNameGroup = new HashSet();
+                            // drugsA药物列
+                            List<Map> DrugAStr = getDrugName("1", drugList, clinicalList, drugNameGroup);
+                            // drugsB药物列
+                            List<Map> DrugBStr = getDrugName("2", drugList, clinicalList, drugNameGroup);
+                            // drugsC药物列
 //                        List<Map> DrugCStr = getDrugName("3", drugList, clinicalList, drugNameGroup);
-                        // 耐药药物列
-                        List<Map> ResistantDrug = getDrugName("5", drugList, clinicalList, drugNameGroup);
-                        List<Map> mapList = ResistantDrug.stream().filter(s -> Arrays.asList("5", "6").contains(s.get("level"))).collect(Collectors.toList());
-                        if (!DrugAStr.isEmpty() || !DrugBStr.isEmpty() || !mapList.isEmpty()) {
-                            variationGrading1.add(variation);
-                        } else {
-                            variationGrading2.add(variation);
+                            // 耐药药物列
+                            List<Map> ResistantDrug = getDrugName("5", drugList, clinicalList, drugNameGroup);
+                            List<Map> mapList = ResistantDrug.stream().filter(s -> Arrays.asList("5", "6").contains(s.get("level"))).collect(Collectors.toList());
+                            if (!DrugAStr.isEmpty() || !DrugBStr.isEmpty() || !mapList.isEmpty()) {
+                                variationGrading1.add(variation);
+                            } else {
+                                variationGrading2.add(variation);
+                            }
+                        } else if (CollectionUtils.isEmpty(drugList) && CollectionUtils.isEmpty(clinicalList) && !CollectionUtils.isEmpty(rpUnknownVar)) {
+                            variationGrading3.add(variation);
                         }
-                    } else if (CollectionUtils.isEmpty(drugList) && CollectionUtils.isEmpty(clinicalList) && !CollectionUtils.isEmpty(rpUnknownVar)) {
-                        variationGrading3.add(variation);
                     }
                 }
             }
-        }
-        variationGrading.put("variationGrading1", variationGrading1);
-        variationGrading.put("variationGrading2", variationGrading2);
-        variationGrading.put("variationGrading3", variationGrading3);
-        rt.setVariationGrading(variationGrading);
+            variationGrading.put("variationGrading1", variationGrading1);
+            variationGrading.put("variationGrading2", variationGrading2);
+            variationGrading.put("variationGrading3", variationGrading3);
+            rt.setVariationGrading(variationGrading);
         }
 
         // PARP抑制剂用药提示--(1238基因报告模版-奕检)
