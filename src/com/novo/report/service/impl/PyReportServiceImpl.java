@@ -4120,6 +4120,7 @@ public class PyReportServiceImpl implements PyReportService {
                     String mutFreq = map.get("mutFreq").toString();
 
                     if (!ori_variant.equals("MET-MET Fusion M13:M15")) {
+
                         String mutId = snpIndelFileAllMap.get(ori_variant);
                         if (mutId != null) {
                             List<Integer> parentVariant = analysisReportDao.getParentMutationId(Integer.valueOf(mutId));

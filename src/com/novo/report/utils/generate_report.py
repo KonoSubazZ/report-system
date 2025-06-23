@@ -752,7 +752,7 @@ if __name__ == '__main__':
             info_json['note']['sarcomaTypingList4'] = flatten_data(info_json['note']['sarcomaTypingList4'])
 
         # 反序列化 conf_genes
-        if 'gene' in info_json and 'conf_genes' in info_json['gene']:
+        if 'gene' in info_json and 'conf_genes' in info_json['gene'] and 'reportInfo' in info_json:
             conf_genes_str = info_json['gene']['conf_genes']
             deserialized_data = json.loads(conf_genes_str)
             info_json['gene']['conf_genes'] = deserialized_data
