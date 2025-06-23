@@ -4113,6 +4113,11 @@ public class PyReportServiceImpl implements PyReportService {
 
         List<String> oriVariant1 = new ArrayList<>();
         List<String> mutFreq1 = new ArrayList<>();
+        boolean hasMETRAN14Skip = bodyDrugNoComplexStr.stream()
+                .anyMatch(map -> {
+                    String ori_variant = map.get("ori_variant").toString();
+                    return ori_variant.equals("MET-MET Fusion M13:M15");
+                });
 
         List<Map> bodyDrugNoComplexGFYStr = bodyDrugNoComplexStr.stream()
                 .filter(map -> {
@@ -4120,14 +4125,12 @@ public class PyReportServiceImpl implements PyReportService {
                     String mutFreq = map.get("mutFreq").toString();
 
                     if (!ori_variant.equals("MET-MET Fusion M13:M15")) {
-
                         String mutId = snpIndelFileAllMap.get(ori_variant);
                         if (mutId != null) {
                             List<Integer> parentVariant = analysisReportDao.getParentMutationId(Integer.valueOf(mutId));
-                            if (parentVariant.contains(2936)) {
+                            if (parentVariant.contains(2936) && hasMETRAN14Skip) {
                                 oriVariant1.add(ori_variant);
                                 mutFreq1.add(mutFreq);
-
                                 return false;
                             }
                         }
@@ -6115,6 +6118,7 @@ public class PyReportServiceImpl implements PyReportService {
 
     /**
      * 检出基因列表
+     *
      * @param geneSymbols
      * @param geneClassification
      * @param conf
