@@ -755,14 +755,15 @@ if __name__ == '__main__':
             info_json['note']['sarcomaTypingList4'] = flatten_data(info_json['note']['sarcomaTypingList4'])
 
         # 反序列化 conf_genes
-        if 'gene' in info_json and 'conf_genes' in info_json['gene'] and 'reportInfo' in info_json:
+        if 'gene' in info_json and 'conf_genes' in info_json['gene']:
             conf_genes_str = info_json['gene']['conf_genes']
             deserialized_data = json.loads(conf_genes_str)
             info_json['gene']['conf_genes'] = deserialized_data
-            detected_gene_info = info_json['reportInfo']['detected_gene_info']
-            gene_tables = info_json['gene']['conf_genes']['gene_tables']
-            show_red_note = mark_genes_in_red(gene_tables, detected_gene_info)
-            info_json['reportInfo']['show_red_note'] = show_red_note
+            if 'reportInfo' in info_json:
+                detected_gene_info = info_json['reportInfo']['detected_gene_info']
+                gene_tables = info_json['gene']['conf_genes']['gene_tables']
+                show_red_note = mark_genes_in_red(gene_tables, detected_gene_info)
+                info_json['reportInfo']['show_red_note'] = show_red_note
 
         # 样本总体评估
         if 'reportInfo' in info_json:
