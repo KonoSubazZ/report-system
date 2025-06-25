@@ -613,6 +613,9 @@ def mark_genes_in_red(gene_tables, detected_gene_info):
             # 特殊处理 IMMUNE，拼接多个字段的基因列表
             for key in detected_mapping[gene_type].split(','):
                 detected_gene_list.extend(detected_gene_info.get(key.strip(), []))
+        elif gene_type == "SNP":
+            detected_gene_list = detected_gene_info.get("snp_gene_list", [])
+            detected_gene_list.extend(detected_gene_info.get("cr_gene_list", []))
         else:
             # 正常处理
             detected_gene_list = detected_gene_info.get(detected_mapping.get(gene_type, ""), [])
