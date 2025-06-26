@@ -464,9 +464,9 @@ public class PyAnalysisReportTemplateUtil {
                 htmlFile = templateUtil.stat_report(file, docxPath, filePath);
                 return htmlFile;
             } finally {
-//                if (file.exists()) { // 如果已存在,删除旧文件
-//                    file.delete();
-//                }
+                if (file.exists()) { // 如果已存在,删除旧文件
+                    file.delete();
+                }
             }
         } catch (IOException e1) {
             // TODO Auto-generated catch block
