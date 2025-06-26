@@ -27,7 +27,7 @@ from assess_sample_quality import assess_sample_quality
 
 # import docxtpl
 # from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
-specific_version_path = "/root/python3-packages"
+specific_version_path = "/data/soft/python3-packages"
 sys.path.insert(0, specific_version_path)
 from docxtpl import DocxTemplate, RichText, InlineImage
 
