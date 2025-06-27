@@ -41,6 +41,8 @@ public class OfflineReportController {
     private AnalysisReportDao analysisReportDao;
 
     private static final Logger pythonLogger = LogUtils.getLogger("ReportUploadPythonLogger");
+    private static final Logger subreportLogger = LogUtils.getLogger("ReportGensubreportLogger");
+
 
     // 跳转到list页面
     @RequestMapping("offlineReportList")
@@ -475,25 +477,42 @@ public class OfflineReportController {
         map.put("flag", success[0]);
         return map;
     }
-
     private void createXiaoReport(String subbarcode, String report_filename, List<String> fileList, boolean[] success, Map map) {
         String file1 = report_filename.substring(0, report_filename.lastIndexOf("."));
         Integer report_id = analysisReportDao.getReportIdBySubbarcodeAndFilename(subbarcode, file1);
+
         if (report_id != null) {
             List<Object> ips = Arrays.asList(IpUtil.getLocalIp4Address().toArray());
             if (ips.contains(ServerConfig.getServerFormalIP())) {
                 String json = "";
                 try {
                     // json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9999/create_xiao_report_test/" + report_id + "/" + 1);
-                    // 更新小报告端口
+                    // 生成小报告端口
                     json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/create_xiao_report_test/" + report_id + "/" + 1);
+                    // 增加日志记录
+                    subreportLogger.log(
+                            Level.INFO,
+                            String.format(
+                                    "[OfflineGenSubreport] subbarcode=%s, report_id=%s, url=http://10.1.181.174:9090/create_xiao_report_test/%s/1",
+                                    subbarcode, report_id, report_id
+                            )
+                    );
                 } catch (Exception e) {
                     success[0] = false;
                     map.put("errorMessage", "生成小报告失败！");
                 }
+
                 JSONObject object = JSONObject.fromObject(json);
                 String small_report_file_path = object.get("file_path").toString();
                 System.out.println("小报告文件路径：" + small_report_file_path);
+
+                subreportLogger.log(
+                        Level.INFO,
+                        String.format(
+                                "[OfflineDoneSubreport] subbarcode=%s, report_id=%s, 小报告文件路径=%s ",
+                                subbarcode, report_id, small_report_file_path
+                        )
+                );
                 if (StringUtils.isNotEmpty(small_report_file_path)) {
                     String file2 = small_report_file_path.substring(small_report_file_path.indexOf("报告解读-") + 5, small_report_file_path.lastIndexOf("."));
                     if (file1.equals(file2)) {
