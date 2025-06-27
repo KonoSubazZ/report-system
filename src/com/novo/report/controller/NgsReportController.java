@@ -44,6 +44,8 @@ public class NgsReportController {
     // 使用工具类获取 specialLogger
     private static final Logger specialLogger = LogUtils.getLogger("ReportErrorLogger");
     private static final Logger pythonLogger = LogUtils.getLogger("ReportUploadPythonLogger");
+    private static final Logger subreportLogger = LogUtils.getLogger("ReportGensubreportLogger");
+
 
     @Autowired
     private NgsReportService ngsReportService;
@@ -262,6 +264,13 @@ public class NgsReportController {
 //                    json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9999/create_xiao_report_test/" + analysisReport.getReport_id() + "/" + 1);
                     // 20250305更新小报告端口
                     json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/create_xiao_report_test/" + analysisReport.getReport_id() + "/" + 1);
+                    subreportLogger.log(
+                            Level.INFO,
+                            String.format(
+                                    "[OnlineGenSubreport] subbarcode=%s, report_id=%s, url=http://10.1.181.174:9090/create_xiao_report_test/%s/1",
+                                    sf.getSubbarcode(), analysisReport.getReport_id(), analysisReport.getReport_id()
+                            )
+                    );
                     long endTime = System.currentTimeMillis();
                     long duration = (endTime - startTime) / 1000;
                     Date currentDate = new Date();
@@ -276,6 +285,13 @@ public class NgsReportController {
                 String small_report_file_path = object.get("file_path").toString();
                 analysisReportDao.updateSmallReportFilePathById(analysisReport.getReport_id(), small_report_file_path);
                 System.out.println("小报告文件路径：" + small_report_file_path);
+                subreportLogger.log(
+                        Level.INFO,
+                        String.format(
+                                "[OnlineDoneSubreport] subbarcode=%s, report_id=%s, 小报告文件路径=%s ",
+                                sf.getSubbarcode(), analysisReport.getReport_id(), small_report_file_path
+                        )
+                );
                 if (StringUtils.isNotEmpty(small_report_file_path)) {
                     String file1 = analysisReport.getReport_filename().substring(0, analysisReport.getReport_filename().lastIndexOf("."));
                     String file2 = small_report_file_path.substring(small_report_file_path.indexOf("报告解读-") + 5, small_report_file_path.lastIndexOf("."));
