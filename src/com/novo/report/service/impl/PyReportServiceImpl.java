@@ -3898,8 +3898,8 @@ public class PyReportServiceImpl implements PyReportService {
         String qrCodeBase64Str = generateAndUploadQRCode(report_id, sf.getClient(), sf.getSubbarcode(), rt.getTemplate_name(), pr.getReport_date(), logoPath, methylationTitle, pd);
         summaryOfRresults.put("binary", qrCodeBase64Str);
 
-        // String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
-        // analysisReportDao.updateReportDetail(dataToJson, currentNgsAvailable.getReport_id());
+        String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
+        analysisReportDao.updateReportDetail(dataToJson, currentNgsAvailable.getReport_id());
 
         // NOTE: 从这里新增个性化模板逻辑
 
@@ -5657,7 +5657,7 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
     //将数据转换为json
-    public String dataToJson(List<Map> CancerRisk, List<Map> VarDrug, SampleFile sf, List<Map> dMMRinfo, Map<String, String> summaryOfRresults, List<Map> targetDrugTipLineStr, Map<String, Object> chemoSummary, List<List<Map<String, Object>>> chemoAnalysis, List<Map> sarcomaTyping, Map<String, Object> positiveDDR, Map<String, Object> positiveOther, Map<String, Object> negative, Map<String, Object> hpd, Integer report_id) {
+    public String dataToJson(List<Map> CancerRisk, List<Map> VarDrug, SampleFile sf, List<Map> dMMRinfo, Map<String, Object> summaryOfRresults, List<Map> targetDrugTipLineStr, Map<String, String> chemoSummary, List<List<Map<String, String>>> chemoAnalysis, List<Map> sarcomaTyping, Map<String, Object> positiveDDR, Map<String, Object> positiveOther, Map<String, Object> negative, Map<String, Object> hpd, Integer report_id) {
         AnalysisReport analysisReport = analysisReportDao.getReportById(report_id);
         String primary_cancer = lifeDao.getDiseaseClassChineseById(analysisReport.getPrimary_cancer_id());
         analysisReport.setPrimary_cancer(primary_cancer);
