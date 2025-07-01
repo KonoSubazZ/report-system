@@ -965,7 +965,7 @@ public class PyReportServiceImpl implements PyReportService {
 
                     // 同济特殊输出需求
                     Integer mutId = toInteger(map.get("mapped_variant_id"));
-                    boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId);
+                    boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId, null, Collections.emptyList());
                     targetDrugTipLine.put("ExonicFunc1", isMET14Skipping ? "14号外显子跳跃突变" : translateMutType(ExonicFunc));
                     targetDrugTipLine.put("mutFreq", mutFreq);
 
@@ -1346,7 +1346,7 @@ public class PyReportServiceImpl implements PyReportService {
                     // 同济特殊输出需求
                     // fix Long ==> Integer失败，有可能为Long Integer Null
                     Integer mutId = toInteger(map.get("mapped_variant_id"));
-                    boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId);
+                    boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId, null, Collections.emptyList());
                     unknownTipLine.put("ExonicFunc1", isMET14Skipping ? "14号外显子跳跃突变" : translateMutType(ExonicFunc));
 
                     unknownTipLine.put("mutFreq", mutFreq);
@@ -4215,7 +4215,7 @@ public class PyReportServiceImpl implements PyReportService {
             Object mutIdObj = mutation.get("mapped_variant_id");
             if (mutIdObj != null) {
                 int mutId = Integer.parseInt(mutIdObj.toString());
-                if (variantService.isExon19Deletion(gene, mutId)) {
+                if (variantService.isExon19Deletion(gene, mutId, null, Collections.emptyList())) {
                     TJmutation = "19号外显子框内缺失突变" + " " + split[0] + ": " + split[2];
                 }
             }
@@ -6695,8 +6695,10 @@ public class PyReportServiceImpl implements PyReportService {
                 if (!CollectionUtils.isEmpty(drugList)) {
                     if (gene1.equals(gene.split("\\\\r\\\\n")[0]) && flag) {
                         // 添加variant 19del 20ins met14特殊描述
+                        // 增加手动改靶判断
+                        List<Integer> localParentMutIds = (List<Integer>) map1.getOrDefault("localMutIds", Collections.emptyList());
                         if (mutId != null) {
-                            ori_variant = variantService.specialVariantDesc(gene1, mutId, ori_variant);
+                            ori_variant = variantService.specialVariantDesc(gene1, mutId, ori_variant, localParentMutIds);
                         }
                         ori_variantList.add(ori_variant);
                         mutFreqList.add(mutFreq);

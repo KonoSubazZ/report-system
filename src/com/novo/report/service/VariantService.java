@@ -4,6 +4,7 @@ import com.novo.report.beans.AutoComplete;
 import com.novo.report.beans.IntegratedMutationFileList;
 import com.novo.report.beans.SFAutoComplete;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface VariantService {
@@ -13,21 +14,21 @@ public interface VariantService {
 	 * @param mutId
 	 * @return
 	 */
-	boolean isExon19Deletion(String gene, Integer mutId);
+	boolean isExon19Deletion(String gene, Integer mutId, String variant,List<Integer> localParentMutIds);
 
 	/**
 	 * 判断是否是EGFR Exon20 Insertion
 	 * @param mutId
 	 * @return
 	 */
-	boolean  isEGFRExon20Insertion(String gene, Integer mutId);
+	boolean  isEGFRExon20Insertion(String gene, Integer mutId, String variant,List<Integer> localParentMutIds);
 
 	/**
 	 * 判断是否是 MET14 Skipping
 	 * @param mutId
 	 * @return
 	 */
-	boolean  isMET14Skipping(String gene, Integer mutId);
+	boolean  isMET14Skipping(String gene, Integer mutId, String variant,List<Integer> localParentMutIds);
 
 	/**
 	 * 判断是否是 EGFR vIII RNA
@@ -54,7 +55,7 @@ public interface VariantService {
 	boolean  isMET14SkippingRNA(String gene, String variant);
 
 
-	String specialVariantDesc(String gene, Integer mutId, String oriVariant);
+	String specialVariantDesc(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds);
 
 	/**
 	 * 实体瘤RNA1166使用

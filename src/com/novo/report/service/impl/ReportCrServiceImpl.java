@@ -90,11 +90,15 @@ public class ReportCrServiceImpl implements ReportCrService {
 
         // 根据本地库的数据补充父mutID ？？什么作用
         // 如果本地记录包含父级mutID，则添加到mutationIdList中 （去重添加）
-        // TODO 待确定 这里不会出现问题吗？ 比如知识库删除了某个突变的关联父级突变，增加本地库到 突变list 不会有问题吗
+        // TODO 待确定 这里不会出现问题吗？ 比如知识库删除了某个突变的关联父级突变，增加本地库到 突变list 不会有问题吗, 似乎是匹配预览时
+        // 20250701 这里这样做的意义是有些点可能知识库没有，手动改靶。先存本地库，后续更新知识库
         String parent_mutID = a.get("parent_mutID") == null ? "-1" : a.get("parent_mutID").toString();
+        // 本地保存的靶向关联父级，解读手动改靶
+        List<Integer> localMutIds = new ArrayList<>();
         if (!parent_mutID.equals("-1")) {
             String[] split = parent_mutID.split(",");
             for (String string : split) {
+                // localMutIds.add(Integer.parseInt(string));
                 if (!mutationIdList.contains(Integer.parseInt(string))) {
                     mutationIdList.add(Integer.parseInt(string));
                 }
@@ -137,10 +141,12 @@ public class ReportCrServiceImpl implements ReportCrService {
                 String parent_mutID1 = reportVarDrug.getParent_mutID();
                 String[] split = parent_mutID1.split(";");
                 for (String string : split) {
+                    localMutIds.add(Integer.parseInt(string));
                     if (!mutationIdList.contains(Integer.parseInt(string))) {
                         mutationIdList.add(Integer.parseInt(string));
                     }
                 }
+                // 增加本地历史记录
             }
             reportVarDrugUpdateTime = new Timestamp(reportVarDrug.getUpdate_date().getTime());
         }
@@ -150,6 +156,8 @@ public class ReportCrServiceImpl implements ReportCrService {
                 reportVarDrugUpdateTime = tempTime;
             }
         }
+        // 有药的历史记录，无药empty list
+        a.put("localMutIds", localMutIds);
         //  InNKB 位点是否存在知识库
         if (mutationId != null) {
             a.put("InNKB", "true");
