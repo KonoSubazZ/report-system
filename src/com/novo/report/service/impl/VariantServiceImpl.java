@@ -38,7 +38,6 @@ public class VariantServiceImpl implements VariantService {
                     return parentVariant != null &&
                             parentVariant.toString().equals("Exon19 Deletion Mutation");
                 });
-
     }
 
     @Override
