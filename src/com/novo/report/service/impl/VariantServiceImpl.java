@@ -103,7 +103,7 @@ public class VariantServiceImpl implements VariantService {
     @Override
     public String specialVariantDesc(String gene, Integer mutId, String variant, List<Integer> localParentMutIds) {
 
-        if (mutId == null) return "";
+        if (mutId == null && localParentMutIds.isEmpty()) return variant;
 
         if (isExon19Deletion(gene, mutId, variant, localParentMutIds)) {
             return variant + " " + "( 19del )";
