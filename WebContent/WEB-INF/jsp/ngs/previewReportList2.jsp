@@ -424,7 +424,23 @@
                             <td><label>TCGA分子分型</label></td>
                             <td>
                                 <select id="tcga" onChange="updateTcga()">
-                                  <%--  <option value="POLE基因突变型（POLE）"
+                                    <option value="POLE突变型"
+                                            <c:if test="${tcga == 'POLE突变型'}">selected</c:if>>
+                                        POLE突变型
+                                    </option>
+                                    <option value="微卫星不稳定型"
+                                            <c:if test="${tcga == '微卫星不稳定型'}">selected</c:if>>
+                                        微卫星不稳定型
+                                    </option>
+                                    <option value="p53突变型"
+                                            <c:if test="${tcga == 'p53突变型'}">selected</c:if>>
+                                        p53突变型
+                                    </option>
+                                    <option value="非特异性分子谱型"
+                                            <c:if test="${tcga == '非特异性分子谱型'}">selected</c:if>>
+                                        非特异性分子谱型
+                                    </option>
+                                    <option value="POLE基因突变型（POLE）"
                                             <c:if test="${tcga == 'POLE基因突变型（POLE）'}">selected</c:if>>
                                         POLE基因突变型（POLE）
                                     </option>
@@ -439,23 +455,7 @@
                                     <option value="低拷贝型（Copy-number Low，CN-L）"
                                             <c:if test="${tcga == '低拷贝型（Copy-number Low，CN-L）'}">selected</c:if>>
                                         低拷贝型（Copy-number Low，CN-L）
-                                    </option>--%>
-                                      <option value="POLE突变型"
-                                              <c:if test="${tcga == 'POLE突变型'}">selected</c:if>>
-                                          POLE突变型
-                                      </option>
-                                      <option value="微卫星不稳定型"
-                                              <c:if test="${tcga == '微卫星不稳定型'}">selected</c:if>>
-                                          微卫星不稳定型
-                                      </option>
-                                      <option value="p53突变型"
-                                              <c:if test="${tcga == 'p53突变型'}">selected</c:if>>
-                                          p53突变型
-                                      </option>
-                                      <option value="非特异性分子谱型"
-                                              <c:if test="${tcga == '非特异性分子谱型'}">selected</c:if>>
-                                          非特异性分子谱型
-                                      </option>
+                                    </option>
                                 </select>
                             </td>
                         </tr>
@@ -1176,8 +1176,10 @@
                                     <div>${item.variant}<br>${item.transcript}</div>
                                 </td>
                                 <td style="border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.mut_freq}</td>
-                                <td id="evidence1166_${item.id}" style="width:200px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.subtype}</td>
-                                <td id="subtype1166_${item.id}" style="width:100px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.evidence}</td>
+                                <td id="evidence1166_${item.id}"
+                                    style="width:200px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.subtype}</td>
+                                <td id="subtype1166_${item.id}"
+                                    style="width:100px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">${item.evidence}</td>
                                 <td style="width:100px;border: 1px solid #ccc; padding: 12px; text-align: center; font-size: 14px; color: #555;vertical-align: middle;">
                                     <input type="button" value="删除" onclick="deleteCancerTyping1166(${item.id})"
                                            class="btn"/>
@@ -3550,7 +3552,9 @@
 
 
 
+
                     ${pageContext.request.contextPath}/geneMarkerVw/addDrugRecord?userAccount=
+
 
 
 
@@ -3560,7 +3564,9 @@
 
 
 
+
                     ${geneticMarkerVwPageBean.subbarcode}&reportId=
+
 
 
 
