@@ -97,7 +97,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         result.put("diseaseName", diseaseClass.getDisease_class_chinese());
 
         // drug_var_list 匹配用药信息
-        List<Map> drug_var_list = new ArrayList<Map>();
+        List<Map> drug_var_list = new ArrayList<>();
         drug_var_list.addAll(thisGeneticmarkerVwList);
 
         // 获取肠癌子父级癌种
@@ -791,5 +791,13 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
             getSonId(sonDiseaseList, sonIdList);
         }
         return sonIdList;
+    }
+
+    public boolean isNonSmallCellLungCancerCoMutation(
+            Map<String, Object> variantMap,
+            List<Map<String, Object>> mutationList
+    ) {
+        // 方法实现
+        return true;
     }
 }

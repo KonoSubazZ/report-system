@@ -815,7 +815,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // TODO 待移除代码，归结为个性化
         // 变异分级(60基因重肿)
-        if (rt.getTemplate_name().contains("60基因重肿")) {
+        if (rt.getTemplate_name().contains("60基因重肿") || rt.getTemplate_name().contains("肺癌60基因模板-河南人民")) {
 
             Map variationGrading = new HashMap<>();
             List<Map> variationGrading1 = new ArrayList<Map>();
