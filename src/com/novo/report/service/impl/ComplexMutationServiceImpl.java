@@ -1,5 +1,22 @@
 package com.novo.report.service.impl;
 
+import com.novo.report.beans.AnalysisReport;
+import com.novo.report.beans.DiseaseClass;
+import com.novo.report.dao.two.AnalysisReportDao;
+import com.novo.report.dao.two.ReportCrDao;
+import com.novo.report.service.AutoCompleteService;
+import com.novo.report.service.ComplexMutationService;
+import com.novo.report.service.LifeService;
+import com.novo.report.service.ReportCrService;
+import com.novo.report.utils.TranslateUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,26 +24,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-
-import com.novo.report.beans.AnalysisReport;
-import com.novo.report.service.AutoCompleteService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.javassist.compiler.SyntaxError;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import com.novo.report.beans.DiseaseClass;
-import com.novo.report.dao.two.AnalysisReportDao;
-import com.novo.report.dao.two.ReportCrDao;
-import com.novo.report.service.ComplexMutationService;
-import com.novo.report.service.LifeService;
-import com.novo.report.service.ReportCrService;
-import com.novo.report.utils.TranslateUtil;
 
 @Service
 public class ComplexMutationServiceImpl implements ComplexMutationService {
@@ -50,6 +47,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
 
     /**
      * 主要功能为匹配用药信息
+     *
      * @param user
      * @param report_id
      * @param result
@@ -138,7 +136,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
             if (templates.contains(template_name)) {
                 ComplexList = analysisReportDao.getComplexMutationById(Arrays.asList(8337));
             } else {
-                ComplexList = analysisReportDao.getComplexMutationById(Arrays.asList(8337,9245,12786));
+                ComplexList = analysisReportDao.getComplexMutationById(Arrays.asList(8337, 9245, 12786));
             }
 
             //得到该panel检测的基因列表
@@ -153,6 +151,12 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
                 JudgeComplex(map, Mutlist, complexSet, simpleSet);
             }
             drug_var_list.addAll(complexSet);
+        }
+
+        // 非鳞非小细胞肺癌 Complex EGFR Sensitizing Mutation && MET Amplification
+        if (diseaseIdList.contains(100001) && isNonSquamousNSCLCCoMutation(thisGeneticmarkerVwList)) {
+            List<Map> NonSquamousNSCLCCoMutation = analysisReportDao.getComplexMutationById(Arrays.asList(11429));
+            drug_var_list.addAll(NonSquamousNSCLCCoMutation);
         }
 
         // ？？简单位点总数（CR + Somatic）（暂时理解没有用药）
@@ -279,6 +283,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
      * 如果记录ID为空，创建一个新的记录并填充基因描述和变异描述。
      * 如果记录ID不为空，从数据库中查询现有记录，比较更新时间，如果基因描述有更新，则更新记录。
      * 注释掉的部分：这部分代码涉及临床意义的获取和药物相关性的判断，但被注释掉了。
+     *
      * @param cr_info
      * @param user
      * @param lang
@@ -343,6 +348,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
     /**
      * 肠癌的相关逻辑
      * 获取父变异ID：从数据库中查询指定基因和变异信息，获取其父变异信息。
+     *
      * @param mutation
      */
     public void getParentMutId(Map mutation) {
@@ -679,6 +685,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
 
     /**
      * 递归获取父癌种的id
+     *
      * @param parentList
      * @param parentIdList
      */
@@ -714,8 +721,9 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
 
     /**
      * 获取所有的疾病id 子父级
+     *
      * @param diseaseId
-     * @param diseaseIdList 所有的疾病id list(包括自己)
+     * @param diseaseIdList       所有的疾病id list(包括自己)
      * @param parentdiseaseIdList 父级疾病id list(包括自己)
      */
     public void getDiseaseList(Integer diseaseId, List<Integer> diseaseIdList, List<Integer> parentdiseaseIdList) {
@@ -749,6 +757,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
      * 根据性别和疾病id过滤 diseaseIdList
      * 男性不输出女性生殖器官肿瘤及子级癌种、女性不输出男性生殖器官肿瘤及子级癌种
      * 实体瘤不输出血液肿瘤及子级癌种、血液肿瘤不输出实体瘤及子级癌种
+     *
      * @param gender
      * @param diseaseIdList
      * @return
@@ -793,11 +802,30 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         return sonIdList;
     }
 
-    public boolean isNonSmallCellLungCancerCoMutation(
-            Map<String, Object> variantMap,
-            List<Map<String, Object>> mutationList
-    ) {
-        // 方法实现
-        return true;
+    public boolean isNonSquamousNSCLCCoMutation(List<Map> thisGeneticmarkerVwList) {
+        boolean hasMETAmplification = false;
+        boolean hasEGFRSensitizingMutation = false;
+        for (Map geneticmarkerVw : thisGeneticmarkerVwList) {
+            String gene = geneticmarkerVw.get("gene").toString();
+            String variant = geneticmarkerVw.get("ori_variant").toString();
+            // MET扩增
+            if ("MET".equals(gene) && "Amplification".equals(variant)) {
+                hasMETAmplification = true;
+            }
+            // EGFR敏感变异
+            if ("EGFR".equals(gene)) {
+                getParentMutId(geneticmarkerVw);
+                Object parentMutation = geneticmarkerVw.get("parent_variant");
+                if (parentMutation instanceof List) {
+                    List<?> mutationList = (List<?>) parentMutation;
+                     hasEGFRSensitizingMutation = mutationList.stream()
+                            .filter(String.class::isInstance)
+                            .map(String.class::cast)
+                            .anyMatch(item -> item.contains("Sensitizing Mutation"));
+                }
+
+            }
+        }
+        return hasMETAmplification && hasEGFRSensitizingMutation;
     }
 }
