@@ -806,25 +806,30 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         boolean hasMETAmplification = false;
         boolean hasEGFRSensitizingMutation = false;
         for (Map geneticmarkerVw : thisGeneticmarkerVwList) {
-            String gene = geneticmarkerVw.get("gene").toString();
-            String variant = geneticmarkerVw.get("ori_variant").toString();
+
+            if (hasMETAmplification && hasEGFRSensitizingMutation) {
+                break;
+            }
+            String gene = Objects.toString(geneticmarkerVw.get("gene"), "");
+            String variant = Objects.toString(geneticmarkerVw.get("ori_variant"), "");
             // MET扩增
-            if ("MET".equals(gene) && "Amplification".equals(variant)) {
+            if (!hasMETAmplification && "MET".equals(gene) && "Amplification".equals(variant)) {
                 hasMETAmplification = true;
             }
             // EGFR敏感变异
-            if ("EGFR".equals(gene)) {
+            if (!hasEGFRSensitizingMutation && "EGFR".equals(gene)) {
                 getParentMutId(geneticmarkerVw);
                 Object parentMutation = geneticmarkerVw.get("parent_variant");
                 if (parentMutation instanceof List) {
                     List<?> mutationList = (List<?>) parentMutation;
-                     hasEGFRSensitizingMutation = mutationList.stream()
+                    hasEGFRSensitizingMutation = mutationList.stream()
                             .filter(String.class::isInstance)
                             .map(String.class::cast)
                             .anyMatch(item -> item.contains("Sensitizing Mutation"));
                 }
 
             }
+
         }
         return hasMETAmplification && hasEGFRSensitizingMutation;
     }
