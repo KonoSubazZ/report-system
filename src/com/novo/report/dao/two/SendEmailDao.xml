@@ -53,4 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getContentByCustomer" resultType="String">
 		select content from send_email where customer = #{customer}
 	</select>
+	<select id="getContentAndSubject" resultType="java.util.Map">
+		select content,subject from send_email where customer = #{customer}
+	</select>
 </mapper>

@@ -1,8 +1,10 @@
 package com.novo.report.service;
 
 import com.novo.report.beans.*;
+import com.novo.report.common.Result;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SendEmailService {
 
@@ -21,4 +23,6 @@ public interface SendEmailService {
 	void updateSendEmail(SendEmail sendEmail);
 
 	String getContentByCustomer(String customer);
+
+	Result<Map<String, String>> getEmailInfo(String customer);
 }

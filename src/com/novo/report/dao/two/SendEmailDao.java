@@ -6,6 +6,7 @@ import com.novo.report.beans.SendEmail;
 import com.novo.report.beans.SendEmailPageBean;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SendEmailDao {
 
@@ -26,4 +27,6 @@ public interface SendEmailDao {
 	void updateSendEmail(SendEmail sendEmail);
 
 	String getContentByCustomer(String customer);
+
+	Map<String, String> getContentAndSubject(String customer);
 }

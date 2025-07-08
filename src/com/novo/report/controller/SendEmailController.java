@@ -8,6 +8,7 @@ import com.novo.report.utils.EmailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -238,5 +239,19 @@ public class    SendEmailController {
     public Object getContentByCustomer(String customer) {
         String content = sendEmailService.getContentByCustomer(customer) == null ? "" : sendEmailService.getContentByCustomer(customer);
         return content;
+    }
+
+    @RequestMapping(value = "getEmailInfo",
+            method = RequestMethod.GET,
+            produces = "application/json;charset=UTF-8")
+
+    public String getEmailInfo(String customer) {
+        // 方法实现
+        Map<String, String> emailInfo = sendEmailService.getEmailInfo(customer);
+        if (emailInfo != null){
+             String content = emailInfo.getOrDefault("content", "");
+             String subject = emailInfo.getOrDefault("subject", "");
+        }
+        return null;
     }
 }
