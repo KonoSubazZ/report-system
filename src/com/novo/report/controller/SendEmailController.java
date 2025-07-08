@@ -1,6 +1,7 @@
 package com.novo.report.controller;
 
 import com.novo.report.beans.*;
+import com.novo.report.common.Result;
 import com.novo.report.service.SendEmailService;
 import com.novo.report.utils.DateUtil;
 import com.novo.report.utils.DeleteFileUtil;
@@ -26,7 +27,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("sendEmail")
-public class    SendEmailController {
+public class SendEmailController {
 
     @Autowired
     private SendEmailService sendEmailService;
@@ -60,28 +61,28 @@ public class    SendEmailController {
                     file.mkdirs();
                 }
                 List<String> filenameSize = new ArrayList<>();
-                    for (MultipartFile filename : filenames) {
-                        String filename1 = "";
-                        try {
-                            if (!filename.isEmpty()) {
-                                // 获取取文件名
-                                filename1 = filename.getOriginalFilename();
-                                filenameSize.add(filename1);
-                                // 上传文件
-                                byte[] bytes1 = filename.getBytes();
-                                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(file_path + filename1)));
-                                stream.write(bytes1);
-                                stream.close();
-                            }
-                        } catch (Exception e) {
-                            if (!"".equals(filename1)) {
-                                DeleteFileUtil.deleteFiles(file_path.replace("\\", "/") + filename1);
-                            }
-                            e.printStackTrace();
+                for (MultipartFile filename : filenames) {
+                    String filename1 = "";
+                    try {
+                        if (!filename.isEmpty()) {
+                            // 获取取文件名
+                            filename1 = filename.getOriginalFilename();
+                            filenameSize.add(filename1);
+                            // 上传文件
+                            byte[] bytes1 = filename.getBytes();
+                            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(file_path + filename1)));
+                            stream.write(bytes1);
+                            stream.close();
                         }
+                    } catch (Exception e) {
+                        if (!"".equals(filename1)) {
+                            DeleteFileUtil.deleteFiles(file_path.replace("\\", "/") + filename1);
+                        }
+                        e.printStackTrace();
                     }
-                    content = content.replace("\r\n", "<br>").replace(" ", "&nbsp;");
-                    map = sendEmail(customer, file_path, filenameSize, subject, content, email);
+                }
+                content = content.replace("\r\n", "<br>").replace(" ", "&nbsp;");
+                map = sendEmail(customer, file_path, filenameSize, subject, content, email);
             } else {
                 map.put("errorMessage", "没有选择文件！");
             }
@@ -234,7 +235,7 @@ public class    SendEmailController {
         return jsonMap;
     }
 
-    @RequestMapping(value="getContentByCustomer",produces="application/json;charset=UTF-8")
+    @RequestMapping(value = "getContentByCustomer", produces = "application/json;charset=UTF-8")
     @ResponseBody
     public Object getContentByCustomer(String customer) {
         String content = sendEmailService.getContentByCustomer(customer) == null ? "" : sendEmailService.getContentByCustomer(customer);
@@ -244,14 +245,9 @@ public class    SendEmailController {
     @RequestMapping(value = "getEmailInfo",
             method = RequestMethod.GET,
             produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public Result<Map<String, String>> getEmailInfo(String customer) {
 
-    public String getEmailInfo(String customer) {
-        // 方法实现
-        Map<String, String> emailInfo = sendEmailService.getEmailInfo(customer);
-        if (emailInfo != null){
-             String content = emailInfo.getOrDefault("content", "");
-             String subject = emailInfo.getOrDefault("subject", "");
-        }
-        return null;
+        return Result.success(sendEmailService.getEmailInfo(customer));
     }
 }

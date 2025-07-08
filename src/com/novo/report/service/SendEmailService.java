@@ -24,5 +24,5 @@ public interface SendEmailService {
 
 	String getContentByCustomer(String customer);
 
-	Result<Map<String, String>> getEmailInfo(String customer);
+	Map<String, String> getEmailInfo(String customer);
 }

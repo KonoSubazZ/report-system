@@ -67,7 +67,7 @@ public class SendEmailServiceImpl implements SendEmailService {
     }
 
     @Override
-    public Result<Map<String, String>> getEmailInfo(String customer) {
+    public Map<String, String> getEmailInfo(String customer) {
         Map<String, String> emailInfo = sendEmailDao.getContentAndSubject(customer);
         Map<String, String> formattedEmailInfo = new HashMap<>();
         formattedEmailInfo.put("subject", "");
@@ -85,6 +85,6 @@ public class SendEmailServiceImpl implements SendEmailService {
             formattedEmailInfo.put("content", content);
 
         }
-        return Result.success(formattedEmailInfo);
+        return formattedEmailInfo;
     }
 }
