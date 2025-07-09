@@ -61,11 +61,10 @@
                                     $("#LDT").prop("checked", true);
                                 }
                                 let subject = response.data.subject;
-                                if (customer.includes("河南肿瘤")) {
-                                        let files = document.getElementById("filename").files;
-                                        let fileCount = getDocxFiles(files);
-                                        subject = subject.replace("{{file_count}}", fileCount);
-                                }
+                                let files = document.getElementById("filename").files;
+                                let fileCount = getDocxFiles(files);
+                                subject = subject.replace("{{file_count}}", fileCount);
+
                                 $("#content").val(response.data.content);
                                 $("#subject").val(subject);
                             } else {
@@ -116,6 +115,7 @@
                 });
             });
         });
+
         function getDocxFiles(files) {
             let fileCount = 0;
             for (var i = 0; i < files.length; i++) {
@@ -128,6 +128,7 @@
             }
             return fileCount;
         }
+
         function displayData(pageNo) {
             var pageSize = 10;
             $.ajax({
