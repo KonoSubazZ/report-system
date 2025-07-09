@@ -28,6 +28,16 @@ public class CurrentNgsAvailableData {
     private String checker;
     private String reporter_comment;
 
+    public String getShowPD() {
+        return showPD;
+    }
+
+    public void setShowPD(String showPD) {
+        this.showPD = showPD;
+    }
+
+    private String showPD;
+
     public String getReporter_comment() {
         return reporter_comment;
     }

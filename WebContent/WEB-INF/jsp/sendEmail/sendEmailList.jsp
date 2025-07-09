@@ -32,56 +32,69 @@
     <script type="text/javascript">
         $(function () {
             displayData(0);
-            $("#filename").on("change", function (e) {
-                var e = e || window.event
-                var _file = e.target.files
-                var names = ""
-                if (_file.length > 1) {
-                    for (let i = 0; i < _file.length; i++) {
-                        if (i == _file.length - 1) {
-                            names += _file[i].name
-                        } else {
-                            names += _file[i].name + "<br>"
-                        }
-                    }
-                    $("#filenames").html(names)
-                } else {
-                    $("#filenames").html("")
-                }
-            });
 
             $("#customer").focus(function () {
-                var customer = $("#customer").val();
+                let customer = $("#customer").val();
                 // document.getElementById("content").innerText = customer;
                 if (customer != "") {
+                    <%--$.ajax({--%>
+                    <%--    url: "${pageContext.request.contextPath}/sendEmail/getContentByCustomer", //把表单数据发送到ajax.jsp--%>
+                    <%--    type: "POST",--%>
+                    <%--    cache: false,--%>
+                    <%--    data: {customer:customer},--%>
+                    <%--    dataType: "text",--%>
+                    <%--    success: function (data) {--%>
+                    <%--        document.getElementById("content").innerHTML = data;--%>
+                    <%--    }--%>
+                    <%--});--%>
                     $.ajax({
-                        url: "${pageContext.request.contextPath}/sendEmail/getContentByCustomer", //把表单数据发送到ajax.jsp
-                        type: "POST",
-                        cache: false,
-                        data: {customer:customer},
-                        dataType: "text",
-                        success: function (data) {
-                            document.getElementById("content").innerHTML = data;
+                        url: "${pageContext.request.contextPath}/sendEmail/getEmailInfo",
+                        type: "GET",
+                        data: {customer: customer},
+                        dataType: "json", // 明确指定返回JSON格式
+                        success: function (response) {
+                            // 检查响应状态
+                            if (response && response.code === 200) {
+                                if (customer.includes("IVD")) {
+                                    $("#IVD").prop("checked", true);
+                                } else if (customer.includes("LDT")) {
+                                    $("#LDT").prop("checked", true);
+                                }
+                                let subject = response.data.subject;
+                                if (customer.includes("河南肿瘤")) {
+                                        let files = document.getElementById("filename").files;
+                                        let fileCount = getDocxFiles(files);
+                                        subject = subject.replace("{{file_count}}", fileCount);
+                                }
+                                $("#content").val(response.data.content);
+                                $("#subject").val(subject);
+                            } else {
+
+                            }
+                        },
+                        error: function (xhr, status, error) {
+
+                            console.log(error);
                         }
-                    });
+                    })
                 }
             });
 
             $("#reportBtn").click(function () {
                 $("#emailForm").validate({
-                    rules:{
-                        "filename":{"required":true},
-                        "subject":{"required":true},
-                        "content":{"required":true},
-                        "customer":{"required":true}
+                    rules: {
+                        "filename": {"required": true},
+                        "subject": {"required": true},
+                        "content": {"required": true},
+                        "customer": {"required": true}
                     },
-                    messages:{
-                        "filename":{"required":"文件不能为空"},
-                        "subject":{"required":""},
-                        "content":{"required":"内容不能为空"},
-                        "customer":{"required":""}
+                    messages: {
+                        "filename": {"required": "文件不能为空"},
+                        "subject": {"required": ""},
+                        "content": {"required": "内容不能为空"},
+                        "customer": {"required": ""}
                     },
-                    submitHandler:function(){
+                    submitHandler: function () {
                         $.myConfirm({
                             title: '邮件发送确认', message: '确认发送邮件？', callback: function () {
                                 var from = document.getElementById("emailForm");
@@ -103,7 +116,18 @@
                 });
             });
         });
+        function getDocxFiles(files) {
+            let fileCount = 0;
+            for (var i = 0; i < files.length; i++) {
+                var fileName = files[i].name;
+                var fileExtension = fileName.slice(fileName.lastIndexOf(".")).toLowerCase();
 
+                if (fileExtension === ".docx") {
+                    fileCount++;
+                }
+            }
+            return fileCount;
+        }
         function displayData(pageNo) {
             var pageSize = 10;
             $.ajax({
@@ -133,6 +157,7 @@
                             htmlString += '<td>' + n.customer + '</td>';
                             htmlString += '<td>' + n.emailaddress + '</td>';
                             htmlString += '<td>' + n.ccemail + '</td>';
+                            htmlString += '<td>' + n.subject + '</td>';
                             htmlString += '<td>' + n.content + '</td>';
                             htmlString += '<td>' + n.created_by + '</td>';
                             htmlString += '<td>' + n.created_date + '</td>';
@@ -227,7 +252,9 @@
                                 <label>主题：</label>
                             </div>
                             <div class="field">
-                                <input type="text" id="subject" name="subject" class="input w50" style="width: 250px; line-height: 17px; display: inline-block" placeholder="请输入内容" data-validate="required:请输入内容"/>
+                                <input type="text" id="subject" name="subject" class="input w50"
+                                       style="width: 250px; line-height: 17px; display: inline-block"
+                                       placeholder="请输入内容" data-validate="required:请输入内容"/>
                                 <label class="error" for="subject" generated="true" style="color: red;"></label>
                             </div>
                         </div>
@@ -240,7 +267,9 @@
                                 <label>送检机构：</label>
                             </div>
                             <div class="field">
-                                <input type="text" id="customer" name="customer" class="input w50" style="width: 250px; line-height: 17px; display: inline-block" placeholder="请输入搜索关键字" data-validate="required:请输入搜索关键字"/>
+                                <input type="text" id="customer" name="customer" class="input w50"
+                                       style="width: 250px; line-height: 17px; display: inline-block"
+                                       placeholder="请输入搜索关键字" data-validate="required:请输入搜索关键字"/>
                                 <script type="text/javascript">
                                     $(function () {
                                         $.post("${pageContext.request.contextPath}/sendEmail/getCustomer",
@@ -275,7 +304,8 @@
                                 <label>内容：</label>
                             </div>
                             <div class="field">
-                                <textarea id="content" name="content" style="width:500px;height:200px;overflow:scroll;" placeholder="请输入内容"></textarea>
+                                <textarea id="content" name="content" style="width:500px;height:200px;overflow:scroll;"
+                                          placeholder="请输入内容"></textarea>
                                 <label class="error" for="content" generated="true" style="color: red;"></label>
                             </div>
                         </div>
@@ -288,8 +318,8 @@
                                 <label>邮箱发送：</label>
                             </div>
                             <div class="field">
-                                <input type="radio" name="email" style="height:38px" checked value="0" />IVD&nbsp;&nbsp;&nbsp;
-                                <input type="radio" name="email" style="height:38px" value="1" />LDT
+                                <input type="radio" name="email" id="IVD" style="height:38px" checked value="0"/>IVD&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="email" id="LDT" style="height:38px" value="1"/>LDT
                             </div>
                         </div>
                     </td>
@@ -297,7 +327,8 @@
                 <tr>
                     <td>
                         <div class="form-group" style="margin-left: 50px">
-                            <button id="reportBtn" class="button bg-main icon-check-square-o" type="submit"> 发送邮件 </button>
+                            <button id="reportBtn" class="button bg-main icon-check-square-o" type="submit"> 发送邮件
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -311,7 +342,8 @@
                    href="${pageContext.request.contextPath}/sendEmail/addSendEmail"> 添加送检机构</a></li>
             <li>送检机构:</li>
             <li>
-                <input type="text" placeholder="请输入搜索关键字" id="customer2" name="customer2" class="input" style="width:200px; line-height:17px;display:inline-block"/>
+                <input type="text" placeholder="请输入搜索关键字" id="customer2" name="customer2" class="input"
+                       style="width:200px; line-height:17px;display:inline-block"/>
                 <script type="text/javascript">
                     $(function () {
                         $.post("${pageContext.request.contextPath}/sendEmail/getCustomer", function (data) {
@@ -347,6 +379,7 @@
             <th>customer</th>
             <th>emailaddress</th>
             <th>CCemail</th>
+            <th>subject</th>
             <th>content</th>
             <th>created_by</th>
             <th>created_date</th>

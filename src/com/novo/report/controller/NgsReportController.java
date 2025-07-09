@@ -1,6 +1,7 @@
 package com.novo.report.controller;
 
 import com.novo.report.beans.*;
+import com.novo.report.common.CommonQueryVO;
 import com.novo.report.common.Result;
 import com.novo.report.dao.two.AnalysisReportDao;
 import com.novo.report.service.LifeService;
@@ -886,6 +887,13 @@ public class NgsReportController {
 
         String comment = analysisReportDao.getComment(reportId);
         return Result.success(comment);
+    }
+
+    @RequestMapping("/showPD")
+    @ResponseBody
+    public Result<Boolean> isShowPD(CommonQueryVO query) {
+        String filePath = analysisReportDao.getPDINFOFilePath(query);
+        return Result.success(filePath != null);
     }
 
 }

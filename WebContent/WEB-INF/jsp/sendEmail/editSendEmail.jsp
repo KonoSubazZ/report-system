@@ -51,7 +51,7 @@
 	    	<td>
 		      <div class="form-group">
 		        <div class="label" style="width:120px">
-		          <label>收件人邮箱：：</label>
+		          <label>收件人邮箱：</label>
 		        </div>
 		        <div class="field">
 					<textarea cols="10" rows="10" type="text" class="input w50" name="emailaddress" id="emailaddress" data-validate="required:请输入emailaddress">${sendEmail.emailaddress }</textarea>
@@ -83,11 +83,23 @@
 					</div>
 				</div>
 			</td>
+			<td>
+				<div class="form-group">
+					<div class="label" style="width:75px">
+						<label>主题：</label>
+					</div>
+					<div class="field">
+						<textarea cols="10" rows="10" type="text" value="" style="width:288px;height:222px;" name="subject" id="subject">${sendEmail.subject }</textarea>
+						<div class="tips"></div>
+					</div>
+				</div>
+			</td>
 		</tr>
 	    <tr>
 	    	<td>
 		      <div class="form-group">
 		        <div class="label" style="width:75px">
+
 		        </div>
 		        <div class="field">
 		          <div class="tips"></div>

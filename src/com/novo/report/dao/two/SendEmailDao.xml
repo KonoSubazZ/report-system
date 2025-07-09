@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</where>
 	</select>
 	<select id="getSendEmailByPage" resultType="SendEmail">
-		select email_id,customer,emailaddress,CCemail,content,created_by,created_date,update_by,update_date from send_email
+		select email_id,customer,emailaddress,CCemail,subject,content,created_by,created_date,update_by,update_date from send_email
 		<where>
 			<if test="customer!=null and customer!=''">
 				and customer =#{customer}
@@ -33,8 +33,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<insert id="saveSendEmail">
-		insert into send_email(customer,emailaddress,CCemail,content,created_by,created_date)
-		values(#{customer},#{emailaddress},#{CCemail},#{content},#{created_by},#{created_date})
+		insert into send_email(customer,emailaddress,CCemail,subject,content,created_by,created_date)
+		values(#{customer},#{emailaddress},#{CCemail},#{subject},#{content},#{created_by},#{created_date})
 	</insert>
 
 	<delete id="deleteSendEmail">
@@ -42,12 +42,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</delete>
 
 	<select id="getSendEmailById" resultType="SendEmail">
-		select email_id,customer,emailaddress,CCemail,content,created_by,created_date,update_by,update_date from send_email
+		select email_id,customer,emailaddress,CCemail,subject,content,created_by,created_date,update_by,update_date from send_email
 		where email_id = #{email_id}
 	</select>
 
 	<update id="updateSendEmail">
-     	update send_email set customer=#{customer},emailaddress=#{emailaddress},CCemail=#{CCemail},content=#{content},update_by=#{update_by},update_date=#{update_date} where email_id=#{email_id}
+     	update send_email set customer=#{customer},emailaddress=#{emailaddress},CCemail=#{CCemail},subject=#{subject},content=#{content},update_by=#{update_by},update_date=#{update_date} where email_id=#{email_id}
     </update>
 
 	<select id="getContentByCustomer" resultType="String">

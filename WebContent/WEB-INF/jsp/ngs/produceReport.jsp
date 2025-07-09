@@ -161,20 +161,20 @@
                             </div>
                         </div>
                     </td>
-                    <%-- <c:if test="${currentNgsAvailableData.product_name=='lung'}">
-                        <td>
-                             <div class="form-group" style="margin-right: 50px">
-                                 <div class="label" style="width:75px">
-                                     <label></label>
-                                 </div>
-                                 <div class="field">
-                                     肺癌非鳞癌<input type="radio" name="clinicalremark" checked="checked" value="s1"/>
-                                     肺鳞癌<input type="radio" name="clinicalremark" value="s2"/>
-                                     <div class="tips"></div>
-                                 </div>
-                             </div>
-                         </td>
-                     </c:if> --%>
+                    <%--   <c:if test="${currentNgsAvailableData.product_name.contains('Lung')}">
+                          <td>
+                               <div class="form-group" style="margin-right: 50px">
+                                   <div class="label" style="width:75px">
+                                       <label></label>
+                                   </div>
+                                   <div class="field">
+                                       肺癌非鳞癌<input type="radio" name="clinicalremark" checked="checked" value="s1"/>
+                                       肺鳞癌<input type="radio" name="clinicalremark" value="s2"/>
+                                       <div class="tips"></div>
+                                   </div>
+                               </div>
+                           </td>
+                     </c:if>--%>
                 </tr>
                 <tr>
                     <td>
@@ -470,19 +470,25 @@
                         </div>
                     </td>
                 </tr>
+                <%--                是否展示PD--%>
                 <tr>
+                    <%--                是否展示PD--%>
                     <td>
-                        <div class="form-group">
+                        <div class="form-group" id="pdContent">
                             <div class="label" style="width:75px">
-                                <label></label>
+                                <label>展示PD：</label>
                             </div>
                             <div class="field">
+                                <select id="showPD" name="showPD" class="input w50">
+                                    <option value="1">是</option>
+                                    <option value="0">否</option>
+                                </select>
+                                <div class="tips"></div>
                             </div>
                         </div>
                     </td>
                     <td>
-                        <div class="
-">
+                        <div class="">
                             <div class="label" style="width:75px">
                                 <label></label>
                             </div>
@@ -493,6 +499,43 @@
                                 <span id="message" style="color: red;font-size: 14px"></span>
                             </div>
                             <script type="text/javascript">
+                                let showPDDiv = false;
+                                function showPD() {
+                                    // 获取数据
+                                    let product_name = "${currentNgsAvailableData.product_name}";
+                                    let subbarcode = "${currentNgsAvailableData.subbarcode}";
+                                    let analysis_date = "${currentNgsAvailableData.analysis_date}";
+                                    const URL = '${pageContext.request.contextPath}/ngs/showPD';
+
+                                    // 发送AJAX请求
+                                    $.ajax({
+                                        type: "GET",
+                                        url: URL,
+                                        data: {
+                                            product_name: product_name,
+                                            subbarcode: subbarcode,
+                                            analysis_date: analysis_date
+                                        },
+                                        dataType: "json", // 明确指定返回JSON格式
+                                        success: function (response) {
+                                            // 检查响应状态
+                                            if (response && response.code === 200 && response.data === true) {
+                                                showPDDiv = true;
+                                                $('#pdContent').show();
+                                            } else {
+                                                $('#pdContent').hide();
+                                            }
+                                        },
+                                        error: function (xhr, status, error) {
+                                            $('#pdContent').hide();
+                                            console.log(error);
+                                        }
+                                    });
+                                }
+                                $(document).ready(function () {
+                                    showPD();
+                                });
+
                                 $(function () {
                                     $.post("${pageContext.request.contextPath}/life/getStatus", {"report_id": "${currentNgsAvailableData.report_id}"},
                                         function (data) {

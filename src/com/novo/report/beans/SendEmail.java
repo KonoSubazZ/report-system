@@ -5,6 +5,7 @@ public class SendEmail {
     private String	customer;
     private String	emailaddress;
     private String	CCemail;
+    private String	subject;
     private String	content;
     private String	created_by;
     private String	created_date;
@@ -25,6 +26,14 @@ public class SendEmail {
 
     public void setCustomer(String customer) {
         this.customer = customer;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public String getEmailaddress() {

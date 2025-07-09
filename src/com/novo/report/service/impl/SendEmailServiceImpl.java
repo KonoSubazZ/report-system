@@ -75,7 +75,8 @@ public class SendEmailServiceImpl implements SendEmailService {
         if (emailInfo != null){
             String content = emailInfo.getOrDefault("content", "");
             String subject = emailInfo.getOrDefault("subject", "");
-
+            content = content == null ? "" : content;
+            subject = subject == null ? "" : subject;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String currentDate = sdf.format(new Date());
             subject = subject.replace("{{current_date}}", currentDate);

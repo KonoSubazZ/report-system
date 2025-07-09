@@ -1,6 +1,7 @@
 package com.novo.report.dao.two;
 
 import com.novo.report.beans.*;
+import com.novo.report.common.CommonQueryVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -702,4 +703,5 @@ public interface AnalysisReportDao {
     List<Map> getImmunehpbTable();
     List<Map> getImmuneUrinaryTable();
 
+    String getPDINFOFilePath(CommonQueryVO query);
 }

@@ -934,5 +934,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			immune_table1
 		ORDER BY id
 	</select>
+	<select id="getPDINFOFilePath" resultType="java.lang.String">
+		SELECT
+			file_path
+		FROM
+			data_file_status
+		WHERE
+			file_type = 'PDINFO'
+		  AND subbarcode = #{subbarcode}
+		  AND analysis_date = #{analysis_date}
+		  AND product_name = #{product_name}
+	</select>
 
 </mapper>

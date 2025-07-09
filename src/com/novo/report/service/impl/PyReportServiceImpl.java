@@ -2748,55 +2748,58 @@ public class PyReportServiceImpl implements PyReportService {
         summaryOfRresults.put("wesMutationSize", wesMutation.size());
 
         // PD-L1检测结果
-        Map pd = analysisReportDao.getPDInfo(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
-        if (pd != null && pd.size() > 0) {
-            String detect_antibody = pd.get("Detect_antibody").toString();
-            String[] detect_antibodys = detect_antibody.split(" ");
-            if (detect_antibodys.length == 2) {
-                pd.put("antibody", detect_antibodys[1]);
+        // 增加是否展示PD的配置
+        Map pd = null;
+        if (!currentNgsAvailable.getShowPD().equals("0")) {
+            pd = analysisReportDao.getPDInfo(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            if (pd != null && pd.size() > 0) {
+                String detect_antibody = pd.get("Detect_antibody").toString();
+                String[] detect_antibodys = detect_antibody.split(" ");
+                if (detect_antibodys.length == 2) {
+                    pd.put("antibody", detect_antibodys[1]);
+                }
+                // 获取图片
+                String he_PIC = analysisReportDao.getHE_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+                String yangkong_PIC = analysisReportDao.getYangkong_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+                String yinkong_PIC = analysisReportDao.getYinkong_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+                String pd_PIC = analysisReportDao.getPD_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+                if (he_PIC != null && !"".equals(he_PIC)) {
+                    pd.put("he_PIC_status", true);
+                    pd.put("he_PIC", he_PIC);
+                } else {
+                    pd.put("he_PIC_status", false);
+                }
+                if (yangkong_PIC != null && !"".equals(yangkong_PIC)) {
+                    pd.put("yangkong_PIC_status", true);
+                    pd.put("yangkong_PIC", yangkong_PIC);
+                } else {
+                    pd.put("yangkong_status", false);
+                }
+                if (yinkong_PIC != null && !"".equals(yinkong_PIC)) {
+                    pd.put("yinkong_PIC_status", true);
+                    pd.put("yinkong_PIC", yinkong_PIC);
+                } else {
+                    pd.put("yinkong_PIC_status", false);
+                }
+                if (pd_PIC != null && !"".equals(pd_PIC)) {
+                    pd.put("pd_PIC_status", true);
+                    pd.put("pd_PIC", pd_PIC);
+                } else {
+                    pd.put("pd_PIC_status", false);
+                }
+                // 获取PD-L1表达阳性阈值（表格）
+                List<Map> pdInfoTable = analysisReportDao.getPDInfoTable();
+                pd.put("pdInfoTable", pdInfoTable);
+                List<Map> pdInfoTable2 = analysisReportDao.getPDInfoTable2();
+                List<List<Map>> groupList = new ArrayList<>();
+                pdInfoTable2.stream().collect(Collectors.groupingBy(map -> map.get("disease_name"), Collectors.toList())).
+                        forEach((map, fooListByDiseaseName) -> {
+                            groupList.add(fooListByDiseaseName);
+                        });
+                pd.put("pdInfoTable2", groupList);
             }
-            // 获取图片
-            String he_PIC = analysisReportDao.getHE_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
-            String yangkong_PIC = analysisReportDao.getYangkong_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
-            String yinkong_PIC = analysisReportDao.getYinkong_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
-            String pd_PIC = analysisReportDao.getPD_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
-            if (he_PIC != null && !"".equals(he_PIC)) {
-                pd.put("he_PIC_status", true);
-                pd.put("he_PIC", he_PIC);
-            } else {
-                pd.put("he_PIC_status", false);
-            }
-            if (yangkong_PIC != null && !"".equals(yangkong_PIC)) {
-                pd.put("yangkong_PIC_status", true);
-                pd.put("yangkong_PIC", yangkong_PIC);
-            } else {
-                pd.put("yangkong_status", false);
-            }
-            if (yinkong_PIC != null && !"".equals(yinkong_PIC)) {
-                pd.put("yinkong_PIC_status", true);
-                pd.put("yinkong_PIC", yinkong_PIC);
-            } else {
-                pd.put("yinkong_PIC_status", false);
-            }
-            if (pd_PIC != null && !"".equals(pd_PIC)) {
-                pd.put("pd_PIC_status", true);
-                pd.put("pd_PIC", pd_PIC);
-            } else {
-                pd.put("pd_PIC_status", false);
-            }
-            // 获取PD-L1表达阳性阈值（表格）
-            List<Map> pdInfoTable = analysisReportDao.getPDInfoTable();
-            pd.put("pdInfoTable", pdInfoTable);
-            List<Map> pdInfoTable2 = analysisReportDao.getPDInfoTable2();
-            List<List<Map>> groupList = new ArrayList<>();
-            pdInfoTable2.stream().collect(Collectors.groupingBy(map -> map.get("disease_name"), Collectors.toList())).
-                    forEach((map, fooListByDiseaseName) -> {
-                        groupList.add(fooListByDiseaseName);
-                    });
-            pd.put("pdInfoTable2", groupList);
         }
         rt.setPDInfo(pd);
-
         // her2
         Map her2 = analysisReportDao.getHer2(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         if (her2 != null && her2.size() > 0) {
