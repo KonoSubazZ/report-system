@@ -70,7 +70,7 @@ public class PyAnalysisReportTemplateUtil {
             data.put("checkeddate", StringUtils.isEmpty(rt.getCheckeddate()) ? "-" : rt.getCheckeddate());
             data.put("checkedby", StringUtils.isEmpty(rt.getCheckedby()) ? "-" : rt.getCheckedby());
             data.put("barcode", StringUtils.isEmpty(rt.getBarcode()) ? "-" : rt.getBarcode());
-            data.put("subbarcode", StringUtils.isEmpty(rt.getSubbarcode()) ? "-" : rt.getSubbarcode());
+            data.put("subbarcode", processSampleValue(rt.getSubbarcode()));
             data.put("hospital", processSampleValue(rt.getHospital()));
             data.put("receiveddate", processSampleValue(rt.getReceiveddate()));
             data.put("reportreceiver", StringUtils.isEmpty(rt.getReportreceiver()) ? "-" : rt.getReportreceiver());
