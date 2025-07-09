@@ -498,6 +498,7 @@ public class PyAnalysisReportTemplateUtil {
     }
 
     private static final boolean IS_TEST_SERVER = IpUtil.getAllLocalIPv4s().contains("172.20.1.34");
+
     public static String processSampleValue(String value) {
         return processSampleValueInternal(value, null);
     }
@@ -505,14 +506,22 @@ public class PyAnalysisReportTemplateUtil {
     public static String processSampleValue(String value, String key) {
         return processSampleValueInternal(value, key);
     }
-    private static String processSampleValueInternal(String value, String key) {
-        boolean isValueEmpty = value == null || value.isEmpty();
-        boolean isClient = "client".equals(key);
 
-        if (isValueEmpty || (IS_TEST_SERVER && (key == null || isClient))) {
-            return key == null ? "-" : "XXX";
+    private static String processSampleValueInternal(String value, String key) {
+        boolean isClient = "client".equals(key);
+        // 处理空值情况（优先级最高）
+        if (value == null || value.isEmpty()) {
+            return "-";
         }
-        return value;
+
+        // 非测试服务器直接返回原值
+        if (!IS_TEST_SERVER) {
+            return value;
+        }
+
+        // 测试服务器下的特殊处理
+        return isClient ? "XXX" : "-";
     }
+
 }
 
