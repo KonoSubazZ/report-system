@@ -514,13 +514,13 @@ public class PyAnalysisReportTemplateUtil {
             return "-";
         }
 
-        // 非测试服务器直接返回原值
-        if (!IS_TEST_SERVER) {
-            return value;
+        // 测试服务器下的特殊处理
+        if (IS_TEST_SERVER) {
+            return isClient ? "XXX" : "-";
         }
 
-        // 测试服务器下的特殊处理
-        return isClient ? "XXX" : "-";
+        // 返回原值
+        return value;
     }
 
 }
