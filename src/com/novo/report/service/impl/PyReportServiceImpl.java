@@ -7024,9 +7024,10 @@ public class PyReportServiceImpl implements PyReportService {
         // 改为使用HttpApiClientUtil post
         String ngsQrcodeUrl = "http://qrcode.novogene.com/index.php/Api/Reportid/qrcode";
 
+        boolean isTestServer = IpUtil.getAllLocalIPv4s().contains("172.20.1.34");
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("client", client);
-        jsonObject.addProperty("subbarcode", subbarcode);
+        jsonObject.addProperty("client", isTestServer ? "XXX" : client);
+        jsonObject.addProperty("subbarcode", isTestServer ? "-" : subbarcode);
         jsonObject.addProperty("product_name", pageName);
         jsonObject.addProperty("report_date", report_date);
         jsonObject.addProperty("qrcode", qrunicode);

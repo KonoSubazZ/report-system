@@ -58,8 +58,8 @@ public class PyAnalysisReportTemplateUtil {
             data.put("inspection_number", StringUtils.isEmpty(rt.getInspection_number()) ? "/" : rt.getInspection_number());
             data.put("specimentype", StringUtils.isEmpty(rt.getSpecimentype()) ? "/" : rt.getSpecimentype());
         } else {
-            data.put("age", StringUtils.isEmpty(rt.getAge()) ? "-" : rt.getAge());
-            data.put("client", StringUtils.isEmpty(rt.getClient()) ? "-" : rt.getClient());
+            data.put("age", processSampleValue(rt.getAge()));
+            data.put("client", processSampleValue(rt.getClient(), "client"));
             data.put("contact", StringUtils.isEmpty(rt.getContact()) ? "-" : rt.getContact());
             data.put("customer", StringUtils.isEmpty(rt.getCustomer()) ? "-" : rt.getCustomer());
             data.put("enterdate", StringUtils.isEmpty(rt.getEnterdate()) ? "-" : rt.getEnterdate());
@@ -71,16 +71,16 @@ public class PyAnalysisReportTemplateUtil {
             data.put("checkedby", StringUtils.isEmpty(rt.getCheckedby()) ? "-" : rt.getCheckedby());
             data.put("barcode", StringUtils.isEmpty(rt.getBarcode()) ? "-" : rt.getBarcode());
             data.put("subbarcode", StringUtils.isEmpty(rt.getSubbarcode()) ? "-" : rt.getSubbarcode());
-            data.put("hospital", StringUtils.isEmpty(rt.getHospital()) ? "-" : rt.getHospital());
-            data.put("receiveddate", StringUtils.isEmpty(rt.getReceiveddate()) ? "-" : rt.getReceiveddate());
+            data.put("hospital", processSampleValue(rt.getHospital()));
+            data.put("receiveddate", processSampleValue(rt.getReceiveddate()));
             data.put("reportreceiver", StringUtils.isEmpty(rt.getReportreceiver()) ? "-" : rt.getReportreceiver());
             data.put("patientname", StringUtils.isEmpty(rt.getPatientname()) ? "-" : rt.getPatientname());
             data.put("sex", StringUtils.isEmpty(rt.getSex()) ? "-" : rt.getSex());
             data.put("birthday", StringUtils.isEmpty(rt.getBirthday()) ? "-" : rt.getBirthday());
-            data.put("locationname", StringUtils.isEmpty(rt.getLocationname()) ? "-" : rt.getLocationname());
+            data.put("locationname", processSampleValue(rt.getLocationname()));
             data.put("doctorname", StringUtils.isEmpty(rt.getDoctorname()) ? "-" : rt.getDoctorname());
-            data.put("room", StringUtils.isEmpty(rt.getRoom()) ? "-" : rt.getRoom());
-            data.put("patient_phone", StringUtils.isEmpty(rt.getPatient_phone()) ? "-" : rt.getPatient_phone());
+            data.put("room", processSampleValue(rt.getRoom()));
+            data.put("patient_phone", processSampleValue(rt.getPatient_phone()));
             data.put("sample_type", StringUtils.isEmpty(rt.getSample_type()) ? "-" : rt.getSample_type());
             data.put("sample_source", StringUtils.isEmpty(rt.getSample_source()) ? "-" : rt.getSample_source());
             data.put("commission_date", StringUtils.isEmpty(rt.getCommission_date()) ? "-" : rt.getCommission_date());
@@ -495,6 +495,24 @@ public class PyAnalysisReportTemplateUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static final boolean IS_TEST_SERVER = IpUtil.getAllLocalIPv4s().contains("172.20.1.34");
+    public static String processSampleValue(String value) {
+        return processSampleValueInternal(value, null);
+    }
+
+    public static String processSampleValue(String value, String key) {
+        return processSampleValueInternal(value, key);
+    }
+    private static String processSampleValueInternal(String value, String key) {
+        boolean isValueEmpty = value == null || value.isEmpty();
+        boolean isClient = "client".equals(key);
+
+        if (isValueEmpty || (IS_TEST_SERVER && (key == null || isClient))) {
+            return key == null ? "-" : "XXX";
+        }
+        return value;
     }
 }
 
