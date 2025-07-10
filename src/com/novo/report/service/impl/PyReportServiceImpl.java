@@ -4331,6 +4331,11 @@ public class PyReportServiceImpl implements PyReportService {
         Map<String, List<String>> geneVariantMap = new HashMap<>();
         for (Map immunityMutGene : immunityMutGeneList) {
             String gene = immunityMutGene.get("gene").toString();
+            // fix "PDCD1LG2(PDL2)" 单基因多括号
+            int index = gene.indexOf('(');
+            if (index != -1){
+                gene = gene.substring(0, index);
+            }
             String oriVariant = immunityMutGene.get("variant").toString();
             if (!"/".equals(oriVariant)) {
                 String variant = oriVariant;
