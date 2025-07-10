@@ -32,9 +32,26 @@
     <script type="text/javascript">
         $(function () {
             displayData(0);
-
+            $("#filename").on("change", function (e) {
+                var e = e || window.event
+                var _file = e.target.files
+                var names = ""
+                if (_file.length > 1) {
+                    for (let i = 0; i < _file.length; i++) {
+                        if (i == _file.length - 1) {
+                            names += _file[i].name
+                        } else {
+                            names += _file[i].name + "<br>"
+                        }
+                    }
+                    $("#filenames").html(names)
+                } else {
+                    $("#filenames").html("")
+                }
+            });
             $("#customer").focus(function () {
                 let customer = $("#customer").val();
+
                 // document.getElementById("content").innerText = customer;
                 if (customer != "") {
                     <%--$.ajax({--%>
@@ -319,8 +336,8 @@
                                 <label>邮箱发送：</label>
                             </div>
                             <div class="field">
-                                <input type="radio" name="email" id="IVD" style="height:38px" checked value="0"/>IVD&nbsp;&nbsp;&nbsp;
-                                <input type="radio" name="email" id="LDT" style="height:38px" value="1"/>LDT
+                                <input type="radio" name="email" id="IVD" style="height:38px"  value="0"/>IVD&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="email" id="LDT" style="height:38px" checked value="1"/>LDT
                             </div>
                         </div>
                     </td>
