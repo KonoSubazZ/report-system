@@ -4333,7 +4333,7 @@ public class PyReportServiceImpl implements PyReportService {
             String gene = immunityMutGene.get("gene").toString();
             // fix "PDCD1LG2(PDL2)" 单基因多括号
             int index = gene.indexOf('(');
-            if (index != -1){
+            if (index != -1) {
                 gene = gene.substring(0, index);
             }
             String oriVariant = immunityMutGene.get("variant").toString();
@@ -6046,7 +6046,11 @@ public class PyReportServiceImpl implements PyReportService {
     // EGFR_18-21外显子基因检测报告模板
     public void templateEGFR(String gene, String variant, String ExonicFunc, String exon, String ori_variant, HashSet detectionMutationSet) {
         String detection = "";
-        if ("EGFR".equals(gene) && variant.contains("G719")) {
+
+        // 20250714 增加 C797S 位点
+        if ("EGFR".equals(gene) && variant.contains("C797S")) {
+            detection = "EGFR C797S";
+        } else if ("EGFR".equals(gene) && variant.contains("G719")) {
             detection = "EGFR G719X";
         } else if ("EGFR".equals(gene) && "19".equals(exon) && variant.contains("del")) {
             detection = "EGFR Exon19 Del";
@@ -6055,7 +6059,7 @@ public class PyReportServiceImpl implements PyReportService {
         } else {
             detection = gene + " " + variant;
         }
-        List<String> list = Arrays.asList("EGFR L858R", "EGFR Exon19 Del", "EGFR T790M", "EGFR G719X", "EGFR S768I", "EGFR L861Q", "EGFR Exon20 Ins");
+        List<String> list = Arrays.asList("EGFR L858R", "EGFR Exon19 Del", "EGFR T790M", "EGFR G719X", "EGFR S768I", "EGFR L861Q", "EGFR Exon20 Ins", "EGFR C797S");
         if (list.contains(detection)) {
             detectionMutationSet.add(detection);
         }
