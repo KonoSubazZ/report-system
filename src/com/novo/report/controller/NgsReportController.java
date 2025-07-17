@@ -262,13 +262,12 @@ public class NgsReportController {
                 String json = "";
                 try {
                     long startTime = System.currentTimeMillis();
-//                    json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9999/create_xiao_report_test/" + analysisReport.getReport_id() + "/" + 1);
-                    // 20250305更新小报告端口
-                    json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/create_xiao_report_test/" + analysisReport.getReport_id() + "/" + 1);
+                    // json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/create_xiao_report_test/" + analysisReport.getReport_id() + "/" + 1);
+                    json = WebserviceProxyUtils.httpURLGETCase("http://10.1.183.3:9090/create_xiao_report_test/" + analysisReport.getReport_id() + "/" + 1);
                     subreportLogger.log(
                             Level.INFO,
                             String.format(
-                                    "[OnlineGenSubreport] subbarcode=%s, report_id=%s, url=http://10.1.181.174:9090/create_xiao_report_test/%s/1",
+                                    "[OnlineGenSubreport] subbarcode=%s, report_id=%s, url=http://10.1.183.3:9090/create_xiao_report_test/%s/1",
                                     sf.getSubbarcode(), analysisReport.getReport_id(), analysisReport.getReport_id()
                             )
                     );

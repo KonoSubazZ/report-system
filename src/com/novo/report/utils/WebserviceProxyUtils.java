@@ -126,7 +126,7 @@ public class WebserviceProxyUtils {
         String subbarcode = currentNgsAvailable.getSubbarcode();
         Integer reportId = currentNgsAvailable.getReport_id();
         String date = getCurrentDateFormatted();
-        String res = httpURLGETCase("http://10.1.181.174:9098/report/update_sample_report_status/" + user + "/" + date + "/" + product + "/" + subbarcode + "/" + reportId);
+        String res = httpURLGETCase("http://10.1.183.3:9098/report/update_sample_report_status/" + user + "/" + date + "/" + product + "/" + subbarcode + "/" + reportId);
         System.out.println("更新样本状态到新系统结果："+res);
     }
 

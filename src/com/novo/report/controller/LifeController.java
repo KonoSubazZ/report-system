@@ -146,16 +146,18 @@ public class LifeController {
             analysisReport.setUpdate_date(DateUtil.getSystemTime());
             lifeService.addAnalysisReport(analysisReport);
             currentNgsAvailable.setReport_id(analysisReport.getReport_id());
-            List<Object> ips = Arrays.asList(IpUtil.getLocalIp4Address().toArray());
-            if (ips.contains(ServerConfig.getServerFormalIP())) {
-                if (user != null) {
-                    // 发送审核人（接口部署在公司）
-                    WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/update_report_status/" + user.getUser_account() + "/" + currentNgsAvailable.getSubbarcode());
-                } else {
-                    //重定向到登录页面
-                    response.sendRedirect(request.getContextPath());
-                }
-            }
+
+            // 不使用了，下版本移除
+//            List<Object> ips = Arrays.asList(IpUtil.getLocalIp4Address().toArray());
+//            if (ips.contains(ServerConfig.getServerFormalIP())) {
+//                if (user != null) {
+//                    // 发送审核人（接口部署在公司）
+//                    WebserviceProxyUtils.httpURLGETCase("http://10.1.183.3:9090/update_report_status/" + user.getUser_account() + "/" + currentNgsAvailable.getSubbarcode());
+//                } else {
+//                    //重定向到登录页面
+//                    response.sendRedirect(request.getContextPath());
+//                }
+//            }
         }
 
         if (currentNgsAvailable.getProduct_id() == null) {

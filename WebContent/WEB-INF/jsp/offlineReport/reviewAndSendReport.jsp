@@ -344,7 +344,7 @@
                                         // 34 - 报告完成
                                         let status = 34;
                                         let report_id = "${analysis_report.report_id}";
-                                        const URL = 'http://10.1.181.174:9099';
+                                        const URL = 'http://10.1.183.3:9099';
                                         $.ajax({
                                             type: "GET",
                                             url: URL + "/report/update_sample_report_status/" + username + "/" + upload_date + "/" + product + "/" + sample_code + "/" + status + "/" + report_id + "/",

@@ -486,14 +486,15 @@ public class OfflineReportController {
             if (ips.contains(ServerConfig.getServerFormalIP())) {
                 String json = "";
                 try {
-                    // json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9999/create_xiao_report_test/" + report_id + "/" + 1);
-                    // 生成小报告端口
-                    json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/create_xiao_report_test/" + report_id + "/" + 1);
+                    // 原地址，下版本移除
+                    // json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/create_xiao_report_test/" + report_id + "/" + 1);
+                    // 迁移新服务器
+                    json = WebserviceProxyUtils.httpURLGETCase("http://10.1.183.3:9090/create_xiao_report_test/" + report_id + "/" + 1);
                     // 增加日志记录
                     subreportLogger.log(
                             Level.INFO,
                             String.format(
-                                    "[OfflineGenSubreport] subbarcode=%s, report_id=%s, url=http://10.1.181.174:9090/create_xiao_report_test/%s/1",
+                                    "[OfflineGenSubreport] subbarcode=%s, report_id=%s, url=http://10.1.183.3:9090/create_xiao_report_test/%s/1",
                                     subbarcode, report_id, report_id
                             )
                     );
