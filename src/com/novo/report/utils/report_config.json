@@ -4,8 +4,7 @@
     "single_sample": "NOVO检测报告-通用单样本",
     "double_sample": "NOVO检测报告-通用双样本",
     "single_sample_nostamp": "NOVO报告-通用单样本",
-    "double_sample_nostamp": "NOVO报告-通用双样本",
-    "custom_HNSZYY": "NOVO检测报告-双样本-湖南省中医研"
+    "double_sample_nostamp": "NOVO报告-通用双样本"
   },
   "advanced_templates": {
     "single_sample": [
@@ -99,11 +98,6 @@
       "甲状腺癌38报告-双样本-非盖章版",
       "乳腺癌39基因报告",
       "肝胆胰腺肿瘤120基因检测报告-双样本-非盖章版"
-    ],
-    "custom_HNSZYY": [
-      "NOVO泛癌种1238检测报告-湖南省中医研",
-      "泛实体瘤188基因检测报告-湖南省中医研",
-      "消化道肿瘤50基因检测报告-双样本-湖南省中医研"
     ]
   }
 }
