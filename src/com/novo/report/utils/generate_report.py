@@ -14,24 +14,14 @@ from docx.shared import Pt
 from io import BytesIO
 import time
 from html import escape
-
-# @deprecated 兼容 Python 2,下版本待移除
-# try:
-#     from html import escape
-# except ImportError:
-#     # cgi.escape is deprecated in python 3.7
-#     from cgi import escape
-# 样本质量评估
-from assess_sample_quality import assess_sample_quality
-
-
 # import docxtpl
 # from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
 specific_version_path = "/data/soft/python3-packages"
 sys.path.insert(0, specific_version_path)
 from docxtpl import DocxTemplate, RichText, InlineImage
 
-
+# 样本质量评估
+from assess_sample_quality import assess_sample_quality
 
 def setup_logging():
     """
@@ -485,30 +475,6 @@ def markInRed(value):
         value = MyRichText(value, color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size='21')
     return value
 
-# @Deprecated 自动更新目录页码，没起作用，下版本待移除
-def set_updatefields_true(docx_path):
-    """ Opens the docx and adds <w:updateFields w:val="true"/> to
-       (docx_path)/word/settings.xml to enforce update of TOC (and
-       other fields marked as dirty) on first open.
-       Saves the file afterwards.
-
-    Arguments:
-        docx_path {str} -- Absolute path to docx
-    Returns:
-        Nothing
-    """
-    namespace = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
-    # namespace = "{http://schemas.microsoft.com/office/word/2003/wordml}"
-    doc = Document(docx_path)
-    # doc.updateFields()
-    # add child to doc.settings element
-    element_updatefields = lxml.etree.SubElement(
-        doc.settings.element, namespace + "updateFields"
-    )
-    element_updatefields.set(namespace + "val", "true")
-    doc.save(docx_path)
-
-
 # 20250310 扁平化数据
 def flatten_data(data):
     result = []
@@ -516,7 +482,6 @@ def flatten_data(data):
         desc2s = item['desc2'].split(',')
         result.append({'desc1': item['desc1'], 'desc2': desc2s})
     return result
-
 
 def load_template_config(config_path="report_config.json"):
     try:
@@ -533,17 +498,19 @@ def load_template_config(config_path="report_config.json"):
 
     return config
 
-
+# @deprecated 改为自动获取key 下版本待移除
 def determine_template_file(template_name, config):
     single_common = config["common_templates"]["single_sample"]
     double_common = config["common_templates"]["double_sample"]
     single_common_nostamp = config["common_templates"]["single_sample_nostamp"]
     double_common_nostamp = config["common_templates"]["double_sample_nostamp"]
+    custom_HNZYY_common = config["common_templates"]["custom_HNZYY"]
 
     single_list = set(config["advanced_templates"]["single_sample"])
     double_list = set(config["advanced_templates"]["double_sample"])
     single_list_nostamp = set(config["advanced_templates"]["single_sample_nostamp"])
     double_list_nostamp = set(config["advanced_templates"]["double_sample_nostamp"])
+    custom_HNZYY = set(config["advanced_templates"]["custom_HNZYY"])
 
     if template_name in double_list:
         return double_common
@@ -553,8 +520,24 @@ def determine_template_file(template_name, config):
         return single_common_nostamp
     elif template_name in double_list_nostamp:
         return double_common_nostamp
+    elif template_name in custom_HNZYY:
+        return f"{custom_HNZYY_common}.docx"
     else:
         return f"{template_name}.docx"
+
+def determine_template_file_V1(template_name, config):
+    # 遍历高级模板的所有类型（如single_sample, double_sample等）
+    for template_type, template_list in config["advanced_templates"].items():
+        # 将模板列表转为集合（提高查找效率）
+        template_set = set(template_list)
+        # 检查模板名称是否在当前类型的模板集合中
+        if template_name in template_set:
+            # 从通用模板中获取对应类型的模板文件路径
+            common_template = config["common_templates"][template_type]
+            return f"{common_template}.docx"
+
+    # 如果没有匹配的高级模板，返回原始模板名称（加上.docx后缀）
+    return f"{template_name}.docx"
 
 
 def load_template_safely(tpl_path):
@@ -696,7 +679,7 @@ if __name__ == '__main__':
         # 是否使用模块化模板
         if enabled:
             template_name = os.path.basename(input_template_path).replace(".docx", "")
-            selected_template_file = determine_template_file(template_name, config)
+            selected_template_file = determine_template_file_V1(template_name, config)
             tpl_path = os.path.join(os.path.dirname(input_template_path), selected_template_file)
 
             print(f"[INFO] 匹配到的模板名: {template_name}")
@@ -823,9 +806,6 @@ if __name__ == '__main__':
         # 渲染模板
         tpl.render(info_json, jinja_env, autoescape=True)
         tpl.save(output_path)
-
-        # 注释更新页码，未生效
-        # set_updatefields_true(output_path)
 
         end_time = time.time()
         elapsed_time = end_time - start_time
