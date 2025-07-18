@@ -51,7 +51,7 @@ public class VariantServiceImpl implements VariantService {
         }
         // 此位点位特殊的点，知识库不关联但是要特殊展示
         List<String> specialExon20Ins = Arrays.asList("A763_Y764insFQEA", "A763_Y764insLQEA", "D761_E762insAGLQ", "Y764_V765insHH", "Y764_V765insHQ");
-        if (specialExon20Ins.contains(variant)) {
+        if (specialExon20Ins.stream().anyMatch(variant::contains)) {
             return true;
         }
 
