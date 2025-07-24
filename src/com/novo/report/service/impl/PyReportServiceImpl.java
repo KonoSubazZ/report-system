@@ -3848,7 +3848,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         rt.setSummaryOfRresults(summaryOfRresults);
 
-        if (productName.equals("novopm2_MRD")) {
+        if (productName.equals("novopm2_MRD") || productName.equals("novopm2_1238_MRD")) {
             String subbarcode = currentNgsAvailable.getSubbarcode();
             String analysisDate = currentNgsAvailable.getAnalysis_date();
             String prodName = currentNgsAvailable.getProduct_name();
