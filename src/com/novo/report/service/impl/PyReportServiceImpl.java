@@ -3955,7 +3955,7 @@ public class PyReportServiceImpl implements PyReportService {
             HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd,
                     allMutation, rt.getPanel(),
                     detectedGeneInfo, hasCRDrug,
-                    panelType);
+                    panelType, sf.getPCODE());
             rt.setReportInfo(reportInfo);
 
             // CUSTOM 关于癌种判断的一些展示逻辑,生成检测项目信息
@@ -4731,7 +4731,8 @@ public class PyReportServiceImpl implements PyReportService {
             String panel,
             Map detectedGeneInfo,
             boolean hasCRDrug,
-            String panelType) {
+            String panelType,
+            String productCode) {
         HashMap<String, Object> res = new HashMap<>();
         String reportName = templateConf.getReport_name();
         if (pd != null) {
@@ -4757,6 +4758,7 @@ public class PyReportServiceImpl implements PyReportService {
         res.put("conf", templateConf);
         res.put("detected_gene_info", detectedGeneInfo);
         res.put("panel_type", panelType);
+        res.put("pcode", productCode);
         return res;
     }
 

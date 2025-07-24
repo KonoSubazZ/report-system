@@ -75,7 +75,8 @@ public class SampleFileController {
                     } else if (StringUtils.isNotEmpty(specimen_type) && specimen_type.contains("组织") || "石蜡卷片".equals(specimen_type) || "石蜡贴片".equals(specimen_type) || "贴片+卷片".equals(specimen_type) || "蜡块".equals(specimen_type) || "蜡块（对照）".equals(specimen_type) || "口腔拭子".equals(specimen_type) || "胸腹水".equals(specimen_type)) {
                         sf.setSample_type("tissue");
                     }
-                    sf.setFAMILYFIRST(sh.getFamilyfirst());
+                    sf.setPCODE(sh.getPCODE());
+                    sf.setFAMILYFIRST(sh.getFAMILYFIRST());
                     sf.setEmailaddress(sh.getEmailaddress());
                     sf.setSaleremail(sh.getSaleremail());
                     sf.setSupportemail(sh.getSupportemail());

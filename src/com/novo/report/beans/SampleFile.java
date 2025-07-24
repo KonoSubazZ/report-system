@@ -119,6 +119,16 @@ public class SampleFile {
 	private String customertype;	//客户类别
 	private String FAMILYFIRST;
 
+	public String getPCODE() {
+		return PCODE;
+	}
+
+	public void setPCODE(String PCODE) {
+		this.PCODE = PCODE;
+	}
+
+	private String PCODE;
+
 	public String getFAMILYFIRST() {
 		return FAMILYFIRST;
 	}
