@@ -6145,7 +6145,9 @@ public class PyReportServiceImpl implements PyReportService {
      * @return
      */
     private Map<String, Object> getGeneClassification(List<String> geneSymbols, Map<String, Object> geneClassification, TemplateConf conf, String panel) {
-        if (conf == null) {
+
+        // 由之前 conf==null 改为所有的都会输出
+        if (true) {
             StringBuilder allGenes = new StringBuilder();
             Map<Character, StringBuilder> geneMap = new HashMap<>();
 
