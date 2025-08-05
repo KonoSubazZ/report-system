@@ -652,12 +652,6 @@ def split_to_newlines(value, delimiter=',', word_break='\n'):
     parts = [p.strip() for p in value.split(delimiter) if p.strip()]
     return f' {word_break} '.join(parts) + f' {word_break}' if parts else ''
 
-# 分割指定字符的第一个位置
-def slice_until_first_is(text, delimiter='是'):
-    first_index = text.find(delimiter)
-    if first_index != -1:
-        return text[:first_index]
-    return text  # 如果没有“是”，返回原字符串
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
