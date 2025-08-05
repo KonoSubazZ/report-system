@@ -2315,10 +2315,11 @@ public class PyReportServiceImpl implements PyReportService {
                 // 湖南肿瘤化疗删除3级的联药 3级单药要保留
                 chemoResult = chemoResult.stream().filter(s -> !(Arrays.asList("3", "4").contains(s.get("evidence")) && s.get("drug_name_chinese").toString().contains("+"))).collect(Collectors.toList());
                 chemoSummary = ChemoJsonUtil2.getChemoSummary(chemoResult, chem_cancer, rt.getTemplate_name());
-            }/* else if (rt.getTemplate_name().contains("基智远")) {
-                chemoResult = chemoResult.stream().filter(s -> Arrays.asList("铂类","氟尿嘧啶类","环磷酰胺","伊立替康").contains(s.get("drug_class").toString()) && !s.get("drug_name_chinese").toString().contains("+")).collect(Collectors.toList());
+            } else if (rt.getTemplate_name().contains("泛实体瘤86基因检测报告-单样本-三峡")) {
+                // 20250805 三峡86基因检测报告-单样本-三峡 只保留 1 2 等级
+                chemoResult = chemoResult.stream().filter(s -> !Arrays.asList("3", "4").contains(s.get("evidence"))).collect(Collectors.toList());
                 chemoSummary = ChemoJsonUtil2.getChemoSummary(chemoResult, chem_cancer, rt.getTemplate_name());
-            }*/
+            }
             // 化疗解析
             chemoAnalysis = ChemoJsonUtil2.getChemoAnalysis(chemoResult);
         }
