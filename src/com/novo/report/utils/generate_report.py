@@ -652,6 +652,13 @@ def split_to_newlines(value, delimiter=',', word_break='\n'):
     parts = [p.strip() for p in value.split(delimiter) if p.strip()]
     return f' {word_break} '.join(parts) + f' {word_break}' if parts else ''
 
+def percent_to_float(value):
+    try:
+        # 先转换为字符串，再处理（兼容数字类型输入）
+        str_value = str(value).strip('%')
+        return float(str_value)
+    except (ValueError, TypeError):
+        return 0.0
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
@@ -802,7 +809,7 @@ if __name__ == '__main__':
         jinja_env.filters['mr'] = markInRed
         jinja_env.filters['splitlines'] = splitlines
         jinja_env.filters['split_to_newlines'] = split_to_newlines
-
+        jinja_env.filters['percent_to_float'] = percent_to_float
         # 渲染模板
         tpl.render(info_json, jinja_env, autoescape=True)
         tpl.save(output_path)
