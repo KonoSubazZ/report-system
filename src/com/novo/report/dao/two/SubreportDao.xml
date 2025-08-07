@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.SubreportDao">
+
+	<select id="getSubreportInfo" resultType="java.util.Map">
+		SELECT
+		    name,
+		    need_xbg,
+		    report_info
+		FROM
+		    myapp_xiaoreporttemplateall
+		WHERE name = #{name}
+	</select>
+
+	<select id="getReportJSON" resultType="java.util.Map">
+		SELECT
+		    report_id,
+		    report_filename,
+		    report_detail
+		FROM
+			analysis_report_store
+		WHERE report_id = #{report_id}
+	</select>
+</mapper>
