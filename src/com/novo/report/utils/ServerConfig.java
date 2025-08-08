@@ -27,6 +27,9 @@ public class ServerConfig {
     public static String getServerTestIP() {
         return prop.getProperty("server_test.ip");
     }
+    public static String getSubreportCallApi() {
+        return prop.getProperty("subreport_call_api");
+    }
 
     public static void main(String[] args) throws IOException {
         System.out.println(getServerFormalIP());
