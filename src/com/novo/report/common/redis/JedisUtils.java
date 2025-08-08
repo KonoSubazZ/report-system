@@ -20,7 +20,7 @@ public class JedisUtils {
             poolConfig.setMaxTotal(JedisConfig.getMaxTotal());
             poolConfig.setMaxIdle(JedisConfig.getMaxIdle());
             poolConfig.setMinIdle(JedisConfig.getMinIdle());
-            poolConfig.setMaxWaitMillis(JedisConfig.getMaxWaitMillis());
+            // poolConfig.setMaxWaitMillis(JedisConfig.getMaxWaitMillis());
             poolConfig.setTestOnBorrow(JedisConfig.isTestOnBorrow());
 
             // 创建连接池

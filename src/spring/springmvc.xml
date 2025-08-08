@@ -25,6 +25,9 @@
 		<!-- 后缀 -->
 		<property name="suffix" value=".jsp" />
 	</bean>
+    <!-- 配置子报告消费者 -->
+    <bean id="subreportConsumer" class="com.novo.report.task.queue.SubreportConsumer"
+          init-method="start" destroy-method="stop"/>
 	<!-- 拦截器 -->
 	<!--<mvc:interceptors>
         <mvc:interceptor>

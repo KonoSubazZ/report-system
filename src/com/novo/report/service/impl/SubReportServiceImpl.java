@@ -11,11 +11,20 @@ import com.novo.report.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class SubReportServiceImpl implements SubReportService {
+    private static final String BASE_PATH = "/data/soft/subreport/";
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
 
     @Autowired
@@ -90,11 +99,19 @@ public class SubReportServiceImpl implements SubReportService {
 
                     if (needXbg.equals("1")) {
                         String subreportFilename = "报告解读-" + reportFilename.replace(".pdf", ".docx");
-                        String subreportFilePath = "/home/cyc/xiaobaogao_all/" + subreportFilename;
+                        String subreportFilePath = "/data/soft/subreport";
+                        try {
+                            // 生成小报告文件路径
+                            subreportFilePath = generatePathWithDate(BASE_PATH, subreportFilename);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
                         SubreportProducer producer = new SubreportProducer();
                         // 提交生成小报告任务
                         producer.submitSubreportTask(
+                                reportId,
                                 subreportFilePath,
                                 reportConf,
                                 reportJsonStr
@@ -106,5 +123,26 @@ public class SubReportServiceImpl implements SubReportService {
         return null;
     }
 
+    private String generatePathWithDate(String baseDir, String filename) throws IOException {
+        // 1. 处理基础目录，确保末尾有分隔符
+        if (!baseDir.endsWith("/") && !baseDir.endsWith("\\")) {
+            baseDir += File.separator;
+        }
+
+        // 2. 获取当前日期（格式：yyyyMMdd）
+        String dateStr = LocalDate.now().format(DATE_FORMATTER);
+
+        // 3. 拼接日期目录路径
+        String dateDir = baseDir + dateStr;
+        Path dirPath = Paths.get(dateDir);
+
+        // 4. 创建目录（包括所有父目录）
+        if (!Files.exists(dirPath)) {
+            Files.createDirectories(dirPath);
+        }
+
+        // 5. 拼接完整文件路径
+        return dateDir + File.separator + filename;
+    }
 
 }
