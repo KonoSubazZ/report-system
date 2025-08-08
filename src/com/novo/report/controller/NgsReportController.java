@@ -247,7 +247,8 @@ public class NgsReportController {
                     "杭州艾迪康医学检验中心有限公司",
                     "重庆艾迪康医学检验实验室有限公司",
                     "青岛艾迪康医学检验实验室有限公司",
-                    "济南艾迪康医学检验中心有限公司");
+                    "济南艾迪康医学检验中心有限公司",
+                    "重庆艾迪康医学检验实验室有限公司");
             if (DIANcustomerList.contains(sf.getCustomer())) {
                 subject = "请查收诺禾致源的检测报告，姓名：" + sf.getPerson_name() + "-" + sf.getSampleremark();
             }
