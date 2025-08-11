@@ -13,5 +13,5 @@ public interface SubreportDao {
 
     String getSubreportFilePath(Integer reportId);
 
-    int updateSubreportFilePath(@Param("reportId") Integer reportId, @Param("path") String path);
+    int updateSubreportFilePath(@Param("report_id") Integer reportId, @Param("path") String path);
 }
