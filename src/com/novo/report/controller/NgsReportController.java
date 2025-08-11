@@ -183,7 +183,6 @@ public class NgsReportController {
 
             // 收件人，获取样本信息，拿到收件人
             SampleFile sf = sampleFileService.querySampleFileBySubbarcode(analysisReport.getSubbarcode());
-
             String[] to = sf.getEmailaddress() == null ? null : sf.getEmailaddress().split(",|，| ");
             // 去重过滤收件人
             HashSet<String> recipientSet = new HashSet<String>();
@@ -264,7 +263,6 @@ public class NgsReportController {
                 String json = "";
                 try {
                     long startTime = System.currentTimeMillis();
-                    // json = WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/create_xiao_report_test/" + analysisReport.getReport_id() + "/" + 1);
                     json = WebserviceProxyUtils.httpURLGETCase("http://10.1.183.3:9090/create_xiao_report_test/" + analysisReport.getReport_id() + "/" + 1);
                     subreportLogger.log(
                             Level.INFO,
