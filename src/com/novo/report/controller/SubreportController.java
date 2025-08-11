@@ -15,7 +15,7 @@ public class SubreportController {
 
     @Autowired
     private SubReportService subReportService;
-    @RequestMapping("/gen/{id}")
+    @RequestMapping(value = "/gen/{id}", produces = "text/plain;charset=UTF-8")
     @ResponseBody
     public String generateSubreport(@PathVariable("id") Integer reportId)
     {
