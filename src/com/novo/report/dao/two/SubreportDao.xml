@@ -24,4 +24,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			analysis_report_store
 		WHERE report_id = #{report_id}
 	</select>
+
+	<select id="getSubreportFilePath" resultType="java.lang.String">
+		SELECT
+		    small_report_file_path
+		FROM
+			analysis_report
+		WHERE report_id = #{report_id}
+	</select>
+
+	<update id="updateSubreportFilePath">
+		UPDATE
+			analysis_report
+		SET
+			small_report_file_path = #{path}
+		WHERE report_id = #{report_id}
+	</update>
 </mapper>

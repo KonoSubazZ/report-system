@@ -41,6 +41,7 @@ public class SubReportServiceImpl implements SubReportService {
      * @param subbarcode   条码
      * @return 是否生成小报告
      */
+    @Override
     public boolean shouldGenerateSubReport(String customer, String templateName, String subbarcode) {
         // 获取不需要生成小报告的客户列表
         Map<String, Object> moduleConf = moduleDao.getModuleConf("CUSTOMER_WITHOUT_SUBREPORT");
@@ -66,13 +67,20 @@ public class SubReportServiceImpl implements SubReportService {
      * 生成小报告
      *
      * @param reportId 报告id
-     * @return
+     * @return 生成小报告info信息
      */
+    @Override
     public String generateSubReport(Integer reportId) {
+
+        StringBuilder resBuilder = new StringBuilder();
 
         // 大报告是否生成JSON
         Map<String, Object> report = subreportDao.getReportJSON(reportId);
-        if (report != null) {
+        if (report == null) {
+            return "小报告没有数据";
+        }
+
+        try {
             String reportJsonStr = report.get("report_detail").toString();
             String reportFilename = report.get("report_filename").toString();
 
@@ -83,45 +91,98 @@ public class SubReportServiceImpl implements SubReportService {
             String templateName = reportJson.get("template_name").getAsString();
             String subbarcode = reportJson.get("subbarcode").getAsString();
 
-            // 判断客户是否需要生成小报告 ivd、不需要生成小报告客户名单
+            // 基础信息拼接
+            resBuilder.append(subbarcode)
+                    .append(",")
+                    .append(customer)
+                    .append(",")
+                    .append(templateName);
+
+            // 判断客户是否需要生成小报告
             boolean customerShouldGenerate = shouldGenerateSubReport(customer, templateName, subbarcode);
 
             if (customerShouldGenerate) {
                 // 根据模板判断是否该模板需要生成小报告
                 List<Map<String, Object>> subreportInfos = subreportDao.getSubreportInfo(templateName);
 
-                // 一般会有两条同名模板，产品名字不一样，取第一条
                 if (subreportInfos != null && !subreportInfos.isEmpty()) {
                     Map<String, Object> subreportInfo = subreportInfos.get(0);
-
                     String needXbg = subreportInfo.get("need_xbg").toString();
                     String reportConf = subreportInfo.get("report_info").toString();
 
-                    if (needXbg.equals("1")) {
+                    if ("1".equals(needXbg)) {
                         String subreportFilename = "报告解读-" + reportFilename.replace(".pdf", ".docx");
-                        String subreportFilePath = "/data/soft/subreport";
+                        String subreportFilePath;
+
                         try {
-                            // 生成小报告文件路径
                             subreportFilePath = generatePathWithDate(BASE_PATH, subreportFilename);
 
+                            // 更新数据库小报告路径
+                            resBuilder.append(",需要生成小报告")
+                                    .append(",生成小报告文件路径:")
+                                    .append(subreportFilePath);
+
+                            SubreportProducer producer = new SubreportProducer();
+                            boolean isSubreportSubmitted = producer.submitSubreportTask(
+                                    reportId,
+                                    subreportFilePath,
+                                    reportConf,
+                                    reportJsonStr
+                            );
+
+                            if (isSubreportSubmitted) {
+                                resBuilder.append(",生成小报告任务提交成功");
+
+                                // 预先更新小报告文件路径到数据库中，发送邮件时校验是否有邮件
+                                updateSubreportFilePath(reportId, subreportFilePath);
+                            } else {
+                                resBuilder.append(",生成小报告任务提交失败");
+                            }
                         } catch (Exception e) {
+                            resBuilder.append(",生成小报告路径失败:")
+                                    .append(e.getMessage(), 0, 200);
                             e.printStackTrace();
                         }
-
-                        SubreportProducer producer = new SubreportProducer();
-                        // 提交生成小报告任务
-                        producer.submitSubreportTask(
-                                reportId,
-                                subreportFilePath,
-                                reportConf,
-                                reportJsonStr
-                        );
+                        // 处理完需要生成的情况，直接返回结果
+                        return resBuilder.toString();
                     }
                 }
             }
+
+            // 所有不满足生成条件的情况
+            resBuilder.append(",不需要生成小报告");
+
+        } catch (Exception e) {
+            resBuilder.append(",处理过程发生错误:")
+                    .append(e.getMessage(), 0, 200);
+            e.printStackTrace();
         }
-        return null;
+
+        return resBuilder.toString();
     }
+
+    /**
+     * 获取小报告文件路径
+     *
+     * @param reportId 报告id
+     * @return 小报告文件路径
+     */
+    @Override
+    public String getSubreportFilePath(Integer reportId) {
+        String path = subreportDao.getSubreportFilePath(reportId);
+        return "";
+    }
+
+    /**
+     * 更新小报告文件路径
+     * @param reportId 报告id
+     * @param path 小报告文件路径
+     */
+    @Override
+    public boolean updateSubreportFilePath(Integer reportId, String path) {
+        return subreportDao.updateSubreportFilePath(reportId, path) > 0;
+    }
+
 
     private String generatePathWithDate(String baseDir, String filename) throws IOException {
         // 1. 处理基础目录，确保末尾有分隔符

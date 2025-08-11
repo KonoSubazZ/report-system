@@ -4,10 +4,7 @@ import com.novo.report.beans.*;
 import com.novo.report.common.CommonQueryVO;
 import com.novo.report.common.Result;
 import com.novo.report.dao.two.AnalysisReportDao;
-import com.novo.report.service.LifeService;
-import com.novo.report.service.NgsReportService;
-import com.novo.report.service.PyReportService;
-import com.novo.report.service.SampleFileService;
+import com.novo.report.service.*;
 import com.novo.report.utils.*;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
@@ -58,6 +55,8 @@ public class NgsReportController {
     private LifeService lifeService;
     @Autowired
     private AnalysisReportDao analysisReportDao;
+    @Autowired
+    private SubReportService subReportService;
 
     //产生报告
     @RequestMapping("createReport")
@@ -179,15 +178,14 @@ public class NgsReportController {
         final boolean[] success = {true};
         User user = (User) httpServletRequest.getSession().getAttribute("user");
         try {
-            //根据report_id获取文件名及路径
-            // 获取样本信息
-            SampleFile sf = sampleFileService.querySampleFileBySubbarcode(analysisReport.getSubbarcode());
-
             // 发件人
             String from = EmailUtil.getInstance("mail.properties").username;
-            // 收件人，可能为多个，用逗号（全角，半角）、空格 隔开
+
+            // 收件人，获取样本信息，拿到收件人
+            SampleFile sf = sampleFileService.querySampleFileBySubbarcode(analysisReport.getSubbarcode());
+
             String[] to = sf.getEmailaddress() == null ? null : sf.getEmailaddress().split(",|，| ");
-            // 去重过滤
+            // 去重过滤收件人
             HashSet<String> recipientSet = new HashSet<String>();
             for (String s : to) {
                 if (s != null && !s.equals("null") && !s.equals("")) {
@@ -205,7 +203,8 @@ public class NgsReportController {
                     ccSet.add(s);
                 }
             }
-            //获取添加邮箱
+
+            // 获取按照客户公司配置收件人邮箱和抄送人邮箱
             List<Map> emails = new ArrayList<>();
             List<Map> emailByCustomer = sampleFileService.getEmailByCustomer(sf.getCustomer());
             List<Map> emailByRecordercode = sampleFileService.getEmailByRecordercode(sf.getRecordercode());
@@ -221,7 +220,7 @@ public class NgsReportController {
                     }
                 }
             }
-            //技术服务部报告邮箱
+            // 固定抄送邮箱，技术服务部报告邮箱
             ccSet.add("novomedicine-om@novogene.com");
             ccSet.add("novomedicine-db@novogene.com");
             // ccSet.add("report-zhongliu@novogene.com");
@@ -238,9 +237,8 @@ public class NgsReportController {
 
             copyto = new String[ccSet.size()];
             ccSet.toArray(copyto);
-            //主题
-            // String subject = "请查收诺禾致源的检测报告，姓名：" + sf.getPerson_name() + "-" + sf.getSubbarcode() + ", 送检单位：" + sf.getCustomer();
-            // 20250412取消送检单位
+
+            // 主题
             String subject = "请查收诺禾致源的检测报告，姓名：" + sf.getPerson_name() + "-" + sf.getSubbarcode();
             // 20250427 迪安输出备注
             List<String> DIANcustomerList = Arrays.asList("杭州迪安医学检验中心有限公司",
@@ -252,14 +250,17 @@ public class NgsReportController {
             if (DIANcustomerList.contains(sf.getCustomer())) {
                 subject = "请查收诺禾致源的检测报告，姓名：" + sf.getPerson_name() + "-" + sf.getSampleremark();
             }
-            //内容
+            // 内容
             String content = "尊敬的客户：<br>您好！<br>请您查收附件的检测报告<br>祝好~";
-            //附件
+            // 附件
             List<String> list = new ArrayList<String>();
             list.add(analysisReport.getReport_file_path() + analysisReport.getReport_filename());
-            // 获取小报告
+
+            // 生成小报告逻辑
             List<Object> ips = Arrays.asList(IpUtil.getLocalIp4Address().toArray());
-            if (ips.contains(ServerConfig.getServerFormalIP())) {
+
+            // 增加一个配置项保留原来的生成小报告逻辑
+            if (ips.contains(ServerConfig.getServerFormalIP()) && ServerConfig.getSubreportCallApi().equals("true")) {
                 String json = "";
                 try {
                     long startTime = System.currentTimeMillis();
@@ -301,10 +302,24 @@ public class NgsReportController {
                     }
                 }
             }
+
+            // 查询是否需要增加小报告，根据数据库中是否有小报告路径
+            String path = subReportService.getSubreportFilePath(analysisReport.getReport_id());
+            if (path != null && !path.isEmpty()) {
+                list.add(path);
+            }
+
+            String validMsg = "";
+            boolean isValid = validateAttachments(list, validMsg);
+            if (!isValid) {
+                success[0] = false;
+                map.put("errorMessage", validMsg);
+            }
+
             String[] fileList = list.toArray(new String[list.size()]);
+
+            // 发送邮件逻辑
             if (sf.getEmailaddress() != null && !"".equals(sf.getEmailaddress())) {
-                //发送邮件
-                long startTime = System.currentTimeMillis();
 
                 // 20241105 需求去除收件人 cdyyjyjczx@163.com 的抄送邮箱
                 if (sf.getEmailaddress().contains("cdyyjyjczx@163.com")) {
@@ -318,9 +333,7 @@ public class NgsReportController {
                 }
 
                 Map sendMail = EmailUtil.getInstance("mail.properties").sendMail(from, to, copyto, subject, content, fileList);
-                long endTime = System.currentTimeMillis();
-                long duration = (endTime - startTime) / 1000;
-                System.out.println(sf.getSubbarcode() + "发送邮件的时间：" + duration + "秒");
+
                 map.put("errorMessage", sendMail.get("errorMessage").toString());
                 // 实现异步操作
                 ExecutorService executor = Executors.newCachedThreadPool();
@@ -329,30 +342,29 @@ public class NgsReportController {
                     public void run() {
                         try {
                             if ((boolean) sendMail.get("flag")) {
+                                // 发送成功后更新status
                                 analysisReport.setStatus("报告发送成功");
                                 analysisReport.setReport_sender(user.getUser_account());
-                                //发送成功后更新status
                                 lifeService.editStatus(analysisReport);
+
+                                // 调取python脚本同步报告到小程序，信息化系统
                                 List<Object> ips = Arrays.asList(IpUtil.getLocalIp4Address().toArray());
                                 if (ips.contains(ServerConfig.getServerFormalIP())) {
-                                    // 调取python脚本发送报告到小程序
+
                                     String pythonScriptPath = "/home/cyc/report_url1.py";
                                     String subbarcode = analysisReport.getSubbarcode();
                                     String reportId = String.valueOf(analysisReport.getReport_id());
 
                                     for (int i = 0; i < fileList.length; i++) {
-                                        // String cmds = "python /home/cyc/report_url1.py " + analysisReport.getSubbarcode() + " " + fileList[i] + " " + analysisReport.getReport_id() + " " + i;
 
-                                        String file = fileList[i];
-                                        String index = String.valueOf(i);
-
+                                        String filepath = fileList[i];
                                         String[] cmds = new String[]{
                                                 "python",
                                                 pythonScriptPath,
                                                 subbarcode,
-                                                file,
+                                                filepath,
                                                 reportId,
-                                                index
+                                                String.valueOf(i)
                                         };
                                         // 记录日志
                                         pythonLogger.log(Level.INFO, Arrays.toString(cmds));
@@ -364,14 +376,8 @@ public class NgsReportController {
                                             e.printStackTrace();
                                         }
                                     }
-                                    //回传给lims系统
-                                    /*GenericServicesSoap proxy = (GenericServicesSoap) LimsWebserviceProxyUtils.getLimsWebserviceProxy("http://172.17.8.223/starlims11.novogene/services/generic.asmx?wsdl");
-                                    String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                                    String[] parameters = {sf.getSubbarcode(), time};
-                                    //传递邮件发送状态
-                                    Object result = proxy.runActionDirect("WebServices.ReceiveReportInfo", parameters, "SYSADM", "Lims1234");
-                                    System.out.println("webService 回传样本编号及报告发送时间 获取返回值：" + result);*/
-                                    //发送报告成功后调报告发送成功状态接口
+
+                                    // 发送报告成功后调报告发送成功状态接口
                                     String analysis_date = lifeService.getAnalysis_date(analysisReport.getReport_id());
                                     String analyzer = lifeService.getAnalyzer(analysisReport.getReport_id());
                                     analysis_date = analysis_date.split(" ")[0].replace("-", "");
@@ -382,12 +388,7 @@ public class NgsReportController {
                                     } else {
                                         product_name = filePath.substring(filePath.indexOf(analysis_date) + analysis_date.length() + 1).split("/")[0];
                                     }
-                                    // 注释9090接口
-//                                    try {
-//                                        WebserviceProxyUtils.httpURLGETCase("http://10.1.181.174:9090/update_sample_report_status/" + analyzer + "/" + analysis_date + "/" + product_name + "/" + sf.getSubbarcode());
-//                                    } catch (Exception e) {
-//                                        System.out.println("调用HTTP接口时发生错误,样本编号：" + analysisReport.getSubbarcode());
-//                                    }
+
                                 }
                             }
                         } catch (Exception e) {
@@ -830,6 +831,7 @@ public class NgsReportController {
         if (count == 0) {
             return Result.failure(500, "更新失败，未找到id为" + id + "的报告记录。");
         }
+        subReportService.generateSubReport(id);
         return Result.success("更新id为" + id + "的报告成功。", null);
     }
 
@@ -894,6 +896,59 @@ public class NgsReportController {
     public Result<Boolean> isShowPD(CommonQueryVO query) {
         String filePath = analysisReportDao.getPDINFOFilePath(query);
         return Result.success(filePath != null);
+    }
+
+
+    /**
+     * 校验邮件附件列表
+     *
+     * @param filePaths 附件文件路径列表
+     * @return 校验通过返回true，否则返回false
+     */
+    public static boolean validateAttachments(List<String> filePaths, String result) {
+        // 检查列表是否为空
+        if (filePaths == null || filePaths.isEmpty()) {
+            result = "附件列表不能为空";
+            return false;
+        }
+
+        for (String filePath : filePaths) {
+            // 检查文件路径是否为空
+            if (filePath == null || filePath.trim().isEmpty()) {
+                result = "存在空的文件路径";
+                return false;
+            }
+
+            File file = new File(filePath);
+
+            // 检查文件是否存在
+            if (!file.exists()) {
+                result = "文件不存在: " + filePath;
+                return false;
+            }
+
+            // 检查是否是文件（不是目录）
+            if (!file.isFile()) {
+                result = "不是有效文件: " + filePath;
+                return false;
+            }
+
+            // 检查文件是否可读
+            if (!file.canRead()) {
+                result = "文件不可读: " + filePath;
+                return false;
+            }
+
+            // 检查文件是否为空（可选）
+            if (file.length() <= 0) {
+                result = "警告：文件为空: " + filePath;
+                // 如果不允许空文件，可以在这里返回false
+                // return false;
+            }
+
+        }
+        result = "文件校验通过";
+        return true;
     }
 
 }

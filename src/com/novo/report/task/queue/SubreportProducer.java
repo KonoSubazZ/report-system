@@ -27,7 +27,7 @@ public class SubreportProducer {
      * @param reportInfo    报告基本信息
      * @param reportDetail  报告详细信息
      */
-    public void submitSubreportTask(Integer taskId, String subreportPath, String reportInfo, String reportDetail) {
+    public boolean submitSubreportTask(Integer taskId, String subreportPath, String reportInfo, String reportDetail) {
         // 参数校验
         if (subreportPath == null || subreportPath.trim().isEmpty()) {
             throw new IllegalArgumentException("子报告路径(subreportPath)不能为空");
@@ -59,13 +59,17 @@ public class SubreportProducer {
             // 记录任务提交日志
             if (result != null && result > 0) {
                 logger.info("提交小报告生成任务成功，taskId: " + task.get("task_id") + "队列长度: " + result + "\n");
+                return true;
 
             } else {
                 logger.info("提交小报告生成失败，taskId: " + task.get("task_id") + "\n");
+                return false;
             }
+
         } catch (Exception e) {
             logger.severe("提交小报告生成失败，taskId: " + task.get("task_id") + "\n" + e.getMessage() + "\n");
             e.printStackTrace();
+            return false;
         } finally {
             // 使用工具类关闭连接
             JedisUtils.close(jedis);
