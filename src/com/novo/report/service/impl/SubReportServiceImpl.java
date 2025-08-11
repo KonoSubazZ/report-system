@@ -175,12 +175,13 @@ public class SubReportServiceImpl implements SubReportService {
 
     /**
      * 更新小报告文件路径
+     *
      * @param reportId 报告id
-     * @param path 小报告文件路径
+     * @param path     小报告文件路径
      */
     @Override
-    public boolean updateSubreportFilePath(Integer reportId, String path) {
-        return subreportDao.updateSubreportFilePath(reportId, path) > 0;
+    public void updateSubreportFilePath(Integer reportId, String path) {
+        subreportDao.updateSubreportFilePath(reportId, path);
     }
 
 

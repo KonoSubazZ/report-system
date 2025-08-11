@@ -829,8 +829,8 @@ public class NgsReportController {
         if (count == 0) {
             return Result.failure(500, "更新失败，未找到id为" + id + "的报告记录。");
         }
-        subReportService.generateSubReport(id);
-        return Result.success("更新id为" + id + "的报告成功。", null);
+        String subreportMsg = subReportService.generateSubReport(id);
+        return Result.success("更新id为" + id + "的报告成功。" + subreportMsg, null);
     }
 
     /**
