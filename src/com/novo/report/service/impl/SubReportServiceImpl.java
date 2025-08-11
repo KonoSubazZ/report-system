@@ -140,7 +140,7 @@ public class SubReportServiceImpl implements SubReportService {
                             }
                         } catch (Exception e) {
                             resBuilder.append(",生成小报告路径失败:")
-                                    .append(e.getMessage(), 0, 200);
+                                    .append(e.getMessage());
                             e.printStackTrace();
                         }
                         // 处理完需要生成的情况，直接返回结果
@@ -154,7 +154,7 @@ public class SubReportServiceImpl implements SubReportService {
 
         } catch (Exception e) {
             resBuilder.append(",处理过程发生错误:")
-                    .append(e.getMessage(), 0, 200);
+                    .append(e.getMessage());
             e.printStackTrace();
         }
 
