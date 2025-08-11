@@ -169,8 +169,7 @@ public class SubReportServiceImpl implements SubReportService {
      */
     @Override
     public String getSubreportFilePath(Integer reportId) {
-        String path = subreportDao.getSubreportFilePath(reportId);
-        return "";
+        return subreportDao.getSubreportFilePath(reportId);
     }
 
     /**
