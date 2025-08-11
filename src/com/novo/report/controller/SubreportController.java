@@ -17,8 +17,7 @@ public class SubreportController {
     @RequestMapping("/gen/{id}")
     public String generateSubreport(@PathVariable("id") Integer reportId)
     {
-        subReportService.generateSubReport(reportId);
-        return "test";
+        return subReportService.generateSubReport(reportId);
     }
 
 }
