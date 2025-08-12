@@ -655,7 +655,7 @@ def split_to_newlines(value, delimiter=',', word_break='\n'):
 def percent_to_float(value):
     try:
         # 先转换为字符串，再处理（兼容数字类型输入）
-        str_value = str(value).strip('%')
+        str_value = value.strip('%')
         return float(str_value)
     except (ValueError, TypeError):
         return 0.0

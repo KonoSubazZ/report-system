@@ -31,6 +31,15 @@ def assess_sample_quality(panel_type, sample_type, dna_sequencing_depth=0, total
             else:
                 return "不合格"
 
+    elif panel_type == "DNA+":
+        # 188高深度血液
+        depth = dna_sequencing_depth
+
+        if depth >= 10000 and sample_type == "blood":
+            return "合格"
+        else:
+            return "不合格"
+
     elif panel_type == "RNA":
         # RNA-Panel评估逻辑
         if total_reads >= 12000000:
