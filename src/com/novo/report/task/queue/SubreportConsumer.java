@@ -196,7 +196,6 @@ public class SubreportConsumer {
             String[] command = {
                     "python",
                     GENERATE_SCRIPT_PATH,
-                    subreportPath,
                     taskId
             };
 
