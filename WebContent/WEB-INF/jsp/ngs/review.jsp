@@ -155,13 +155,14 @@
 </div>
 </body>
 <style>
-.layui-upload-choose{
-    max-width: 500px;
-}
+    .layui-upload-choose {
+        max-width: 500px;
+    }
 </style>
 <script>
 
     let isUpdated = false;
+
     // 下载文件
     function download() {
         window.location.href = "${pageContext.request.contextPath}/ngs/download?report_id=${analysisReport.report_id}";
@@ -187,7 +188,7 @@
 
         // 更换报告文件
         $("#updateReport").click(function () {
-            let arr = ["待审核","报告审核通过","报告发送成功"]
+            let arr = ["待审核", "报告审核通过", "报告发送成功"]
             // 校验报告状态, 报告审核未通过，可以重新更换报告文件
             if (arr.includes("${analysisReport.status}")) {
                 layer.msg("报告文件已经更换！", {icon: 1});
@@ -259,7 +260,7 @@
 
     // 提交报告到新系统审核 同时更新报告系统状态
     function submitReport() {
-        if (!isUpdated){
+        if (!isUpdated) {
             layer.msg('请先更换报告文件！', {
                 icon: 2,
                 offset: ['150px', '500px'],
@@ -268,7 +269,7 @@
             return;
         }
         // 初始化参数
-        let upload_date ="${analysisReport.analysis_date}".slice(0, 10).replace(/-/g, '');
+        let upload_date = "${analysisReport.analysis_date}".slice(0, 10).replace(/-/g, '');
         let username = "${analysisReport.analyzer}";
         let product = "${analysisReport.product_name}";
         let sample_code = "${analysisReport.subbarcode}";
@@ -277,6 +278,7 @@
         let report_id = "${analysisReport.report_id}";
 
         const URL = 'http://10.1.183.3:9099';
+
         $.ajax({
             type: "GET",
             url: URL + "/report/update_sample_report_status/" + username + "/" + upload_date + "/" + product + "/" + sample_code + "/" + status + "/" + report_id + "/",
@@ -289,13 +291,15 @@
                         time: 3000
                     });
                     updateReportStatus(report_id, "待审核");
-                }else{
+
+                } else {
                     layer.msg(data.msg, {
                         icon: 2,
                         offset: ['100px', '500px'],
                         time: 3000
                     });
                 }
+
             },
             error: function (xhr, status, error) {
                 layer.alert("请求失败" + error);
@@ -308,13 +312,15 @@
         $.ajax({
             type: "POST", // 或者 "GET" 根据你的实际需求
             url: "${pageContext.request.contextPath}/ngs/updateStatus", // 后端接口路径
-            data: {
+            contentType: "application/json;charset=UTF-8",
+            data: JSON.stringify({ // 关键：将数据转换为 JSON 字符串
                 report_id: reportId,
                 status: status
-            },
+            }),
+            dataType: "json",
             success: function (res) {
                 if (res.code === 200) {
-                    layer.msg('状态更新成功', {
+                    layer.msg(res.message, {
                         icon: 1,
                         offset: ['100px', '500px'],
                         time: 3000
@@ -393,7 +399,7 @@
                         layer.msg("更新报告状态成功", {time: 3000, icon: 1});
                         $("#status").text(status);
                     });
-                    if (code == 36){
+                    if (code == 36) {
                         $.post("${pageContext.request.contextPath}/ngs/updateComment", {
                             "reportId": "${analysisReport.report_id}",
                             "comment": $("#comment").val()
@@ -423,17 +429,17 @@
             "${pageContext.request.contextPath}/ngs/getComment",
             {"reportId": "${analysisReport.report_id}"},
             function (res) {
-              if (res.code === 200){
-                  let data = res.data;
-                  let index = layer.open({
-                      type: 1,
-                      area: ['420px', '240px'], // 宽高
-                      offset: ['25%', '25%'],
-                      content: '<div style="padding: 11px;" id="dialog"></div>'
-                  });
-                  $("#dialog").html(data);
-                  layer.title('审核未通过备注', index);
-              }
+                if (res.code === 200) {
+                    let data = res.data;
+                    let index = layer.open({
+                        type: 1,
+                        area: ['420px', '240px'], // 宽高
+                        offset: ['25%', '25%'],
+                        content: '<div style="padding: 11px;" id="dialog"></div>'
+                    });
+                    $("#dialog").html(data);
+                    layer.title('审核未通过备注', index);
+                }
             }
         )
     }
