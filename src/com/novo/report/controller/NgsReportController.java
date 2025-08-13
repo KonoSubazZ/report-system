@@ -309,9 +309,9 @@ public class NgsReportController {
 
 
             Map<String, Object> validInfo = validateAttachments(list);
-            if (!(Boolean)validInfo.getOrDefault("isValid", false)) {
+            if (!(Boolean) validInfo.getOrDefault("isValid", false)) {
                 success[0] = false;
-                map.put("errorMessage", validInfo.get("result"));
+                map.put("errorMessage", "邮件发送失败," + validInfo.get("result"));
                 return map;
             }
 
