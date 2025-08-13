@@ -307,11 +307,12 @@ public class NgsReportController {
                 list.add(path);
             }
 
-            String validMsg = "";
-            boolean isValid = validateAttachments(list, validMsg);
-            if (!isValid) {
+
+            Map<String, Object> validInfo = validateAttachments(list);
+            if (!(Boolean)validInfo.getOrDefault("isValid", false)) {
                 success[0] = false;
-                map.put("errorMessage", validMsg);
+                map.put("errorMessage", validInfo.get("result"));
+                return map;
             }
 
             String[] fileList = list.toArray(new String[list.size()]);
@@ -903,50 +904,60 @@ public class NgsReportController {
      * @param filePaths 附件文件路径列表
      * @return 校验通过返回true，否则返回false
      */
-    public static boolean validateAttachments(List<String> filePaths, String result) {
+    public static Map<String, Object> validateAttachments(List<String> filePaths) {
+
+        Map<String, Object> info = new HashMap<>();
         // 检查列表是否为空
         if (filePaths == null || filePaths.isEmpty()) {
-            result = "附件列表不能为空";
-            return false;
+            info.put("isValid", false);
+            info.put("result", "附件列表不能为空");
+            return info;
         }
 
         for (String filePath : filePaths) {
             // 检查文件路径是否为空
             if (filePath == null || filePath.trim().isEmpty()) {
-                result = "存在空的文件路径";
-                return false;
+                info.put("isValid", false);
+                info.put("result", "存在空文件路径");
+                return info;
             }
 
             File file = new File(filePath);
 
             // 检查文件是否存在
             if (!file.exists()) {
-                result = "文件不存在: " + filePath;
-                return false;
+                info.put("isValid", false);
+                info.put("result", "文件不存在: " + filePath);
+                return info;
             }
 
             // 检查是否是文件（不是目录）
             if (!file.isFile()) {
-                result = "不是有效文件: " + filePath;
-                return false;
+                info.put("isValid", false);
+                info.put("result", "不是有效文件: " + filePath);
+                return info;
             }
 
             // 检查文件是否可读
             if (!file.canRead()) {
-                result = "文件不可读: " + filePath;
-                return false;
+                info.put("isValid", false);
+                info.put("result", "文件不可读: " + filePath);
+                return info;
             }
 
             // 检查文件是否为空（可选）
             if (file.length() <= 0) {
-                result = "警告：文件为空: " + filePath;
+
+                // result = "警告：文件为空: " + filePath;
                 // 如果不允许空文件，可以在这里返回false
                 // return false;
             }
 
         }
-        result = "文件校验通过";
-        return true;
+        info.put("isValid", true);
+        info.put("result", "文件校验通过");
+
+        return info;
     }
 
 }
