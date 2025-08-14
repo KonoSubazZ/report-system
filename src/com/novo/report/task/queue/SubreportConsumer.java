@@ -47,7 +47,7 @@ public class SubreportConsumer {
 
 
     public void start() {
-        logger.info("[" + instanceId + "] 同步消费者启动，监听队列: " + SUBREPORT_QUEUE_KEY);
+        logger.info(" 同步消费者启动，监听队列: " + SUBREPORT_QUEUE_KEY);
         // 启动消费主线程（同步处理，单线程执行）
         Thread consumeThread = new Thread(this::consumeTasks, "Subreport-Sync-Consumer-" + instanceId);
         consumeThread.setDaemon(false);
@@ -56,9 +56,9 @@ public class SubreportConsumer {
 
 
     public void stop() {
-        logger.info("[" + instanceId + "] 开始停止同步消费者...");
+        logger.info(" 开始停止同步消费者...");
         isRunning = false;
-        logger.info("[" + instanceId + "] 同步消费者已停止");
+        logger.info(" 同步消费者已停止");
     }
 
 
@@ -66,10 +66,10 @@ public class SubreportConsumer {
      * 核心消费逻辑：同步处理，主线程直接处理任务
      */
     private void consumeTasks() {
-        logger.info("[" + instanceId + "] 同步消费循环启动...");
+        logger.info(" 同步消费循环启动...");
 
         while (isRunning) {
-            logger.info("[" + instanceId + "] 重新获取任务中...");
+            // logger.info(" 重新获取任务中...");
             Jedis jedis = null;
             try {
                 // 获取Redis连接（带重试）
@@ -78,18 +78,18 @@ public class SubreportConsumer {
                     jedis = JedisUtils.getResource();
                     if (jedis == null) {
                         connectRetry++;
-                        logger.warning("[" + instanceId + "] 获取Redis连接失败，重试: " + connectRetry + "/3");
+                        logger.warning(" 获取Redis连接失败，重试: " + connectRetry + "/3");
                         Thread.sleep(1000);
                     }
                 }
 
                 if (jedis == null) {
-                    logger.severe("[" + instanceId + "] 连续3次获取连接失败，跳过本次循环");
+                    logger.severe(" 连续3次获取连接失败，跳过本次循环");
                     continue;
                 }
 
                 // 阻塞获取任务（超时30秒）
-                logger.finest("[" + instanceId + "] 等待队列任务...");
+                logger.info(" 等待队列任务中30秒...");
                 List<String> result = jedis.brpop(30, SUBREPORT_QUEUE_KEY);
 
                 if (result == null || result.size() < 2) {
@@ -99,22 +99,22 @@ public class SubreportConsumer {
                 // 提取任务（同步处理，不使用线程池）
                 String taskJson = result.get(1);
                 if (taskJson == null || taskJson.trim().isEmpty()) {
-                    logger.warning("[" + instanceId + "] 获取到空任务，忽略");
+                    logger.warning(" 获取到空任务，忽略");
                     continue;
                 }
 
                 String taskSummary = taskJson.length() > 100 ? taskJson.substring(0, 100) + "..." : taskJson;
-                logger.info("[" + instanceId + "] 获取到新任务: " + taskSummary);
+                logger.info(" 获取到新任务: " + taskSummary);
 
                 // 同步处理任务（主线程直接执行，不异步）
                 processTask(taskJson);
 
             } catch (InterruptedException e) {
-                logger.info("[" + instanceId + "] 消费线程被中断，准备退出");
+                logger.info(" 消费线程被中断，准备退出");
                 Thread.currentThread().interrupt();
                 break;
             } catch (Throwable t) {
-                logger.severe("[" + instanceId + "] 消费循环错误: " + t.getMessage());
+                logger.severe(" 消费循环错误: " + t.getMessage());
                 t.printStackTrace();
                 try {
                     Thread.sleep(2000); // 出错后稍等再重试
@@ -128,13 +128,13 @@ public class SubreportConsumer {
                     try {
                         JedisUtils.close(jedis);
                     } catch (Exception e) {
-                        logger.warning("[" + instanceId + "] 关闭连接失败: " + e.getMessage());
+                        logger.warning(" 关闭连接失败: " + e.getMessage());
                     }
                 }
             }
         }
 
-        logger.info("[" + instanceId + "] 同步消费循环已退出");
+        logger.info(" 同步消费循环已退出");
     }
 
 
@@ -153,23 +153,23 @@ public class SubreportConsumer {
             String subreportPath = task.get("subreport_path");
 
             if (taskId == null || subreportPath == null) {
-                logger.warning("[" + instanceId + "] 任务参数不完整，taskId: " + taskId);
+                logger.warning(" 任务参数不完整，taskId: " + taskId);
                 return;
             }
 
             // 处理任务（同步执行，主线程会阻塞直到完成）
             long startTime = System.currentTimeMillis();
-            logger.info("[" + instanceId + "] 开始处理任务，taskId: " + taskId + "，开始时间: " + TIME_FORMATTER.format(new Date(startTime)));
+            logger.info(" 开始处理任务，taskId: " + taskId + "，开始时间: " + TIME_FORMATTER.format(new Date(startTime)));
 
             boolean success = reportGenerator.generate(taskId, subreportPath);
 
             long endTime = System.currentTimeMillis();
             double costSeconds = (endTime - startTime) / 1000.0;
-            logger.info("[" + instanceId + "] 任务处理完成，taskId: " + taskId +
+            logger.info(" 任务处理完成，taskId: " + taskId +
                     "，耗时: " + String.format("%.2f", costSeconds) + "秒，成功: " + success);
 
         } catch (Throwable t) {
-            logger.severe("[" + instanceId + "] 处理任务异常，taskId: " + taskId + "，错误: " + t.getMessage());
+            logger.severe(" 处理任务异常，taskId: " + taskId + "，错误: " + t.getMessage());
             t.printStackTrace();
         }
     }
@@ -184,7 +184,7 @@ public class SubreportConsumer {
             Process process = null;
 
             try {
-                logger.info("[" + instanceId + "] 启动Python脚本，taskId: " + taskId + "，命令: " + String.join(" ", command));
+                logger.info(" 启动Python脚本，taskId: " + taskId + "，命令: " + String.join(" ", command));
 
                 ProcessBuilder processBuilder = new ProcessBuilder(command);
                 processBuilder.redirectErrorStream(true);
@@ -199,21 +199,21 @@ public class SubreportConsumer {
 
                 if (!completed) {
                     process.destroyForcibly();
-                    logger.severe("[" + instanceId + "] 脚本超时，taskId: " + taskId);
+                    logger.severe(" 脚本超时，taskId: " + taskId);
                     return false;
                 }
 
                 int exitCode = process.exitValue();
                 if (exitCode == 0) {
-                    logger.info("[" + instanceId + "] 脚本执行成功，taskId: " + taskId);
+                    logger.info(" 脚本执行成功，taskId: " + taskId);
                     return true;
                 } else {
-                    logger.severe("[" + instanceId + "] 脚本执行失败，exitCode: " + exitCode + "，taskId: " + taskId);
+                    logger.severe(" 脚本执行失败，exitCode: " + exitCode + "，taskId: " + taskId);
                     return false;
                 }
 
             } catch (Exception e) {
-                logger.severe("[" + instanceId + "] 调用脚本异常，taskId: " + taskId + "，错误: " + e.getMessage());
+                logger.severe(" 调用脚本异常，taskId: " + taskId + "，错误: " + e.getMessage());
                 return false;
             } finally {
                 if (process != null) {
@@ -237,10 +237,10 @@ public class SubreportConsumer {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        logger.info("[" + instanceId + "] Python输出 [taskId=" + taskId + "]: " + line);
+                        logger.info(" Python输出 [taskId=" + taskId + "]: " + line);
                     }
                 } catch (IOException e) {
-                    logger.warning("[" + instanceId + "] 读取脚本输出失败，taskId: " + taskId);
+                    logger.warning(" 读取脚本输出失败，taskId: " + taskId);
                 }
             }
         }
