@@ -30,6 +30,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       </select>
 
 	  <update id="updateSubreportStatus">
-			update myapp_sample set xbg_status=#{status}
+			update myapp_sample set xbg_status=#{status} where sample_code = #{subbarcode} and upload_date = #{date}
 	  </update>
 </mapper>

@@ -19,7 +19,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT
 		    report_id,
 		    report_filename,
-		    report_detail
+		    report_detail,
+		    analysis_date
 		FROM
 			analysis_report_store
 		WHERE report_id = #{report_id}

@@ -86,13 +86,14 @@ public class SubReportServiceImpl implements SubReportService {
         try {
             String reportJsonStr = report.get("report_detail").toString();
             String reportFilename = report.get("report_filename").toString();
-
+            String analysisDate = report.get("analysis_date").toString();
             Gson gson = new Gson();
             JsonObject reportJson = gson.fromJson(reportJsonStr, JsonObject.class);
 
             String customer = reportJson.get("customer").getAsString();
             String templateName = reportJson.get("template_name").getAsString();
             String subbarcode = reportJson.get("subbarcode").getAsString();
+
 
             // 基础信息拼接
             resBuilder.append(subbarcode)
@@ -158,7 +159,7 @@ public class SubReportServiceImpl implements SubReportService {
             }
 
             // 更新 config 小报告状态
-            newLimsSampleDao.updateSubreportStatus(subreportStatus);
+            newLimsSampleDao.updateSubreportStatus(subreportStatus, subbarcode, analysisDate);
 
             // 所有不满足生成条件的情况
             resBuilder.append(",不需要生成小报告");
