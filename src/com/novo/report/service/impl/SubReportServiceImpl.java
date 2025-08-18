@@ -3,6 +3,7 @@ package com.novo.report.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.novo.report.dao.three.NewLimsSampleDao;
 import com.novo.report.dao.two.ModuleDao;
 import com.novo.report.dao.two.SubreportDao;
 import com.novo.report.service.SubReportService;
@@ -32,6 +33,8 @@ public class SubReportServiceImpl implements SubReportService {
 
     @Autowired
     private SubreportDao subreportDao;
+    @Autowired
+    private NewLimsSampleDao newLimsSampleDao;
 
     /**
      * 生成子报告的判断方法
@@ -100,6 +103,7 @@ public class SubReportServiceImpl implements SubReportService {
 
             // 判断客户是否需要生成小报告
             boolean customerShouldGenerate = shouldGenerateSubReport(customer, templateName, subbarcode);
+            String subreportStatus = "无";
 
             if (customerShouldGenerate) {
                 // 根据模板判断是否该模板需要生成小报告
@@ -111,6 +115,7 @@ public class SubReportServiceImpl implements SubReportService {
                     String reportConf = subreportInfo.get("report_info").toString();
 
                     if ("1".equals(needXbg)) {
+                        subreportStatus = "有";
                         String subreportFilename = "报告解读-" + reportFilename.replace(".pdf", ".docx");
                         String subreportFilePath;
 
@@ -131,14 +136,17 @@ public class SubReportServiceImpl implements SubReportService {
                             );
 
                             if (isSubreportSubmitted) {
+                                subreportStatus = "有,生成中";
                                 resBuilder.append(",生成小报告任务提交成功");
 
-                                // 预先更新小报告文件路径到数据库中，发送邮件时校验是否有邮件
+                                // 预先更新小报告文件路径到数据库中，发送邮件时校验是否有文件
                                 updateSubreportFilePath(reportId, subreportFilePath);
                             } else {
+                                subreportStatus = "有,生成失败";
                                 resBuilder.append(",生成小报告任务提交失败");
                             }
                         } catch (Exception e) {
+                            subreportStatus = "有,生成失败";
                             resBuilder.append(",生成小报告路径失败:")
                                     .append(e.getMessage());
                             e.printStackTrace();
@@ -148,6 +156,9 @@ public class SubReportServiceImpl implements SubReportService {
                     }
                 }
             }
+
+            // 更新 config 小报告状态
+            newLimsSampleDao.updateSubreportStatus(subreportStatus);
 
             // 所有不满足生成条件的情况
             resBuilder.append(",不需要生成小报告");
