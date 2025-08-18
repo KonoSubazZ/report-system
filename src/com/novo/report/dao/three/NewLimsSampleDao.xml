@@ -4,8 +4,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.novo.report.dao.three.NewLimsSampleDao">
-		
-      <select id="getNewLimsSampleByBarcode" resultType="SpecimenHead">
+
+	<select id="getNewLimsSampleByBarcode" resultType="SpecimenHead">
       select CANCERTYPE,PATHOLOGICALTYPE,BARCODE,PATIENTNAME,ERPSALERNAME,SEX,AGE,ENTERDATE,GETSPECDATE,REPORTRECEIVER,
       		BIRTHDAY,CLINICALREMARK,ROOM,BED,EMAILADDRESS,CUSTOMERNAME,COLLECTDATE,SPECIMENNUM,SAMPLETIME,UNIT,SAMPLETYPE,
       		CLINICALSTAGES, DOCTORNAME, LOCATIONNAME,ERPTESTNAME,SAMPLESOURCE,FROMORGAN,GENETYPE,GENERESULT,BIRTHPLACE,FAMILYFIRST,
@@ -16,6 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       		from myapp_webcrmsample
       		where BARCODE=#{barcode}
       </select>
+
       <select id="getNewLimsSampleList" resultType="SpecimenHead">
       select CANCERTYPE,PATHOLOGICALTYPE,BARCODE,PATIENTNAME,ERPSALERNAME,SEX,AGE,ENTERDATE,GETSPECDATE,REPORTRECEIVER,
       		BIRTHDAY,CLINICALREMARK,ROOM,BED,EMAILADDRESS,CUSTOMERNAME,COLLECTDATE,SPECIMENNUM,SAMPLETIME,UNIT,SAMPLETYPE,
@@ -27,4 +28,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       		from myapp_webcrmsample
       		where BARCODE like '%-%'
       </select>
+
+	  <update id="updateSubreportStatus">
+			update myapp_sample set xbg_status=#{status}
+	  </update>
 </mapper>

@@ -8,4 +8,5 @@ public interface NewLimsSampleDao {
 
 	SpecimenHead getNewLimsSampleByBarcode(String barcode);
 	List<SpecimenHead> getNewLimsSampleList();
+	void updateSubreportStatus(String status);
 }
