@@ -444,7 +444,7 @@ public class GeneMarkerVwController {
                                 "P286S", "L424V", "F367V", "F367S", "M295R",
                                 "P436R", "D368Y", "R705W", "N363K", "D275V",
                                 "A288V", "T278K", "A465V", "L424V", "T278M",
-                                "A428T", "F367C", "P436S", "R665W");
+                                "A428T", "F367C", "P436S", "R665W", "E491K");
                         for (Map map : bodyDrugTipLineStr) {
                             String gene = map.get("gene").toString();
                             String pHGVS = map.get("pHGVS") == null ? "" : map.get("pHGVS").toString().replace("p.", "");
