@@ -19,8 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT
 		    report_id,
 		    report_filename,
-		    report_detail,
-		    analysis_date
+		    report_detail
 		FROM
 			analysis_report_store
 		WHERE report_id = #{report_id}
@@ -41,4 +40,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			small_report_file_path = #{path}
 		WHERE report_id = #{report_id}
 	</update>
+
+	<select id="getReportAnalysisDate" resultType="java.lang.String">
+		SELECT
+			DATE_FORMAT(analysis_date, '%Y%m%d') AS formatted_date
+		FROM
+			analysis_report
+		WHERE report_id = #{report_id}
+	</select>
+
 </mapper>

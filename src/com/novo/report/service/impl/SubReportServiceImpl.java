@@ -86,7 +86,7 @@ public class SubReportServiceImpl implements SubReportService {
         try {
             String reportJsonStr = report.get("report_detail").toString();
             String reportFilename = report.get("report_filename").toString();
-            String analysisDate = report.get("analysis_date").toString();
+            String analysisDate = subreportDao.getReportAnalysisDate(reportId);
             Gson gson = new Gson();
             JsonObject reportJson = gson.fromJson(reportJsonStr, JsonObject.class);
 
@@ -137,32 +137,32 @@ public class SubReportServiceImpl implements SubReportService {
                             );
 
                             if (isSubreportSubmitted) {
-                                subreportStatus = "有,生成中";
+                                subreportStatus = " 生成中";
                                 resBuilder.append(",生成小报告任务提交成功");
 
                                 // 预先更新小报告文件路径到数据库中，发送邮件时校验是否有文件
                                 updateSubreportFilePath(reportId, subreportFilePath);
                             } else {
-                                subreportStatus = "有,生成失败";
+                                subreportStatus = "生成失败";
                                 resBuilder.append(",生成小报告任务提交失败");
                             }
                         } catch (Exception e) {
-                            subreportStatus = "有,生成失败";
+                            subreportStatus = "生成失败";
                             resBuilder.append(",生成小报告路径失败:")
                                     .append(e.getMessage());
                             e.printStackTrace();
                         }
-                        // 处理完需要生成的情况，直接返回结果
-                        return resBuilder.toString();
+
+                        // 更新 config 小报告状态,只在有的时候才处理
+                        newLimsSampleDao.updateSubreportStatus(subreportStatus, subbarcode, analysisDate);
+
+                    }else{
+                        resBuilder.append(",不需要生成小报告");
                     }
                 }
             }
 
-            // 更新 config 小报告状态
-            newLimsSampleDao.updateSubreportStatus(subreportStatus, subbarcode, analysisDate);
 
-            // 所有不满足生成条件的情况
-            resBuilder.append(",不需要生成小报告");
 
         } catch (Exception e) {
             resBuilder.append(",处理过程发生错误:")

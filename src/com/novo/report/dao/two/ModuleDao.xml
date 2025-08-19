@@ -105,7 +105,8 @@
         SELECT
             conf,
             templates,
-            panels
+            panels,
+            common
         FROM module_conf
         WHERE conf = #{conf}
     </select>

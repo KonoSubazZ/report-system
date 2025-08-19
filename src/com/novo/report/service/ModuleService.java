@@ -216,6 +216,7 @@ public interface ModuleService {
      * @return
      */
     List<String> getconfPanelList(@Param("conf") String conf);
+    List<String> getconfCommonList(@Param("conf") String conf);
     List<String> getconfTemplateList(@Param("conf") String conf);
 
     String getConfGenes(@Param("panel") String panel, @Param("geneSymbols") List<String> geneSymbols);

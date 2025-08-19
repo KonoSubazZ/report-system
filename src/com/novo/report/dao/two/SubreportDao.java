@@ -14,4 +14,6 @@ public interface SubreportDao {
     String getSubreportFilePath(Integer reportId);
 
     int updateSubreportFilePath(@Param("report_id") Integer reportId, @Param("path") String path);
+
+    String getReportAnalysisDate(Integer reportId);
 }

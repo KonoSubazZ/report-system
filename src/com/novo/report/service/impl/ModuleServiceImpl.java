@@ -322,6 +322,13 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
+    public List<String> getconfCommonList(String conf) {
+        Map<String, Object> moduleConf = moduleDao.getModuleConf(conf);
+
+        return MapUtils.getCommaSeparatedList(moduleConf, "common");
+    }
+
+    @Override
     public List<String> getconfTemplateList(String conf) {
         Map<String, Object> moduleConf = moduleDao.getModuleConf(conf);
 
