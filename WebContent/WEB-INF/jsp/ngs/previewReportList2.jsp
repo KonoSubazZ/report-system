@@ -1690,6 +1690,7 @@
                 </td>
                 <td style="cursor:pointer"><p id="geneText_${vs.count}" onmouseover='showGeneTitle(${vs.count})'
                                               class="gene"
+                                              <c:if test="${item.pole == true}">style="background-color:yellow"</c:if>
                         <c:if test="${endometrialCarcinoma == true}">
                             <c:if test="${item.gene == 'POLE' or item.gene == 'TP53'}">style="color:red"</c:if>
                         </c:if>>${item.gene}</p>

@@ -128,7 +128,8 @@ public class SubReportServiceImpl implements SubReportService {
                                     .append(",生成小报告文件路径:")
                                     .append(subreportFilePath);
 
-                            // fix 先更新路径再提交生成小报告任务，防止没有路径为空
+                            //
+
                             // 预先更新小报告文件路径到数据库中，发送邮件时校验是否有文件
                             updateSubreportFilePath(reportId, subreportFilePath);
                             SubreportProducer producer = new SubreportProducer();
