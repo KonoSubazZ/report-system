@@ -128,6 +128,9 @@ public class SubReportServiceImpl implements SubReportService {
                                     .append(",生成小报告文件路径:")
                                     .append(subreportFilePath);
 
+                            // fix 先更新路径再提交生成小报告任务，防止没有路径为空
+                            // 预先更新小报告文件路径到数据库中，发送邮件时校验是否有文件
+                            updateSubreportFilePath(reportId, subreportFilePath);
                             SubreportProducer producer = new SubreportProducer();
                             boolean isSubreportSubmitted = producer.submitSubreportTask(
                                     reportId,
@@ -140,8 +143,7 @@ public class SubReportServiceImpl implements SubReportService {
                                 subreportStatus = " 生成中";
                                 resBuilder.append(",生成小报告任务提交成功");
 
-                                // 预先更新小报告文件路径到数据库中，发送邮件时校验是否有文件
-                                updateSubreportFilePath(reportId, subreportFilePath);
+
                             } else {
                                 subreportStatus = "生成失败";
                                 resBuilder.append(",生成小报告任务提交失败");
@@ -152,16 +154,15 @@ public class SubReportServiceImpl implements SubReportService {
                                     .append(e.getMessage());
                             e.printStackTrace();
                         }
-
+                        String sampleCode = subbarcode + "T";
                         // 更新 config 小报告状态,只在有的时候才处理
-                        newLimsSampleDao.updateSubreportStatus(subreportStatus, subbarcode, analysisDate);
+                        newLimsSampleDao.updateSubreportStatus(subreportStatus, sampleCode, analysisDate);
 
-                    }else{
+                    } else {
                         resBuilder.append(",不需要生成小报告");
                     }
                 }
             }
-
 
 
         } catch (Exception e) {

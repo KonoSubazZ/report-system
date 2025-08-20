@@ -248,12 +248,12 @@ public class GeneMarkerVwController {
             List<String> poleList = moduleService.getconfCommonList("POLE_HYPERMUTATION_PHGVS");
             for (Map map : list) {
                 String gene = map.get("gene").toString();
-                String pHGVS = (String) map.getOrDefault("pHGVS", "");
+                String variant = (String) map.getOrDefault("variant", "");
                 if (targetGeneList.contains(gene)) {
                     map.put("color", true);
                 }
 
-                if ("POLE".equals(gene) && poleList.contains(pHGVS)) {
+                if ("POLE".equals(gene) && poleList.contains(variant)) {
                     map.put("pole", true);
                 }
             }
