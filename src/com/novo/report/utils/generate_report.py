@@ -2,18 +2,17 @@ import base64
 import jinja2
 import json
 import logging
-import lxml
 import math
 import os
 import shutil
 import six
 import sys
 import tempfile
-from docx import Document
-from docx.shared import Pt
-from io import BytesIO
 import time
+from docx.shared import Pt
 from html import escape
+from io import BytesIO
+
 # import docxtpl
 # from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
 specific_version_path = "/data/soft/python3-packages"
@@ -22,6 +21,7 @@ from docxtpl import DocxTemplate, RichText, InlineImage
 
 # 样本质量评估
 from assess_sample_quality import assess_sample_quality
+
 
 def setup_logging():
     """
@@ -35,6 +35,7 @@ def setup_logging():
     # 主日志文件路径
     main_log_file = os.path.join(log_path, "report_generation.log")
     sample_quality_log_file = os.path.join(log_path, "sample_quality.log")
+    python_error_log_file = os.path.join(log_path, "python_error.log")
 
     # 创建主 logger
     main_logger = logging.getLogger("main")
@@ -52,7 +53,17 @@ def setup_logging():
     sample_quality_logger.addHandler(sq_handler)
     sample_quality_logger.propagate = False  # 禁止传播到 root logger
 
-    return main_logger, sample_quality_logger
+    # 创建 python error 专用 logger
+    python_error_logger = logging.getLogger("python_error")
+    python_error_logger.setLevel(logging.INFO)
+    sq_handler = logging.FileHandler(python_error_log_file, mode='a', encoding='utf-8')
+    sq_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
+    python_error_logger.addHandler(sq_handler)
+    python_error_logger.propagate = False  # 禁止传播到 root logger
+
+    return main_logger, sample_quality_logger, python_error_logger
+
+
 class MyRichText(RichText):
     def add(self, text,
             style=None,
@@ -475,6 +486,7 @@ def markInRed(value):
         value = MyRichText(value, color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size='21')
     return value
 
+
 # 20250310 扁平化数据
 def flatten_data(data):
     result = []
@@ -482,6 +494,7 @@ def flatten_data(data):
         desc2s = item['desc2'].split(',')
         result.append({'desc1': item['desc1'], 'desc2': desc2s})
     return result
+
 
 def load_template_config(config_path="report_config.json"):
     try:
@@ -497,6 +510,7 @@ def load_template_config(config_path="report_config.json"):
         sys.exit(1)
 
     return config
+
 
 # @deprecated 改为自动获取key 下版本待移除
 def determine_template_file(template_name, config):
@@ -524,6 +538,7 @@ def determine_template_file(template_name, config):
         return f"{custom_HNZYY_common}.docx"
     else:
         return f"{template_name}.docx"
+
 
 def determine_template_file_V1(template_name, config):
     # 遍历高级模板的所有类型（如single_sample, double_sample等）
@@ -652,6 +667,7 @@ def split_to_newlines(value, delimiter=',', word_break='\n'):
     parts = [p.strip() for p in value.split(delimiter) if p.strip()]
     return f' {word_break} '.join(parts) + f' {word_break}' if parts else ''
 
+
 def percent_to_float(value):
     try:
         # 先转换为字符串，再处理（兼容数字类型输入）
@@ -659,6 +675,7 @@ def percent_to_float(value):
         return float(str_value)
     except (ValueError, TypeError):
         return 0.0
+
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
@@ -676,7 +693,7 @@ if __name__ == '__main__':
         output_path = sys.argv[3]
 
         # 初始化日志系统
-        main_logger, sample_quality_logger = setup_logging()
+        main_logger, sample_quality_logger, python_error_logger = setup_logging()
 
         # 加载模块化配置文件
         config = load_template_config()
@@ -827,5 +844,7 @@ if __name__ == '__main__':
             f"[{subbarcode}] | 生成模板: {input_template} | 实际匹配模板: {matched_template_name} | 模板生成耗时: {elapsed_time:.2f} 秒")
 
     except Exception as e:
+        main_logger, sample_quality_logger, python_error_logger = setup_logging()
+        python_error_logger.info(f" 错误: {e}")
         print(f"❌ 发生错误: {e}")
         raise e
