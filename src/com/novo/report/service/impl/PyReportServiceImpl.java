@@ -3956,7 +3956,8 @@ public class PyReportServiceImpl implements PyReportService {
             HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd,
                     allMutation, rt.getPanel(),
                     detectedGeneInfo, hasCRDrug,
-                    panelType, sf.getPCODE());
+                    panelType, sf.getPCODE(),
+                    rt.getType());
             rt.setReportInfo(reportInfo);
 
             // CUSTOM 关于癌种判断的一些展示逻辑,生成检测项目信息
@@ -4733,12 +4734,18 @@ public class PyReportServiceImpl implements PyReportService {
             Map detectedGeneInfo,
             boolean hasCRDrug,
             String panelType,
-            String productCode) {
+            String productCode,
+            String sampleType) {
         HashMap<String, Object> res = new HashMap<>();
         String reportName = templateConf.getReport_name();
         if (pd != null) {
-            reportName = reportName.replace("检测报告", "+PD-L1检测报告");
+            reportName = reportName.contains("{{PD-L1}}")
+                    ? reportName.replace("{{PD-L1}}", "+PD-L1")
+                    : reportName.replace("检测报告", "+PD-L1检测报告");
         }
+        // 新增占位符逻辑
+        reportName = reportName.replace("{{sample_type}}", tranlateSampleType(sampleType));
+
         String name1 = "检测基因列表";
         if (templateConf.getReport_name().contains("全外显子组升级版")) {
             name1 = "癌症相关重要基因列表";
