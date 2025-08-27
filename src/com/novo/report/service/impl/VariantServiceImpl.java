@@ -114,11 +114,10 @@ public class VariantServiceImpl implements VariantService {
         }
 
         // RNA融合 MET 14号外显子跳跃
-        /*if (isMET14SkippingRNA(gene, variant)) {
+        if (isMET14SkippingRNA(gene, variant)) {
             return "MET 14号外显子跳跃";
-        }*/
-
-        if (isMET14SkippingRNA(gene, variant) || isMET14Skipping(gene, mutId, variant, localParentMutIds)) {
+        }
+        if (isMET14Skipping(gene, mutId, variant, localParentMutIds)) {
             return variant + " " + "( 14号外显子跳跃 )";
         }
 
