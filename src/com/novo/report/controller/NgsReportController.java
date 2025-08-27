@@ -239,6 +239,12 @@ public class NgsReportController {
 
             // 主题
             String subject = "请查收诺禾致源的检测报告，姓名：" + sf.getPerson_name() + "-" + sf.getSubbarcode();
+
+            // 20250827 山肿
+            if ("山东省肿瘤防治研究院（山东省肿瘤医院）".equals(sf.getCustomer())) {
+                subject = "请查收诺禾致源的检测报告，姓名：" + sf.getPerson_name() + "-" + sf.getSubbarcode() + ", 送检单位：" + "山东省肿瘤防治研究院（山东省肿瘤医院）";
+            }
+
             // 20250427 迪安输出备注
             List<String> DIANcustomerList = Arrays.asList("杭州迪安医学检验中心有限公司",
                     "杭州艾迪康医学检验中心有限公司",
