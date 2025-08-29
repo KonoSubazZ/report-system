@@ -4742,6 +4742,9 @@ public class PyReportServiceImpl implements PyReportService {
             reportName = reportName.contains("{{PD-L1}}")
                     ? reportName.replace("{{PD-L1}}", "+PD-L1")
                     : reportName.replace("检测报告", "+PD-L1检测报告");
+        }else {
+
+            reportName = reportName.replace("{{PD-L1}}", "");
         }
         // 新增占位符逻辑
         reportName = reportName.replace("{{sample_type}}", tranlateSampleType(sampleType));
