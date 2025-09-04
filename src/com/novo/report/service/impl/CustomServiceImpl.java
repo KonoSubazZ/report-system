@@ -6,7 +6,7 @@ import com.novo.report.service.CustomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +15,56 @@ public class CustomServiceImpl implements CustomService {
 
     @Autowired
     private CustomDao customDao;
+
     @Override
     public Map<String, Object> getCstoneTipInfo(String disease) {
-        return customDao.getCstoneTipInfo(disease);
+        /**
+        if (disease.contains("肺")) {
+            if (disease.contains("小细胞肺")) {
+                return customDao.getCstoneTipInfoByDisease("小细胞肺癌");
+            }
+            return customDao.getCstoneTipInfoByDisease("肺癌");
+        }
+        if (disease.contains("胃")) {
+            if (disease.contains("胃食管结合")) {
+                return customDao.getCstoneTipInfoByDisease("食管胃结合部癌");
+            }
+            return customDao.getCstoneTipInfoByDisease("胃癌");
+        }
+        if (disease.contains("食管")) {
+            if (disease.contains("胃食管结合")) {
+                return customDao.getCstoneTipInfoByDisease("食管胃结合部癌");
+            }
+            return customDao.getCstoneTipInfoByDisease("食管癌");
+        }
+        return customDao.getCstoneTipInfoByKeyword(disease);
+         **/
+
+        List<Rule> rules = Arrays.asList(
+                new Rule("小细胞肺", "小细胞肺癌"),
+                new Rule("胃食管结合", "食管胃结合部癌"),
+                new Rule("肺", "肺癌"),
+                new Rule("胃", "胃癌"),
+                new Rule("食管", "食管癌")
+        );
+
+        // 遍历规则，匹配到第一个符合条件的就返回对应查询结果
+        for (Rule rule : rules) {
+            if (disease.contains(rule.keyword)) {
+                return customDao.getCstoneTipInfoByDisease(rule.targetDisease);
+            }
+        }
+
+        return customDao.getCstoneTipInfoByKeyword(disease);
+    }
+
+    private static class Rule {
+        String keyword;      // 疾病名称中包含的关键词
+        String targetDisease; // 匹配后要查询的目标疾病
+
+        Rule(String keyword, String targetDisease) {
+            this.keyword = keyword;
+            this.targetDisease = targetDisease;
+        }
     }
 }

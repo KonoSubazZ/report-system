@@ -4,5 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface CustomDao {
-	Map<String, Object> getCstoneTipInfo(String disease);
+	Map<String, Object> getCstoneTipInfoByKeyword(String disease);
+	Map<String, Object> getCstoneTipInfoByDisease(String disease);
 }

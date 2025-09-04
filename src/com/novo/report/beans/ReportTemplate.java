@@ -544,6 +544,20 @@ public class ReportTemplate {
      */
     private Map<String, Object> testResultSummary;
 
+    public Map<String, Object> getCstoneInfo() {
+        return cstoneInfo;
+    }
+
+    public void setCstoneInfo(Map<String, Object> cstoneInfo) {
+        this.cstoneInfo = cstoneInfo;
+    }
+
+
+    /**
+     * 基石个性化数据
+     */
+    private Map<String, Object> cstoneInfo;
+
     public Map<String, Object> getReferences() {
         return references;
     }

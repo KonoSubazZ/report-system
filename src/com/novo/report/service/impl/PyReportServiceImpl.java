@@ -3906,7 +3906,14 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 基石个性化模板逻辑
         if (productName.equals("实体瘤分子残留病灶(MRD)组织检测报告-基石")) {
-          Map<String, Object> cstoneInfo =  generateCustomCsonteInfo(diseaseName);
+            Map<String, Object> cstoneInfo = generateCustomCsonteInfo(diseaseName);
+//            String targetDrugTip = "";
+//            String otherTip = "";
+//            if (cstoneInfo != null) {
+//                targetDrugTip = (String) cstoneInfo.getOrDefault("target_drug_tip", "");
+//                otherTip = (String) cstoneInfo.getOrDefault("other_tip", "");
+//            }
+            rt.setCstoneInfo(cstoneInfo);
         }
 
         // 封装二维码生成及上传
@@ -4092,7 +4099,8 @@ public class PyReportServiceImpl implements PyReportService {
      * @return
      */
     private Map<String, Object> generateCustomCsonteInfo(String diseaseName) {
-        return null;
+        Map<String, Object> csonteInfo = customService.getCstoneTipInfo(diseaseName);
+        return csonteInfo;
     }
 
     /**
@@ -4759,7 +4767,7 @@ public class PyReportServiceImpl implements PyReportService {
             reportName = reportName.contains("{{PD-L1}}")
                     ? reportName.replace("{{PD-L1}}", "+PD-L1")
                     : reportName.replace("检测报告", "+PD-L1检测报告");
-        }else {
+        } else {
 
             reportName = reportName.replace("{{PD-L1}}", "");
         }

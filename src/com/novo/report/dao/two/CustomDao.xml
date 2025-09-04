@@ -5,7 +5,7 @@
 
 <mapper namespace="com.novo.report.dao.two.CustomDao">
 
-    <select id="getCstoneTipInfo" resultType="java.util.Map">
+    <select id="getCstoneTipInfoByKeyword" resultType="java.util.Map">
             SELECT
                  id,
                  disease,
@@ -17,6 +17,20 @@
             FROM custom_cstone_tip
             WHERE #{disease} LIKE CONCAT('%',#{keyword},'%')
             AND deleted = 0
+    </select>
+
+    <select id="getCstoneTipInfoByDisease" resultType="java.util.Map">
+        SELECT
+            id,
+            disease,
+            disease_id,
+            drug,
+            keyword,
+            target_drug_tip,
+            other_tip
+        FROM custom_cstone_tip
+        WHERE disease = #{disease}
+          AND deleted = 0
     </select>
 
 </mapper>
