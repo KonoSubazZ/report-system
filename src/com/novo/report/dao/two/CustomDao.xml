@@ -15,7 +15,7 @@
                  target_drug_tip,
                  other_tip
             FROM custom_cstone_tip
-            WHERE #{disease} LIKE CONCAT('%',#{keyword},'%')
+            WHERE #{disease} LIKE CONCAT('%',keyword,'%')
             AND deleted = 0
     </select>
 
