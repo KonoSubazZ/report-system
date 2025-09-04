@@ -109,6 +109,9 @@ public class PyReportServiceImpl implements PyReportService {
     @Autowired
     private ChemoService chemoService;
 
+    @Autowired
+    private CustomService customService;
+
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
         boolean flag = false;
@@ -3901,6 +3904,11 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setMethylation(methylationInfo);
         }
 
+        // 基石个性化模板逻辑
+        if (productName.equals("实体瘤分子残留病灶(MRD)组织检测报告-基石")) {
+          Map<String, Object> cstoneInfo =  generateCustomCsonteInfo(diseaseName);
+        }
+
         // 封装二维码生成及上传
         String logoPath = session.getServletContext().getRealPath("/") + "images/tumour-logo.png";
         String qrCodeBase64Str = generateAndUploadQRCode(report_id, sf.getClient(), sf.getSubbarcode(), rt.getTemplate_name(), pr.getReport_date(), logoPath, methylationTitle, pd);
@@ -4076,6 +4084,15 @@ public class PyReportServiceImpl implements PyReportService {
             executor.shutdown(); // 回收线程池
         }
         return reportId;
+    }
+
+    /**
+     * 基石个性化逻辑
+     *
+     * @return
+     */
+    private Map<String, Object> generateCustomCsonteInfo(String diseaseName) {
+        return null;
     }
 
     /**

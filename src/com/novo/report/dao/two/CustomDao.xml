@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.two.CustomDao">
+
+    <select id="getCstoneTipInfo" resultType="java.util.Map">
+            SELECT
+                 id,
+                 disease,
+                 disease_id,
+                 drug,
+                 keyword,
+                 target_drug_tip,
+                 other_tip
+            FROM custom_cstone_tip
+            WHERE #{disease} LIKE CONCAT('%',#{keyword},'%')
+            AND deleted = 0
+    </select>
+
+</mapper>
