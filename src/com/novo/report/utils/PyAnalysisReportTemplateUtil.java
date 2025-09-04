@@ -369,6 +369,7 @@ public class PyAnalysisReportTemplateUtil {
 
         // RNA产品分型结果
         data.put("cancerTyping1166", rt.getCancerTyping1166());
+        data.put("cstoneInfo", rt.getCstoneInfo());
 
 
         // MRD产品

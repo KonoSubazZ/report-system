@@ -497,11 +497,6 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setSex(sf.getGender());
         rt.setBirthday(sf.getBirthday());
         rt.setDiseasetype(sf.getDisease_type());
-        // 合并后的样本类型
-        String specimen_type = analysisReportDao.getSpecimen_type(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
-        if (StringUtils.isNotEmpty(specimen_type)) {
-            sf.setSpecimen_type(specimen_type);
-        }
         rt.setSpecimentype(sf.getSpecimen_type());
         rt.setSpecimenquantity(sf.getSpecimen_quantity());
         rt.setCollectdate(sf.getCollect_date());
@@ -2754,7 +2749,13 @@ public class PyReportServiceImpl implements PyReportService {
         // PD-L1检测结果
         // 增加是否展示PD的配置
         Map pd = null;
+
         if (!currentNgsAvailable.getShowPD().equals("0")) {
+            // 展示pd 合并后的样本类型
+            String specimen_type = analysisReportDao.getSpecimen_type(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date());
+            if (StringUtils.isNotEmpty(specimen_type)) {
+                rt.setSpecimentype(specimen_type);
+            }
             pd = analysisReportDao.getPDInfo(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
             if (pd != null && pd.size() > 0) {
                 String detect_antibody = pd.get("Detect_antibody").toString();
@@ -3905,7 +3906,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // 基石个性化模板逻辑
-        if (productName.equals("实体瘤分子残留病灶(MRD)组织检测报告-基石")) {
+        if (rt.getTemplate_name().equals("实体瘤分子残留病灶(MRD)组织检测报告-基石")) {
             Map<String, Object> cstoneInfo = generateCustomCsonteInfo(diseaseName);
 //            String targetDrugTip = "";
 //            String otherTip = "";

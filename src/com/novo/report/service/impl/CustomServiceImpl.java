@@ -43,6 +43,8 @@ public class CustomServiceImpl implements CustomService {
         List<Rule> rules = Arrays.asList(
                 new Rule("小细胞肺", "小细胞肺癌"),
                 new Rule("胃食管结合", "食管胃结合部癌"),
+                new Rule("直肠", "结直肠癌"),
+                new Rule("结肠", "结直肠癌"),
                 new Rule("肺", "肺癌"),
                 new Rule("胃", "胃癌"),
                 new Rule("食管", "食管癌")
