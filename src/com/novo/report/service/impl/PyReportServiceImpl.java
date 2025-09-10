@@ -3974,7 +3974,7 @@ public class PyReportServiceImpl implements PyReportService {
                     detectedGeneInfo, hasCRDrug,
                     panelType, sf.getPCODE(),
                     rt.getType(),rt.getCustomer(),
-                    diseaseName);
+                    diseaseIdList);
             rt.setReportInfo(reportInfo);
 
             // CUSTOM 关于癌种判断的一些展示逻辑,生成检测项目信息
@@ -4782,13 +4782,13 @@ public class PyReportServiceImpl implements PyReportService {
             String productCode,
             String sampleType,
             String customer,
-            String disease) {
+            List<Integer> diseaseList) {
         HashMap<String, Object> res = new HashMap<>();
         String reportName = templateConf.getReport_name();
 
         // 慧尔斯肠癌特殊逻辑
         if ("哈尔滨市南岗区慧尔斯健康信息咨询服务工作室".equals(customer) && "实体瘤188基因检测报告".equals(reportName)){
-            if(disease.contains("肠")){
+            if(diseaseList.contains(10155)){
                 reportName = reportName.replace("实体瘤", "肠癌");
             }
         }
