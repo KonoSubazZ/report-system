@@ -3907,7 +3907,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 基石个性化模板逻辑
         if (rt.getTemplate_name().equals("实体瘤分子残留病灶(MRD)组织检测报告-基石")) {
-            Map<String, Object> cstoneInfo = generateCustomCsonteInfo(diseaseName);
+            Map<String, Object> cstoneInfo = generateCustomCsonteInfo(diseaseName, thisGeneticmarkerVwList);
 //            String targetDrugTip = "";
 //            String otherTip = "";
 //            if (cstoneInfo != null) {
@@ -3973,7 +3973,8 @@ public class PyReportServiceImpl implements PyReportService {
                     allMutation, rt.getPanel(),
                     detectedGeneInfo, hasCRDrug,
                     panelType, sf.getPCODE(),
-                    rt.getType());
+                    rt.getType(),rt.getCustomer(),
+                    diseaseName);
             rt.setReportInfo(reportInfo);
 
             // CUSTOM 关于癌种判断的一些展示逻辑,生成检测项目信息
@@ -4099,8 +4100,26 @@ public class PyReportServiceImpl implements PyReportService {
      *
      * @return
      */
-    private Map<String, Object> generateCustomCsonteInfo(String diseaseName) {
+    private Map<String, Object> generateCustomCsonteInfo(String diseaseName, List<Map> thisGeneticmarkerVwList) {
         Map<String, Object> csonteInfo = customService.getCstoneTipInfo(diseaseName);
+        List<String> variantList = new ArrayList<>();
+        thisGeneticmarkerVwList.stream().forEach(item -> {
+            String gene = item.get("gene").toString();
+            String oriVariant = item.get("ori_variant").toString();
+            String ExonicFunc = item.get("ExonicFunc").toString();
+            if (gene.equals("CDKN2A")) {
+                if (ExonicFunc.equals("基因融合") || ExonicFunc.contains("基因扩增")) {
+                    variantList.add(oriVariant);
+                }else{
+                    oriVariant = oriVariant.substring(oriVariant.indexOf("c."));
+                    variantList.add(oriVariant);
+                }
+            }
+        });
+        if (variantList.isEmpty()) {
+            variantList.add("-");
+        }
+        csonteInfo.put("CDKN2A", variantList);
         return csonteInfo;
     }
 
@@ -4761,9 +4780,18 @@ public class PyReportServiceImpl implements PyReportService {
             boolean hasCRDrug,
             String panelType,
             String productCode,
-            String sampleType) {
+            String sampleType,
+            String customer,
+            String disease) {
         HashMap<String, Object> res = new HashMap<>();
         String reportName = templateConf.getReport_name();
+
+        // 慧尔斯肠癌特殊逻辑
+        if ("哈尔滨市南岗区慧尔斯健康信息咨询服务工作室".equals(customer) && "实体瘤188基因检测报告".equals(reportName)){
+            if(disease.contains("肠")){
+                reportName = reportName.replace("实体瘤", "肠癌");
+            }
+        }
         if (pd != null) {
             reportName = reportName.contains("{{PD-L1}}")
                     ? reportName.replace("{{PD-L1}}", "+PD-L1")
@@ -4774,6 +4802,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
         // 新增占位符逻辑
         reportName = reportName.replace("{{sample_type}}", tranlateSampleType(sampleType));
+
 
         String name1 = "检测基因列表";
         if (templateConf.getReport_name().contains("全外显子组升级版")) {
@@ -6873,7 +6902,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
         // 双层排序
         List<Map> newList = new ArrayList<>();
-        Comparator comparator = Collator.getInstance(java.util.Locale.CHINA);
+        Comparator comparator = Collator.getInstance(Locale.CHINA);
         Map<String, List<Map>> name = list.stream().collect(Collectors.groupingBy(map -> map.get("variationClass2").toString()));
         Set<String> objects = name.keySet();
         String[] objects1 = objects.toArray(new String[objects.size()]);
@@ -6917,7 +6946,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
         // 双层排序
         List<Map> newList = new ArrayList<>();
-        Comparator comparator = Collator.getInstance(java.util.Locale.CHINA);
+        Comparator comparator = Collator.getInstance(Locale.CHINA);
         Map<String, List<Map>> name = list.stream().collect(Collectors.groupingBy(map -> map.get("variationClass2").toString()));
         Set<String> objects = name.keySet();
         String[] objects1 = objects.toArray(new String[objects.size()]);
