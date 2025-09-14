@@ -4787,7 +4787,7 @@ public class PyReportServiceImpl implements PyReportService {
         String reportName = templateConf.getReport_name();
 
         // 慧尔斯肠癌特殊逻辑
-        if ("哈尔滨市南岗区慧尔斯健康信息咨询服务工作室".equals(customer) && "实体瘤188基因检测报告".equals(reportName)){
+        if (("哈尔滨市南岗区慧尔斯健康信息咨询服务工作室".equals(customer) || "J-HES-肿瘤个人检测服务".equals(customer)) && "实体瘤188基因检测报告".equals(reportName)){
             if(diseaseList.contains(10155)){
                 reportName = reportName.replace("实体瘤", "肠癌");
             }
