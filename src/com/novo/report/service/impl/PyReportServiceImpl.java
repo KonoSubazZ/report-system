@@ -3327,7 +3327,13 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> singleMoreTipLineStr = new ArrayList<Map>();
         HashSet<String> detectionMutationSet = new HashSet<>();
         String detectionMutationStr = "";
-        if (rt.getTemplate_name().contains("EGFR_ALK_ROS1基因检测报告模板") || rt.getTemplate_name().contains("EGFR_T790M基因检测报告模板") || rt.getTemplate_name().contains("EGFR_18-21外显子基因检测报告模板") || rt.getTemplate_name().contains("BRAF_V600E基因检测报告模板") || rt.getTemplate_name().contains("KRAS基因报告模板") || rt.getTemplate_name().contains("KRAS_NRAS_BRAF基因报告模板") || rt.getTemplate_name().contains("KIT_PDGFRA基因报告模板")) {
+        if (rt.getTemplate_name().contains("EGFR_ALK_ROS1基因检测报告")
+                || rt.getTemplate_name().contains("EGFR_T790M基因检测报告")
+                || rt.getTemplate_name().contains("EGFR_18-21外显子基因检测报告")
+                || rt.getTemplate_name().contains("BRAF_V600E基因检测报告")
+                || rt.getTemplate_name().contains("KRAS基因报告")
+                || rt.getTemplate_name().contains("KRAS_NRAS_BRAF基因报告")
+                || rt.getTemplate_name().contains("KIT_PDGFRA基因报告")) {
             if (list.size() != 0) {
                 for (Map map : list) {
                     Map singleMoreTipLine = new HashMap();
@@ -3369,17 +3375,17 @@ public class PyReportServiceImpl implements PyReportService {
                         singleMoreTipLine.put("pHGVS", "/");
                     }
                     if (!singleMoreTipLine.isEmpty()) {
-                        if (rt.getTemplate_name().contains("EGFR_ALK_ROS1基因检测报告模板")) {
+                        if (rt.getTemplate_name().contains("EGFR_ALK_ROS1基因检测报告")) {
                             templateEGFR_ALK_ROS1(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
-                        } else if (rt.getTemplate_name().contains("EGFR_T790M基因检测报告模板")) {
+                        } else if (rt.getTemplate_name().contains("EGFR_T790M基因检测报告")) {
                             templateEGFR_T790M(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
-                        } else if (rt.getTemplate_name().contains("EGFR_18-21外显子基因检测报告模板")) {
+                        } else if (rt.getTemplate_name().contains("EGFR_18-21外显子基因检测报告")) {
                             templateEGFR(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
-                        } else if (rt.getTemplate_name().contains("BRAF_V600E基因检测报告模板")) {
+                        } else if (rt.getTemplate_name().contains("BRAF_V600E基因检测报告")) {
                             templateBRAF_V600E(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
-                        } else if (rt.getTemplate_name().contains("KRAS基因报告模板")) {
+                        } else if (rt.getTemplate_name().contains("KRAS基因报告")) {
                             templateKRAS(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
-                        } else if (rt.getTemplate_name().contains("KRAS_NRAS_BRAF基因报告模板")) {
+                        } else if (rt.getTemplate_name().contains("KRAS_NRAS_BRAF基因报告")) {
                             // templateKRAS_NRAS_BRAF(gene, variant, ExonicFunc, exon, ori_variant, detectionMutationSet);
                             // 20250212 增加
                             List<String> exonKRAS = Arrays.asList("2", "3", "4");
@@ -3387,7 +3393,7 @@ public class PyReportServiceImpl implements PyReportService {
                             if ("KRAS".equals(gene) && exonKRAS.contains(exon) || "NRAS".equals(gene) && exonNRAS.contains(exon) || "BRAF".equals(gene) && "V600E".equals(variant)) {
                                 singleMoreTipLineStr.add(singleMoreTipLine);
                             }
-                        } else if (rt.getTemplate_name().contains("KIT_PDGFRA基因报告模板")) {
+                        } else if (rt.getTemplate_name().contains("KIT_PDGFRA基因报告")) {
                             List<String> exonKIT = Arrays.asList("9", "11", "13", "14", "17", "18");
                             List<String> exonPDGFRA = Arrays.asList("12", "14", "18");
                             if ("KIT".equals(gene) && exonKIT.contains(exon) || "PDGFRA".equals(gene) && exonPDGFRA.contains(exon)) {
