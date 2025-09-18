@@ -782,7 +782,7 @@ public class GeneMarkerVwController {
 
             // 脑胶质瘤相关分子标记物检测结果
             boolean brainGliomaFlag = false;
-            if (product_name.equals("novopm2_tis_200") || product_name.equals("novopm2_tis_BGM1238")) {
+            if (product_name.equals("novopm2_tis_200") || product_name.equals("novopm2_tis_GBM1238")) {
                 brainGliomaFlag = true;
                 List<MmBrainGlioma> mmBrainGliomas = moduleModificationAllDao.selectMmBrainGliomaByReportId(currentNgsAvailable.getReport_id());
                 if (mmBrainGliomas.isEmpty()) {
