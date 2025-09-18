@@ -782,11 +782,19 @@ public class GeneMarkerVwController {
 
             // 脑胶质瘤相关分子标记物检测结果
             boolean brainGliomaFlag = false;
-            if (product_name.equals("novopm2_tis_200")) {
+            if (product_name.equals("novopm2_tis_200") || product_name.equals("novopm2_tis_BGM1238")) {
                 brainGliomaFlag = true;
                 List<MmBrainGlioma> mmBrainGliomas = moduleModificationAllDao.selectMmBrainGliomaByReportId(currentNgsAvailable.getReport_id());
                 if (mmBrainGliomas.isEmpty()) {
                     List<Map> brainGlioma = analysisReportDao.getImmuneRelatedGene("brainGlioma");
+                    if (product_name.equals("novopm2_tis_1238_BGM")) {
+                        // 1238 NF2 突变
+                        Map<String, String> NF2Info = new HashMap<>();
+                        NF2Info.put("gene", "NF2");
+                        NF2Info.put("info", "NF2 突变");
+                        brainGlioma.add(NF2Info);
+                    }
+
                     List<Map> spCna = analysisReportDao.getSpCna(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
                     for (Map map : brainGlioma) {
                         String output = "未检出";

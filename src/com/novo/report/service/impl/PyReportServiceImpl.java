@@ -3178,27 +3178,44 @@ public class PyReportServiceImpl implements PyReportService {
         }
         rt.setLymphomaFlag(lymphomaFlag);
 
-        // 甲状腺癌热点基因检测结果(甲状腺癌)
+        // 甲状腺癌热点基因检测结果(甲状腺癌) 黑色素瘤预后
         List<String> thyroidPanelList = moduleService.getconfPanelList("MOD_WITH_THYROID");
         boolean isThyroidPanel = thyroidPanelList.contains(productName) && diseaseService.isThyroidCarcinoma(diseaseId);
         String peDrugStr = "";
-        if (rt.getTemplate_name().contains("甲状腺") || isThyroidPanel) {
-            List<MmThyroidHotspot> thyroidCancerHotAllGeneDrugTipLineStr = moduleModificationAllDao.selectMmThyroidHotspotByReportId(currentNgsAvailable.getReport_id());
-            if (thyroidCancerHotAllGeneDrugTipLineStr.isEmpty()) {
-                thyroidCancerHotAllGeneDrugTipLineStr = getThyroidCancerHotgeneData(thisGeneticmarkerList, crList);
+        if ((rt.getTemplate_name().contains("甲状腺") || isThyroidPanel) || rt.getTemplate_name().contains("黑色素瘤")) {
+            if (rt.getTemplate_name().contains("甲状腺")) {
+                List<MmThyroidHotspot> thyroidCancerHotAllGeneDrugTipLineStr = moduleModificationAllDao.selectMmThyroidHotspotByReportId(currentNgsAvailable.getReport_id());
+                if (thyroidCancerHotAllGeneDrugTipLineStr.isEmpty()) {
+                    thyroidCancerHotAllGeneDrugTipLineStr = getThyroidCancerHotgeneData(thisGeneticmarkerList, crList);
+                }
+                rt.setThyroidCancerHotAllGeneDrugTipLineStr(thyroidCancerHotAllGeneDrugTipLineStr);
             }
-            rt.setThyroidCancerHotAllGeneDrugTipLineStr(thyroidCancerHotAllGeneDrugTipLineStr);
+
             // 预后评估
-            List<MmThyroidPrognosis> mmThyroidPrognoses = moduleModificationAllDao.selectMmThyroidPrognosisByReportId(currentNgsAvailable.getReport_id());
-            List<Map> prognosticEvaluation = mmThyroidPrognoses.stream().map(it -> {
-                Map<String, Object> apiMap = new HashMap<>();
-                apiMap.put("gene", it.getGene());
-                apiMap.put("ori_variant", it.getOri_variant());
-                apiMap.put("mutFreq", it.getMutFreq());
-                apiMap.put("prognosis_evaluation", it.getPrognosis_evaluation());
-                apiMap.put("prognosis_assessment", it.getPrognosis_assessment());
-                return apiMap;
-            }).collect(Collectors.toList());
+            List<Map> prognosticEvaluation;
+            if (rt.getTemplate_name().contains("甲状腺")) {
+                List<MmThyroidPrognosis> mmThyroidPrognoses = moduleModificationAllDao.selectMmThyroidPrognosisByReportId(currentNgsAvailable.getReport_id());
+                prognosticEvaluation = mmThyroidPrognoses.stream().map(it -> {
+                    Map<String, Object> apiMap = new HashMap<>();
+                    apiMap.put("gene", it.getGene());
+                    apiMap.put("ori_variant", it.getOri_variant());
+                    apiMap.put("mutFreq", it.getMutFreq());
+                    apiMap.put("prognosis_evaluation", it.getPrognosis_evaluation());
+                    apiMap.put("prognosis_assessment", it.getPrognosis_assessment());
+                    return apiMap;
+                }).collect(Collectors.toList());
+            } else {
+                List<Map<String, String>> melanomaList = geneAnalysisService.generateMelanoma(query);
+                prognosticEvaluation = melanomaList.stream().map(it -> {
+                    Map<String, Object> apiMap = new HashMap<>();
+                    apiMap.put("gene", it.get("gene"));
+                    apiMap.put("ori_variant", it.get("ori_variant"));
+                    apiMap.put("mutFreq", it.get("mutFreq"));
+                    apiMap.put("prognosis_evaluation", it.get("prognosis_evaluation"));
+                    apiMap.put("prognosis_assessment", it.get("prognosis_assessment"));
+                    return apiMap;
+                }).collect(Collectors.toList());
+            }
             for (Map map : prognosticEvaluation) {
                 String gene = map.get("gene").toString();
                 String ori_variant = map.get("ori_variant").toString();
@@ -3979,7 +3996,7 @@ public class PyReportServiceImpl implements PyReportService {
                     allMutation, rt.getPanel(),
                     detectedGeneInfo, hasCRDrug,
                     panelType, sf.getPCODE(),
-                    rt.getType(),rt.getCustomer(),
+                    rt.getType(), rt.getCustomer(),
                     diseaseIdList);
             rt.setReportInfo(reportInfo);
 
@@ -4116,7 +4133,7 @@ public class PyReportServiceImpl implements PyReportService {
             if (gene.equals("CDKN2A")) {
                 if (ExonicFunc.equals("基因融合") || ExonicFunc.contains("基因扩增")) {
                     variantList.add(oriVariant);
-                }else{
+                } else {
                     oriVariant = oriVariant.substring(oriVariant.indexOf("c."));
                     variantList.add(oriVariant);
                 }
@@ -4793,8 +4810,8 @@ public class PyReportServiceImpl implements PyReportService {
         String reportName = templateConf.getReport_name();
 
         // 慧尔斯肠癌特殊逻辑
-        if (("哈尔滨市南岗区慧尔斯健康信息咨询服务工作室".equals(customer) || "J-HES-肿瘤个人检测服务".equals(customer)) && "实体瘤188基因检测报告".equals(reportName)){
-            if(diseaseList.contains(10155)){
+        if (("哈尔滨市南岗区慧尔斯健康信息咨询服务工作室".equals(customer) || "J-HES-肿瘤个人检测服务".equals(customer)) && "实体瘤188基因检测报告".equals(reportName)) {
+            if (diseaseList.contains(10155)) {
                 reportName = reportName.replace("实体瘤", "肠癌");
             }
         }

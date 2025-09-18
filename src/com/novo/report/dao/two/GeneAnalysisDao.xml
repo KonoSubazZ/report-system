@@ -48,4 +48,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 	a.deleted = 0
 	</select>
 
+	<select id="getMelanoma" resultType="java.util.Map">
+		SELECT
+			a.gene,
+			a.protein,
+			a.prognosis_evaluation,
+			a.prognosis_assessment
+		FROM
+			mod_melanoma AS a
+		WHERE
+		 	a.deleted = 0
+	</select>
+
 </mapper>

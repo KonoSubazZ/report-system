@@ -18,6 +18,7 @@ public interface GeneAnalysisService {
 	int getHRRDetectedGeneCount();
 
 	List<Map<String, String> > generateThyroidData(CommonQueryVO query);
+	List<Map<String, String> > generateMelanoma(CommonQueryVO query);
 
 	/**
 	 * 获取体系 I、II 类(有靶药)和胚系致病、可能致病

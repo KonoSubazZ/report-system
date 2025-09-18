@@ -170,6 +170,44 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
         return thyroidDetectedList;
     }
 
+    @Override
+    public List<Map<String, String>> generateMelanoma(CommonQueryVO query) {
+        List<Map<String, String>> SNVINDELGeneSiteList = geneAnalysisDao.getSNVINDELGeneSite(query);
+        List<Map<String, String>> melanomaGeneList = geneAnalysisDao.getMelanoma();
+        List<Map<String, String>> melanomaDetectedList = new ArrayList<>();
+        for (Map<String, String> map : SNVINDELGeneSiteList) {
+            String gene = map.get("gene");
+            String variant = map.get("variant");
+            String oriVariant = map.get("ori_variant");
+            String mutFreq = map.get("mut_freq") + "%";
+
+            Map<String, String> matchedRecord = null;
+
+            for (Map<String, String> melanoma : melanomaGeneList) {
+                String melanomaGene = melanoma.get("gene");
+                String protein = melanoma.get("protein");
+
+                if (!gene.equals(melanomaGene)) continue;
+
+                if (!"*".equals(protein) && variant.contains(protein)) {
+                    // 精确匹配
+                    matchedRecord = new HashMap<>(melanoma); // 避免污染原始数据
+                    break;
+                } else if ("*".equals(protein) && matchedRecord == null) {
+                    // 模糊匹配（仅作为备选）
+                    matchedRecord = new HashMap<>(melanoma);
+                }
+            }
+
+            if (matchedRecord != null) {
+                matchedRecord.put("mutFreq", mutFreq);
+                matchedRecord.put("ori_variant", oriVariant);
+                melanomaDetectedList.add(matchedRecord);
+            }
+        }
+        return melanomaDetectedList;
+    }
+
 
     @Override
     public List<Map> getTargetedSomaticMutationAndCR12(List<Map> somaticList, List<Map> crList) {

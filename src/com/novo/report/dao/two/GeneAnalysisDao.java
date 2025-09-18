@@ -13,4 +13,5 @@ public interface GeneAnalysisDao {
     List<Map<String, String>> getSNVINDELGeneSite(CommonQueryVO query);
 
     List<Map<String, String>> getThyroid();
+    List<Map<String, String>> getMelanoma();
 }
