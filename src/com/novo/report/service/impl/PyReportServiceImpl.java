@@ -3252,7 +3252,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 脑胶质瘤相关分子标记物检测结果 && 增加1166RNA通用模板
         boolean brainGlioma1166Flag = (RNATPYingPanel.contains(productName)) && (diseaseFlag.get("BrainGlioma") || "脑胶质瘤1166分子分型".equals(module));
         boolean brainGliomaFlag = false;
-        if (productName.equals("novopm2_tis_200") || brainGlioma1166Flag) {
+        if ((productName.equals("novopm2_tis_200") || brainGlioma1166Flag) || productName.equals("novopm2_tis_GBM1238")) {
             brainGliomaFlag = true;
             List<MmBrainGlioma> mmBrainGliomas = moduleModificationAllDao.selectMmBrainGliomaByReportId(currentNgsAvailable.getReport_id());
             if (!CollectionUtils.isEmpty(mmBrainGliomas)) {

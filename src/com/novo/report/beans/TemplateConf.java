@@ -64,6 +64,7 @@ public class TemplateConf {
   private Boolean tumorNeoantigenAnal;
   private Boolean prognosticAnal;
   private Boolean chemoAnal;
+  private Boolean melanomaPrognosis;
   private Boolean wes;
   private Boolean qc;
   private Boolean sarcomaGene;
@@ -628,7 +629,13 @@ public class TemplateConf {
   public void setChemo_anal(Boolean chemoAnal) {
     this.chemoAnal = chemoAnal;
   }
+  public Boolean getMelanoma_prognosis() {
+    return melanomaPrognosis;
+  }
 
+  public void setMelanoma_prognosis(Boolean melanomaPrognosis) {
+    this.melanomaPrognosis = melanomaPrognosis;
+  }
 
   public Boolean getWes() {
     return wes;
