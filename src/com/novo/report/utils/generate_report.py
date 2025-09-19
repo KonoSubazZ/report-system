@@ -630,29 +630,13 @@ def add_gene_rich_text(gene_list, detected_gene_list, panel):
         for col_idx, gene in enumerate(row):
             # 脑胶质瘤 1p/19q Chr7/10 正体
             isItalic = False if gene in ['1p/19q', 'Chr7/10'] and panel == 'novopm2_tis_GBM1238' else True
-            gene1 = melanoma_gene_mapping(gene) if panel == 'novopm2_tis_GBM1238' else gene
 
-            if gene1 in detected_gene_list:
+            if gene in detected_gene_list:
                 gene_list[row_idx][col_idx] = MyRichTextV1(gene, color='#ff0000', cnfont='微软雅黑',
                                                            font='Times New Roman', size='18', italic=isItalic)
             else:
                 gene_list[row_idx][col_idx] = MyRichTextV1(gene, cnfont='微软雅黑', font='Times New Roman', size='18',
                                                            italic=isItalic)
-
-def melanoma_gene_mapping(gene):
-    """
-    脑胶质瘤基因检出特殊逻辑
-    """
-    # 定义反向映射字典
-    gene_mapping = {
-        'H3-3A': 'H3F3A',
-        'H3-3B': 'H3F3B',
-        'H3C2': 'HIST1H3B',
-        'H3C3': 'HIST1H3C'
-    }
-
-    # 检查基因是否在映射表中，是则返回对应值，否则返回原基因名
-    return gene_mapping.get(gene, gene)
 
 def splitlines(value, delimiter=',', strip=True, use_newline=True):
     """
