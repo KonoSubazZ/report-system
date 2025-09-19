@@ -34,7 +34,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 
 	<select id="getSpecimenTyupeByBarcode" resultType="java.lang.String">
-		select specimen_type from myapp_sample where sample_code = #{barcode}
+		select
+		    specimen_type
+		from
+		    myapp_sample
+		where sample_code = #{barcode}
+		AND upload_date = #{date}
+		AND merge_product_name = #{productName}
 	</select>
 
 </mapper>

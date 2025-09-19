@@ -8,4 +8,5 @@ public interface NewLimsSampleService {
 
 	SpecimenHead getNewLimsSampleByBarcode(String barcode);
 	List<SpecimenHead> getNewLimsSampleList();
+	String mergedSpecimenType(String subbarcode, String date,String productName);
 }

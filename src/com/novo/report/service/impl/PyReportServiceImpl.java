@@ -112,6 +112,9 @@ public class PyReportServiceImpl implements PyReportService {
     @Autowired
     private CustomService customService;
 
+    @Autowired
+    private NewLimsSampleService newLimsSampleService;
+
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
         boolean flag = false;
@@ -2803,6 +2806,11 @@ public class PyReportServiceImpl implements PyReportService {
                         });
                 pd.put("pdInfoTable2", groupList);
             }
+        }else{
+            // 手动选择不出PD,读取合并后的样本类型
+             String specimen_type1 = newLimsSampleService.mergedSpecimenType(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+             rt.setSpecimentype(specimen_type1);
+
         }
         rt.setPDInfo(pd);
         // her2
