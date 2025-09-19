@@ -29,7 +29,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       		where BARCODE like '%-%'
       </select>
 
-	  <update id="updateSubreportStatus">
+	<update id="updateSubreportStatus">
 			update myapp_sample set xbg_status=#{status} where sample_code = #{subbarcode} and upload_date = #{date}
-	  </update>
+	</update>
+
+	<select id="getSpecimenTyupeByBarcode" resultType="java.lang.String">
+		select specimen_type from myapp_sample where sample_code = #{barcode}
+	</select>
+
 </mapper>

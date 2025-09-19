@@ -6069,43 +6069,6 @@ public class PyReportServiceImpl implements PyReportService {
         return result;
     }
 
-    // life报告模板融合不输出突变丰度和NDF值
-    @Deprecated
-    public List<String> lifeNoNDFTemplate() {
-        List<String> a = new ArrayList();
-        a.add("肺癌6基因报告模板");
-//        a.add("肺癌6基因安徽胸科");
-        a.add("肺癌6基因模板无logo");
-        a.add("肺癌6基因模板-河南肿瘤");
-        a.add("肺癌20基因报告模板");
-        a.add("肺癌20基因报告模板无logo");
-        a.add("肺癌12基因报告模板-技术服务");
-        a.add("肺癌12基因报告模板-技术服务盖章");
-        a.add("肺癌26基因报告模板-技术服务");
-        a.add("肺癌26基因报告模板-技术服务盖章");
-        a.add("结直肠12基因报告模板-技术服务");
-        a.add("结直肠12基因报告模板-技术服务盖章");
-        a.add("结直肠26基因报告模板-技术服务");
-        a.add("结直肠26基因报告模板-技术服务盖章");
-        a.add("肺癌26基因报告模板_蚌埠");
-        a.add("结直肠26基因报告模板_蚌埠");
-        a.add("肺癌26基因报告模板-湖南肿瘤");
-//        a.add("肺癌26基因报告模板-南昌附一");
-//        a.add("结直肠癌26基因报告-南昌附一");
-        a.add("肺癌26基因报告模板-重庆分子");
-        a.add("结直肠26基因报告模板-重庆分子");
-        a.add("肺癌54基因重肿");
-//        a.add("肺癌60基因重肿"); 20241122 重肿输出NDF值
-        a.add("实体瘤60基因重肿");
-        a.add("肺癌10基因-患者版");
-        a.add("肺癌60基因报告模板-非盖章国药版");
-        a.add("肺癌60基因报告模板-非盖章-中南");
-        a.add("60基因泛实体瘤报告-同济");
-        a.add("肺癌60基因报告-同济");
-        a.add("肺癌6+54基因报告-北京胸科");
-        return a;
-    }
-
     // EGFR_ALK_ROS1基因检测报告模板
     public void templateEGFR_ALK_ROS1(String gene, String variant, String ExonicFunc, String exon, String ori_variant, HashSet detectionMutationSet) {
         String detection = "";
@@ -6426,37 +6389,7 @@ public class PyReportServiceImpl implements PyReportService {
                     continue;
                 }
             }
-/*            ReportCrServiceImpl reportCrService = new ReportCrServiceImpl();
-            Integer mutationId = analysisReportDao.getMutationId(gene, variant);
-            if (mutationId == null) {
-                if (variant.indexOf("fs") > -1) {
-                    String[] split = variant.split("fs");
-                    String tmp_variant = reportCrService.getVariant(split[0]) + "fs";
-                    mutationId = analysisReportDao.getMutationId(gene, tmp_variant);
-                }
-                if (mutationId == null) {
-                    if (variant.indexOf("fs") > -1 || variant.indexOf("*") > -1 || variant.indexOf("+") > -1 || variant.indexOf("-") > -1) {
-                        mutationId = analysisReportDao.getMutationId(gene, "Inactive Mutation");
-                    }
-                }
-            }
-            List<Integer> mutationIdList = new ArrayList<>();
-            if (mutationId != null) {
-                mutationIdList.add(mutationId);
-                List<Integer> parentMutationIdList = analysisReportDao.getParentMutationId(mutationId);
-                mutationIdList.addAll(parentMutationIdList);
-            }
-            String unvariantDescription = "";
-            if ("Amplification".equals(variant)) {
-                unvariantDescription = "该变异为基因扩增，可能导致蛋白表达增加。";
-            } else if ((variant.indexOf("fs") > -1 || variant.indexOf("*") > -1 || variant.indexOf("+") > -1 || variant.indexOf("-") > -1) && !(variant.indexOf("Fusion") > -1)) {
-                unvariantDescription = "该变异为失活突变，可能会导致蛋白功能缺失。";
-            } else {
-                unvariantDescription = "该突变临床意义未明，若导致蛋白功能异常，可能影响下游信号通路，参与肿瘤发生发展。";
-            }
-            Map variantDesc = getFirst(CollectionUtils.isEmpty(mutationIdList) ? new ArrayList<>() : analysisReportDao.getVariantDescription(mutationIdList, lang));
-            String variantDescription = variantDesc == null ? unvariantDescription : (variantDesc.get("description") == null ? unvariantDescription : variantDesc.get("description").toString());
-            map.put("mutDesc2", mutDesc2 + variantDescription);*/
+
             // 变异解析肉瘤亚型可能有多个
             if (!sarcomaTypingGourp.isEmpty()) {
                 String evidence = sarcomaTypingGourp.get(0).get("evidence").toString();
