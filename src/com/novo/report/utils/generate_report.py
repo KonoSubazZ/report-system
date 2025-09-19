@@ -586,7 +586,7 @@ def safe_get(d, key, default=None):
     return d.get(key, default)
 
 
-def mark_genes_in_red(gene_tables, detected_gene_info):
+def mark_genes_in_red(gene_tables, detected_gene_info, panel):
     detected_mapping = {
         "TARGET": "all_gene_list",
         "CR": "cr_gene_list",
@@ -621,20 +621,38 @@ def mark_genes_in_red(gene_tables, detected_gene_info):
         # detected_gene_list = detected_gene_info.get(detected_mapping.get(gene_type, ""), [])
         # if not detected_gene_list:
         #     continue
-        add_gene_rich_text(gene_list, detected_gene_list)
+        add_gene_rich_text(gene_list, detected_gene_list, panel)
     return show_red_note
 
 
-def add_gene_rich_text(gene_list, detected_gene_list):
+def add_gene_rich_text(gene_list, detected_gene_list, panel):
     for row_idx, row in enumerate(gene_list):
         for col_idx, gene in enumerate(row):
-            if gene in detected_gene_list:
+            # 脑胶质瘤 1p/19q Chr7/10 正体
+            isItalic = False if gene in ['1p/19q', 'Chr7/10'] and panel == 'novopm2_tis_GBM1238' else True
+            gene1 = melanoma_gene_mapping(gene) if panel == 'novopm2_tis_GBM1238' else gene
+
+            if gene1 in detected_gene_list:
                 gene_list[row_idx][col_idx] = MyRichTextV1(gene, color='#ff0000', cnfont='微软雅黑',
-                                                           font='Times New Roman', size='18', italic=True)
+                                                           font='Times New Roman', size='18', italic=isItalic)
             else:
                 gene_list[row_idx][col_idx] = MyRichTextV1(gene, cnfont='微软雅黑', font='Times New Roman', size='18',
-                                                           italic=True)
+                                                           italic=isItalic)
 
+def melanoma_gene_mapping(gene):
+    """
+    脑胶质瘤基因检出特殊逻辑
+    """
+    # 定义反向映射字典
+    gene_mapping = {
+        'H3-3A': 'H3F3A',
+        'H3-3B': 'H3F3B',
+        'H3C2': 'HIST1H3B',
+        'H3C3': 'HIST1H3C'
+    }
+
+    # 检查基因是否在映射表中，是则返回对应值，否则返回原基因名
+    return gene_mapping.get(gene, gene)
 
 def splitlines(value, delimiter=',', strip=True, use_newline=True):
     """
@@ -766,10 +784,11 @@ if __name__ == '__main__':
             conf_genes_str = info_json['gene']['conf_genes']
             deserialized_data = json.loads(conf_genes_str)
             info_json['gene']['conf_genes'] = deserialized_data
+            panel = info_json['panel']
             if 'reportInfo' in info_json:
                 detected_gene_info = info_json['reportInfo']['detected_gene_info']
                 gene_tables = info_json['gene']['conf_genes']['gene_tables']
-                show_red_note = mark_genes_in_red(gene_tables, detected_gene_info)
+                show_red_note = mark_genes_in_red(gene_tables, detected_gene_info, panel)
                 info_json['reportInfo']['show_red_note'] = show_red_note
 
         # 样本总体评估
