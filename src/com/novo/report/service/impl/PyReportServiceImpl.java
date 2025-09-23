@@ -3191,7 +3191,7 @@ public class PyReportServiceImpl implements PyReportService {
         boolean isThyroidPanel = thyroidPanelList.contains(productName) && diseaseService.isThyroidCarcinoma(diseaseId);
         String peDrugStr = "";
         if ((rt.getTemplate_name().contains("甲状腺") || isThyroidPanel) || rt.getTemplate_name().contains("黑色素瘤")) {
-            if (rt.getTemplate_name().contains("甲状腺")) {
+            if (rt.getTemplate_name().contains("甲状腺") || isThyroidPanel) {
                 List<MmThyroidHotspot> thyroidCancerHotAllGeneDrugTipLineStr = moduleModificationAllDao.selectMmThyroidHotspotByReportId(currentNgsAvailable.getReport_id());
                 if (thyroidCancerHotAllGeneDrugTipLineStr.isEmpty()) {
                     thyroidCancerHotAllGeneDrugTipLineStr = getThyroidCancerHotgeneData(thisGeneticmarkerList, crList);
@@ -3201,7 +3201,7 @@ public class PyReportServiceImpl implements PyReportService {
 
             // 预后评估
             List<Map> prognosticEvaluation;
-            if (rt.getTemplate_name().contains("甲状腺")) {
+            if (rt.getTemplate_name().contains("甲状腺") || isThyroidPanel) {
                 List<MmThyroidPrognosis> mmThyroidPrognoses = moduleModificationAllDao.selectMmThyroidPrognosisByReportId(currentNgsAvailable.getReport_id());
                 prognosticEvaluation = mmThyroidPrognoses.stream().map(it -> {
                     Map<String, Object> apiMap = new HashMap<>();
