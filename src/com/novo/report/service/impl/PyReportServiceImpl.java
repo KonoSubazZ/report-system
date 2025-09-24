@@ -6563,7 +6563,7 @@ public class PyReportServiceImpl implements PyReportService {
             prop.load(inStream);
             List<Object> ips = Arrays.asList(IpUtil.getLocalIp4Address().toArray());
             if (ips.contains(ServerConfig.getServerFormalIP()) || ips.contains(ServerConfig.getServerTestIP())) {
-                return Jsch.sshCommand(prop.getProperty("host"), prop.getProperty("user"), prop.getProperty("pass"), Integer.valueOf(prop.getProperty("port")), "python /TJPROJ2/OBD/module/tmb_report/TMBtoBase64.py  " + tmb + " " + chem_cancer + " " + subbarcode + " " + productName + "  /TJPROJ13/CR/other/TMB_plot/");
+                return Jsch.sshCommand(prop.getProperty("host"), prop.getProperty("user"), prop.getProperty("pass"), Integer.valueOf(prop.getProperty("port")), "python /TJPROJ2/OBD/module/tmb_report/TMBtoBase64.py  " + tmb + " " + chem_cancer + " " + subbarcode + " " + productName + "  /TJPROJ11/OBD/other/TMB_plot/");
             } else {
                 return Jsch.sshCommand("192.168.200.82", "dell", "Novogene2023", 22, "bash /TJPROJ2/OBD/module/tmb_report/TMBtoBase64.sh  " + tmb + " " + chem_cancer + " " + subbarcode + " " + productName);
             }
