@@ -337,7 +337,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 299、1249tmb使用1238产品逻辑
         String tmbProductName = "";
-        if (productName.contains("tis_299") || productName.contains("tis_1249") || productName.contains("tis_462") || tmbProductName.contains("tis_GBM1238")) {
+        if (productName.contains("tis_299") || productName.contains("tis_1249") || productName.contains("tis_462") || productName.contains("tis_GBM1238")) {
             tmbProductName = "novopm2_tis_1238";
         } else if (productName.contains("blo_299") || productName.contains("blo_1249") || productName.contains("blo_462")) {
             tmbProductName = "novopm2_blo_1238";
