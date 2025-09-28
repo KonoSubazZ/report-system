@@ -838,7 +838,7 @@ public class GeneMarkerVwController {
                                         output = "检出";
                                     } else if ("BRAF".equals(gene2) && (ori_variant.contains("p.") || ori_variant.contains("c.") || ori_variant.contains("Fusion")) && "体系".equals(type)) { // 突变+融合：体系I、II、III类变异
                                         output = "检出";
-                                    } else if (Arrays.asList("TP53", "PTEN", "TSC1", "TSC2", "NF1").contains(gene2) && (ori_variant.contains("p.") || ori_variant.contains("c."))) { // 突变：体系I、II、III类变异+ 胚系致病性/可能致病性变异/不确定性变异
+                                    } else if (Arrays.asList("TP53", "PTEN", "TSC1", "TSC2", "NF1","NF2").contains(gene2) && (ori_variant.contains("p.") || ori_variant.contains("c."))) { // 突变：体系I、II、III类变异+ 胚系致病性/可能致病性变异/不确定性变异
                                         output = "检出";
                                     } else if (Arrays.asList("FGFR1", "FGFR2", "FGFR3", "NTRK1", "NTRK2", "NTRK3", "ALK", "ROS1", "YAP1").contains(gene2) && ori_variant.contains("Fusion")) { // 只报出融合
                                         output = "检出";
