@@ -18,27 +18,6 @@ public class CustomServiceImpl implements CustomService {
 
     @Override
     public Map<String, Object> getCstoneTipInfo(String disease) {
-        /**
-        if (disease.contains("肺")) {
-            if (disease.contains("小细胞肺")) {
-                return customDao.getCstoneTipInfoByDisease("小细胞肺癌");
-            }
-            return customDao.getCstoneTipInfoByDisease("肺癌");
-        }
-        if (disease.contains("胃")) {
-            if (disease.contains("胃食管结合")) {
-                return customDao.getCstoneTipInfoByDisease("食管胃结合部癌");
-            }
-            return customDao.getCstoneTipInfoByDisease("胃癌");
-        }
-        if (disease.contains("食管")) {
-            if (disease.contains("胃食管结合")) {
-                return customDao.getCstoneTipInfoByDisease("食管胃结合部癌");
-            }
-            return customDao.getCstoneTipInfoByDisease("食管癌");
-        }
-        return customDao.getCstoneTipInfoByKeyword(disease);
-         **/
 
         List<Rule> rules = Arrays.asList(
                 new Rule("小细胞肺", "小细胞肺癌"),
@@ -47,7 +26,16 @@ public class CustomServiceImpl implements CustomService {
                 new Rule("结肠", "结直肠癌"),
                 new Rule("肺", "肺癌"),
                 new Rule("胃", "胃癌"),
-                new Rule("食管", "食管癌")
+                new Rule("食管", "食管癌"),
+                new Rule("胃神经内分泌", "胃肠道神经内分泌肿瘤"),
+                new Rule("肠神经内分泌", "胃肠道神经内分泌肿瘤"),
+                new Rule("胃肠道神经内分泌", "胃肠道神经内分泌肿瘤"),
+                new Rule("头颈", "头颈部癌"),
+                new Rule("口", "头颈部癌"),
+                new Rule("舌", "头颈部癌"),
+                new Rule("腮", "头颈部癌"),
+                new Rule("腮", "头颈部癌"),
+                new Rule("喉", "头颈部癌")
         );
 
         // 遍历规则，匹配到第一个符合条件的就返回对应查询结果

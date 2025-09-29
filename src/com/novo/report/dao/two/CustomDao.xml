@@ -13,7 +13,8 @@
                  drug,
                  keyword,
                  target_drug_tip,
-                 other_tip
+                 other_tip,
+                 msi_tip
             FROM custom_cstone_tip
             WHERE #{disease} LIKE CONCAT('%',keyword,'%')
             AND deleted = 0
@@ -27,7 +28,8 @@
             drug,
             keyword,
             target_drug_tip,
-            other_tip
+            other_tip,
+            msi_tip
         FROM custom_cstone_tip
         WHERE disease = #{disease}
           AND deleted = 0
