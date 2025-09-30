@@ -1065,6 +1065,39 @@
                 </div>
                 <br>
             </c:if>
+            <c:if test="${isMelanomaFlag == true}">
+
+                <br>
+                <div>
+                    <h2 style="color: blue;font-size: 20px;font-weight: bold;">黑素素瘤预后评估</h2>
+                    <table class="table table-hover text-center" style="margin-top:20px;width: 80%;">
+                        <tbody id="tInfo19" class="my-tbody">
+                        <tr id="thyroidPrognosis_tr">
+                            <th>突变基因</th>
+                            <th>检测结果</th>
+                            <th>变异丰度</th>
+                            <th>预后评估</th>
+                            <th>预后评估说明</th>
+                        </tr>
+                        <c:forEach items="${melanomaList1}" var="item" varStatus="vs">
+                            <tr id="thyroidPrognosis_tr_${vs.count}">
+                                <td><label id="tp_gene_${vs.count}">${item.gene}</label></td>
+                                <td><input id="tp_ori_variant_${vs.count}" style="text-align:center; width: 250px;"
+                                           value="${item.ori_variant}"/></td>
+                                <td><label id="tp_mutFreq_${vs.count}">${item.mutFreq}</label></td>
+                                <td><textarea id="tp_prognosis_evaluation_${vs.count}"
+                                              style="width: 280px; height: 80px;">${item.prognosis_evaluation}</textarea>
+                                </td>
+                                <td><textarea id="tp_prognosis_assessment_${vs.count}"
+                                              style="width: 280px; height: 80px;">${item.prognosis_assessment}</textarea>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+            </c:if>
             <c:if test="${brainGliomaFlag == true}">
                 <div>
                     <h2 style="color: blue;font-size: 20px;font-weight: bold;">脑胶质瘤相关分子标记物检测结果</h2>
@@ -3433,6 +3466,7 @@
     var mmImmnueAlls = ${mmImmnueAllsJson == null ? "[]" : mmImmnueAllsJson};
     var chemo = ${chemoJson == null ? "[]" : chemoJson};
     let cancerTyping1166 = ${cancerTyping1166Json == null ? "[]" : cancerTyping1166Json};
+    var melanomaTypings = ${melanomaList == null ? []: melanomaList};
 
     var chemo_this = [];
     var chemo_unknown = [];
@@ -3554,7 +3588,9 @@
 
 
 
+
                     ${pageContext.request.contextPath}/geneMarkerVw/addDrugRecord?userAccount=
+
 
 
 
@@ -3566,7 +3602,9 @@
 
 
 
+
                     ${geneticMarkerVwPageBean.subbarcode}&reportId=
+
 
 
 
