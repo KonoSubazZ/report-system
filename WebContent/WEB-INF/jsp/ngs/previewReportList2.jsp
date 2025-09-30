@@ -1069,7 +1069,7 @@
 
                 <br>
                 <div>
-                    <h2 style="color: blue;font-size: 20px;font-weight: bold;">黑素素瘤预后评估</h2>
+                    <h2 style="color: blue;font-size: 20px;font-weight: bold;">黑色素瘤预后评估</h2>
                     <table class="table table-hover text-center" style="margin-top:20px;width: 80%;">
                         <tbody id="tInfo19" class="my-tbody">
                         <tr id="thyroidPrognosis_tr">
