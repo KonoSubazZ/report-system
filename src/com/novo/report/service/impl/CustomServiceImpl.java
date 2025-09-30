@@ -20,6 +20,7 @@ public class CustomServiceImpl implements CustomService {
     public Map<String, Object> getCstoneTipInfo(String disease) {
 
         List<Rule> rules = Arrays.asList(
+                new Rule("非小细胞肺", "肺癌"),
                 new Rule("小细胞肺", "小细胞肺癌"),
                 new Rule("胃食管结合", "食管胃结合部癌"),
                 new Rule("直肠", "结直肠癌"),
