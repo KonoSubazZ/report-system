@@ -25,6 +25,7 @@ public class CustomServiceImpl implements CustomService {
                 new Rule("直肠", "结直肠癌"),
                 new Rule("结肠", "结直肠癌"),
                 new Rule("肺", "肺癌"),
+                new Rule("胃肠道间质瘤", "胃肠道间质瘤"),
                 new Rule("胃", "胃癌"),
                 new Rule("食管", "食管癌"),
                 new Rule("胃神经内分泌", "胃肠道神经内分泌肿瘤"),
