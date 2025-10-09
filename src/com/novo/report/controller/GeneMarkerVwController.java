@@ -246,6 +246,7 @@ public class GeneMarkerVwController {
             List<String> targetGeneList = targetGeneListDao.getTargetGeneList();
             // 子宫内膜癌标色逻辑
             List<String> poleList = moduleService.getconfCommonList("POLE_HYPERMUTATION_PHGVS");
+            List<String> kitList = moduleService.getconfCommonList("KIT_PHGVS");
             for (Map map : list) {
                 String gene = map.get("gene").toString();
                 String variant = (String) map.getOrDefault("variant", "");
@@ -254,6 +255,9 @@ public class GeneMarkerVwController {
                 }
 
                 if ("POLE".equals(gene) && poleList.contains(variant)) {
+                    map.put("pole", true);
+                }
+                if ("KIT".equals(gene) && poleList.contains(variant)) {
                     map.put("pole", true);
                 }
             }
