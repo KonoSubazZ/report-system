@@ -257,8 +257,8 @@ public class GeneMarkerVwController {
                 if ("POLE".equals(gene) && poleList.contains(variant)) {
                     map.put("pole", true);
                 }
-                if ("KIT".equals(gene) && poleList.contains(variant)) {
-                    map.put("pole", true);
+                if ("KIT".equals(gene) && kitList.contains(variant)) {
+                    map.put("kit", true);
                 }
             }
         }
