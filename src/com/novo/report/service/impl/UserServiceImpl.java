@@ -9,6 +9,9 @@ import com.novo.report.beans.PaginationVO;
 import com.novo.report.beans.User;
 import com.novo.report.dao.two.UserDao;
 import com.novo.report.service.UserService;
+
+import java.sql.SQLException;
+
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -31,11 +34,26 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User login(String user_account, String encoded_password) {
-		User user = userDao.login(user_account,encoded_password);
-		if(user == null){
-			throw new RuntimeException("账号或者密码错误");
-		}		
-		return user;
+		try {
+			User user = userDao.login(user_account, encoded_password);
+			if (user == null) {
+				// 业务逻辑：确实没有该用户
+				throw new RuntimeException("账号或者密码错误");
+			}
+			return user;
+		} catch (Exception e) {
+			// 判断是否为数据库连接相关异常（根据实际使用的框架调整）
+            // 连接被拒绝（MySQL未启动或端口错误）
+            // 数据库不存在
+            if (e.getMessage().contains("Connection refused") || e.getMessage().contains("Unknown database") || e.getMessage().contains("Access denied")      // 账号密码错误（数据库层）
+			) {
+				// 抛出数据库连接异常，明确提示
+				throw new RuntimeException("数据库连接失败：" + e.getMessage(), e);
+			} else {
+				// 其他未知异常
+				throw new RuntimeException("登录失败：" + e.getMessage(), e);
+			}
+		}
 	}
 
 
