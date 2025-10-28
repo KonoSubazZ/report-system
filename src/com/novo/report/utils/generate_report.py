@@ -12,6 +12,8 @@ import time
 from docx.shared import Pt
 from html import escape
 from io import BytesIO
+import requests
+
 
 # import docxtpl
 # from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
@@ -254,24 +256,82 @@ def mystyleSong2(value, bold, highlight=False):
         return MyRichText(value, bold=bold, cnfont='宋体', font='Times New Roman', size=21)
 
 
-def myimage(value):
-    imgdata = base64.b64decode(value)
-    # file = open('a.png', 'wb')
-    # file.write(imgdata)
-    # file.close()
-    image_stream = BytesIO(imgdata)
-    myimage = InlineImage(tpl, image_stream, width=Pt(283.5), height=Pt(225))
-    return myimage
+def myimage(tpl, value, width, height):
+    """
+    兼容 Base64 字符串和图片 URL（含无协议头的IP地址URL）的处理函数
+    """
+    try:
+        # 1. 优化 URL 判断逻辑：
 
+        if isinstance(value, str) and value.startswith(('http://', 'https://')):
 
-def pdimage(value, width, height):
-    imgdata = base64.b64decode(value)
-    image_stream = BytesIO(imgdata)
-    pdimage = InlineImage(tpl, image_stream, width=Pt(width), height=Pt(height))
-    return pdimage
+            # 1.1 下载图片
+            response = requests.get(value, timeout=10)
+            response.raise_for_status()  # 404/500等错误会抛出异常
+            image_stream = BytesIO(response.content)
 
+        # 2. 处理 Base64 字符串
+        else:
+            imgdata = base64.b64decode(value)
+            image_stream = BytesIO(imgdata)
 
-def currencyimage(value, width, height):
+        # 3. 生成图片对象
+        return InlineImage(tpl, image_stream, width=Pt(width), height=Pt(height))
+
+    except Exception as e:
+        raise RuntimeError(f"图片处理失败（值：{str(value)[:50]}）：{str(e)}")
+
+def pdimage(tpl, value, width, height):
+    """
+    兼容 Base64 字符串和图片 URL（含无协议头的IP地址URL）的处理函数
+    """
+    try:
+        # 1. 优化 URL 判断逻辑：
+
+        if isinstance(value, str) and value.startswith(('http://', 'https://')):
+
+            # 1.1 下载图片
+            response = requests.get(value, timeout=10)
+            response.raise_for_status()  # 404/500等错误会抛出异常
+            image_stream = BytesIO(response.content)
+
+        # 2. 处理 Base64 字符串
+        else:
+            imgdata = base64.b64decode(value)
+            image_stream = BytesIO(imgdata)
+
+        # 3. 生成图片对象
+        return InlineImage(tpl, image_stream, width=Pt(width), height=Pt(height))
+
+    except Exception as e:
+        raise RuntimeError(f"图片处理失败（值：{str(value)[:50]}）：{str(e)}")
+
+def currencyimage(tpl, value, width, height):
+    """
+    兼容 Base64 字符串和图片 URL（含无协议头的IP地址URL）的处理函数
+    """
+    try:
+        # 1. 优化 URL 判断逻辑：
+
+        if isinstance(value, str) and value.startswith(('http://', 'https://')):
+
+            # 1.1 下载图片
+            response = requests.get(value, timeout=10)
+            response.raise_for_status()  # 404/500等错误会抛出异常
+            image_stream = BytesIO(response.content)
+
+        # 2. 处理 Base64 字符串
+        else:
+            imgdata = base64.b64decode(value)
+            image_stream = BytesIO(imgdata)
+
+        # 3. 生成图片对象
+        return InlineImage(tpl, image_stream, width=Pt(width), height=Pt(height))
+
+    except Exception as e:
+        raise RuntimeError(f"图片处理失败（值：{str(value)[:50]}）：{str(e)}")
+
+def currencyimage_old(value, width, height):
     imgdata = base64.b64decode(value)
     # file = open('aa.png', 'wb')
     # file.write(imgdata)
@@ -279,7 +339,6 @@ def currencyimage(value, width, height):
     image_stream = BytesIO(imgdata)
     currencyimage = InlineImage(tpl, image_stream, width=Pt(width), height=Pt(height))
     return currencyimage
-
 
 def red_gene(value, line_num, size=18, italic=True):
     red_list = []
@@ -804,9 +863,12 @@ if __name__ == '__main__':
         jinja_env.filters['ms2'] = mystyle2
         jinja_env.filters['mss'] = mystyleSong
         jinja_env.filters['mss2'] = mystyleSong2
-        jinja_env.filters['mi'] = myimage
-        jinja_env.filters['pdi'] = pdimage
-        jinja_env.filters['ci'] = currencyimage
+        # jinja_env.filters['mi'] = myimage
+        # jinja_env.filters['pdi'] = pdimage
+        # jinja_env.filters['ci'] = currencyimage
+        jinja_env.filters['mi'] = lambda value, width, height: myimage(tpl, value, width, height)
+        jinja_env.filters['pdi'] = lambda value, width, height: pdimage(tpl, value, width, height)
+        jinja_env.filters['ci'] = lambda value, width, height: currencyimage(tpl, value, width, height)
         jinja_env.filters['red'] = red_gene
         jinja_env.filters['red2'] = red_gene2
         jinja_env.filters['redBody'] = red_bodyGene
