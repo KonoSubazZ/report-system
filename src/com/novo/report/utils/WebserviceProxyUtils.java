@@ -111,7 +111,7 @@ public class WebserviceProxyUtils {
     public static void status(String subbarcode, String status_type, String status) {
 //        String result = httpURLGETCase("http://192.168.200.82/index.php/Api/Reportid/report/subbarcode/"+ subbarcode +"/"+status_type+"/"+ status);
 //        String result = httpURLGETCase("http://10.168.4.236/index.php/Api/Reportid/report/subbarcode/"+ subbarcode +"/"+status_type+"/"+ status);
-        String result = httpURLGETCase("http://192.168.1.101:8086/index.php/Api/Reportid/report/subbarcode/"+ subbarcode +"/"+status_type+"/"+ status);
+        String result = httpURLGETCase("http://127.0.0.1:8086/index.php/Api/Reportid/report/subbarcode/"+ subbarcode +"/"+status_type+"/"+ status);
         System.out.println(subbarcode+"样本发送"+status+"状态结果："+result);
     }
 
