@@ -40,7 +40,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    myapp_sample
 		where sample_code = #{barcode}
 		AND upload_date = #{date}
-		AND merge_product_name = #{productName}
+		AND (merge_product_name = #{productName}
+		    or product_name = #{productName})
 	</select>
 
 </mapper>
