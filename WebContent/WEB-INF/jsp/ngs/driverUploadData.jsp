@@ -188,7 +188,7 @@
 						<label></label>
 					</div>
 					<div class="field">
-						<button id="uploadDataBtn" class="button bg-main icon-check-square-o" type="button" style="width: 143px"> 扫描上传</button>
+						<button id="uploadDataBtn" class="button bg-main icon-check-square-o" type="button" style="width: 143px" disabled> 扫描上传</button>
 					    <span id="message" style="color: red;font-size: 14px;margin-left: 30px;"></span>
 				       	<script type="text/javascript">
 				        	$(function(){
