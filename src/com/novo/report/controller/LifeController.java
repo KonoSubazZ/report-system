@@ -262,6 +262,19 @@ public class LifeController {
         return flag;
     }
 
+    @RequestMapping("driveOneFile")
+    @ResponseBody
+    private Object driveOneFile(String file_path) {
+        boolean flag = true;
+        try {
+            lifeService.driveOneFile(file_path);
+        } catch (Exception e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
+
     @RequestMapping(value = "getStatus", produces = "application/json; charset=utf-8")
     @ResponseBody
     private String getStatus(Integer report_id) {

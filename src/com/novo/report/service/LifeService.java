@@ -49,4 +49,6 @@ public interface LifeService {
 	String getFilePath(String subbarcode,String analysis_date);
 
 	Integer getPendingAndErrorCount(String subbarcode,String analysis_date);
+
+	void driveOneFile(String filePath);
 }

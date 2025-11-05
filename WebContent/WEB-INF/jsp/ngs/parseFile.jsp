@@ -125,6 +125,8 @@
 							htmlString += '<td>'+n.message+'</td>';
 							htmlString += '<td>'+n.created_date+'</td>';
 							htmlString += '<td><div class="button-group"><a style="cursor:pointer" onclick="deleteOne('+n.file_id+','+pageNo+');">删除   </a></div></td>';
+
+							// htmlString += '<td><div class="button-group"><a style="cursor:pointer" onclick="deleteOne('+n.file_path+','+pageNo+');">重新驱动 </a></div></td>';
 							htmlString += '</tr>';
 						});
 						//将上面拼接好的json字符串追加到tbody中
@@ -180,6 +182,31 @@
 			});
 		}
 	}
+    function driveOne(file_path,pageNo){
+        if(confirm("确定重新驱动？")){
+
+            $.ajax({
+                url:"${pageContext.request.contextPath}/life/driveOneFile",
+                type:"post",
+                cache:false, //设置浏览器不缓存页面
+                data:{
+                    "file_path":file_path,
+                },
+                beforeSend:function(){
+                    $("#message").text("正在处理请稍等...");
+                    return true;
+                },
+                success:function(jsonObject){
+                    if(jsonObject){
+                        alert("驱动成功");
+                        displayData(pageNo);
+                    }else{
+                        alert("驱动失败");
+                    }
+                }
+            });
+        }
+    }
 
 	
 </script>

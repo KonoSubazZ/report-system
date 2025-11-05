@@ -147,4 +147,12 @@ public class VariantServiceImpl implements VariantService {
         }
         return null;
     }
+
+    @Override
+    public String specialExonicFuncDesc1(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds) {
+        if (isMET14Skipping(gene, mutId, oriVariant, localParentMutIds)) {
+            return "MET 14号外显子跳跃";
+        }
+        return "";
+    }
 }
