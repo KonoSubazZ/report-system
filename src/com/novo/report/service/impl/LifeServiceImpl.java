@@ -10,10 +10,7 @@ import com.novo.report.utils.IpUtil;
 import com.novo.report.utils.NativeRemoteShellExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-
-import static com.novo.report.utils.PyAnalysisReportTemplateUtil.IS_TEST_SERVER;
 
 @Service
 public class LifeServiceImpl implements LifeService {
