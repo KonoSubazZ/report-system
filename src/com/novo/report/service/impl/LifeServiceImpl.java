@@ -6,11 +6,14 @@ import com.novo.report.dao.two.DriverDao;
 import com.novo.report.dao.two.LifeDao;
 import com.novo.report.service.LifeService;
 import com.novo.report.utils.DateUtil;
+import com.novo.report.utils.IpUtil;
 import com.novo.report.utils.NativeRemoteShellExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.novo.report.utils.PyAnalysisReportTemplateUtil.IS_TEST_SERVER;
 
 @Service
 public class LifeServiceImpl implements LifeService {
@@ -200,8 +203,13 @@ public class LifeServiceImpl implements LifeService {
                  */
 
                 // 示例2：执行 Shell 脚本（带参数）
+                boolean IS_TEST_SERVER = IpUtil.getAllLocalIPv4s().contains("172.20.1.34");
+                String scriptStr = "python /TJPROJ2/OBD/report-driver/scanner.py";
+                if (IS_TEST_SERVER) {
+                	scriptStr = "python /TJPROJ2/OBD/report-driver-test/scanner.py";
+                }
 
-                List<String> scriptResult = executor.executeScript("python /TJPROJ2/OBD/report-driver-test/scanner.py", filePath);
+                List<String> scriptResult = executor.executeScript(scriptStr, filePath);
                 scriptResult.forEach(System.out::println);
             }
         } catch (Exception e) {

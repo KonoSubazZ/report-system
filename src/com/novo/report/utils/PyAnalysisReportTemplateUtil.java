@@ -498,7 +498,7 @@ public class PyAnalysisReportTemplateUtil {
         }
     }
 
-    private static final boolean IS_TEST_SERVER = IpUtil.getAllLocalIPv4s().contains("172.20.1.34");
+    private static  boolean IS_TEST_SERVER = IpUtil.getAllLocalIPv4s().contains("172.20.1.34");
 
     public static String processSampleValue(String value) {
         return processSampleValueInternal(value, null);

@@ -124,10 +124,12 @@
 							}
 							htmlString += '<td>'+n.message+'</td>';
 							htmlString += '<td>'+n.created_date+'</td>';
-							htmlString += '<td><div class="button-group"><a style="cursor:pointer" onclick="deleteOne('+n.file_id+','+pageNo+');">删除   </a></div></td>';
+							// htmlString += '<td><div class="button-group"><a style="cursor:pointer" onclick="deleteOne('+n.file_id+','+pageNo+');">删除   </a></div></td>';
 
-							// htmlString += '<td><div class="button-group"><a style="cursor:pointer" onclick="deleteOne('+n.file_path+','+pageNo+');">重新驱动 </a></div></td>';
-							htmlString += '</tr>';
+                            // htmlString += '<td><div class="button-group"><a style="cursor:pointer" onclick="deleteOne('+n.file_path+','+pageNo+');">重新驱动 </a></div></td>';
+                            htmlString += '<td><div class="button-group"><a style="cursor:pointer" onclick="driveOne(\''+n.file_path+'\','+pageNo+');">重新驱动 </a></div></td>';
+
+                            htmlString += '</tr>';
 						});
 						//将上面拼接好的json字符串追加到tbody中
 						$("#tInfo2").append(htmlString);
