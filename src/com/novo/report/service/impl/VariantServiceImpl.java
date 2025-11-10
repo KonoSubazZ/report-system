@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -149,10 +150,11 @@ public class VariantServiceImpl implements VariantService {
     }
 
     @Override
-    public String specialExonicFuncDesc1(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds) {
-        if (isMET14Skipping(gene, mutId, oriVariant, localParentMutIds)) {
+    public String specialExonicFuncDesc1(String gene, Integer mutId, String oriVariant) {
+        List<Integer> parentIds = Collections.emptyList();
+        if (isMET14Skipping(gene, mutId, oriVariant, parentIds)) {
             return "MET 14号外显子跳跃";
         }
-        return "";
+        return null;
     }
 }
