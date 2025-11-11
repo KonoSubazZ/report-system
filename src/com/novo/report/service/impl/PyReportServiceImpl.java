@@ -1348,7 +1348,7 @@ public class PyReportServiceImpl implements PyReportService {
 
                     Integer mutId = toInteger(map.get("mapped_variant_id"));
                     String variant = map.get("variant") == null ? "" : map.get("variant").toString();
-
+                    List<Integer> localParentMutIds = (List<Integer>) map.getOrDefault("localMutIds", Collections.emptyList());
                     // 特殊展示突变
                     String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant);
                     String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant);
@@ -1360,7 +1360,7 @@ public class PyReportServiceImpl implements PyReportService {
                     unknownTipLine.put("ExonicFunc3", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc1);
                     // 同济特殊输出需求
                     // fix Long ==> Integer失败，有可能为Long Integer Null
-                    boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId, variant, Collections.emptyList());
+                    boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId, variant, localParentMutIds);
                     unknownTipLine.put("ExonicFunc1", isMET14Skipping ? "14号外显子跳跃突变" : translateMutType(ExonicFunc));
 
                     unknownTipLine.put("mutFreq", mutFreq);
@@ -1684,7 +1684,7 @@ public class PyReportServiceImpl implements PyReportService {
                 targetedDrugDetection.put("check_date", check_date);
                 targetedDrugDetection.put("ori_variant", transferOriVariant(ori_variant));
 
-                // 特殊展示突变
+                // 特殊展示突变-融合
                 String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant);
                 targetedDrugDetection.put("ori_variant1", specialVariantDesc);
 
@@ -4309,9 +4309,10 @@ public class PyReportServiceImpl implements PyReportService {
             TJmutation = m + ExonicFunc + " " + split[0] + ": " + split[2];
             // 同济新增需求
             Object mutIdObj = mutation.get("mapped_variant_id");
-            if (mutIdObj != null) {
+            String variant = (String) mutation.getOrDefault("variant", "");
+            if (mutIdObj != null ) {
                 int mutId = Integer.parseInt(mutIdObj.toString());
-                if (variantService.isExon19Deletion(gene, mutId, null, Collections.emptyList())) {
+                if (variantService.isExon19Deletion(gene, mutId, variant, Collections.emptyList())) {
                     TJmutation = "19号外显子框内缺失突变" + " " + split[0] + ": " + split[2];
                 }
             }
