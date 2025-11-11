@@ -82,6 +82,6 @@ public interface VariantService {
 	 * @param oriVariant
 	 * @return
 	 */
-	String specialExonicFuncDesc1(String gene, Integer mutId, String oriVariant);
+	String specialExonicFuncDesc1(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds);
 
 }

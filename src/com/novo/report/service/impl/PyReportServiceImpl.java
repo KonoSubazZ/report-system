@@ -960,17 +960,18 @@ public class PyReportServiceImpl implements PyReportService {
 
                     Integer mutId = toInteger(map.get("mapped_variant_id"));
                     String variant = map.get("variant") == null ? "" : map.get("variant").toString();
+                    List<Integer> localParentMutIds = (List<Integer>) map.getOrDefault("localMutIds", Collections.emptyList());
                     // 特殊展示突变
                     String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant);
                     String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant);
-                    String specialExonicFuncDesc1 = variantService.specialExonicFuncDesc1(gene, mutId, variant);
+                    String specialExonicFuncDesc1 = variantService.specialExonicFuncDesc1(gene, mutId, variant,localParentMutIds);
                     targetDrugTipLine.put("ori_variant1", specialVariantDesc);
                     targetDrugTipLine.put("ExonicFunc2", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc);
-                    targetDrugTipLine.put("ExonicFunc3", specialExonicFuncDesc1 == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc1);
+                    // targetDrugTipLine.put("ExonicFunc3", specialExonicFuncDesc1 == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc1);
 
                     // 同济特殊输出需求
 
-                    boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId, variant, Collections.emptyList());
+                    boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId, variant, localParentMutIds);
                     targetDrugTipLine.put("ExonicFunc1", isMET14Skipping ? "14号外显子跳跃突变" : translateMutType(ExonicFunc));
                     targetDrugTipLine.put("mutFreq", mutFreq);
 
@@ -1353,11 +1354,11 @@ public class PyReportServiceImpl implements PyReportService {
                     String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant);
                     String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant);
                     // 贵医特殊需求- MET 14跳
-                    String specialExonicFuncDesc1 = variantService.specialExonicFuncDesc1(gene, mutId, variant);
+                    String specialExonicFuncDesc1 = variantService.specialExonicFuncDesc1(gene, mutId, variant, localParentMutIds);
 
                     unknownTipLine.put("ori_variant1", specialVariantDesc);
                     unknownTipLine.put("ExonicFunc2", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc);
-                    unknownTipLine.put("ExonicFunc3", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc1);
+                    // unknownTipLine.put("ExonicFunc3", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc1);
                     // 同济特殊输出需求
                     // fix Long ==> Integer失败，有可能为Long Integer Null
                     boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId, variant, localParentMutIds);
