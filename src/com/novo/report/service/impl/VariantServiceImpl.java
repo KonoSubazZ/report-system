@@ -31,7 +31,13 @@ public class VariantServiceImpl implements VariantService {
         if (localParentMutIds.contains(2912)) {
             return true;
         }
-        List<Map> parentMutList = variantDao.getParentMut(gene, mutId);
+
+        List<Map> parentMutList;
+        if (mutId == null){
+            parentMutList = variantDao.getParentMutByVariant(gene, variant);
+        } else {
+            parentMutList = variantDao.getParentMut(gene, mutId);
+        }
 
         return parentMutList.stream()
                 .anyMatch(map -> {
@@ -56,7 +62,12 @@ public class VariantServiceImpl implements VariantService {
             return true;
         }
 
-        List<Map> parentMutList = variantDao.getParentMut(gene, mutId);
+        List<Map> parentMutList;
+        if (mutId == null){
+            parentMutList = variantDao.getParentMutByVariant(gene, variant);
+        } else {
+            parentMutList = variantDao.getParentMut(gene, mutId);
+        }
 
         return parentMutList.stream()
                 .anyMatch(map -> {
@@ -76,7 +87,13 @@ public class VariantServiceImpl implements VariantService {
             return true;
         }
 
-        List<Map> parentMutList = variantDao.getParentMut(gene, mutId);
+
+        List<Map> parentMutList;
+        if (mutId == null){
+            parentMutList = variantDao.getParentMutByVariant(gene, variant);
+        } else {
+            parentMutList = variantDao.getParentMut(gene, mutId);
+        }
 
         return parentMutList.stream()
                 .anyMatch(map -> {

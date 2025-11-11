@@ -958,17 +958,19 @@ public class PyReportServiceImpl implements PyReportService {
                     targetDrugTipLine.put("ori_variant", transferOriVariant(ori_variant));
                     targetDrugTipLine.put("ExonicFunc", translateMutType(ExonicFunc));
 
+                    Integer mutId = toInteger(map.get("mapped_variant_id"));
+                    String variant = map.get("variant") == null ? "" : map.get("variant").toString();
                     // 特殊展示突变
                     String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant);
                     String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant);
-                    String specialExonicFuncDesc1 = variantService.specialExonicFuncDesc1(gene, null, ori_variant);
+                    String specialExonicFuncDesc1 = variantService.specialExonicFuncDesc1(gene, mutId, variant);
                     targetDrugTipLine.put("ori_variant1", specialVariantDesc);
                     targetDrugTipLine.put("ExonicFunc2", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc);
                     targetDrugTipLine.put("ExonicFunc3", specialExonicFuncDesc1 == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc1);
 
                     // 同济特殊输出需求
-                    Integer mutId = toInteger(map.get("mapped_variant_id"));
-                    boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId, null, Collections.emptyList());
+
+                    boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId, variant, Collections.emptyList());
                     targetDrugTipLine.put("ExonicFunc1", isMET14Skipping ? "14号外显子跳跃突变" : translateMutType(ExonicFunc));
                     targetDrugTipLine.put("mutFreq", mutFreq);
 
@@ -1344,20 +1346,21 @@ public class PyReportServiceImpl implements PyReportService {
                     unknownTipLine.put("ori_variant", transferOriVariant(ori_variant));
                     unknownTipLine.put("ExonicFunc", translateMutType(ExonicFunc));
 
+                    Integer mutId = toInteger(map.get("mapped_variant_id"));
+                    String variant = map.get("variant") == null ? "" : map.get("variant").toString();
+
                     // 特殊展示突变
                     String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant);
                     String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant);
-
                     // 贵医特殊需求- MET 14跳
-                    String specialExonicFuncDesc1 = variantService.specialExonicFuncDesc1(gene, null, ori_variant);
+                    String specialExonicFuncDesc1 = variantService.specialExonicFuncDesc1(gene, mutId, variant);
 
                     unknownTipLine.put("ori_variant1", specialVariantDesc);
                     unknownTipLine.put("ExonicFunc2", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc);
                     unknownTipLine.put("ExonicFunc3", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc1);
                     // 同济特殊输出需求
                     // fix Long ==> Integer失败，有可能为Long Integer Null
-                    Integer mutId = toInteger(map.get("mapped_variant_id"));
-                    boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId, null, Collections.emptyList());
+                    boolean isMET14Skipping = variantService.isMET14Skipping(gene, mutId, variant, Collections.emptyList());
                     unknownTipLine.put("ExonicFunc1", isMET14Skipping ? "14号外显子跳跃突变" : translateMutType(ExonicFunc));
 
                     unknownTipLine.put("mutFreq", mutFreq);
@@ -6733,6 +6736,7 @@ public class PyReportServiceImpl implements PyReportService {
                 String mutFreq = map1.get("mutFreq") == null ? "/" : map1.get("mutFreq").toString();
                 Object mutIdObj = map1.getOrDefault("mapped_variant_id", null);
                 Integer mutId = (mutIdObj instanceof Integer) ? (Integer) mutIdObj : null;
+                String variant = map1.get("variant") == null ? "/" : map1.get("variant").toString();
                 mutFreq = getMutFreq(ori_variant, mutFreq, null);
                 if ("突变/融合".equals(info)) {
                     flag = !ori_variant.equals("Amplification");
@@ -6755,7 +6759,7 @@ public class PyReportServiceImpl implements PyReportService {
                         // 添加variant 19del 20ins met14特殊描述
                         // 增加手动改靶判断
                         List<Integer> localParentMutIds = (List<Integer>) map1.getOrDefault("localMutIds", Collections.emptyList());
-                        ori_variant = variantService.specialVariantDesc(gene1, mutId, ori_variant, localParentMutIds);
+                        ori_variant = variantService.specialVariantDesc(gene1, mutId, variant, localParentMutIds);
 
                         ori_variantList.add(ori_variant);
                         mutFreqList.add(mutFreq);

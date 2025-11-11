@@ -7,4 +7,6 @@ import java.util.Map;
 
 public interface VariantDao {
 	List<Map> getParentMut(@Param("gene_symbol") String gene, @Param("gene_variant_id") Integer mutId);
+	List<Map> getParentMutByVariant(@Param("gene_symbol") String gene, @Param("gene_variant") String variant);
+
 }
