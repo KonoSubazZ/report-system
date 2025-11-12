@@ -119,16 +119,16 @@ public class VariantServiceImpl implements VariantService {
     }
 
     @Override
-    public String specialVariantDesc(String gene, Integer mutId, String variant, List<Integer> localParentMutIds) {
+    public String specialVariantDesc(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds, String variant) {
 
-        if (mutId == null && localParentMutIds.isEmpty()) return variant;
+        if (mutId == null && localParentMutIds.isEmpty()) return oriVariant;
 
         if (isExon19Deletion(gene, mutId, variant, localParentMutIds)) {
-            return variant + " " + "( 19del )";
+            return oriVariant + " " + "( 19del )";
         }
 
         if (isEGFRExon20Insertion(gene, mutId, variant, localParentMutIds)) {
-            return variant + " " + "( 第20号外显子插入 )";
+            return oriVariant + " " + "( 第20号外显子插入 )";
         }
 
         // RNA融合 MET 14号外显子跳跃
@@ -136,10 +136,10 @@ public class VariantServiceImpl implements VariantService {
             return "14号外显子跳跃";
         }
         if (isMET14Skipping(gene, mutId, variant, localParentMutIds)) {
-            return variant + " " + "( 14号外显子跳跃 )";
+            return oriVariant + " " + "( 14号外显子跳跃 )";
         }
 
-        return variant;
+        return oriVariant;
     }
 
     @Override

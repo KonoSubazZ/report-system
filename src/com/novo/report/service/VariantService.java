@@ -55,7 +55,7 @@ public interface VariantService {
 	boolean  isMET14SkippingRNA(String gene, String variant);
 
 
-	String specialVariantDesc(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds);
+	String specialVariantDesc(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds, String variant);
 
 	/**
 	 * 实体瘤RNA1166使用
