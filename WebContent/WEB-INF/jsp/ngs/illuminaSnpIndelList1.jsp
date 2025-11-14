@@ -89,7 +89,7 @@
                         htmlString += '<td>'+n.file_id+'</td>';
 						htmlString += '<td>'+n.chr+'</td>';
 						// htmlString += '<td>'+n.start+'</td>';
-						htmlString += '<td><a name="mya" href="http://192.168.1.101:8086/index.php/Home/Index/ldtigvs/bam/'+$("#subbarcode").val()+'T.bam/chr/'+n.chr.replace("chr","")+'/start/'+n.start+'" target="_blank">'+n.start+'</a></td>';
+						htmlString += '<td><a name="mya" href="http://10.33.202.234:8086/index.php/Home/Index/ldtigvs/bam/'+$("#subbarcode").val()+'T.bam/chr/'+n.chr.replace("chr","")+'/start/'+n.start+'" target="_blank">'+n.start+'</a></td>';
 						// htmlString += '<td><a name="mya" href="http://10.168.4.236/index.php/Home/Index/ldtigvs/bam/'+$("#subbarcode").val()+'T.bam/chr/'+n.chr.replace("chr","")+'/start/'+n.start+'" target="_blank">'+n.start+'</a></td>';
 						// htmlString += '<td><a name="mya" href="http://192.168.200.82/index.php/Home/Index/ldtigvs/bam/'+$("#subbarcode").val()+'T.bam/chr/'+n.chr.replace("chr","")+'/start/'+n.start+'" target="_blank">'+n.start+'</a></td>';
 						htmlString += '<td>'+n.end+'</td>';
