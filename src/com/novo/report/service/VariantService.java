@@ -52,10 +52,10 @@ public interface VariantService {
 	 * @param variant
 	 * @return
 	 */
-	boolean  isMET14SkippingRNA(String gene, String variant);
+	boolean  isMET14SkippingRNA(String gene, String variant, String mutFreq);
 
 
-	String specialVariantDesc(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds, String variant);
+	String specialVariantDesc(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds, String variant, String mutFreq);
 
 	/**
 	 * 实体瘤RNA1166使用
@@ -64,7 +64,7 @@ public interface VariantService {
 	 * @param oriVariant
 	 * @return
 	 */
-	String specialVariantDesc1(String gene, Integer mutId, String oriVariant);
+	String specialVariantDesc1(String gene, Integer mutId, String oriVariant, String mutFreq);
 
 	/**
 	 * 特殊的ExonicFuncDesc MET14、EGFR vIII fusion / CTNNB1 。输出剪切体突变
@@ -73,7 +73,7 @@ public interface VariantService {
 	 * @param oriVariant
 	 * @return
 	 */
-	String specialExonicFuncDesc(String gene, Integer mutId, String oriVariant);
+	String specialExonicFuncDesc(String gene, Integer mutId, String oriVariant, String mutFreq);
 
 	/**
 	 * 贵医突变类型 MET14跳 特殊需求

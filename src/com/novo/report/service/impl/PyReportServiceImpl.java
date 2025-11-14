@@ -962,8 +962,8 @@ public class PyReportServiceImpl implements PyReportService {
                     String variant = map.get("variant") == null ? "" : map.get("variant").toString();
                     List<Integer> localParentMutIds = (List<Integer>) map.getOrDefault("localMutIds", Collections.emptyList());
                     // 特殊展示突变
-                    String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant);
-                    String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant);
+                    String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant, mutFreq);
+                    String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant, mutFreq);
                     String specialExonicFuncDesc1 = variantService.specialExonicFuncDesc1(gene, mutId, variant,localParentMutIds);
                     targetDrugTipLine.put("ori_variant1", specialVariantDesc);
                     targetDrugTipLine.put("ExonicFunc2", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc);
@@ -1134,7 +1134,7 @@ public class PyReportServiceImpl implements PyReportService {
                                 targetDrugTipLine.put("sf", ori_variant);
 
                                 // 小结增加特殊提示 MET14 EGFRvIII CTNNB13
-                                String spercialOriVariant = variantService.specialVariantDesc1(gene, null, ori_variant);
+                                String spercialOriVariant = variantService.specialVariantDesc1(gene, null, ori_variant, mutFreq);
 
                                 bodyDrugStr = bodyDrugStr + (gene + " " + spercialOriVariant + "; ");
                                 if (!gene6.contains(gene)) {
@@ -1351,8 +1351,8 @@ public class PyReportServiceImpl implements PyReportService {
                     String variant = map.get("variant") == null ? "" : map.get("variant").toString();
                     List<Integer> localParentMutIds = (List<Integer>) map.getOrDefault("localMutIds", Collections.emptyList());
                     // 特殊展示突变
-                    String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant);
-                    String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant);
+                    String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant, mutFreq);
+                    String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant, mutFreq);
                     // 贵医特殊需求- MET 14跳
                     String specialExonicFuncDesc1 = variantService.specialExonicFuncDesc1(gene, mutId, variant, localParentMutIds);
 
@@ -1686,7 +1686,7 @@ public class PyReportServiceImpl implements PyReportService {
                 targetedDrugDetection.put("ori_variant", transferOriVariant(ori_variant));
 
                 // 特殊展示突变-融合
-                String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant);
+                String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant, mutFreq);
                 targetedDrugDetection.put("ori_variant1", specialVariantDesc);
 
                 targetedDrugDetection.put("mutFreq", mutFreq);
@@ -2000,7 +2000,7 @@ public class PyReportServiceImpl implements PyReportService {
                     unknownVarAnalysis.put("check_date", check_date);
                     unknownVarAnalysis.put("ori_variant", transferOriVariant(ori_variant));
                     // 特殊展示突变
-                    String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant);
+                    String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant, mutFreq);
                     unknownVarAnalysis.put("ori_variant1", specialVariantDesc);
 
                     unknownVarAnalysis.put("mutDesc", mutDesc2);
@@ -6761,7 +6761,7 @@ public class PyReportServiceImpl implements PyReportService {
                         // 添加variant 19del 20ins met14特殊描述
                         // 增加手动改靶判断
                         List<Integer> localParentMutIds = (List<Integer>) map1.getOrDefault("localMutIds", Collections.emptyList());
-                        ori_variant = variantService.specialVariantDesc(gene1, mutId, ori_variant, localParentMutIds, variant);
+                        ori_variant = variantService.specialVariantDesc(gene1, mutId, ori_variant, localParentMutIds, variant, mutFreq);
 
                         ori_variantList.add(ori_variant);
                         mutFreqList.add(mutFreq);

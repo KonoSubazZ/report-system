@@ -114,12 +114,12 @@ public class VariantServiceImpl implements VariantService {
     }
 
     @Override
-    public boolean isMET14SkippingRNA(String gene, String variant) {
-        return variant.equals("MET-MET Fusion M13:M15");
+    public boolean isMET14SkippingRNA(String gene, String variant, String mutFreq) {
+        return variant.equals("MET-MET Fusion M13:M15") && !mutFreq.contains("%");
     }
 
     @Override
-    public String specialVariantDesc(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds, String variant) {
+    public String specialVariantDesc(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds, String variant, String mutFreq) {
 
         if (mutId == null && localParentMutIds.isEmpty()) return oriVariant;
 
@@ -132,7 +132,7 @@ public class VariantServiceImpl implements VariantService {
         }
 
         // RNA融合 MET 14号外显子跳跃
-        if (isMET14SkippingRNA(gene, variant)) {
+        if (isMET14SkippingRNA(gene, variant, mutFreq)) {
             return "14号外显子跳跃";
         }
         if (isMET14Skipping(gene, mutId, variant, localParentMutIds)) {
@@ -143,24 +143,24 @@ public class VariantServiceImpl implements VariantService {
     }
 
     @Override
-    public String specialVariantDesc1(String gene, Integer mutId, String oriVariant) {
+    public String specialVariantDesc1(String gene, Integer mutId, String oriVariant, String mutFreq) {
         if (isEGFRvIII(gene, oriVariant)) {
             return "EGFR vIII";
         }
         if (isCTNNB13Deletion(gene, oriVariant)) {
             return "CTNNB1 3号外显子缺失";
         }
-        if (isMET14SkippingRNA(gene, oriVariant)) {
+        if (isMET14SkippingRNA(gene, oriVariant, mutFreq)) {
             return "MET 14号外显子跳跃";
         }
         return oriVariant;
     }
 
     @Override
-    public String specialExonicFuncDesc(String gene, Integer mutId, String oriVariant) {
+    public String specialExonicFuncDesc(String gene, Integer mutId, String oriVariant, String mutFreq) {
         if (isEGFRvIII(gene, oriVariant)
                 || isCTNNB13Deletion(gene, oriVariant)
-                || isMET14SkippingRNA(gene, oriVariant)) {
+                || isMET14SkippingRNA(gene, oriVariant, mutFreq)) {
             return "剪接变异体";
         }
         return null;
