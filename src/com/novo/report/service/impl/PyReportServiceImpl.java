@@ -3938,10 +3938,13 @@ public class PyReportServiceImpl implements PyReportService {
             methylationInfo.put("title", res.getOrDefault("title", ""));
             methylationInfo.put("gene1", res.getOrDefault("gene1", ""));
             methylationInfo.put("gene2", res.getOrDefault("gene2", ""));
+            methylationInfo.put("gene3", res.getOrDefault("gene3", ""));
             methylationInfo.put("ct1", res.getOrDefault("ct1", ""));
             methylationInfo.put("ct2", res.getOrDefault("ct2", ""));
+            methylationInfo.put("ct3", res.getOrDefault("ct3", ""));
             methylationInfo.put("test_res1", res.getOrDefault("test_res1", ""));
             methylationInfo.put("test_res2", res.getOrDefault("test_res2", ""));
+            methylationInfo.put("test_res3", res.getOrDefault("test_res3", ""));
             methylationInfo.put("sample_res", res.getOrDefault("sample_res", ""));
             methylationTitle = res.getOrDefault("title", "").toString();
 
