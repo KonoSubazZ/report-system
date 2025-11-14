@@ -2185,7 +2185,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setGeneNTHL1AndIsozygoty(geneNTHL1AndIsozygoty);
         rt.setGeneMBD4AndIsozygoty(geneMBD4AndIsozygoty);
         rt.setGeneMUTYHAndIsozygoty(geneMUTYHAndIsozygoty);
-        //风险管理(癌症风险列表)
+        // 风险管理(癌症风险列表)cr106
         HashSet<String> cancerRiskFilterGene = cancerRiskFilterGene(cancerRiskGene, sf.getGender());
         rt.setCancerRiskFilterGene(cancerRiskFilterGene);
         if (!"".equals(crCheckDrugStr)) {
