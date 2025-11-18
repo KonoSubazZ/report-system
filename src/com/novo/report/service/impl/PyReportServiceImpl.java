@@ -3444,9 +3444,9 @@ public class PyReportServiceImpl implements PyReportService {
                 if (!detectionMutationSet.isEmpty() && detectionMutationSet.size() > 0) {
                     for (String detectionMutation : detectionMutationSet) {
                         if (detectionMutation.contains("基因融合")) {
-                            detectionMutationStr += detectionMutation + " 阳性，";
+                            detectionMutationStr += detectionMutation + " 突变性，";
                         } else {
-                            detectionMutationStr += detectionMutation + "阳性，";
+                            detectionMutationStr += detectionMutation + "突变性，";
                         }
                     }
                 }
