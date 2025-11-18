@@ -150,6 +150,10 @@ public class VariantServiceImpl implements VariantService {
         if (isMET14SkippingRNA(gene, oriVariant, mutFreq)) {
             return "MET 14号外显子跳跃";
         }
+        // 融合格式调整 - 变::
+        if (oriVariant.contains("Fusion")){
+            return oriVariant.replace("-","::");
+        }
         return oriVariant;
     }
 
