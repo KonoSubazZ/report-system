@@ -736,8 +736,9 @@ public class GeneMarkerVwController {
             model.addAttribute("thyroidHotspotFlag", thyroidHotspotFlag);
 
             boolean isMelanomaFlag = false;
-            boolean isMelanomaPanel = Arrays.asList("novopm2_tis_53", "novopm2_blo_53", "novopm2_tis1_53", "novopm2_blo1_53").contains(product_name);
-            if (isMelanomaPanel) {
+            List<String> melanomaPanel = moduleService.getconfPanelList("MOD_WITH_MELANOMA");
+            boolean isMelanomaPanel = melanomaPanel.contains(product_name);
+            if (isMelanomaPanel && diseaseService.isMelanoma(diseaseId)) {
                 isMelanomaFlag = true;
                 List<Map<String, String>> melanomaList = geneAnalysisService.generateMelanoma(queryVO);
                 // model.addAttribute("melanomaList", gson.toJson(melanomaList));

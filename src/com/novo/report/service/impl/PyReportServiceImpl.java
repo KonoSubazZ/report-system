@@ -3201,8 +3201,10 @@ public class PyReportServiceImpl implements PyReportService {
         // 甲状腺癌热点基因检测结果(甲状腺癌) 黑色素瘤预后
         List<String> thyroidPanelList = moduleService.getconfPanelList("MOD_WITH_THYROID");
         boolean isThyroidPanel = thyroidPanelList.contains(productName) && diseaseService.isThyroidCarcinoma(diseaseId);
+        List<String> melanomaPanelList = moduleService.getconfPanelList("MOD_WITH_MELANOMA");
+        boolean isMelanomaPanel  = melanomaPanelList.contains(productName) && diseaseService.isMelanoma(diseaseId);
         String peDrugStr = "";
-        if ((rt.getTemplate_name().contains("甲状腺") || isThyroidPanel) || rt.getTemplate_name().contains("黑色素瘤")) {
+        if ((rt.getTemplate_name().contains("甲状腺") || isThyroidPanel) || isMelanomaPanel) {
             if (rt.getTemplate_name().contains("甲状腺") || isThyroidPanel) {
                 List<MmThyroidHotspot> thyroidCancerHotAllGeneDrugTipLineStr = moduleModificationAllDao.selectMmThyroidHotspotByReportId(currentNgsAvailable.getReport_id());
                 if (thyroidCancerHotAllGeneDrugTipLineStr.isEmpty()) {
