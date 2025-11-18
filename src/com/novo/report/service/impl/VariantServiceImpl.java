@@ -6,10 +6,7 @@ import com.novo.report.service.VariantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class VariantServiceImpl implements VariantService {
@@ -163,6 +160,9 @@ public class VariantServiceImpl implements VariantService {
                 || isMET14SkippingRNA(gene, oriVariant, mutFreq)) {
             return "剪接变异体";
         }
+        if (isFusionKDDVariant(oriVariant)){
+            return "KDD";
+        }
         return null;
     }
 
@@ -173,5 +173,45 @@ public class VariantServiceImpl implements VariantService {
             return "MET 14号外显子跳跃";
         }
         return null;
+    }
+
+    @Override
+    public boolean isFusionKDDVariant(String oriVariant) {
+        // KDD 突变位点
+        String[][] KDDGeneData = {
+                {"FGFR1", "exon10", "exon17"},
+                {"NTRK1", "exon13", "exon17"},
+                {"NTRK3", "exon14", "exon19"},
+                {"FGFR2", "exon11", "exon18"},
+                {"NTRK2", "exon16", "exon21"},
+                {"TMPRSS2", "exon9", "exon13"},
+                {"ALK", "exon20", "exon28"},
+                {"FGFR3", "exon11", "exon17"},
+                {"PDGFRA", "exon12", "exon21"},
+                {"BRAF", "exon12", "exon18"},
+                {"FGFR4", "exon11", "exon17"},
+                {"PDGFRB", "exon12", "exon21"},
+                {"EGFR", "exon18", "exon25"},
+                {"FLT3", "exon14", "exon23"},
+                {"RET", "exon12", "exon18"},
+                {"ERBB2", "exon19", "exon25"},
+                {"KIT", "exon11", "exon20"},
+                {"ROS1", "exon36", "exon42"},
+                {"ERBB4", "exon18", "exon24"},
+                {"MET", "exon16", "exon21"},
+                {"PIK3CA", "exon14", "exon21"}
+        };
+
+        List<String> results = new ArrayList<>();
+        for (String[] item : KDDGeneData) {
+            String gene = item[0];
+            String startExonNum = item[1].replace("exon", "");
+            String endExonNum = item[2].replace("exon", "");
+            // 基因-基因 Fusion M起始:M结束
+            String fusionStr = String.format("%s-%s Fusion M%s:M%s", gene, gene, startExonNum, endExonNum);
+            results.add(fusionStr);
+        }
+
+        return results.contains(oriVariant);
     }
 }

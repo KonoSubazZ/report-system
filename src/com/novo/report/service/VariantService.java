@@ -84,4 +84,11 @@ public interface VariantService {
 	 */
 	String specialExonicFuncDesc1(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds);
 
+	/**
+	 * 判断是否为 KDD 自融合
+	 * @param oriVariant
+	 * @return
+	 */
+	boolean isFusionKDDVariant(String oriVariant);
+
 }

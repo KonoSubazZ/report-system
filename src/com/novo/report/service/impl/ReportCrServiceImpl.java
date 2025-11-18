@@ -5,6 +5,7 @@ import com.novo.report.dao.two.*;
 import com.novo.report.service.ComplexMutationService;
 import com.novo.report.service.LifeService;
 import com.novo.report.service.ReportCrService;
+import com.novo.report.service.VariantService;
 import com.novo.report.utils.AES;
 import com.novo.report.utils.TranslateUtil;
 import javafx.util.Pair;
@@ -51,6 +52,8 @@ public class ReportCrServiceImpl implements ReportCrService {
     private String user;
 
     private final static Comparator<Object> CHINA_COMPARE = Collator.getInstance(java.util.Locale.CHINA);
+    @Autowired
+    private VariantService variantService;
 
     /**
      * 获取用药信息（暂时理解体细胞突变都会匹配用药 胚系只有has_drug=1才会匹配用药 待确认）
@@ -582,6 +585,9 @@ public class ReportCrServiceImpl implements ReportCrService {
                 String[] split = variant.split("fs");
                 String tmp_variant = getVariant(split[0]) + "fs";
                 mutationId = analysisReportDao.getMutationId(gene, tmp_variant);
+            }
+            if (variant.contains("Fusion") && variantService.isFusionKDDVariant(variant)) {
+                mutationId = analysisReportDao.getMutationId(gene, "KDD Mutation");
             }
             if (mutationId == null) {
                 if ((variant.indexOf("fs") > -1 || variant.indexOf("*") > -1 || variant.indexOf("+") > -1 || variant.indexOf("-") > -1) && !(variant.indexOf("Fusion") > -1)) {
