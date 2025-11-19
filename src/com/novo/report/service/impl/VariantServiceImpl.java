@@ -6,7 +6,10 @@ import com.novo.report.service.VariantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class VariantServiceImpl implements VariantService {
@@ -30,7 +33,7 @@ public class VariantServiceImpl implements VariantService {
         }
 
         List<Map> parentMutList;
-        if (mutId == null){
+        if (mutId == null) {
             parentMutList = variantDao.getParentMutByVariant(gene, variant);
         } else {
             parentMutList = variantDao.getParentMut(gene, mutId);
@@ -60,7 +63,7 @@ public class VariantServiceImpl implements VariantService {
         }
 
         List<Map> parentMutList;
-        if (mutId == null){
+        if (mutId == null) {
             parentMutList = variantDao.getParentMutByVariant(gene, variant);
         } else {
             parentMutList = variantDao.getParentMut(gene, mutId);
@@ -86,7 +89,7 @@ public class VariantServiceImpl implements VariantService {
 
 
         List<Map> parentMutList;
-        if (mutId == null){
+        if (mutId == null) {
             parentMutList = variantDao.getParentMutByVariant(gene, variant);
         } else {
             parentMutList = variantDao.getParentMut(gene, mutId);
@@ -151,8 +154,8 @@ public class VariantServiceImpl implements VariantService {
             return "MET 14号外显子跳跃";
         }
         // 融合格式调整 - 变::
-        if (oriVariant.contains("Fusion")){
-            return oriVariant.replace("-","::");
+        if (oriVariant.contains("Fusion")) {
+            return oriVariant.replace("-", "::");
         }
         return oriVariant;
     }
@@ -164,7 +167,7 @@ public class VariantServiceImpl implements VariantService {
                 || isMET14SkippingRNA(gene, oriVariant, mutFreq)) {
             return "剪接变异体";
         }
-        if (isFusionKDDVariant(oriVariant)){
+        if (isFusionKDDVariant(oriVariant)) {
             return "KDD";
         }
         return null;
@@ -209,11 +212,14 @@ public class VariantServiceImpl implements VariantService {
         List<String> results = new ArrayList<>();
         for (String[] item : KDDGeneData) {
             String gene = item[0];
+            String geneSymbol = String.valueOf(gene.charAt(0));
             String startExonNum = item[1].replace("exon", "");
             String endExonNum = item[2].replace("exon", "");
             // 基因-基因 Fusion M起始:M结束
-            String fusionStr = String.format("%s-%s Fusion M%s:M%s", gene, gene, startExonNum, endExonNum);
+            String fusionStr = String.format("%s-%s Fusion %s%s:%s%s", gene, gene, geneSymbol, startExonNum, geneSymbol, endExonNum);
+            String fusionStr1 = String.format("%s-%s Fusion %s%s:%s%s", gene, gene, geneSymbol, endExonNum, geneSymbol, startExonNum);
             results.add(fusionStr);
+            results.add(fusionStr1);
         }
 
         return results.contains(oriVariant);
