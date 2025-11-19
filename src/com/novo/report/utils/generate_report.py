@@ -462,7 +462,7 @@ def cancerRisk(value):
 def detectionMutation(value):
     red_list = "野生型"
     if value in DetectionMutation_LIST:
-        red_list = MyRichText("突变性", color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size='28')
+        red_list = MyRichText("突变型", color='#ff0000', cnfont='微软雅黑', font='Times New Roman', size='28')
     return red_list
 
 
