@@ -964,7 +964,7 @@ public class PyReportServiceImpl implements PyReportService {
                     // 特殊展示突变
                     String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant, mutFreq);
                     String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant, mutFreq);
-                    String specialExonicFuncDesc1 = variantService.specialExonicFuncDesc1(gene, mutId, variant,localParentMutIds);
+                    String specialExonicFuncDesc1 = variantService.specialExonicFuncDesc1(gene, mutId, variant, localParentMutIds);
                     targetDrugTipLine.put("ori_variant1", specialVariantDesc);
                     targetDrugTipLine.put("ExonicFunc2", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc);
                     // targetDrugTipLine.put("ExonicFunc3", specialExonicFuncDesc1 == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc1);
@@ -2818,10 +2818,10 @@ public class PyReportServiceImpl implements PyReportService {
                         });
                 pd.put("pdInfoTable2", groupList);
             }
-        }else{
+        } else {
             // 手动选择不出PD,读取合并后的样本类型
-             String specimen_type1 = newLimsSampleService.mergedSpecimenType(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
-             rt.setSpecimentype(specimen_type1);
+            String specimen_type1 = newLimsSampleService.mergedSpecimenType(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            rt.setSpecimentype(specimen_type1);
 
         }
         rt.setPDInfo(pd);
@@ -3202,7 +3202,7 @@ public class PyReportServiceImpl implements PyReportService {
         List<String> thyroidPanelList = moduleService.getconfPanelList("MOD_WITH_THYROID");
         boolean isThyroidPanel = thyroidPanelList.contains(productName) && diseaseService.isThyroidCarcinoma(diseaseId);
         List<String> melanomaPanelList = moduleService.getconfPanelList("MOD_WITH_MELANOMA");
-        boolean isMelanomaPanel  = melanomaPanelList.contains(productName) && diseaseService.isMelanoma(diseaseId);
+        boolean isMelanomaPanel = melanomaPanelList.contains(productName) && diseaseService.isMelanoma(diseaseId);
         String peDrugStr = "";
         if ((rt.getTemplate_name().contains("甲状腺") || isThyroidPanel) || isMelanomaPanel) {
             if (rt.getTemplate_name().contains("甲状腺") || isThyroidPanel) {
@@ -4043,7 +4043,7 @@ public class PyReportServiceImpl implements PyReportService {
             // rt.setTestResultSummary(testResultSummary);
 
             // CUSTOM 生成参考文献信息
-            Map<String, Object> references = generateReferences(templateName, cancerInfo, templateConf, urinaryTemplates);
+            Map<String, Object> references = generateReferences(templateName, cancerInfo, templateConf, urinaryTemplates, isMelanomaPanel);
             rt.setReferences(references);
 
             // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结、重要靶向基因汇总
@@ -4316,7 +4316,7 @@ public class PyReportServiceImpl implements PyReportService {
             // 同济新增需求
             Object mutIdObj = mutation.get("mapped_variant_id");
             String variant = (String) mutation.getOrDefault("variant", "");
-            if (mutIdObj != null ) {
+            if (mutIdObj != null) {
                 int mutId = Integer.parseInt(mutIdObj.toString());
                 if (variantService.isExon19Deletion(gene, mutId, variant, Collections.emptyList())) {
                     TJmutation = "19号外显子框内缺失突变" + " " + split[0] + ": " + split[2];
@@ -4703,7 +4703,9 @@ public class PyReportServiceImpl implements PyReportService {
         return res;
     }
 
-    private Map<String, Object> generateReferences(String templateName, Map<String, Object> cancerInfo, TemplateConf templateConf, List<String> urinaryTemplates) {
+    private Map<String, Object> generateReferences(String templateName, Map<String, Object> cancerInfo,
+                                                   TemplateConf templateConf, List<String> urinaryTemplates,
+                                                   boolean isMelanoma) {
         Map<String, Object> res = new HashMap<>();
 
         String module = "";
@@ -4716,7 +4718,12 @@ public class PyReportServiceImpl implements PyReportService {
             module = "泌尿系统癌症".equals(targetCancer) ? "通用泌尿" : commonModule;
         }
 
-        List<String> referenceList = moduleService.getReferences(templateName, module);
+        List<String> referenceList;
+        if (isMelanoma) {
+            referenceList = moduleService.getMelanomaReferences("黑色素瘤");
+        } else {
+            referenceList = moduleService.getReferences(templateName, module);
+        }
         res.put("referenceList", referenceList);
 
         return res;

@@ -127,5 +127,12 @@
               AND deleted = 0
     </select>
 
+    <select id="getMelanomaReferences" resultType="java.lang.String">
+        select
+             references
+        FROM mod_references
+        WHERE cancer = #{cancer}
+    </select>
+
 
 </mapper>

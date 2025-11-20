@@ -365,6 +365,13 @@ public class ModuleServiceImpl implements ModuleService {
         return CRTumors == null ? DEFAULT_TUMORS : CRTumors;
     }
 
+    @Override
+    public List<String> getMelanomaReferences(String cancer) {
+        String references = moduleDao.getMelanomaReferences(cancer);
+
+        return splitNote(references);
+    }
+
     private String buildDefaultGeneJson(List<String> geneSymbols) {
 
         Gson gson = new Gson();

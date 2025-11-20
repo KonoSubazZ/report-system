@@ -229,4 +229,7 @@ public interface ModuleService {
      * @return
      */
     String getCRTumors(String gene, String gender, String clinicalSignificance);
+
+
+    List<String> getMelanomaReferences(String cancer);
 }
