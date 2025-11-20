@@ -56,8 +56,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			a.prognosis_assessment
 		FROM
 			mod_melanoma AS a
+			JOIN panel_gene AS b ON a.gene = b.gene
 		WHERE
 		 	a.deleted = 0
+		AND b.product_name = #{panel}
 	</select>
 
 </mapper>

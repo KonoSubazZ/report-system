@@ -173,7 +173,8 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
     @Override
     public List<Map<String, String>> generateMelanoma(CommonQueryVO query) {
         List<Map<String, String>> SNVINDELGeneSiteList = geneAnalysisDao.getSNVINDELGeneSite(query);
-        List<Map<String, String>> melanomaGeneList = geneAnalysisDao.getMelanoma();
+        String panel = query.getProduct_name();
+        List<Map<String, String>> melanomaGeneList = geneAnalysisDao.getMelanoma(panel);
         List<Map<String, String>> melanomaDetectedList = new ArrayList<>();
         for (Map<String, String> map : SNVINDELGeneSiteList) {
             String gene = map.get("gene");
