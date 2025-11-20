@@ -6,8 +6,7 @@
 <mapper namespace="com.novo.report.dao.two.ModuleDao">
 
     <select id="getProductDesc" resultType="com.novo.report.mod.ModProductDesc">
-        SELECT
-            product_desc
+        SELECT product_desc
         FROM mod_product_desc
         WHERE template_name = #{templateName}
           AND deleted = 1
@@ -15,16 +14,14 @@
 
     <select id="getImportantTargetedGeneSummaryNote"
             resultType="com.novo.report.mod.ModImportantTargetedGeneSummaryNote">
-        SELECT
-            note
+        SELECT note
         FROM mod_important_targeted_gene_summary_note
         WHERE template_name = #{templateName}
           AND deleted = 1
     </select>
 
     <select id="getTestResultSummaryNote" resultType="com.novo.report.mod.ModTestResultSummaryNote">
-        SELECT
-            note
+        SELECT note
         FROM mod_test_result_summary_note
         WHERE template_name = #{templateName}
           AND deleted = 1
@@ -32,9 +29,9 @@
 
     <select id="getReferences" resultType="com.novo.report.mod.ModReferences">
         SELECT
-            b.references
+        b.references
         FROM references_template_mapping a
-          JOIN mod_references b ON a.references_id = b.id
+        JOIN mod_references b ON a.references_id = b.id
         WHERE a.template_name = #{templateName}
         <if test="module != null and module != '' ">
             AND a.references_name = #{module}
@@ -44,8 +41,8 @@
 
     <select id="getCommonNote" resultType="com.novo.report.mod.ModCommonNote">
         SELECT
-            cancer_title,
-            note
+        cancer_title,
+        note
         FROM mod_common_note
         WHERE module = #{module}
         <if test="type != null and type != '' ">
@@ -64,10 +61,9 @@
     </select>
 
     <select id="getCommonCancerNote" resultType="com.novo.report.beans.ModCancer">
-        SELECT
-            cancer,
-            desc1,
-            desc2
+        SELECT cancer,
+               desc1,
+               desc2
         FROM mod_cancer
         WHERE module = #{module}
           AND cancer = #{cancer}
@@ -75,25 +71,21 @@
     </select>
 
     <select id="getImmunityGeneList" resultType="com.novo.report.beans.ModCancer">
-        SELECT
-            a.module,
-            a.desc1,
-            a.desc2
-        FROM
-            mod_cancer a
-                JOIN panel_gene b ON a.desc1 = b.gene
-        WHERE
-            a.module = #{module}
+        SELECT a.module,
+               a.desc1,
+               a.desc2
+        FROM mod_cancer a
+                 JOIN panel_gene b ON a.desc1 = b.gene
+        WHERE a.module = #{module}
           AND b.product_name = #{productName}
           AND deleted = 1
     </select>
 
     <select id="getSarcomaNote" resultType="com.novo.report.beans.ModCancer">
-        SELECT
-            panel,
-            cancer,
-            desc1,
-            desc2
+        SELECT panel,
+               cancer,
+               desc1,
+               desc2
         FROM mod_cancer
         WHERE module = #{module}
           AND cancer = #{cancer}
@@ -102,37 +94,32 @@
         ORDER BY id ASC
     </select>
     <select id="getModuleConf" resultType="java.util.Map">
-        SELECT
-            conf,
-            templates,
-            panels,
-            common
+        SELECT conf,
+               templates,
+               panels,
+               common
         FROM module_conf
         WHERE conf = #{conf}
     </select>
 
     <select id="getConfGenes" resultType="java.lang.String">
-        SELECT
-            genes
+        SELECT genes
         FROM gene_panel
         WHERE FIND_IN_SET(#{panels}, panel)
     </select>
 
     <select id="getCRTumors" resultType="java.lang.String">
-            SELECT
-                tumors
-            FROM cr_related_tumors
-            WHERE gender = #{gender}
-              AND gene = #{gene}
-              AND deleted = 0
+        SELECT tumors
+        FROM cr_related_tumors
+        WHERE gender = #{gender}
+          AND gene = #{gene}
+          AND deleted = 0
     </select>
 
     <select id="getMelanomaReferences" resultType="java.lang.String">
-        select
-             references
+        SELECT `references`
         FROM mod_references
         WHERE cancer = #{cancer}
     </select>
-
 
 </mapper>
