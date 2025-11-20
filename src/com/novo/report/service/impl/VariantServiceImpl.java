@@ -154,9 +154,9 @@ public class VariantServiceImpl implements VariantService {
             return "MET 14号外显子跳跃";
         }
         // 融合格式调整 - 变::
-        if (oriVariant.contains("Fusion")) {
-            return oriVariant.replace("-", "::");
-        }
+//        if (oriVariant.contains("Fusion")) {
+//            return oriVariant.replace("-", "::");
+//        }
         return oriVariant;
     }
 
