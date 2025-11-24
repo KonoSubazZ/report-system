@@ -4194,7 +4194,8 @@ public class PyReportServiceImpl implements PyReportService {
         disease.put("EndometrialCarcinoma", diseaseService.isEndometrialCarcinoma(diseaseId));
         // TODO 待优化，提为一个 service 实现
         disease.put("VulvaCarcinoma", diseaseAndSubDiseaseList.contains(1294));
-        disease.put("VulvaCarcinoma", diseaseAndSubDiseaseList.contains(1294));
+        disease.put("Melanoma", diseaseService.isMelanoma(diseaseId));
+        // disease.put("VulvaCarcinoma", diseaseAndSubDiseaseList.contains(1294));
 
 
         return disease;
