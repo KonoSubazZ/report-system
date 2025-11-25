@@ -1382,7 +1382,7 @@ public class GeneMarkerVwController {
         Integer diseaseId = diseaseClass == null ? -1 : diseaseClass.getClass_id();
         List<Integer> diseaseIdList = new ArrayList<>();
         List<Integer> parentdiseaseIdList = new ArrayList<>();
-        complexMutationService.getDiseaseList(diseaseId, diseaseIdList, parentdiseaseIdList);
+            complexMutationService.getDiseaseList(diseaseId, diseaseIdList, parentdiseaseIdList);
         String chem_cancer = "";
         if (diseaseId == 10000003) {
             chem_cancer = "";
