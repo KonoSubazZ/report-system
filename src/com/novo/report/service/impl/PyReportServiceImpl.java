@@ -4726,7 +4726,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         List<String> referenceList;
-        if (isMelanoma) {
+        if (isMelanoma && templateConf.getMelanoma_prognosis()) {
             referenceList = moduleService.getMelanomaReferences("黑色素瘤");
         } else {
             referenceList = moduleService.getReferences(templateName, module);
