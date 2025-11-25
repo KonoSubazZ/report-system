@@ -1204,8 +1204,10 @@ public class PyReportServiceImpl implements PyReportService {
                             targetDrugTipLine.put("mutation", ori_variant);
                             targetDrugTipLine.put("transcript", ".");
                             String comutation = "";
+                            String comutation1 = "";
                             if (ori_variant.equals("KRAS + NRAS + BRAF WildType")) {
                                 comutation = "KRAS&NRAS&BRAF野生型";
+                                comutation1 = "KRAS&NRAS&BRAF";
                             } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType + BRAF WildType")) {
                                 comutation = "ERBB2 Amplification + KRAS&NRAS&BRAF野生型";
                             } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType")) {
@@ -1214,6 +1216,7 @@ public class PyReportServiceImpl implements PyReportService {
                                 comutation = "EGFR突变阳性 + MET Amplification";
                             }
                             targetDrugTipLine.put("comutation", comutation);
+                            targetDrugTipLine.put("comutation1", comutation1);
                             complexDrugTipLineStr.add(targetDrugTipLine);
                         }
                         bodyAndComplexDrugTipLineStr.add(targetDrugTipLine);
@@ -1914,8 +1917,10 @@ public class PyReportServiceImpl implements PyReportService {
                         }
                     } else {
                         String comutation = "";
+                        String comutation1 = "";
                         if (ori_variant.equals("KRAS + NRAS + BRAF WildType")) {
                             comutation = "KRAS&NRAS&BRAF野生型";
+                            comutation1 = "KRAS&NRAS&BRAF";
                         } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType + BRAF WildType")) {
                             comutation = "ERBB2 Amplification + KRAS&NRAS&BRAF野生型";
                         } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType")) {
@@ -1924,6 +1929,7 @@ public class PyReportServiceImpl implements PyReportService {
                             comutation = "EGFR突变阳性 + MET Amplification";
                         }
                         targetedDrugDetection.put("comutation", comutation);
+                        targetedDrugDetection.put("comutation1", comutation1);
                         complexDrugStr.add(targetedDrugDetection);
                     }
                     bodyDrugDrugDetectionStr.add(targetedDrugDetection);
