@@ -1926,10 +1926,13 @@ public class PyReportServiceImpl implements PyReportService {
                             comutation1 = "KRAS&NRAS&BRAF";
                         } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType + BRAF WildType")) {
                             comutation = "ERBB2 Amplification + KRAS&NRAS&BRAF野生型";
+                            comutation1 = "ERBB2&KRAS&NRAS&BRAF";
                         } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType")) {
                             comutation = "ERBB2 Amplification + KRAS&NRAS野生型";
+                            comutation1 = "EGFR&KRAS&NRAS";
                         } else if (ori_variant.equals("EGFR Sensitizing Mutation + MET Amplification")) {
                             comutation = "EGFR突变阳性 + MET Amplification";
+                            comutation1 = "EGFR&MET";
                         }
                         targetedDrugDetection.put("comutation", comutation);
                         targetedDrugDetection.put("comutation1", comutation1);
