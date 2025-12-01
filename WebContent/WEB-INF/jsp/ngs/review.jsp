@@ -239,6 +239,11 @@
                             });
                             $("#fileName").text(file.name);
                             isUpdated = true;
+
+                            // 自动出报告tumor提交报告
+                            if("${analysisReport.analyzer}" === "tumor"){
+                                submitReport();
+                            }
                         } else {
                             layer.msg("文件更换失败！", {time: 1000});
                         }
