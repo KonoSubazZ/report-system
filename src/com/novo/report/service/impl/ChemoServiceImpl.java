@@ -214,7 +214,7 @@ public class ChemoServiceImpl implements ChemoService {
     }
 
     private String translateSpecial(String str) {
-        if ("无".equals(str)) return "/";
+        if ("无".equals(str)) return "无";
         if ("减弱".equals(str)) return "可能较低";
         if ("增强".equals(str)) return "可能较高";
         return str;
