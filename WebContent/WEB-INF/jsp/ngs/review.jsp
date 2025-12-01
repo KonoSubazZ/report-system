@@ -104,7 +104,7 @@
                 </div>
             </div>
             <div class="layui-col-5" style="display: flex;position: relative">
-                <c:if test="${analysisReport.analyzer == currentNgsAvailableData.user}">
+                <c:if test="${analysisReport.analyzer == currentNgsAvailableData.user or analysisReport.analyzer == 'tumor'}">
                     <div class="layui-upload-drag" style="display: block;" id="ID-upload-demo-drag">
                         <i class="layui-icon layui-icon-upload"></i>
                         <div>点击上传报告，或将文件拖拽到此处</div>
@@ -140,7 +140,7 @@
                             class="layui-icon layui-icon-ok"></i>提交审核
                     </button>
                 </c:if>
-                <c:if test="${analysisReport.analyzer != currentNgsAvailableData.user}">
+                <c:if test="${analysisReport.analyzer != currentNgsAvailableData.user or analysisReport.analyzer == 'tumor'}">
                     <button type="button" class="layui-btn layui-bg-blue" onclick="updateCheckStatus(35)"><i
                             class="layui-icon layui-icon-ok-circle"></i>审核通过
                     </button>
