@@ -2315,7 +2315,6 @@ public class PyReportServiceImpl implements PyReportService {
         Map<String, String> chemoSummary = new HashMap<>(); // 新版化疗小结输出结果
         Map<String, String> chemoSummaryCY = new HashMap<>(); // 重医附二化疗小结输出结果
         List<List<Map<String, String>>> chemoAnalysis = new ArrayList<>(); // 新版化疗解析输出结果
-        List<Map<String, String>> chem = analysisReportDao.getChem(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         List<ChemoVariant> chem1 = chemoService.getChemoVariant(query);
         // 新版化疗逻辑输出
         if (!chem1.isEmpty()) {
@@ -2362,6 +2361,7 @@ public class PyReportServiceImpl implements PyReportService {
         } else {
             // 重写化疗调取逻辑，方便癌种更换调取
             List<Map<String, Object>> chemicalData = analysisReportDao.getChemicalData2(); // 使用新版化疗数据
+            List<Map<String, String>> chem = analysisReportDao.getChem(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
             chemoJson = ChemoJsonUtil.getChemoResult(chemicalData, chem, chem_cancer);
             ChemJson chemJson = new ChemJson();
             chemJson.setReport_id(reportId);
