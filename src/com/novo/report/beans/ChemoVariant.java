@@ -11,6 +11,7 @@ public class ChemoVariant {
     private String chr;
     private String position;
     private String allele;
+    private String allele_reverse;
     private String ref;
     private String calling;
     private String evidence;
@@ -100,6 +101,13 @@ public class ChemoVariant {
 
     public void setAllele(String allele) {
         this.allele = allele;
+    }
+    public String getAllele_reverse() {
+        return allele_reverse;
+    }
+
+    public void setAllele_reverse(String allele_reverse) {
+        this.allele_reverse = allele_reverse;
     }
 
     public String getRef() {

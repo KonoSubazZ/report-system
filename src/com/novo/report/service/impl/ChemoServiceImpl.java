@@ -131,7 +131,8 @@ public class ChemoServiceImpl implements ChemoService {
             String chr = variant.getChr();
             String position = variant.getPosition();
             String allele = variant.getAllele();
-
+            String reversedAllele = new StringBuilder(allele).reverse().toString();
+            variant.setAllele_reverse(reversedAllele);
             // 对等位基因进行排序，使"AG"和"GA"变成相同的表示
             String sortedAllele = sortString(allele);
 
@@ -177,6 +178,26 @@ public class ChemoServiceImpl implements ChemoService {
                     // 如果该位点只有一条药物信息，直接返回
                     if (drugsAtPosition.size() <= 1) {
                         return drugsAtPosition.isEmpty() ? null : drugsAtPosition.get(0);
+                    }
+
+                    // 合并同一癌种药物有效性/毒性/等位基因
+                    if (drugsAtPosition.size() == 2 && drugsAtPosition.get(0).get("cancer_type").equals(drugsAtPosition.get(1).get("cancer_type"))) {
+                        String type = drugsAtPosition.get(0).get("type");
+                        String type1 = drugsAtPosition.get(1).get("type");
+                        List<String> list = Arrays.asList("Efficacy", "Toxicity");
+
+                        if (list.contains(type) || list.contains(type1)) {
+                            if (type.equals("Efficacy")){
+                                drugsAtPosition.get(0).put("tox1", drugsAtPosition.get(1).get("tox1"));
+                                drugsAtPosition.get(0).put("tox2", drugsAtPosition.get(1).get("tox2"));
+                                drugsAtPosition.get(0).put("tox3", drugsAtPosition.get(1).get("tox3"));
+                            }else {
+                                drugsAtPosition.get(0).put("eff1", drugsAtPosition.get(1).get("eff1"));
+                                drugsAtPosition.get(0).put("eff2", drugsAtPosition.get(1).get("eff2"));
+                                drugsAtPosition.get(0).put("eff3", drugsAtPosition.get(1).get("eff3"));
+                            }
+                            return drugsAtPosition.get(0);
+                        }
                     }
 
                     // 优先查找与当前化疗癌种匹配的记录

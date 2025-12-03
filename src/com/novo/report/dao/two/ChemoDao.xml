@@ -75,7 +75,19 @@
         <where>
             <if test="chemoVariantList != null and chemoVariantList.size() > 0">
                 <foreach collection="chemoVariantList" item="item" separator=" or " open="(" close=")">
-                    (chr = #{item.chr} and position = #{item.position})
+                    (chr = #{item.chr} and position = #{item.position}
+                    <if test="item.allele != null and item.allele != ''">
+                        and (
+                        <!-- 精确匹配 -->
+                        allele1 = #{item.allele} or allele2 = #{item.allele} or allele3 = #{item.allele}
+                        <if test="item.allele_reverse.length() == 2">
+                            <!-- 反向匹配（AG/GA） -->
+                            or allele1 = #{item.allele_reverse}
+                            or allele2 = #{item.allele_reverse}
+                            or allele3 = #{item.allele_reverse}
+                        </if>
+                        )
+                    </if>)
                 </foreach>
             </if>
         </where>
