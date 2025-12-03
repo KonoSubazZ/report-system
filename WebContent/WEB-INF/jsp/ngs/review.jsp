@@ -241,12 +241,10 @@
                             isUpdated = true;
 
                             // 自动出报告tumor提交报告
-                            if("${analysisReport.analyzer}" === "tumor"){
-                                let report_id = "${analysisReport.report_id}";
-                                updateReportStatus(report_id, "待审核");
-                            }else{
-                                submitReport();
-                            }
+                            <%--if("${analysisReport.analyzer}" === "tumor"){--%>
+                            <%--    let report_id = "${analysisReport.report_id}";--%>
+                            <%--    updateReportStatus(report_id, "待审核");--%>
+                            <%--}--%>
                         } else {
                             layer.msg("文件更换失败！", {time: 1000});
                         }
@@ -285,7 +283,7 @@
         let status = 32;
         let report_id = "${analysisReport.report_id}";
 
-        const URL = 'http://10.1.183.3:9099';
+        const URL = 'http://10.1.183.3:9096';
 
         $.ajax({
             type: "GET",
@@ -391,7 +389,7 @@
         // 32-待审核
         let status = code;
         let report_id = "${analysisReport.report_id}";
-        const URL = 'http://10.1.183.3:9099';
+        const URL = 'http://10.1.183.3:9096';
 
         $.ajax({
             type: "GET",
