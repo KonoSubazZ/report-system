@@ -242,6 +242,9 @@
 
                             // 自动出报告tumor提交报告
                             if("${analysisReport.analyzer}" === "tumor"){
+                                let report_id = "${analysisReport.report_id}";
+                                updateReportStatus(report_id, "待审核");
+                            }else{
                                 submitReport();
                             }
                         } else {
