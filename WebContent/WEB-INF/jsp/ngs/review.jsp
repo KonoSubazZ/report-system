@@ -190,7 +190,8 @@
         $("#updateReport").click(function () {
             let arr = ["待审核", "报告审核通过", "报告发送成功"]
             // 校验报告状态, 报告审核未通过，可以重新更换报告文件
-            if (arr.includes("${analysisReport.status}")) {
+            let analyser = "${analysisReport.analyzer}";
+            if (arr.includes("${analysisReport.status}") && analyser !== "tumor") {
                 layer.msg("报告文件已经更换！", {icon: 1});
                 return;
             }
@@ -241,10 +242,10 @@
                             isUpdated = true;
 
                             // 自动出报告tumor提交报告
-                            <%--if("${analysisReport.analyzer}" === "tumor"){--%>
-                            <%--    let report_id = "${analysisReport.report_id}";--%>
-                            <%--    updateReportStatus(report_id, "待审核");--%>
-                            <%--}--%>
+                            if("${analysisReport.analyzer}" === "tumor"){
+                                let report_id = "${analysisReport.report_id}";
+                                updateReportStatus(report_id, "待审核");
+                            }
                         } else {
                             layer.msg("文件更换失败！", {time: 1000});
                         }
