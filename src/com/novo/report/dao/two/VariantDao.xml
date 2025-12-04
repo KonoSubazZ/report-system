@@ -14,4 +14,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE gene_symbol = #{gene_symbol}
           AND gene_variant_id = #{gene_variant_id}
     </select>
+    <select id="getParentMutByVariant" resultType="java.util.Map">
+        SELECT
+            gene_symbol,
+            parent_variant_id,
+            parent_variant
+        FROM nkb.gene_variant_parent_vw
+        WHERE gene_symbol = #{gene_symbol}
+          AND gene_variant = #{gene_variant}
+    </select>
 </mapper>

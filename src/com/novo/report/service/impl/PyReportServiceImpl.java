@@ -4027,6 +4027,15 @@ public class PyReportServiceImpl implements PyReportService {
             } else {
                 num2 = sclip2Split[3].split("_")[1].substring(1);
             }
+            // 同济新增需求
+            Object mutIdObj = mutation.get("mapped_variant_id");
+            String variant = (String) mutation.getOrDefault("variant", "");
+            if (mutIdObj != null) {
+                Integer mutId = Integer.valueOf(mutIdObj.toString());
+                if (variantService.isMET14Skipping(gene, mutId, variant, Collections.emptyList())) {
+                    TJmutation = "14号外显子跳跃突变";
+                }
+            }
             TJmutation = TJmutation + " " + sclip1Split[1] + "(" + sclip1Split[0] + ":" + "EX" + num1.replaceAll("[^0-9]", "") + ")" + "-" + sclip2Split[1] + "(" + sclip2Split[0] + ":" + "EX" + num2.replaceAll("[^0-9]", "") + ")";
 
         } else {
@@ -4045,10 +4054,14 @@ public class PyReportServiceImpl implements PyReportService {
             TJmutation = m + ExonicFunc + " " + split[0] + ": " + split[2];
             // 同济新增需求
             Object mutIdObj = mutation.get("mapped_variant_id");
+            String variant = (String) mutation.getOrDefault("variant", "");
             if (mutIdObj != null) {
                 int mutId = Integer.parseInt(mutIdObj.toString());
-                if (variantService.isExon19Deletion(gene, mutId)) {
+                if (variantService.isExon19Deletion(gene, mutId, variant, Collections.emptyList())) {
                     TJmutation = "19号外显子框内缺失突变" + " " + split[0] + ": " + split[2];
+                }
+                if (variantService.isMET14Skipping(gene, mutId, variant, Collections.emptyList())) {
+                    TJmutation = "14号外显子跳跃突变" + " " + split[0] + ": " + split[2];
                 }
             }
 

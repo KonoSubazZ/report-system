@@ -13,5 +13,12 @@ public interface VariantService {
 	 * @param mutId
 	 * @return
 	 */
-	boolean isExon19Deletion(String gene, Integer mutId);
+	boolean isExon19Deletion(String gene, Integer mutId, String variant,List<Integer> localParentMutIds);
+
+	/**
+	 * 判断是否是 MET14 Skipping
+	 * @param mutId
+	 * @return
+	 */
+	boolean  isMET14Skipping(String gene, Integer mutId, String variant,List<Integer> localParentMutIds);
 }
