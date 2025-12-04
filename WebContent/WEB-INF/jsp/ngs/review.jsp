@@ -390,7 +390,7 @@
         // 32-待审核
         let status = code;
         let report_id = "${analysisReport.report_id}";
-        const URL = 'http://10.1.183.3:9096';
+        const URL = 'http://10.1.183.3:9099';
 
         $.ajax({
             type: "GET",
