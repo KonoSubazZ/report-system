@@ -375,7 +375,7 @@ public class ChemoJsonUtil2 {
             out = list.get(0);
         } else if ((list.size() == 1 || list.size() == 2) && !list.contains("可能较高") && !list.contains("可能较低")) {
             out = "冲突";
-        } else if (list.size() == 2 && list.contains("/")) {
+        } else if (list.size() == 2 && list.contains("无")) {
             if (list.contains("可能较高")) {
                 out = "可能较高";
             } else if (list.contains("可能较低")) {
