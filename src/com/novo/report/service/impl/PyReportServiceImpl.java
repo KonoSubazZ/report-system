@@ -477,7 +477,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setContact(sf.getSales_contact());
         String hospital = "-";
         if (rt.getTemplate_name().indexOf("检测") != -1 && rt.getTemplate_name().indexOf("沈阳胸科") < 0) {
-            if (sf.getHospital() != null && (sf.getHospital().indexOf("院") != -1 || sf.getHospital().indexOf("医院") != -1 || sf.getHospital().indexOf("医") != -1)) {
+            if (sf.getHospital() != null && (sf.getHospital().indexOf("院") != -1 || sf.getHospital().indexOf("医院") != -1 || sf.getHospital().indexOf("医") != -1) || sf.getHospital().indexOf("门诊") != -1) {
                 hospital = sf.getHospital();
             }
         } else {
