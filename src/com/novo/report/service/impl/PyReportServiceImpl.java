@@ -1206,7 +1206,7 @@ public class PyReportServiceImpl implements PyReportService {
                             String comutation = "";
                             String comutation1 = "";
                             if (ori_variant.equals("KRAS + NRAS + BRAF WildType")) {
-                                comutation = "KRAS&NRAS&BRAF野生型";
+                                comutation = "野生型";
                                 comutation1 = "KRAS&NRAS&BRAF";
                             } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType + BRAF WildType")) {
                                 comutation = "ERBB2 Amplification + KRAS&NRAS&BRAF野生型";
@@ -1922,7 +1922,7 @@ public class PyReportServiceImpl implements PyReportService {
                         String comutation = "";
                         String comutation1 = "";
                         if (ori_variant.equals("KRAS + NRAS + BRAF WildType")) {
-                            comutation = "KRAS&NRAS&BRAF野生型";
+                            comutation = "野生型";
                             comutation1 = "KRAS&NRAS&BRAF";
                         } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType + BRAF WildType")) {
                             comutation = "ERBB2 Amplification + KRAS&NRAS&BRAF野生型";
