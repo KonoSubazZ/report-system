@@ -511,6 +511,7 @@ public class GeneMarkerVwController {
                 String hrdState = "";
                 Map mmHrd = moduleModificationAllDao.selectMmHrdByReportId(currentNgsAvailable.getReport_id());
                 if (CollectionUtils.isEmpty(mmHrd)) {
+                    String brcaTip = "";
                     List<Map> brcaCheckLineStr = new ArrayList<Map>();
                     boolean brca = false;
                     for (Map map : crCheckLineStr) {
@@ -523,9 +524,15 @@ public class GeneMarkerVwController {
                                 if (StringUtils.isNumeric(Exon)) {
                                     map.put("Exon", "exon" + Exon);
                                 }
+                                String cHGVS = map.get("pHGVS") == null ? "" : map.get("cHGVS").toString();
                                 String pHGVS = map.get("pHGVS") == null ? "" : map.get("pHGVS").toString();
                                 if (StringUtils.isEmpty(pHGVS) || "NA".equals(pHGVS)) {
                                     map.put("pHGVS", ".");
+                                }
+                                if (".".equals(pHGVS)) {
+                                    brcaTip += "," + gene + " " + cHGVS + " " + "（胚系变异）";
+                                } else {
+                                    brcaTip += "," + gene + " " + pHGVS + " " + "（胚系变异）";
                                 }
                                 brcaCheckLineStr.add(map);
                             }
@@ -559,8 +566,14 @@ public class GeneMarkerVwController {
                                     map1.put("cHGVS", ori_variant_split);
                                     map1.put("pHGVS", ".");
                                 }
+
                                 String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
                                 mutFreq = pyReportService.getMutFreq(ori_variant, mutFreq, "");
+                                if (map1.get("pHGVS").equals(".")) {
+                                    brcaTip += "," + gene + " " + map1.get("pHGVS") + " " + "（" + mutFreq + "）";
+                                } else {
+                                    brcaTip += "," + gene + " " + map1.get("cHGVS") + " " + "（" + mutFreq + "）";
+                                }
                                 map1.put("Zygosity", mutFreq);
                                 map1.put("Clinical_significance", "有害变异");
                                 brca = true;
@@ -570,9 +583,10 @@ public class GeneMarkerVwController {
                     }
                     if (!"novo_hrd".equals(currentNgsAvailable.getProduct_name())) {
                         if (brca) {
-                            hrdBRCAState = "检测到该肿瘤患者存在BRCA基因致病或可能致病性变异";
+                            // hrdBRCAState = "检测到该肿瘤患者存在BRCA基因致病或可能致病性变异";
+                            hrdBRCAState = "阳性" + brcaTip;
                         } else {
-                            hrdBRCAState = "未检测到该肿瘤患者存在BRCA基因致病或可能致病性变异";
+                            hrdBRCAState = "阴性";
                         }
                     }
                     if (Integer.valueOf(hrdScore) >= 43 || brca) {
@@ -1382,7 +1396,7 @@ public class GeneMarkerVwController {
         Integer diseaseId = diseaseClass == null ? -1 : diseaseClass.getClass_id();
         List<Integer> diseaseIdList = new ArrayList<>();
         List<Integer> parentdiseaseIdList = new ArrayList<>();
-            complexMutationService.getDiseaseList(diseaseId, diseaseIdList, parentdiseaseIdList);
+        complexMutationService.getDiseaseList(diseaseId, diseaseIdList, parentdiseaseIdList);
         String chem_cancer = "";
         if (diseaseId == 10000003) {
             chem_cancer = "";

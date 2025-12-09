@@ -2641,6 +2641,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 同源重组缺陷状态提示
         List<Map> brcaCheckLineStr = new ArrayList<Map>();
         boolean brca = false;
+        String brcaTip = "";
         for (Map map : crCheckLineStr) {
             String gene = map.get("Gene").toString();
             String clinical_significance = map.get("Clinical_significance").toString();
@@ -2651,10 +2652,17 @@ public class PyReportServiceImpl implements PyReportService {
                     if (StringUtils.isNumeric(Exon)) {
                         map.put("Exon", "exon" + Exon);
                     }
+                    String cHGVS = map.get("pHGVS") == null ? "" : map.get("cHGVS").toString();
                     String pHGVS = map.get("pHGVS") == null ? "" : map.get("pHGVS").toString();
                     if (StringUtils.isEmpty(pHGVS) || "NA".equals(pHGVS)) {
                         map.put("pHGVS", ".");
                     }
+                    if (".".equals(pHGVS)) {
+                        brcaTip += "," + gene + " " + cHGVS + " " + "（胚系变异）";
+                    } else {
+                        brcaTip += "," + gene + " " + pHGVS + " " + "（胚系变异）";
+                    }
+
                     brcaCheckLineStr.add(map);
                 }
             }
@@ -2693,6 +2701,11 @@ public class PyReportServiceImpl implements PyReportService {
                     map1.put("Clinical_significance", "有害变异");
                     brca = true;
                     brcaCheckLineStr.add(map1);
+                    if (map1.get("pHGVS").equals(".")) {
+                        brcaTip += "," + gene + " " + map1.get("pHGVS") + " " + "（" + mutFreq + "）";
+                    } else {
+                        brcaTip += "," + gene + " " + map1.get("cHGVS") + " " + "（" + mutFreq + "）";
+                    }
                 }
             }
         }
@@ -2706,9 +2719,11 @@ public class PyReportServiceImpl implements PyReportService {
             String HRDScore = analysisReportDao.getHRD_sum(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
             if (StringUtils.isNotEmpty(HRDScore)) {
                 if (brca) {
-                    summaryOfRresults.put("hrdBRCAState", "检测到该肿瘤患者存在BRCA基因致病或可能致病性变异");
+                    // summaryOfRresults.put("hrdBRCAState", "检测到该肿瘤患者存在BRCA基因致病或可能致病性变异");
+                    summaryOfRresults.put("hrdBRCAState", "阳性" + brcaTip);
                 } else {
-                    summaryOfRresults.put("hrdBRCAState", "未检测到该肿瘤患者存在BRCA基因致病或可能致病性变异");
+                    // summaryOfRresults.put("hrdBRCAState", "未检测到该肿瘤患者存在BRCA基因致病或可能致病性变异");
+                    summaryOfRresults.put("hrdBRCAState", "阴性");
                 }
                 summaryOfRresults.put("hrdScore", HRDScore);
                 if (Integer.valueOf(HRDScore) >= 43 || brca) {
