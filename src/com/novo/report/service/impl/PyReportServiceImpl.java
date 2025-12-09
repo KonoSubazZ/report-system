@@ -1205,21 +1205,26 @@ public class PyReportServiceImpl implements PyReportService {
                             targetDrugTipLine.put("transcript", ".");
                             String comutation = "";
                             String comutation1 = "";
+                            String comutation2 = "";
                             if (ori_variant.equals("KRAS + NRAS + BRAF WildType")) {
                                 comutation = "野生型";
                                 comutation1 = "KRAS&NRAS&BRAF";
+                                comutation2 = comutation1 + comutation;
                             } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType + BRAF WildType")) {
                                 comutation = "ERBB2 Amplification + KRAS&NRAS&BRAF野生型";
                                 comutation1 = "ERBB2&KRAS&NRAS&BRAF";
+                                comutation2 = comutation;
                             } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType")) {
                                 comutation = "ERBB2 Amplification + KRAS&NRAS野生型";
                                 comutation1 = "ERBB2&KRAS&NRAS";
                             } else if (ori_variant.equals("EGFR Sensitizing Mutation + MET Amplification")) {
                                 comutation = "EGFR突变阳性 + MET Amplification";
                                 comutation1 = "EGFR&MET";
+                                comutation2 = comutation;
                             }
                             targetDrugTipLine.put("comutation", comutation);
                             targetDrugTipLine.put("comutation1", comutation1);
+                            targetDrugTipLine.put("comutation2", comutation2);
                             complexDrugTipLineStr.add(targetDrugTipLine);
                         }
                         bodyAndComplexDrugTipLineStr.add(targetDrugTipLine);
@@ -1921,21 +1926,27 @@ public class PyReportServiceImpl implements PyReportService {
                     } else {
                         String comutation = "";
                         String comutation1 = "";
+                        String comutation2 = "";
                         if (ori_variant.equals("KRAS + NRAS + BRAF WildType")) {
                             comutation = "野生型";
                             comutation1 = "KRAS&NRAS&BRAF";
+                            comutation2 = comutation1 + comutation;
                         } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType + BRAF WildType")) {
                             comutation = "ERBB2 Amplification + KRAS&NRAS&BRAF野生型";
                             comutation1 = "ERBB2&KRAS&NRAS&BRAF";
+                            comutation2 = comutation;
                         } else if (ori_variant.equals("ERBB2 Amplification + KRAS WildType + NRAS WildType")) {
                             comutation = "ERBB2 Amplification + KRAS&NRAS野生型";
                             comutation1 = "EGFR&KRAS&NRAS";
+                            comutation2 = comutation;
                         } else if (ori_variant.equals("EGFR Sensitizing Mutation + MET Amplification")) {
                             comutation = "EGFR突变阳性 + MET Amplification";
                             comutation1 = "EGFR&MET";
+                            comutation2 = comutation;
                         }
                         targetedDrugDetection.put("comutation", comutation);
                         targetedDrugDetection.put("comutation1", comutation1);
+                        targetedDrugDetection.put("comutation2", comutation2);
                         complexDrugStr.add(targetedDrugDetection);
                     }
                     bodyDrugDrugDetectionStr.add(targetedDrugDetection);
