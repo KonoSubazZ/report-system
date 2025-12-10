@@ -23,6 +23,7 @@ from docxtpl import DocxTemplate, RichText, InlineImage
 
 # 样本质量评估
 from assess_sample_quality import assess_sample_quality
+from process_custom_data import process_custom_tip
 
 
 def setup_logging():
@@ -857,6 +858,8 @@ if __name__ == '__main__':
             sample_quality_logger.info(
                 f"[{subbarcode}] | panel_type: {panel_type} | sample_type: {sample_type} | dna_sequencing_depth: {dna_sequencing_depth} | total_reads: {total_reads} | hrd_sequencing_depth: {hrd_sequencing_depth} | sample_quality: {info_json['sample_quality']}")
 
+        # 处理个性化模板
+        process_custom_tip(info_json)
         # 模板初始化过滤器
         jinja_env = jinja2.Environment()
         jinja_env.filters['ms'] = mystyle
