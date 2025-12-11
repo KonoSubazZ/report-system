@@ -9,6 +9,7 @@ public class CancerTyping {
     private String transcript;
     private String mut_freq;
     private String subtype;
+    private String fusion_quality;
     private String evidence;
     private String created_by;
     private String created_date;
@@ -73,6 +74,9 @@ public class CancerTyping {
     public void setSubtype(String subtype) {
         this.subtype = subtype;
     }
+    public String getFusion_quality() {return fusion_quality; }
+
+    public void setFusion_quality(String fusion_quality) {this.fusion_quality = fusion_quality;}
 
     public String getEvidence() {
         return evidence;

@@ -974,6 +974,7 @@ public class GeneMarkerVwController {
                                     String mutFreq = String.valueOf(fusionAllMap.get("mutFreq"));
                                     String transcript1 = String.valueOf(fusionAllMap.get("sclip1_info")).split(":")[0];
                                     String transcript2 = String.valueOf(fusionAllMap.get("sclip2_info")).split(":")[0];
+                                    String fusionQuality = String.valueOf(fusionAllMap.get("fusion_quality"));
                                     String transcript = transcript1 + "/" + transcript2;
                                     Integer reportId = currentNgsAvailable.getReport_id();
 
@@ -985,6 +986,7 @@ public class GeneMarkerVwController {
                                     cancerTyping.setMut_freq(mutFreq);
                                     cancerTyping.setSubtype("/");
                                     cancerTyping.setEvidence("/");
+                                    cancerTyping.setFusion_quality(fusionQuality);
                                     cancerTyping.setCreated_by(user_account);
                                     cancerTyping.setUpdate_by(user_account);
 
@@ -1016,6 +1018,7 @@ public class GeneMarkerVwController {
                                     String transcript1 = String.valueOf(fusionAllMap.get("sclip1_info")).split(":")[0];
                                     String transcript2 = String.valueOf(fusionAllMap.get("sclip2_info")).split(":")[0];
                                     String transcript = transcript1 + "/" + transcript2;
+                                    String fusionQuality = String.valueOf(fusionAllMap.get("fusion_quality"));
                                     Integer reportId = currentNgsAvailable.getReport_id();
 
                                     CancerTyping cancerTyping = new CancerTyping();
@@ -1026,6 +1029,7 @@ public class GeneMarkerVwController {
                                     cancerTyping.setMut_freq(mutFreq);
                                     cancerTyping.setSubtype("/");
                                     cancerTyping.setEvidence("/");
+                                    cancerTyping.setFusion_quality(fusionQuality);
                                     cancerTyping.setCreated_by(user_account);
                                     cancerTyping.setUpdate_by(user_account);
 
