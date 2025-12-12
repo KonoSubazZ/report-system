@@ -2206,7 +2206,7 @@ public class PyReportServiceImpl implements PyReportService {
 
         // 20251212 增加双样本胚系林奇
         List<String> LynchPanels = moduleService.getconfPanelList("MOD_WITH_LYNCH");
-        if (LynchPanels.contains(productName) && (diseaseService.isEndometrialCarcinoma(diseaseId) || diseaseService.isFallopianTubeCancer(diseaseId))) {
+        if (LynchPanels.contains(productName) && (diseaseService.isEndometrialCarcinoma(diseaseId) || diseaseService.isColonCancer(diseaseId))) {
             processLynchCRTable(rt);
         }
 
