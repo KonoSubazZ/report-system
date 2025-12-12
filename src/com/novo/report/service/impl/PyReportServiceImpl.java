@@ -2203,6 +2203,13 @@ public class PyReportServiceImpl implements PyReportService {
         }
         summaryOfRresults.put("cr_tumors_desc", crTumorsDesc);
         summaryOfRresults.put("crCheckLineStrYF1280Size", crCheckLineStrYF1280.size());
+
+        // 20251212 增加双样本胚系林奇
+        List<String> LynchPanels = moduleService.getconfPanelList("MOD_WITH_LYNCH");
+        if (LynchPanels.contains(productName) && (diseaseService.isEndometrialCarcinoma(diseaseId) || diseaseService.isFallopianTubeCancer(diseaseId))) {
+            processLynchCRTable(rt);
+        }
+
         rt.setCrCheckLineStrLess(crCheckLineStrLess);
         rt.setCrCheckLineStrGreater(crCheckLineStrGreater);
         rt.setCancerRiskGene(cancerRiskGene);
@@ -7272,4 +7279,22 @@ public class PyReportServiceImpl implements PyReportService {
         }
     }
 
+    private void processLynchCRTable(ReportTemplate rt) {
+        List<String> lynchGenes = Arrays.asList("MSH2", "MLHI", "MSH6", "PMS2", "EPCAM");
+        List<Map> crCheckLineStrYF1280 = rt.getCrCheckLineStrYF1280();
+        List<Map> crCheckLineStrYF1280Lynch = new ArrayList<>();
+        List<Map> crCheckLineStrYF1280Other = new ArrayList<>();
+        if (crCheckLineStrYF1280 != null && !crCheckLineStrYF1280.isEmpty()) {
+            crCheckLineStrYF1280.stream().forEach(map -> {
+                String gene = map.get("gene").toString();
+                if (lynchGenes.contains(gene)) {
+                    crCheckLineStrYF1280Lynch.add(map);
+                } else {
+                    crCheckLineStrYF1280Other.add(map);
+                }
+            });
+        }
+        rt.setCrCheckLineStrYF1280Lynch(crCheckLineStrYF1280Lynch);
+        rt.setCrCheckLineStrYF1280Other(crCheckLineStrYF1280Other);
+    }
 }

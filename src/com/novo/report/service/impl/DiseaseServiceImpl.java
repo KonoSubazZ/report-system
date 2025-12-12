@@ -99,4 +99,10 @@ public class DiseaseServiceImpl implements DiseaseService {
         List<Integer> diseaseHierarchyIds = Arrays.asList(1752, 6039, 6367, 8923, 50929, 1909);
         return diseaseHierarchyIds.contains(dId);
     }
+
+    @Override
+    public boolean isLungCarcer(Integer dId) {
+        List<Integer> diseaseHierarchyIds = Arrays.asList(3905, 3908, 3907, 7045, 4829, 100001, 3910, 3909, 4926, 5588, 6482, 4556, 5583, 50872, 5409, 5421, 50875);
+        return false;
+    }
 }

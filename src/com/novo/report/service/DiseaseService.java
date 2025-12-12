@@ -76,4 +76,9 @@ public interface DiseaseService {
      * 黑色素瘤
      */
     boolean isMelanoma(Integer dId);
+
+    /**
+     * melanoma
+     */
+    boolean isLungCarcer(Integer dId);
 }

@@ -150,6 +150,25 @@ public class ReportTemplate {
     private List<Map> crCheckLineStr;//肿瘤遗传风险
     private List<Map> crCheckLineStrPathopoiesia;//肿瘤遗传风险
     private List<Map> crCheckLineStrYF1280;//肿瘤遗传风险
+    private List<Map> crCheckLineStrYF1280Lynch;
+
+    public List<Map> getCrCheckLineStrYF1280Other() {
+        return crCheckLineStrYF1280Other;
+    }
+
+    public void setCrCheckLineStrYF1280Other(List<Map> crCheckLineStrYF1280Other) {
+        this.crCheckLineStrYF1280Other = crCheckLineStrYF1280Other;
+    }
+
+    public List<Map> getCrCheckLineStrYF1280Lynch() {
+        return crCheckLineStrYF1280Lynch;
+    }
+
+    public void setCrCheckLineStrYF1280Lynch(List<Map> crCheckLineStrYF1280Lynch) {
+        this.crCheckLineStrYF1280Lynch = crCheckLineStrYF1280Lynch;
+    }
+
+    private List<Map> crCheckLineStrYF1280Other;
     private List<Map> crCheckLineStrLess;//肿瘤遗传风险
     private List<Map> crCheckLineStrGreater;//肿瘤遗传风险
     private List<Map> TargetedDrugDetectionStr;//靶向药物检测解析

@@ -120,6 +120,10 @@ public class PyAnalysisReportTemplateUtil {
         data.put("crCheckLineStr", rt.getCrCheckLineStr());
         data.put("crCheckLineStrPathopoiesia", rt.getCrCheckLineStrPathopoiesia());
         data.put("crCheckLineStrYF1280", rt.getCrCheckLineStrYF1280());
+        // 增加关于林奇的判断
+        data.put("crCheckLineStrYF1280Lynch",rt.getCrCheckLineStrYF1280Lynch());
+        data.put("crCheckLineStrYF1280Other", rt.getCrCheckLineStrYF1280Other());
+
         data.put("crCheckLineStrLess", rt.getCrCheckLineStrLess());
         data.put("crCheckLineStrGreater", rt.getCrCheckLineStrGreater());
         data.put("nccnInfoStr", rt.getNccnInfoStr());
