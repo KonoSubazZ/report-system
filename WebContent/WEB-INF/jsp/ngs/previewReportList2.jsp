@@ -500,7 +500,7 @@
                                 <td><label>BRCA1/2基因状态</label></td>
                                 <td>
                                     <select id="hrdBRCAState" onChange="updateHrd()">
-                                        <option value="阳性"
+                                        <option value="${hrdBRCAState}"
                                                 <c:if test="${hrdBRCAState.contains('阳性')}">selected</c:if>>
                                                 ${hrdBRCAState}
                                         </option>
