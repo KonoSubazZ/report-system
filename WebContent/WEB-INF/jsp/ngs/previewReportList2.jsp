@@ -500,13 +500,13 @@
                                 <td><label>BRCA1/2基因状态</label></td>
                                 <td>
                                     <select id="hrdBRCAState" onChange="updateHrd()">
-                                        <option value="检测到该肿瘤患者存在BRCA基因致病或可能致病性变异"
-                                                <c:if test="${hrdBRCAState == '检测到该肿瘤患者存在BRCA基因致病或可能致病性变异'}">selected</c:if>>
-                                            检测到该肿瘤患者存在BRCA基因致病或可能致病性变异
+                                        <option value="阳性"
+                                                <c:if test="${hrdBRCAState.contains('阳性')}">selected</c:if>>
+                                                ${hrdBRCAState}
                                         </option>
-                                        <option value="未检测到该肿瘤患者存在BRCA基因致病或可能致病性变异"
-                                                <c:if test="${hrdBRCAState == '未检测到该肿瘤患者存在BRCA基因致病或可能致病性变异'}">selected</c:if>>
-                                            未检测到该肿瘤患者存在BRCA基因致病或可能致病性变异
+                                        <option value="阴性"
+                                                <c:if test="${hrdBRCAState == '阴性'}">selected</c:if>>
+                                            阴性
                                         </option>
                                     </select>
                                 </td>
