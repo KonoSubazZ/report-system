@@ -2738,11 +2738,11 @@ public class PyReportServiceImpl implements PyReportService {
             String HRDScore = analysisReportDao.getHRD_sum(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
             if (StringUtils.isNotEmpty(HRDScore)) {
                 if (brca) {
-                    // summaryOfRresults.put("hrdBRCAState", "检测到该肿瘤患者存在BRCA基因致病或可能致病性变异");
-                    summaryOfRresults.put("hrdBRCAState", "阳性" + brcaTip);
+                    summaryOfRresults.put("hrdBRCAState", "检测到该肿瘤患者存在BRCA基因致病或可能致病性变异");
+                    // summaryOfRresults.put("hrdBRCAState", "阳性" + brcaTip);
                 } else {
-                    // summaryOfRresults.put("hrdBRCAState", "未检测到该肿瘤患者存在BRCA基因致病或可能致病性变异");
-                    summaryOfRresults.put("hrdBRCAState", "阴性");
+                    summaryOfRresults.put("hrdBRCAState", "未检测到该肿瘤患者存在BRCA基因致病或可能致病性变异");
+                    // summaryOfRresults.put("hrdBRCAState", "阴性");
                 }
                 summaryOfRresults.put("hrdScore", HRDScore);
                 if (Integer.valueOf(HRDScore) >= 43 || brca) {
