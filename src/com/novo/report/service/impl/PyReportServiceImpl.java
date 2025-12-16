@@ -404,7 +404,7 @@ public class PyReportServiceImpl implements PyReportService {
             // 区分 mutFreq 类型
             immnueallDistinguishMutFreqType(immnueall);
             // 20250319 新增 positiveOtherImmnueNum 判断是否其他展示检测意义
-            List<String> otherGenes = Arrays.asList("CD274", "KRAS", "PBRM1", "PDCD1LG2", "POLD1", "POLE", "TP53");
+            List<String> otherGenes = Arrays.asList("CD274","CD274(PDL1)", "KRAS", "PBRM1", "PDCD1LG2", "POLD1", "POLE", "TP53");
 
             for (Map immune : immnueall) {
                 String flag = String.valueOf(immune.get("flag"));
