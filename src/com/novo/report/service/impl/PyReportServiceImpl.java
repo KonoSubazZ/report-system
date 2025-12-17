@@ -404,7 +404,7 @@ public class PyReportServiceImpl implements PyReportService {
             // 区分 mutFreq 类型
             immnueallDistinguishMutFreqType(immnueall);
             // 20250319 新增 positiveOtherImmnueNum 判断是否其他展示检测意义
-            List<String> otherGenes = Arrays.asList("CD274","CD274(PDL1)", "KRAS", "PBRM1", "PDCD1LG2", "POLD1", "POLE", "TP53");
+            List<String> otherGenes = Arrays.asList("CD274", "CD274(PDL1)", "KRAS", "PBRM1", "PDCD1LG2", "POLD1", "POLE", "TP53");
 
             for (Map immune : immnueall) {
                 String flag = String.valueOf(immune.get("flag"));
@@ -3139,7 +3139,7 @@ public class PyReportServiceImpl implements PyReportService {
         if (currentNgsAvailable.getProduct_name().indexOf("_") != -1 && !"12k_tis_single".equals(currentNgsAvailable.getProduct_name()) && !currentNgsAvailable.getProduct_name().contains("novoivd") || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
             String[] split = currentNgsAvailable.getProduct_name().split("_");
             // 子宫内膜癌 子宫内膜癌症
-            if (diseaseName.contains("子宫内膜癌") && "tis".equals(split[1]) || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
+            if (diseaseService.isEndometrialCarcinoma(diseaseId) && "tis".equals(split[1]) || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
                 endometrialCarcinoma = true;
             }
         }

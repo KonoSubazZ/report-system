@@ -440,7 +440,8 @@ public class GeneMarkerVwController {
             boolean endometrialCarcinoma = false;
             if (currentNgsAvailable.getProduct_name().indexOf("_") != -1 && !"12k_tis_single".equals(currentNgsAvailable.getProduct_name()) && !currentNgsAvailable.getProduct_name().contains("novoivd") || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
                 String[] split = currentNgsAvailable.getProduct_name().split("_");
-                if (diseaseName.contains("子宫内膜癌") && "tis".equals(split[1]) || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
+
+                if (diseaseService.isEndometrialCarcinoma(diseaseId) && "tis".equals(split[1]) || currentNgsAvailable.getModuleFlag().contains("子宫内膜癌分子分型")) {
                     endometrialCarcinoma = true;
                     String tcga = moduleModificationAllDao.selectMmTcgaByReportId(currentNgsAvailable.getReport_id());
                     if (StringUtils.isEmpty(tcga)) {
