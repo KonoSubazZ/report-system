@@ -125,8 +125,19 @@ def process_qilu_tip(report_json):
 
         for item in report_json.get('cancerTyping1166',[]):
             mut_freq_str = item.get('mut_freq','')
-            mut_freq_clean = mut_freq_str.replace('%', '').strip()
-            mut_freq = float(mut_freq_clean)
+
+            try:
+                if mut_freq_str.endswith('%'):
+                    # 去除百分号后转浮点数，再除以100
+                    mut_freq_clean = mut_freq_str.replace('%', '')
+                    mut_freq = float(mut_freq_clean) / 100
+                else:
+                    # 无百分号则直接转浮点数（兼容小数/整数格式）
+                    mut_freq = float(mut_freq_str)
+            except:
+            # 处理空值、非数字等异常情况，默认设为0.0
+                mut_freq = 0.0
+
             if mut_freq < 0 or mut_freq > 1:
                 cancerTyping1166RNA.append(item)
             else:
@@ -143,8 +154,19 @@ def process_qilu_tip(report_json):
         for item in report_json.get('sarcomaTyping',[]):
             mut_freq_str = item.get('mutFreq', '')
             mutation = item.get('mutation')
-            mut_freq_clean = mut_freq_str.replace('%', '').strip()
-            mut_freq = float(mut_freq_clean)
+
+            try:
+                if mut_freq_str.endswith('%'):
+                    # 去除百分号后转浮点数，再除以100
+                    mut_freq_clean = mut_freq_str.replace('%', '')
+                    mut_freq = float(mut_freq_clean) / 100
+                else:
+                    # 无百分号则直接转浮点数（兼容小数/整数格式）
+                    mut_freq = float(mut_freq_str)
+            except:
+                # 处理空值、非数字等异常情况，默认设为0.0
+                mut_freq = 0.0
+
             if (mut_freq < 0 or mut_freq > 1) and 'Fusion' in mutation:
                 sarcomaTypingRNA.append(item)
             else:
@@ -162,8 +184,19 @@ def process_qilu_tip(report_json):
         for item in report_json.get('unknownTipLineStr',[]):
             mut_freq_str = item.get('mutFreq')
             ori_variant = item.get('ori_variant','')
-            mut_freq_clean = mut_freq_str.replace('%', '').strip()
-            mut_freq = float(mut_freq_clean)
+
+            try:
+                if mut_freq_str.endswith('%'):
+                    # 去除百分号后转浮点数，再除以100
+                    mut_freq_clean = mut_freq_str.replace('%', '')
+                    mut_freq = float(mut_freq_clean) / 100
+                else:
+                    # 无百分号则直接转浮点数（兼容小数/整数格式）
+                    mut_freq = float(mut_freq_str)
+            except:
+                # 处理空值、非数字等异常情况，默认设为0.0
+                mut_freq = 0.0
+
             if (mut_freq < 0 or mut_freq > 1) and 'Fusion' in ori_variant:
                 unknownTipLineStrRNA.append(item)
             else:
@@ -179,8 +212,19 @@ def process_qilu_tip(report_json):
         for item in report_json.get('bodyDrugTipLineStr',[]):
             mut_freq_str = item.get('mutFreq', '')
             ori_variant = item.get('ori_variant')
-            mut_freq_clean = mut_freq_str.replace('%', '').strip()
-            mut_freq = float(mut_freq_clean)
+
+            try:
+                if mut_freq_str.endswith('%'):
+                    # 去除百分号后转浮点数，再除以100
+                    mut_freq_clean = mut_freq_str.replace('%', '')
+                    mut_freq = float(mut_freq_clean) / 100
+                else:
+                    # 无百分号则直接转浮点数（兼容小数/整数格式）
+                    mut_freq = float(mut_freq_str)
+            except:
+                # 处理空值、非数字等异常情况，默认设为0.0
+                mut_freq = 0.0
+
             if (mut_freq < 0 or mut_freq > 1) and 'Fusion' in ori_variant:
                 bodyDrugTipLineStrRNA.append(item)
             else:
@@ -196,8 +240,19 @@ def process_qilu_tip(report_json):
         for item in report_json.get('BodyDrugNoComplexStr',[]):
             mut_freq_str = item.get('mutFreq', '')
             ori_variant = item.get('ori_variant')
-            mut_freq_clean = mut_freq_str.replace('%', '').strip()
-            mut_freq = float(mut_freq_clean)
+
+            try:
+                if mut_freq_str.endswith('%'):
+                    # 去除百分号后转浮点数，再除以100
+                    mut_freq_clean = mut_freq_str.replace('%', '')
+                    mut_freq = float(mut_freq_clean) / 100
+                else:
+                    # 无百分号则直接转浮点数（兼容小数/整数格式）
+                    mut_freq = float(mut_freq_str)
+            except:
+                # 处理空值、非数字等异常情况，默认设为0.0
+                mut_freq = 0.0
+
             if (mut_freq < 0 or mut_freq > 1) and 'Fusion'  in ori_variant:
                 BodyDrugNoComplexStrRNA.append(item)
             else:
