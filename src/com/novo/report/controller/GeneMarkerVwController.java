@@ -584,11 +584,11 @@ public class GeneMarkerVwController {
                     }
                     if (!"novo_hrd".equals(currentNgsAvailable.getProduct_name())) {
                         if (brca) {
-                            hrdBRCAState = "检测到该肿瘤患者存在BRCA基因致病或可能致病性变异";
-                            // hrdBRCAState = "阳性" + brcaTip;
+                            // hrdBRCAState = "检测到该肿瘤患者存在BRCA基因致病或可能致病性变异";
+                            hrdBRCAState = "阳性" + brcaTip;
                         } else {
-                            hrdBRCAState = "未检测到该肿瘤患者存在BRCA基因致病或可能致病性变异";
-                            // hrdBRCAState = "阴性";
+                            // hrdBRCAState = "未检测到该肿瘤患者存在BRCA基因致病或可能致病性变异";
+                            hrdBRCAState = "阴性";
                         }
                     }
                     if (Integer.valueOf(hrdScore) >= 43 || brca) {
