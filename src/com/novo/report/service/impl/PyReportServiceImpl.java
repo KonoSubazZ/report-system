@@ -7280,7 +7280,7 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
     private void processLynchCRTable(ReportTemplate rt) {
-        List<String> lynchGenes = Arrays.asList("MSH2", "MLHI", "MSH6", "PMS2", "EPCAM");
+        List<String> lynchGenes = Arrays.asList("MSH2", "MLH1", "MSH6", "PMS2", "EPCAM");
         List<Map> crCheckLineStrYF1280 = rt.getCrCheckLineStrYF1280();
         List<Map> crCheckLineStrYF1280Lynch = new ArrayList<>();
         List<Map> crCheckLineStrYF1280Other = new ArrayList<>();
