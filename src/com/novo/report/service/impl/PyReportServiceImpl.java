@@ -4273,7 +4273,7 @@ public class PyReportServiceImpl implements PyReportService {
                     String ori_variant = map.get("ori_variant").toString();
                     // String variant = map.get("variant").toString();
                     String mutFreq = map.get("mutFreq").toString();
-                    String gene = map.get("gene_symbol").toString();
+                    String gene = map.get("gene").toString();
 
 
                     if (!ori_variant.equals("MET-MET Fusion M13:M15")) {
