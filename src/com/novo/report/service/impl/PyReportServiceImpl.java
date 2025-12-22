@@ -4258,7 +4258,7 @@ public class PyReportServiceImpl implements PyReportService {
     private List<Map> geneGFYdata(List<Map> bodyDrugNoComplexStr, List<Map> snpIndelFileAll) {
         Map<String, String> snpIndelFileAllMap = snpIndelFileAll.stream()
                 .filter(map -> map.get("my_ori_variant") != null)
-                .collect(Collectors.toMap(map -> map.get("my_ori_variant").toString(), map -> map.get("mapped_variant_id") == null ? null : map.get("mapped_variant_id").toString()));
+                .collect(Collectors.toMap(map -> map.get("my_ori_variant").toString(), map -> map.get("my_variant") == null ? null : map.get("my_variant").toString()));
 
         List<String> oriVariant1 = new ArrayList<>();
         List<String> mutFreq1 = new ArrayList<>();
@@ -4271,12 +4271,13 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> bodyDrugNoComplexGFYStr = bodyDrugNoComplexStr.stream()
                 .filter(map -> {
                     String ori_variant = map.get("ori_variant").toString();
-                    String variant = map.get("variant").toString();
+                    // String variant = map.get("variant").toString();
                     String mutFreq = map.get("mutFreq").toString();
                     String gene = map.get("gene_symbol").toString();
 
 
                     if (!ori_variant.equals("MET-MET Fusion M13:M15")) {
+                        String variant = snpIndelFileAllMap.get(ori_variant);
                         Integer mutId = analysisReportDao.getMutationId(gene, variant);
                         if (mutId != null) {
                             List<Integer> parentVariant = analysisReportDao.getParentMutationId(mutId);
