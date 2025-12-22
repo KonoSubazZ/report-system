@@ -2721,9 +2721,9 @@ public class PyReportServiceImpl implements PyReportService {
                     brca = true;
                     brcaCheckLineStr.add(map1);
                     if (map1.get("pHGVS").equals(".")) {
-                        brcaTip += "," + gene + " " + map1.get("pHGVS") + " " + "（" + mutFreq + "）";
-                    } else {
                         brcaTip += "," + gene + " " + map1.get("cHGVS") + " " + "（" + mutFreq + "）";
+                    } else {
+                        brcaTip += "," + gene + " " + map1.get("pHGVS") + " " + "（" + mutFreq + "）";
                     }
                 }
             }
