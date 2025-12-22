@@ -571,9 +571,9 @@ public class GeneMarkerVwController {
                                 String mutFreq = map.get("mutFreq") == null ? "/" : map.get("mutFreq").toString();
                                 mutFreq = pyReportService.getMutFreq(ori_variant, mutFreq, "");
                                 if (map1.get("pHGVS").equals(".")) {
-                                    brcaTip += "," + gene + " " + map1.get("pHGVS") + " " + "（" + mutFreq + "）";
-                                } else {
                                     brcaTip += "," + gene + " " + map1.get("cHGVS") + " " + "（" + mutFreq + "）";
+                                } else {
+                                    brcaTip += "," + gene + " " + map1.get("pHGVS") + " " + "（" + mutFreq + "）";
                                 }
                                 map1.put("Zygosity", mutFreq);
                                 map1.put("Clinical_significance", "有害变异");
