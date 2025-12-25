@@ -91,9 +91,8 @@ public class ReportCrServiceImpl implements ReportCrService {
         // 获取突变list
         List<Integer> mutationIdList = getMutIdList(mutationId);
 
-        // 根据本地库的数据补充父mutID ？？什么作用
+        // 根据本地库的数据补充父mutID --有些位点本地库新增了，但是知识库未更新
         // 如果本地记录包含父级mutID，则添加到mutationIdList中 （去重添加）
-        // TODO 待确定 这里不会出现问题吗？ 比如知识库删除了某个突变的关联父级突变，增加本地库到 突变list 不会有问题吗, 似乎是匹配预览时
         // 20250701 这里这样做的意义是有些点可能知识库没有，手动改靶。先存本地库，后续更新知识库
         String parent_mutID = a.get("parent_mutID") == null ? "-1" : a.get("parent_mutID").toString();
         // 本地保存的靶向关联父级，解读手动改靶
@@ -107,15 +106,8 @@ public class ReportCrServiceImpl implements ReportCrService {
                 }
             }
         }
-		/*
-		List<String> complex_ids = (List<String>) a.get("complexIDs");
-		if (complex_ids != null) {
-			for (String id :  complex_ids) {
-				mutationIdList.add(Integer.parseInt(id));
-			}
-		}
-		*/
-        // 获取性别
+
+        // 获取性别 -- 跟前列腺癌/子宫内膜癌这些癌种有关联
         String gender = lifeService.getGender(report_id) == null ? "" : lifeService.getGender(report_id);
         // 查询本地库，看该位点是否有靶向药物信息、一般来说只有一条
         List<ReportVarDrug> varDrugs = reportVarDrugDao.selectRecord(gene, ori_variant, diseaseId, lang, gender);
@@ -486,10 +478,12 @@ public class ReportCrServiceImpl implements ReportCrService {
             String durgStr = drug_name + "&" + disease_name + "&" + evidence_phase;
 
             // 20250313 如果approveRange为1（敏感A,获批上市），则添加approving_agency（获批机构）
+            // fix 注释往本地记录存储机构，会面临后续获批机构更新，本地库不更新
+            /*
             if (approveRange.equals("1") && "获批上市".equals(evidence_phase)) {
                 String approvingAgency = map.get("approving_agency") == null ? null : map.get("approving_agency").toString();
                 durgStr = durgStr + "&" + approvingAgency;
-            }
+            }*/
             drugs.add(durgStr);
         }
 
@@ -779,13 +773,31 @@ public class ReportCrServiceImpl implements ReportCrService {
             Map map = new HashMap<>();
 
             // 20250313 A级药物耐药敏感增加获批机构、指南推荐
-            if (level == 1 && "获批上市".equals(evidencePhase)) {
+            if (level == 1 || level == 5) {
                 String approvingAgency = "";
-                if (list.size() == 4 && !"null".equals(list.get(3))) {
-                    approvingAgency = list.get(3);
-                } else {
-                    String oriName = drugName.replaceAll("[#*]", "");
-                    approvingAgency = reportDrugInfoDao.getApprovingAgency(disease_id, oriName);
+                String oriName = drugName.replaceAll("[#*]", "");
+                if ("获批上市".equals(evidencePhase)) {
+
+                    if (list.size() == 4 && !"null".equals(list.get(3))) {
+                        approvingAgency = list.get(3);
+                    } else {
+
+                        approvingAgency = reportDrugInfoDao.getApprovingAgency(disease_id, oriName);
+                        List<String> approvingAgency1 = reportDrugInfoDao.getApprovingAgency1(disease_id, oriName);
+                        if (approvingAgency1 != null && !approvingAgency1.isEmpty()) {
+
+                            Set<String> distinctSet = new HashSet<>(approvingAgency1);
+                            approvingAgency = approvingAgency + "/" + String.join("/", distinctSet);
+                        }
+                    }
+
+                } else if ("指南推荐".equals(evidencePhase)) {
+                    List<String> approvingAgency1 = reportDrugInfoDao.getApprovingAgency1(disease_id, oriName);
+                    if (approvingAgency1 != null && !approvingAgency1.isEmpty()) {
+
+                        Set<String> distinctSet = new HashSet<>(approvingAgency1);
+                        approvingAgency = approvingAgency + "/" + String.join("/", distinctSet);
+                    }
                 }
                 map.put("approvingAgency", approvingAgency);
             }
