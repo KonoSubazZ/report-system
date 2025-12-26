@@ -796,7 +796,9 @@ public class ReportCrServiceImpl implements ReportCrService {
                     if (approvingAgency1 != null && !approvingAgency1.isEmpty()) {
 
                         Set<String> distinctSet = new HashSet<>(approvingAgency1);
-                        approvingAgency = approvingAgency + "/" + String.join("/", distinctSet);
+                        // String agencyStr = String.join("/", distinctSet);
+                        // approvingAgency = approvingAgency.isEmpty() ? agencyStr : approvingAgency + "/" + agencyStr;
+                        approvingAgency = String.join("/", distinctSet);
                     }
                 }
                 map.put("approvingAgency", approvingAgency);
