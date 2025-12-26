@@ -2248,6 +2248,8 @@ public class PyReportServiceImpl implements PyReportService {
                 String Exon = a.get("Exon").toString();
                 String cHGVS = a.get("cHGVS").toString();
                 String pHGVS = a.get("pHGVS").toString();
+                String Chr = a.get("Chr").toString();
+                String Transcript = a.get("Transcript").toString();
                 String ori_variant = (transferOriVariant(a.getOrDefault("ori_variant", "").toString()));
                 String Zygosity = a.get("Zygosity").toString();
                 String mutDesc = "";
@@ -2269,6 +2271,11 @@ public class PyReportServiceImpl implements PyReportService {
                         geneticCancerRisk.put("check_date", check_date);
                         geneticCancerRisk.put("FreDesc", ori_variant);
                         geneticCancerRisk.put("gene", Gene);
+                        geneticCancerRisk.put("Exon", Exon);
+                        geneticCancerRisk.put("cHGVS", cHGVS);
+                        geneticCancerRisk.put("pHGVS", pHGVS);
+                        geneticCancerRisk.put("Chr", Chr);
+                        geneticCancerRisk.put("Transcript", Transcript);
                         geneticCancerRisk.put("ori_variant", ori_variant);
                         geneticCancerRisk.put("mutFreq", Zygosity);
                         geneticCancerRisk.put("mutFreqType", distinguishMutFreqTypeUtil(ori_variant, Zygosity));

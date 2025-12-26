@@ -74,7 +74,7 @@ public interface AnalysisReportDao {
      * @return
      */
     @Select("SELECT\r\n" +
-            "ca.Gene,ca.Gene as gene,rc.has_drug, Chr, Exon, cHGVS, pHGVS, ori_variant,ca.variant as variant, ca.Zygosity,ca.Zygosity as mutFreq, ca.ExonicFunc, ca.c1000g2015aug_all, ca.ExAC_EAS, ca.avsnp150, ca.SIFT_pred, ca.Polyphen2_HDIV_pred, ca.MutationTaster_pred, ca.revel, ca.gnomAD_genome_ALL, ca.Interpro_domain, ca.CLNSIG, ca.OMIM_Phenotypes, ca.HGMD_tag, ca.HGMD_disease, ca.HGMD_pmid, rc.Clinical_significance, ca.depth, loaded_date, ca.record_id,rc.VarClianno,rc.suggestion, rc.conclusion,checked_by, check_date, IFNULL(rc.Clinical_significance, 99) cs, Pos, Transcript, rc.record_id as rc_record_id\r\n" +
+            "ca.Gene,ca.Gene as gene,rc.has_drug, Chr, Exon, cHGVS, pHGVS, ori_variant,ca.variant as variant, ca.Zygosity,ca.Zygosity as mutFreq, ca.ExonicFunc, ca.c1000g2015aug_all, ca.ExAC_EAS, ca.avsnp150, ca.SIFT_pred, ca.Polyphen2_HDIV_pred, ca.MutationTaster_pred, ca.revel, ca.gnomAD_genome_ALL, ca.Interpro_domain, ca.CLNSIG, ca.OMIM_Phenotypes, ca.HGMD_tag, ca.HGMD_disease, ca.HGMD_pmid,ca.Transcript, rc.Clinical_significance, ca.depth, loaded_date, ca.record_id,rc.VarClianno,rc.suggestion, rc.conclusion,checked_by, check_date, IFNULL(rc.Clinical_significance, 99) cs, Pos, Transcript, rc.record_id as rc_record_id\r\n" +
             "FROM omics.cr_evw ca\r\n" +
             "LEFT JOIN rp_cr rc ON ca.Gene = rc.Gene AND ca.ori_variant = rc.ori_mutation and rc.lang = #{lang}\r\n" +
             "WHERE report_id = #{report_id} ORDER BY cs asc")
