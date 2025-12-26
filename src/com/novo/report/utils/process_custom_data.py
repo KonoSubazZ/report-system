@@ -1,6 +1,9 @@
 import re
 import json
 
+
+
+
 def process_custom_data(report_json):
 
     template_name = report_json.get('summaryOfRresults').get('template_name')
@@ -17,6 +20,9 @@ def process_custom_data(report_json):
     if template_name == '泛实体瘤1238+1166基因检测报告-齐鲁':
         process_qilu_tip(report_json)
 
+    # 同济 D+R
+    if template_name == '泛实体瘤1238+1166基因报告-同济':
+        process_tongji_tip(report_json)
 def process_shanghaifeike_tip(report_json):
 
     shanghaifeike_tips_1 = []
@@ -260,3 +266,20 @@ def process_qilu_tip(report_json):
 
         report_json['BodyDrugNoComplexStrDNA'] = BodyDrugNoComplexStrDNA
         report_json['BodyDrugNoComplexStrRNA'] = BodyDrugNoComplexStrRNA
+
+
+def process_tongji_tip(report_json):
+    if report_json.get('BodyDrugNoComplexStr'):
+        tongji_mutation1 = []
+        tongji_mutation2 = []
+        for item in report_json.get('BodyDrugNoComplexStr',[]):
+            if item.get('variationClass2') == '1':
+                tongji_mutation1.append(item)
+            elif item.get('variationClass2') == '2':
+                tongji_mutation2.append(item)
+
+        report_json['tongji_mutation1'] = tongji_mutation1
+        report_json['tongji_mutation2'] = tongji_mutation2
+
+
+
