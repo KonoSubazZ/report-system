@@ -1,11 +1,7 @@
 import re
-import json
-
-
 
 
 def process_custom_data(report_json):
-
     template_name = report_json.get('summaryOfRresults').get('template_name')
 
     # 上海肺科
@@ -23,8 +19,9 @@ def process_custom_data(report_json):
     # 同济 D+R
     if template_name == '泛实体瘤1238+1166基因报告-同济':
         process_tongji_tip(report_json)
-def process_shanghaifeike_tip(report_json):
 
+
+def process_shanghaifeike_tip(report_json):
     shanghaifeike_tips_1 = []
     shanghaifeike_tips_2 = []
     shanghaifeike_tips_3 = []
@@ -47,7 +44,7 @@ def process_shanghaifeike_tip(report_json):
         elif "Amplification" in ori_variant:
             tip = f"{gene}基因扩增，拷贝数{mut_freq}"
         else:
-            new_variant = ori_variant.replace(" ",":")
+            new_variant = ori_variant.replace(" ", ":")
             ExonicFunc = item.get('ExonicFunc')
             if "p." in ori_variant:
                 pattern = r'(p\.)([^:]+)'
@@ -63,7 +60,7 @@ def process_shanghaifeike_tip(report_json):
             var = new_variant[c_idx:]
             tip = f"{gene}基因{exon}号{desc}{ExonicFunc}{var}，突变丰度为{mut_freq}。"
 
-        if variationClass2 =="1":
+        if variationClass2 == "1":
             shanghaifeike_tips_1.append(tip)
         else:
             shanghaifeike_tips_2.append(tip)
@@ -81,7 +78,7 @@ def process_shanghaifeike_tip(report_json):
         elif "Amplification" in ori_variant:
             tip = f"{gene}基因扩增，拷贝数{mut_freq}"
         else:
-            new_variant = ori_variant.replace(" ",":")
+            new_variant = ori_variant.replace(" ", ":")
             ExonicFunc = item.get('ExonicFunc')
             if "p." in ori_variant:
                 pattern = r'(p\.)([^:]+)'
@@ -123,14 +120,13 @@ def process_shanzhong_tip(report_json):
 
 
 def process_qilu_tip(report_json):
-
     # 肾癌/中线癌分型
     if report_json.get('cancerTyping1166'):
         cancerTyping1166DNA = []
         cancerTyping1166RNA = []
 
-        for item in report_json.get('cancerTyping1166',[]):
-            mut_freq_str = item.get('mut_freq','')
+        for item in report_json.get('cancerTyping1166', []):
+            mut_freq_str = item.get('mut_freq', '')
 
             try:
                 if mut_freq_str.endswith('%'):
@@ -141,7 +137,7 @@ def process_qilu_tip(report_json):
                     # 无百分号则直接转浮点数（兼容小数/整数格式）
                     mut_freq = float(mut_freq_str)
             except:
-            # 处理空值、非数字等异常情况，默认设为0.0
+                # 处理空值、非数字等异常情况，默认设为0.0
                 mut_freq = 0.0
 
             if mut_freq < 0 or mut_freq > 1:
@@ -157,7 +153,7 @@ def process_qilu_tip(report_json):
         sarcomaTypingDNA = []
         sarcomaTypingRNA = []
 
-        for item in report_json.get('sarcomaTyping',[]):
+        for item in report_json.get('sarcomaTyping', []):
             mut_freq_str = item.get('mutFreq', '')
             mutation = item.get('mutation')
 
@@ -181,15 +177,14 @@ def process_qilu_tip(report_json):
         report_json['sarcomaTypingDNA'] = sarcomaTypingDNA
         report_json['sarcomaTypingRNA'] = sarcomaTypingRNA
 
-
     # 体系检出
     if report_json.get('unknownTipLineStr'):
         unknownTipLineStrDNA = []
         unknownTipLineStrRNA = []
 
-        for item in report_json.get('unknownTipLineStr',[]):
+        for item in report_json.get('unknownTipLineStr', []):
             mut_freq_str = item.get('mutFreq')
-            ori_variant = item.get('ori_variant','')
+            ori_variant = item.get('ori_variant', '')
 
             try:
                 if mut_freq_str.endswith('%'):
@@ -215,7 +210,7 @@ def process_qilu_tip(report_json):
         bodyDrugTipLineStrDNA = []
         bodyDrugTipLineStrRNA = []
 
-        for item in report_json.get('bodyDrugTipLineStr',[]):
+        for item in report_json.get('bodyDrugTipLineStr', []):
             mut_freq_str = item.get('mutFreq', '')
             ori_variant = item.get('ori_variant')
 
@@ -243,7 +238,7 @@ def process_qilu_tip(report_json):
         BodyDrugNoComplexStrDNA = []
         BodyDrugNoComplexStrRNA = []
 
-        for item in report_json.get('BodyDrugNoComplexStr',[]):
+        for item in report_json.get('BodyDrugNoComplexStr', []):
             mut_freq_str = item.get('mutFreq', '')
             ori_variant = item.get('ori_variant')
 
@@ -259,7 +254,7 @@ def process_qilu_tip(report_json):
                 # 处理空值、非数字等异常情况，默认设为0.0
                 mut_freq = 0.0
 
-            if (mut_freq < 0 or mut_freq > 1) and 'Fusion'  in ori_variant:
+            if (mut_freq < 0 or mut_freq > 1) and 'Fusion' in ori_variant:
                 BodyDrugNoComplexStrRNA.append(item)
             else:
                 BodyDrugNoComplexStrDNA.append(item)
@@ -272,7 +267,34 @@ def process_tongji_tip(report_json):
     if report_json.get('BodyDrugNoComplexStr'):
         tongji_mutation1 = []
         tongji_mutation2 = []
-        for item in report_json.get('BodyDrugNoComplexStr',[]):
+        for item in report_json.get('BodyDrugNoComplexStr', []):
+            drug_all = []
+            for drug in item.get('drugaStr'):
+                drug_str = drug.get('nameLevel') + '（' + '敏感，A，' + drug.get('approvingAgency') + '）'
+                drug_all.append(drug_str)
+            for drug in item.get('drugbStr'):
+                drug_str = drug.get('nameLevel') + '（' + '敏感，B' + '）'
+                drug_all.append(drug_str)
+            for drug in item.get('drugcStr'):
+                drug_str = drug.get('nameLevel') + '（' + '敏感，C' + '）'
+                drug_all.append(drug_str)
+            for drug in item.get('drugdStr'):
+                drug_str = drug.get('nameLevel') + '（' + '敏感，D' + '）'
+                drug_all.append(drug_str)
+            for drug in item.get('resistantaStr'):
+                drug_str = drug.get('nameLevel') + '（' + '耐药，A，' + drug.get('approvingAgency') + '）'
+                drug_all.append(drug_str)
+            for drug in item.get('resistancbStr'):
+                drug_str = drug.get('nameLevel') + '（' + '耐药，B' + '）'
+                drug_all.append(drug_str)
+            for drug in item.get('resistanccStr'):
+                drug_str = drug.get('nameLevel') + '（' + '耐药，C' + '）'
+                drug_all.append(drug_str)
+            for drug in item.get('resistancdStr'):
+                drug_str = drug.get('nameLevel') + '（' + '耐药，D' + '）'
+                drug_all.append(drug_str)
+            item['drug_all'] = drug_all
+
             if item.get('variationClass2') == '1':
                 tongji_mutation1.append(item)
             elif item.get('variationClass2') == '2':
@@ -284,19 +306,20 @@ def process_tongji_tip(report_json):
     # 免疫处理
     tongji_immune = []
     if report_json.get('positiveImmnue'):
-        for item in report_json.get('positiveImmnue',[]):
+        for item in report_json.get('positiveImmnue', []):
             immune = {}
             ori_variant = item.get('variant')
             gene = item.get('gene')
             mut_freq = item.get('mutFreq')
-            for item_body in report_json.get('BodyDrugNoComplexStr',[]):
-                if gene == item_body.get('gene') and ori_variant == item_body.get('ori_variant') and mut_freq == item_body.get('mutFreq'):
+            for item_body in report_json.get('BodyDrugNoComplexStr', []):
+                if gene == item_body.get('gene') and ori_variant == item_body.get(
+                        'ori_variant') and mut_freq == item_body.get('mutFreq'):
                     immune['tongji_mutation'] = item.get('TJmutation')
 
-            for item_body in report_json.get('unknownVarAnalysisStr',[]):
-                if gene == item_body.get('gene') and ori_variant == item_body.get('ori_variant') and mut_freq == item_body.get('mutFreq'):
+            for item_body in report_json.get('unknownVarAnalysisStr', []):
+                if gene == item_body.get('gene') and ori_variant == item_body.get(
+                        'ori_variant') and mut_freq == item_body.get('mutFreq'):
                     immune['tongji_mutation'] = item.get('TJmutation')
-
 
             if item.get('flag') == '1':
                 immune['gene'] = item.get('gene')
@@ -305,19 +328,20 @@ def process_tongji_tip(report_json):
             tongji_immune.append(immune)
 
     if report_json.get('negativeImmnue'):
-        for item in report_json.get('negativeImmnue',[]):
+        for item in report_json.get('negativeImmnue', []):
             immune = {}
             ori_variant = item.get('variant')
             gene = item.get('gene')
             mut_freq = item.get('mutFreq')
-            for item_body in report_json.get('BodyDrugNoComplexStr',[]):
-                if gene == item_body.get('gene') and ori_variant == item_body.get('ori_variant') and mut_freq == item_body.get('mutFreq'):
+            for item_body in report_json.get('BodyDrugNoComplexStr', []):
+                if gene == item_body.get('gene') and ori_variant == item_body.get(
+                        'ori_variant') and mut_freq == item_body.get('mutFreq'):
                     immune['tongji_mutation'] = item.get('TJmutation')
 
-            for item_body in report_json.get('unknownVarAnalysisStr',[]):
-                if gene == item_body.get('gene') and ori_variant == item_body.get('ori_variant') and mut_freq == item_body.get('mutFreq'):
+            for item_body in report_json.get('unknownVarAnalysisStr', []):
+                if gene == item_body.get('gene') and ori_variant == item_body.get(
+                        'ori_variant') and mut_freq == item_body.get('mutFreq'):
                     immune['tongji_mutation'] = item.get('TJmutation')
-
 
             if item.get('flag') == '2':
                 immune['gene'] = item.get('gene')
@@ -331,7 +355,8 @@ def process_tongji_tip(report_json):
     tongji_hrr = ""
     HRR_info = report_json.get('HRRInfo')
     if HRR_info:
-        HRR_genes = ["ATM", "BARD1", "BRCA1", "BRCA2", "BRIP1", "CDK12", "CHEK1", "CHEK2", "FANCL", "PALB2", "RAD51B", "RAD51C", "RAD51D", "RAD54L", "PPP2R2A"]
+        HRR_genes = ["ATM", "BARD1", "BRCA1", "BRCA2", "BRIP1", "CDK12", "CHEK1", "CHEK2", "FANCL", "PALB2", "RAD51B",
+                     "RAD51C", "RAD51D", "RAD54L", "PPP2R2A"]
         for gene in HRR_genes:
             variant = HRR_info.get('variant')
             if variant != "-":
@@ -344,8 +369,4 @@ def process_tongji_tip(report_json):
                     new_variant = variant
                 tongji_hrr += gene + " " + new_variant + ";"
 
-
-
-
-
-
+    report_json['tongji_hrr'] = tongji_hrr
