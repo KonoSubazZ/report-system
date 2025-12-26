@@ -281,5 +281,71 @@ def process_tongji_tip(report_json):
         report_json['tongji_mutation1'] = tongji_mutation1
         report_json['tongji_mutation2'] = tongji_mutation2
 
+    # 免疫处理
+    tongji_immune = []
+    if report_json.get('positiveImmnue'):
+        for item in report_json.get('positiveImmnue',[]):
+            immune = {}
+            ori_variant = item.get('variant')
+            gene = item.get('gene')
+            mut_freq = item.get('mutFreq')
+            for item_body in report_json.get('BodyDrugNoComplexStr',[]):
+                if gene == item_body.get('gene') and ori_variant == item_body.get('ori_variant') and mut_freq == item_body.get('mutFreq'):
+                    immune['tongji_mutation'] = item.get('TJmutation')
+
+            for item_body in report_json.get('unknownVarAnalysisStr',[]):
+                if gene == item_body.get('gene') and ori_variant == item_body.get('ori_variant') and mut_freq == item_body.get('mutFreq'):
+                    immune['tongji_mutation'] = item.get('TJmutation')
+
+
+            if item.get('flag') == '1':
+                immune['gene'] = item.get('gene')
+                immune['relationship'] = '正相关'
+                immune['result'] = '可能导致PD-1/PD-L1抑制剂获益率高'
+            tongji_immune.append(immune)
+
+    if report_json.get('negativeImmnue'):
+        for item in report_json.get('negativeImmnue',[]):
+            immune = {}
+            ori_variant = item.get('variant')
+            gene = item.get('gene')
+            mut_freq = item.get('mutFreq')
+            for item_body in report_json.get('BodyDrugNoComplexStr',[]):
+                if gene == item_body.get('gene') and ori_variant == item_body.get('ori_variant') and mut_freq == item_body.get('mutFreq'):
+                    immune['tongji_mutation'] = item.get('TJmutation')
+
+            for item_body in report_json.get('unknownVarAnalysisStr',[]):
+                if gene == item_body.get('gene') and ori_variant == item_body.get('ori_variant') and mut_freq == item_body.get('mutFreq'):
+                    immune['tongji_mutation'] = item.get('TJmutation')
+
+
+            if item.get('flag') == '2':
+                immune['gene'] = item.get('gene')
+                immune['relationship'] = '负相关'
+                immune['result'] = '可能导致PD-1/PD-L1抑制剂获益率低'
+            tongji_immune.append(immune)
+
+    report_json['tongji_immune'] = tongji_immune
+
+    # HRR
+    tongji_hrr = ""
+    HRR_info = report_json.get('HRRInfo')
+    if HRR_info:
+        HRR_genes = ["ATM", "BARD1", "BRCA1", "BRCA2", "BRIP1", "CDK12", "CHEK1", "CHEK2", "FANCL", "PALB2", "RAD51B", "RAD51C", "RAD51D", "RAD54L", "PPP2R2A"]
+        for gene in HRR_genes:
+            variant = HRR_info.get('variant')
+            if variant != "-":
+                pattern = r'p\.(\S+)'
+                match = re.search(pattern, variant)
+                if match:
+                    p_part = match.group(1)
+                    new_variant = f"p.({p_part})"
+                else:
+                    new_variant = variant
+                tongji_hrr += gene + " " + new_variant + ";"
+
+
+
+
 
 
