@@ -303,6 +303,36 @@ def process_tongji_tip(report_json):
         report_json['tongji_mutation1'] = tongji_mutation1
         report_json['tongji_mutation2'] = tongji_mutation2
 
+    if report_json.get('ComplexDrugStr'):
+
+        for item in report_json.get('ComplexDrugStr', []):
+            drug_all = []
+            for drug in item.get('drugaStr',[]):
+                drug_str = drug.get('nameLevel') + '（' + '敏感，A，' + drug.get('approvingAgency') + '）'
+                drug_all.append(drug_str)
+            for drug in item.get('drugbStr'):
+                drug_str = drug.get('nameLevel') + '（' + '敏感，B' + '）'
+                drug_all.append(drug_str)
+            for drug in item.get('drugcStr'):
+                drug_str = drug.get('nameLevel') + '（' + '敏感，C' + '）'
+                drug_all.append(drug_str)
+            for drug in item.get('drugdStr'):
+                drug_str = drug.get('nameLevel') + '（' + '敏感，D' + '）'
+                drug_all.append(drug_str)
+            for drug in item.get('resistantaStr'):
+                drug_str = drug.get('nameLevel') + '（' + '耐药，A，' + drug.get('approvingAgency') + '）'
+                drug_all.append(drug_str)
+            for drug in item.get('resistantbStr'):
+                drug_str = drug.get('nameLevel') + '（' + '耐药，B' + '）'
+                drug_all.append(drug_str)
+            for drug in item.get('resistantcStr'):
+                drug_str = drug.get('nameLevel') + '（' + '耐药，C' + '）'
+                drug_all.append(drug_str)
+            for drug in item.get('resistantdStr'):
+                drug_str = drug.get('nameLevel') + '（' + '耐药，D' + '）'
+                drug_all.append(drug_str)
+            item['drug_all'] = drug_all
+
     # 免疫处理
     tongji_immune = []
     # 合并匹配列表
