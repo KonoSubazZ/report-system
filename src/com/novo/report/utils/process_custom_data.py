@@ -269,7 +269,7 @@ def process_tongji_tip(report_json):
         tongji_mutation2 = []
         for item in report_json.get('BodyDrugNoComplexStr', []):
             drug_all = []
-            for drug in item.get('drugaStr'):
+            for drug in item.get('drugaStr',[]):
                 drug_str = drug.get('nameLevel') + '（' + '敏感，A，' + drug.get('approvingAgency') + '）'
                 drug_all.append(drug_str)
             for drug in item.get('drugbStr'):
@@ -284,13 +284,13 @@ def process_tongji_tip(report_json):
             for drug in item.get('resistantaStr'):
                 drug_str = drug.get('nameLevel') + '（' + '耐药，A，' + drug.get('approvingAgency') + '）'
                 drug_all.append(drug_str)
-            for drug in item.get('resistancbStr'):
+            for drug in item.get('resistantbStr'):
                 drug_str = drug.get('nameLevel') + '（' + '耐药，B' + '）'
                 drug_all.append(drug_str)
-            for drug in item.get('resistanccStr'):
+            for drug in item.get('resistantcStr'):
                 drug_str = drug.get('nameLevel') + '（' + '耐药，C' + '）'
                 drug_all.append(drug_str)
-            for drug in item.get('resistancdStr'):
+            for drug in item.get('resistantdStr'):
                 drug_str = drug.get('nameLevel') + '（' + '耐药，D' + '）'
                 drug_all.append(drug_str)
             item['drug_all'] = drug_all
@@ -305,6 +305,8 @@ def process_tongji_tip(report_json):
 
     # 免疫处理
     tongji_immune = []
+    # 合并匹配列表
+    all_match_items = report_json.get('BodyDrugNoComplexStr', []) + report_json.get('unknownVarAnalysisStr', [])
     if report_json.get('positiveImmnue'):
         for item in report_json.get('positiveImmnue', []):
             immune = {}
@@ -312,20 +314,22 @@ def process_tongji_tip(report_json):
             gene = item.get('gene')
             mut_freq = item.get('mutFreq')
 
+            is_matched = False
+            for item_body in all_match_items:
+                body_gene = item_body.get('gene', '')
+                body_ori_variant = item_body.get('ori_variant', '')
+                body_mut_freq = item_body.get('mutFreq', '')
+                if gene == body_gene and ori_variant == body_ori_variant and mut_freq == body_mut_freq:
+                    immune['tongji_mutation'] = item_body.get('TJmutation','')
+                    is_matched = True
+                    break
 
-            for item_body in report_json.get('BodyDrugNoComplexStr', []):
-                if gene == item_body.get('gene') and ori_variant == item_body.get(
-                        'ori_variant') and mut_freq == item_body.get('mutFreq'):
-                    immune['tongji_mutation'] = item.get('TJmutation')
+            if not is_matched:
+                if mut_freq in ('杂合', '纯合'):
+                    immune['tongji_mutation'] = f"{mut_freq}型"
 
-            for item_body in report_json.get('unknownVarAnalysisStr', []):
-                if gene == item_body.get('gene') and ori_variant == item_body.get(
-                        'ori_variant') and mut_freq == item_body.get('mutFreq'):
-                    immune['tongji_mutation'] = item.get('TJmutation')
-            if mut_freq == '杂合' or mut_freq == '纯合':
-                immune['tongji_mutation'] = f"{mut_freq}型"
             if item.get('flag') == '1':
-                immune['gene'] = item.get('gene')
+                immune['gene'] = gene
                 immune['relationship'] = '正相关'
                 immune['result'] = '可能导致PD-1/PD-L1抑制剂获益率高'
             tongji_immune.append(immune)
@@ -336,18 +340,23 @@ def process_tongji_tip(report_json):
             ori_variant = item.get('variant')
             gene = item.get('gene')
             mut_freq = item.get('mutFreq')
-            for item_body in report_json.get('BodyDrugNoComplexStr', []):
-                if gene == item_body.get('gene') and ori_variant == item_body.get(
-                        'ori_variant') and mut_freq == item_body.get('mutFreq'):
-                    immune['tongji_mutation'] = item.get('TJmutation')
 
-            for item_body in report_json.get('unknownVarAnalysisStr', []):
-                if gene == item_body.get('gene') and ori_variant == item_body.get(
-                        'ori_variant') and mut_freq == item_body.get('mutFreq'):
-                    immune['tongji_mutation'] = item.get('TJmutation')
+            is_matched = False
+            for item_body in all_match_items:
+                body_gene = item_body.get('gene', '')
+                body_ori_variant = item_body.get('ori_variant', '')
+                body_mut_freq = item_body.get('mutFreq', '')
+                if gene == body_gene and ori_variant == body_ori_variant and mut_freq == body_mut_freq:
+                    immune['tongji_mutation'] = item_body.get('TJmutation','')
+                    is_matched = True
+                    break
+
+            if not is_matched:
+                if mut_freq in ('杂合', '纯合'):
+                    immune['tongji_mutation'] = f"{mut_freq}型"
 
             if item.get('flag') == '2':
-                immune['gene'] = item.get('gene')
+                immune['gene'] = gene
                 immune['relationship'] = '负相关'
                 immune['result'] = '可能导致PD-1/PD-L1抑制剂获益率低'
             tongji_immune.append(immune)
