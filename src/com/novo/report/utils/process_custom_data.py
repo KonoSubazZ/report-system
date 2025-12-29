@@ -311,6 +311,8 @@ def process_tongji_tip(report_json):
             ori_variant = item.get('variant')
             gene = item.get('gene')
             mut_freq = item.get('mutFreq')
+
+
             for item_body in report_json.get('BodyDrugNoComplexStr', []):
                 if gene == item_body.get('gene') and ori_variant == item_body.get(
                         'ori_variant') and mut_freq == item_body.get('mutFreq'):
@@ -320,7 +322,8 @@ def process_tongji_tip(report_json):
                 if gene == item_body.get('gene') and ori_variant == item_body.get(
                         'ori_variant') and mut_freq == item_body.get('mutFreq'):
                     immune['tongji_mutation'] = item.get('TJmutation')
-
+            if mut_freq == '杂合' or mut_freq == '纯合':
+                immune['tongji_mutation'] = f"{mut_freq}型"
             if item.get('flag') == '1':
                 immune['gene'] = item.get('gene')
                 immune['relationship'] = '正相关'
@@ -358,7 +361,7 @@ def process_tongji_tip(report_json):
         HRR_genes = ["ATM", "BARD1", "BRCA1", "BRCA2", "BRIP1", "CDK12", "CHEK1", "CHEK2", "FANCL", "PALB2", "RAD51B",
                      "RAD51C", "RAD51D", "RAD54L", "PPP2R2A"]
         for gene in HRR_genes:
-            variant = HRR_info.get('variant')
+            variant = HRR_info.get(gene)
             if variant != "-":
                 pattern = r'p\.(\S+)'
                 match = re.search(pattern, variant)

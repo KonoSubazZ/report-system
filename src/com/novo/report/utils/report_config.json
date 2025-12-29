@@ -9,7 +9,8 @@
     "double_sample_HNSZYY": "NOVO检测报告-双样本-湖南省中医研",
     "single_sample_ML": "NOVO检测报告-单样本-明理",
     "double_sample_ML": "NOVO检测报告-双样本-明理",
-    "single_sample_SWR": "NOVO报告-单样本-圣维尔"
+    "single_sample_SWR": "NOVO报告-单样本-圣维尔",
+    "single_sample_SN": "NOVO检测报告-单样本-尚宁"
   },
   "advanced_templates": {
     "single_sample": [
@@ -140,6 +141,9 @@
     ],
     "single_sample_SWR": [
       "泛癌种188基因报告-单样本-圣维尔"
+    ],
+    "single_sample_SN": [
+      "肺癌49报告-尚宁"
     ]
   }
 }
