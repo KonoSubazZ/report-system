@@ -1495,6 +1495,31 @@ public class GeneMarkerVwController {
         model.addAttribute("sampleFile", sampleFile);
         return "ngs/review";
     }
+    @RequestMapping("review1")
+    public Object review1(CurrentNgsAvailableData currentNgsAvailableData, Model model, HttpServletRequest request) {
+
+        // 查询样本相关信息
+        AnalysisReport analysisReport = analysisReportDao.getReportById(currentNgsAvailableData.getReport_id());
+        SampleFile sampleFile = sampleFileDao.selectSampleFileBySubbarcode(currentNgsAvailableData.getSubbarcode());
+
+        model.addAttribute("currentNgsAvailableData", currentNgsAvailableData);
+        model.addAttribute("analysisReport", analysisReport);
+        model.addAttribute("sampleFile", sampleFile);
+        return "ngs/review1";
+    }
+    @RequestMapping("review2")
+    public Object review2(CurrentNgsAvailableData currentNgsAvailableData, Model model, HttpServletRequest request) {
+
+        // 查询样本相关信息
+        AnalysisReport analysisReport = analysisReportDao.getReportById(currentNgsAvailableData.getReport_id());
+        SampleFile sampleFile = sampleFileDao.selectSampleFileBySubbarcode(currentNgsAvailableData.getSubbarcode());
+
+        model.addAttribute("currentNgsAvailableData", currentNgsAvailableData);
+        model.addAttribute("analysisReport", analysisReport);
+        model.addAttribute("sampleFile", sampleFile);
+        return "ngs/review2";
+    }
+
 
     //更新rp_cr表
     @RequestMapping("updateRpCr")
