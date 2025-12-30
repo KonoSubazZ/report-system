@@ -17,7 +17,15 @@ if ($mutation =~ /Amplification/i) {
 		$site_description .= "，此突变在样本中的拷贝数为$freq" if ($freq and $freq ne '.');
 	}
 	$site_description.= "。";
-} elsif($mutation =~/Fusion/i) {
+} elsif ($mutation =~ /Loss/i) {
+ 	$site_description = "$gene发生基因缺失";
+ 	if ($freq =~/X/) {
+ 		$site_description .= "，此突变在样本中的扩增倍数为$freq" if ($freq and $freq ne '.');
+ 	} else {
+ 		$site_description .= "，此突变在样本中的拷贝数为$freq" if ($freq and $freq ne '.');
+ 	}
+ 	$site_description.= "。";
+ } elsif($mutation =~/Fusion/i) {
 	my $geneStr = (split / /, $mutation)[0];
 	my $bpStr = (split / /, $mutation)[2];
 	my ($gene1,$gene2,$bp1,$bp2);
