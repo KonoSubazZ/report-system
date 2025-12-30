@@ -63,8 +63,8 @@
         <c:if test="${ user.role_id != 8 }">
             <li><a href="#tabs-6" onclick="urlRun5();" style="cursor: pointer;">产生报告</a></li>
             <li><a href="#tabs-9" onclick="urlRun7();" style="cursor: pointer;" id="review-tab">审核</a></li>
-            <li><a href="#tabs-9" onclick="urlRun8();" style="cursor: pointer;" id="review-tab1">二次审核</a></li>
-            <li><a href="#tabs-9" onclick="urlRun9();" style="cursor: pointer;" id="review-tab2">三次审核</a></li>
+<%--            <li><a href="#tabs-9" onclick="urlRun8();" style="cursor: pointer;" id="review-tab1">二次审核</a></li>--%>
+<%--            <li><a href="#tabs-9" onclick="urlRun9();" style="cursor: pointer;" id="review-tab2">三次审核</a></li>--%>
             <li><a href="#tabs-7" onclick="urlRun6();" style="cursor: pointer;">发送报告</a></li>
         </c:if>
         <li style="margin-left: 300px"><a href="#tabs-8" onclick="fun_back();" id="button_back">返回报告管理</a></li>
