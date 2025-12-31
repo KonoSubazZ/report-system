@@ -455,13 +455,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT Gene as gene, Zygosity as mutFreq, ori_variant as ori_variant, variant as variant, ExonicFunc AS ExonicFunc, '胚系' as type FROM cr_evw WHERE report_id = #{report_id} and gene =#{gene}
 		UNION 
 		SELECT gene,mutFreq,ori_variant,variant,ExonicFunc,'体系' as type
-  		from this_genetic_marker_en7_vw2 
+  		from mutation_related_report_view
   		WHERE report_id = #{report_id} and gene =#{gene} ORDER BY mutFreq DESC
   	</select>
 
 	<select id="getHotByReportIdAndGene" resultType="java.util.Map">
 		SELECT gene,mutFreq,ori_variant,variant,ExonicFunc,transcript,'体系' as type
-  		from this_genetic_marker_en7_vw2
+  		from mutation_related_report_view
   		WHERE report_id = #{report_id} ORDER BY mutFreq DESC
   	</select>
 
@@ -555,7 +555,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   	</select>
 
 	<select id="getAllMutationByReportId" resultType="java.util.Map">
-		SELECT gene,mutFreq,ori_variant,variant,ExonicFunc,transcript,'体系' as type from this_genetic_marker_en7_vw2 WHERE report_id = #{report_id}
+		SELECT gene,mutFreq,ori_variant,variant,ExonicFunc,transcript,'体系' as type from mutation_related_report_view WHERE report_id = #{report_id}
   		UNION
   		SELECT Gene as gene, Zygosity as mutFreq, ori_variant as ori_variant, variant as variant, ExonicFunc AS ExonicFunc,Transcript as transcript,'胚系' as type FROM cr_evw WHERE report_id = #{report_id}
   		order by gene

@@ -93,20 +93,20 @@ public interface AnalysisReportDao {
     List<Map> getFusionAll(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
     // 获取用药位点列表3
-    @Select("SELECT file_id, gene as gene_symbol, chr, `start`, `end`, copy_number as mutFreq, variant, ori_variant, CONCAT(gene,' ','Amplification') as my_ori_variant, report, filtered_rationale, loaded_date, record_id, mapped_variant_id, mapped_variant, checked_by, checked_date, 'Amplification' as my_variant, '.' as cosmic65\r\n" +
+    @Select("SELECT file_id, gene as gene_symbol, chr, `start`, `end`, copy_number as mutFreq, variant, ori_variant, CONCAT(gene,' ',variant) as my_ori_variant, report, filtered_rationale, loaded_date, record_id, mapped_variant_id, mapped_variant, checked_by, checked_date, variant as my_variant, '.' as cosmic65\r\n" +
             "FROM omics.cnv_file\r\n" +
             "WHERE (report = 1 or report is null) and file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"CNV\" and status=\"Loaded\") and gene in (SELECT gene_symbol from panel_gene WHERE product_name=#{product_name})")
     List<Map> getCNVAll(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
     // 获取总的用药位点列表
-    @Select("SELECT distinct mapped_variant_id, gene, variant, ori_variant, ExonicFunc, mutFreq,exon,codon,cosmic,transcript,mut_type FROM this_genetic_marker_en7_vw2 where report_id = #{report_id} order by gene")
+    @Select("SELECT distinct mapped_variant_id, gene, variant, ori_variant, ExonicFunc, mutFreq,exon,codon,cosmic,transcript,mut_type FROM mutation_related_report_view where report_id = #{report_id} order by gene")
     List<Map> getThisGeneticmarkeren7VwList(@Param("report_id") Integer report_id);
 
     @Select("SELECT distinct mapped_variant_id, gene, variant, ori_variant, ExonicFunc, mutFreq,exon,codon,cosmic,transcript FROM this_genetic_marker_vw2 where report_id = #{report_id} order by gene")
     List<Map> getThisGeneticmarkerVwList(@Param("report_id") Integer report_id);
 
     // 获取总的用药位点列表（除去标记为不报告的位点）
-    @Select("SELECT mapped_variant_id, gene, variant, ori_variant, ExonicFunc, mutFreq,exon,codon,cosmic,transcript,result_type from (SELECT distinct gm.mapped_variant_id, gm.gene, gm.variant, gm.ori_variant, gm.ExonicFunc, gm.mutFreq,gm.exon,gm.codon,gm.cosmic,gm.transcript,uv.result_type FROM this_genetic_marker_en7_vw2 gm left join rp_unknown_var uv on (uv.gene = gm.gene and uv.ori_variant = gm.ori_variant and uv.lang = #{lang} and uv.disease_id IN (select primary_cancer_id from analysis_report where report_id=#{report_id})) where gm.report_id = #{report_id}) tw where result_type is null or result_type != '不报告'  order by gene")
+    @Select("SELECT mapped_variant_id, gene, variant, ori_variant, ExonicFunc, mutFreq,exon,codon,cosmic,transcript,result_type from (SELECT distinct gm.mapped_variant_id, gm.gene, gm.variant, gm.ori_variant, gm.ExonicFunc, gm.mutFreq,gm.exon,gm.codon,gm.cosmic,gm.transcript,uv.result_type FROM mutation_related_report_view gm left join rp_unknown_var uv on (uv.gene = gm.gene and uv.ori_variant = gm.ori_variant and uv.lang = #{lang} and uv.disease_id IN (select primary_cancer_id from analysis_report where report_id=#{report_id})) where gm.report_id = #{report_id}) tw where result_type is null or result_type != '不报告'  order by gene")
     List<Map> getThisGeneticmarkerVwListExcludeNotReported(@Param("report_id") Integer report_id, @Param("lang") Integer lang);
 
     // 获取知识库所有的共突变
