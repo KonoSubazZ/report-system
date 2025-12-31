@@ -369,7 +369,7 @@ public class GeneMarkerVwController {
                 tipLine.put("ExonicFunc", pyReportService.translateMutType(ExonicFunc));
                 tipLine.put("mutFreq", mutFreq);
                 String ori_variant_split = removeMutations(transferOriVariant(ori_variant));
-                if (!ori_variant_split.equals("Amplification") && ori_variant_split != null && !ori_variant_split.contains("Fusion")) {
+                if (!ori_variant_split.equals("Amplification") && ori_variant_split != null && !ori_variant_split.contains("Fusion") && !ori_variant_split.equals("Loss")) {
                     String[] splits = ori_variant_split.split(" ");
                     if (splits.length >= 4) {
                         String pHGVS = ori_variant_split.substring(ori_variant_split.indexOf("p."));
@@ -550,7 +550,7 @@ public class GeneMarkerVwController {
                                 String ori_variant = map.get("ori_variant").toString();
                                 String ori_variant_split = removeMutations(transferOriVariant(ori_variant));
                                 map1.put("ori_variant", ori_variant_split);
-                                if (!ori_variant_split.equals("Amplification") && ori_variant_split != null && !ori_variant_split.contains("Fusion")) {
+                                if (!ori_variant_split.equals("Amplification") && ori_variant_split != null && !ori_variant_split.contains("Fusion") && !ori_variant_split.equals("Loss")) {
                                     String[] splits = ori_variant_split.split(" ");
                                     map1.put("Transcript", splits[0]);
                                     map1.put("Exon", splits[1]);
@@ -1495,6 +1495,7 @@ public class GeneMarkerVwController {
         model.addAttribute("sampleFile", sampleFile);
         return "ngs/review";
     }
+
     @RequestMapping("review1")
     public Object review1(CurrentNgsAvailableData currentNgsAvailableData, Model model, HttpServletRequest request) {
 
@@ -1507,6 +1508,7 @@ public class GeneMarkerVwController {
         model.addAttribute("sampleFile", sampleFile);
         return "ngs/review1";
     }
+
     @RequestMapping("review2")
     public Object review2(CurrentNgsAvailableData currentNgsAvailableData, Model model, HttpServletRequest request) {
 
@@ -1758,7 +1760,7 @@ public class GeneMarkerVwController {
             for (Map map : allMutation) {
                 String gene = map.get("gene").toString();
                 String ori_variant = map.get("ori_variant").toString();
-                if (ori_variant.equals("Amplification")) {
+                if (ori_variant.equals("Amplification") || ori_variant.equals("Loss")) {
                     map.put("mutation", gene + " " + ori_variant);
                 } else if (ori_variant.indexOf("Fusion") != -1) {
                     map.put("mutation", ori_variant);

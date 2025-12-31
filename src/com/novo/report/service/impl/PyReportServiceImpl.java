@@ -268,7 +268,7 @@ public class PyReportServiceImpl implements PyReportService {
             String ExonicFunc = String.valueOf(a.get("ExonicFunc"));
             String resultTypeDesc = String.valueOf(a.get("resultTypeDesc"));
 
-            if (ExonicFunc.equals("基因扩增")) {
+            if (ExonicFunc.equals("基因扩增") || ExonicFunc.equals("基因缺失")) {
                 cnvGeneSet.add(Gene);
             } else if (ExonicFunc.equals("基因融合")) {
                 fusionGeneSet.add(Gene);
@@ -4211,7 +4211,7 @@ public class PyReportServiceImpl implements PyReportService {
             String oriVariant = item.get("ori_variant").toString();
             String ExonicFunc = item.get("ExonicFunc").toString();
             if (gene.equals("CDKN2A")) {
-                if (ExonicFunc.equals("基因融合") || ExonicFunc.contains("基因扩增")) {
+                if (ExonicFunc.equals("基因融合") || ExonicFunc.contains("基因扩增") || ExonicFunc.contains("基因缺失")) {
                     variantList.add(oriVariant);
                 } else {
                     oriVariant = oriVariant.substring(oriVariant.indexOf("c."));

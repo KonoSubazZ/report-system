@@ -1,19 +1,19 @@
 package com.novo.report.utils;
 
-import java.text.Collator;
 import java.util.*;
 
 public class ImmuneAllUtil {
 
     /**
      * 针对于免疫 正/负/超进展 模块 检出的逻辑
-     * @param allMutation 位点 cr + snv/indel/cnv/fusion
+     *
+     * @param allMutation     位点 cr + snv/indel/cnv/fusion
      * @param medicalEvidence
      * @return
      */
     public static List<Map> immuneAll(List<Map> allMutation, List<Map> medicalEvidence) {
         // 设置初始数据框（都是未检出状态），后续根据检出替换数据框内容
-        String[][] raw_lst = {{"1","DDR基因突变","ATM","ATM","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","ATR","ATR","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","BAP1","BAP1","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","BLM","BLM","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","BRCA1","BRCA1","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","BRCA2","BRCA2","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","BRIP1","BRIP1","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","CHEK1","CHEK1","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","CHEK2","CHEK2","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","ERCC2","ERCC2","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","ERCC3","ERCC3","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","ERCC4","ERCC4","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","ERCC5"," ERCC5","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","FANCA","FANCA","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","FANCC","FANCC","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","MRE11","MRE11","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","NBN","NBN","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","RAD50","RAD50","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","RAD51","RAD51","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","RAD51B","RAD51B","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","RAD51D","RAD51D","未检测到相关基因突变","/","/","/"},{"1","DDR基因突变","RAD54L","RAD54L","未检测到相关基因突变","/","/","/"},{"1","CD274(PDL1)扩增","CD274(PDL1)","CD274,PDL1","未检测到相关基因扩增","/","/","/"},{"1","KRAS突变","KRAS","KRAS","未检测到相关基因突变","/","/","/"},{"1","PBRM1突变","PBRM1","PBRM1","未检测到相关基因突变","/","/","/"},{"1","PDCD1LG2(PDL2)扩增","PDCD1LG2(PDL2)","PDCD1LG2,PDL2","未检测到相关基因扩增","/","/","/"},{"1","POLD1突变","POLD1","POLD1","未检测到相关基因突变","/","/","/"},{"1","POLE突变","POLE","POLE","未检测到相关基因突变","/","/","/"},{"1","TP53突变","TP53","TP53","未检测到相关基因突变","/","/","/"},{"2","ALK融合","ALK","ALK","未检测到相关基因融合","/","/","/"},{"2","B2M突变","B2M","B2M","未检测到相关基因突变","/","/","/"},{"2","CTNNB1突变","CTNNB1","CTNNB1","未检测到相关基因突变","/","/","/"},{"2","EGFR突变(EX19del/L858R)","EGFR","EGFR","未检测到相关基因突变","/","/","/"},{"2","JAK1突变","JAK1","JAK1","未检测到相关基因突变","/","/","/"},{"2","JAK2突变","JAK2","JAK2","未检测到相关基因突变","/","/","/"},{"2","KEAP1突变","KEAP1","KEAP1","未检测到相关基因突变","/","/","/"},{"2","PTEN突变","PTEN","PTEN","未检测到相关基因突变","/","/","/"},{"2","STK11突变","STK11","STK11","未检测到相关基因突变","/","/","/"},{"3","CCND1扩增","CCND1","CCND1","未检测到相关基因扩增","/","/","/"},{"3","FGF3扩增","FGF3","FGF3","未检测到相关基因扩增","/","/","/"},{"3","FGF4扩增","FGF4","FGF4","未检测到相关基因扩增","/","/","/"},{"3","FGF19扩增","FGF19","FGF19","未检测到相关基因扩增","/","/","/"},{"3","DNMT3A突变","DNMT3A","DNMT3A","未检测到相关基因突变","/","/","/"},{"3","EGFR扩增","EGFR","EGFR","未检测到相关基因扩增","/","/","/"},{"3","MDM2扩增","MDM2","MDM2","未检测到相关基因扩增","/","/","/"},{"3","MDM4扩增","MDM4","MDM4","未检测到相关基因扩增","/","/","/"}};
+        String[][] raw_lst = {{"1", "DDR基因突变", "ATM", "ATM", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "ATR", "ATR", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "BAP1", "BAP1", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "BLM", "BLM", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "BRCA1", "BRCA1", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "BRCA2", "BRCA2", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "BRIP1", "BRIP1", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "CHEK1", "CHEK1", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "CHEK2", "CHEK2", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "ERCC2", "ERCC2", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "ERCC3", "ERCC3", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "ERCC4", "ERCC4", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "ERCC5", " ERCC5", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "FANCA", "FANCA", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "FANCC", "FANCC", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "MRE11", "MRE11", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "NBN", "NBN", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "RAD50", "RAD50", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "RAD51", "RAD51", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "RAD51B", "RAD51B", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "RAD51D", "RAD51D", "未检测到相关基因突变", "/", "/", "/"}, {"1", "DDR基因突变", "RAD54L", "RAD54L", "未检测到相关基因突变", "/", "/", "/"}, {"1", "CD274(PDL1)扩增", "CD274(PDL1)", "CD274,PDL1", "未检测到相关基因扩增", "/", "/", "/"}, {"1", "KRAS突变", "KRAS", "KRAS", "未检测到相关基因突变", "/", "/", "/"}, {"1", "PBRM1突变", "PBRM1", "PBRM1", "未检测到相关基因突变", "/", "/", "/"}, {"1", "PDCD1LG2(PDL2)扩增", "PDCD1LG2(PDL2)", "PDCD1LG2,PDL2", "未检测到相关基因扩增", "/", "/", "/"}, {"1", "POLD1突变", "POLD1", "POLD1", "未检测到相关基因突变", "/", "/", "/"}, {"1", "POLE突变", "POLE", "POLE", "未检测到相关基因突变", "/", "/", "/"}, {"1", "TP53突变", "TP53", "TP53", "未检测到相关基因突变", "/", "/", "/"}, {"2", "ALK融合", "ALK", "ALK", "未检测到相关基因融合", "/", "/", "/"}, {"2", "B2M突变", "B2M", "B2M", "未检测到相关基因突变", "/", "/", "/"}, {"2", "CTNNB1突变", "CTNNB1", "CTNNB1", "未检测到相关基因突变", "/", "/", "/"}, {"2", "EGFR突变(EX19del/L858R)", "EGFR", "EGFR", "未检测到相关基因突变", "/", "/", "/"}, {"2", "JAK1突变", "JAK1", "JAK1", "未检测到相关基因突变", "/", "/", "/"}, {"2", "JAK2突变", "JAK2", "JAK2", "未检测到相关基因突变", "/", "/", "/"}, {"2", "KEAP1突变", "KEAP1", "KEAP1", "未检测到相关基因突变", "/", "/", "/"}, {"2", "PTEN突变", "PTEN", "PTEN", "未检测到相关基因突变", "/", "/", "/"}, {"2", "STK11突变", "STK11", "STK11", "未检测到相关基因突变", "/", "/", "/"}, {"3", "CCND1扩增", "CCND1", "CCND1", "未检测到相关基因扩增", "/", "/", "/"}, {"3", "FGF3扩增", "FGF3", "FGF3", "未检测到相关基因扩增", "/", "/", "/"}, {"3", "FGF4扩增", "FGF4", "FGF4", "未检测到相关基因扩增", "/", "/", "/"}, {"3", "FGF19扩增", "FGF19", "FGF19", "未检测到相关基因扩增", "/", "/", "/"}, {"3", "DNMT3A突变", "DNMT3A", "DNMT3A", "未检测到相关基因突变", "/", "/", "/"}, {"3", "EGFR扩增", "EGFR", "EGFR", "未检测到相关基因扩增", "/", "/", "/"}, {"3", "MDM2扩增", "MDM2", "MDM2", "未检测到相关基因扩增", "/", "/", "/"}, {"3", "MDM4扩增", "MDM4", "MDM4", "未检测到相关基因扩增", "/", "/", "/"}};
         List<Map> new_raw_lst = new ArrayList<>();
         for (String[] strings : raw_lst) {
             Map raw_map = new HashMap();
@@ -29,7 +29,7 @@ public class ImmuneAllUtil {
         }
         /**        处理成这种格式 raw_lst ==> new_raw_lst
          *         List<Map> new_raw_lst = {"1","DDR基因突变","ATM","ATM","未检测到相关基因突变","/","/","/"},
-         * 		  {"1","DDR基因突变","ATR","ATR","未检测到相关基因突变","/","/","/"},
+         *          {"1","DDR基因突变","ATR","ATR","未检测到相关基因突变","/","/","/"},
          *        {"1","DDR基因突变","BAP1","BAP1","未检测到相关基因突变","/","/","/"},
          *        {"1","DDR基因突变","BLM","BLM","未检测到相关基因突变","/","/","/"},
          *        {"1","DDR基因突变","BRCA1","BRCA1","未检测到相关基因突变","/","/","/"},
@@ -82,7 +82,7 @@ public class ImmuneAllUtil {
             String mutFreq = map.get("mutFreq").toString();
             String ori_variant = map.get("ori_variant").toString().replaceFirst(" \\.$", "");
             // 调整突变频率 mutFreq 展示形式，扩增不做处理，点突变做百分比处理，融合mut Freq<100 加 %
-            if (ori_variant.indexOf("Amplification") < 0 && !".".equals(mutFreq) && mutFreq.indexOf("合") < 0 && mutFreq.indexOf("-") < 0 && !"/".equals(mutFreq)) {
+            if (ori_variant.indexOf("Amplification") < 0 && ori_variant.indexOf("Loss") < 0 && !".".equals(mutFreq) && mutFreq.indexOf("合") < 0 && mutFreq.indexOf("-") < 0 && !"/".equals(mutFreq)) {
                 if (ori_variant.indexOf("Fusion") != -1) {
                     if (mutFreq.indexOf(".") != -1 && Double.valueOf(mutFreq) < 100) {
                         mutFreq += "%";
@@ -106,16 +106,19 @@ public class ImmuneAllUtil {
              * }
              */
             if (ori_variant.equals("Amplification")) {
-                String[] strings = {ori_variant,mutFreq,"扩增"};
+                String[] strings = {ori_variant, mutFreq, "扩增"};
+                sameKeyCombination(mut_gene, gene, strings);
+            } else if (ori_variant.equals("Loss")) {
+                String[] strings = {ori_variant, mutFreq, "缺失"};
                 sameKeyCombination(mut_gene, gene, strings);
             } else if (ori_variant.indexOf("Fusion") != -1) {
-                String[] strings = {ori_variant,mutFreq,"融合"};
+                String[] strings = {ori_variant, mutFreq, "融合"};
                 sameKeyCombination(mut_gene, gene, strings);
             } else if ("体系".equals(type)) {
-                String[] strings = {ori_variant,mutFreq,"突变"};
+                String[] strings = {ori_variant, mutFreq, "突变"};
                 sameKeyCombination(mut_gene, gene, strings);
             } else if ("胚系".equals(type)) {
-                String[] strings = {ori_variant,mutFreq,"突变"};
+                String[] strings = {ori_variant, mutFreq, "突变"};
                 sameKeyCombination(mut_gene, gene, strings);
             }
         }
@@ -227,7 +230,7 @@ public class ImmuneAllUtil {
             set.add(value);
             map.put(key, set);
         } else {
-            Set<String[]> set =  new HashSet<>();
+            Set<String[]> set = new HashSet<>();
             set.add(value);
             map.put(key, set);
         }

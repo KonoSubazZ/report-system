@@ -506,7 +506,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
                 if (strings.contains(gene)) {
                     String mutvariant = map.get("variant").toString();
                     String mutFreq = map.get("mutFreq").toString();
-                    if (mutvariant.equals("Amplification") || mutvariant.contains("Fusion") || mutFreq.contains("合")) {
+                    if (mutvariant.equals("Amplification") || mutvariant.equals("Loss") || mutvariant.contains("Fusion") || mutFreq.contains("合")) {
                         continue;
                     }
                     ret = false;
@@ -523,7 +523,7 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         for (Map map : mutationList) {
             String mutgene = map.get("gene").toString();
             String mutvariant = map.get("variant").toString();
-            if (mutvariant.equals("Amplification") || mutvariant.equals("Deletion") || mutvariant.equals("Fusion")) {
+            if (mutvariant.equals("Amplification") || mutvariant.equals("Loss") || mutvariant.equals("Deletion") || mutvariant.equals("Fusion")) {
                 continue;
             }
             if (mutgene.equals(gene)) {
@@ -553,6 +553,8 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         String this_type = "";
         if (ori_variant.indexOf("Amplification") != -1) {
             this_type = "Amplification";
+        } else if (ori_variant.indexOf("Loss") != -1) {
+            this_type = "Loss";
         } else if (ori_variant.indexOf("Deletion") != -1) {
             this_type = "Deletion";
         } else if (ori_variant.indexOf("Fusion") != -1) {

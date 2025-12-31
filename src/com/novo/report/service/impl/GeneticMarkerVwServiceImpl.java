@@ -1,41 +1,19 @@
 package com.novo.report.service.impl;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import com.novo.report.beans.*;
+import com.novo.report.dao.two.*;
+import com.novo.report.service.ComplexMutationService;
+import com.novo.report.service.GeneticMarkerVwService;
 import com.novo.report.service.LifeService;
+import com.novo.report.service.ReportCrService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.novo.report.beans.CurrentNgsAvailableData;
-import com.novo.report.beans.DetectionResult;
-import com.novo.report.beans.GeneticMarkerVw;
-import com.novo.report.beans.ReportClinicalTrial;
-import com.novo.report.beans.ReportCr;
-import com.novo.report.beans.ReportDrugInfo;
-import com.novo.report.beans.ReportVarDrug;
-import com.novo.report.dao.two.AnalysisReportDao;
-import com.novo.report.dao.two.GeneticMarkerVwDao;
-import com.novo.report.dao.two.PanelGeneDao;
-import com.novo.report.dao.two.ReportClinicalTrialDao;
-import com.novo.report.dao.two.ReportCrDao;
-import com.novo.report.dao.two.ReportDrugInfoDao;
-import com.novo.report.dao.two.ReportUnknownVarDao;
-import com.novo.report.dao.two.ReportVarDrugDao;
-import com.novo.report.service.ComplexMutationService;
-import com.novo.report.service.GeneticMarkerVwService;
-import com.novo.report.service.ReportCrService;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GeneticMarkerVwServiceImpl implements GeneticMarkerVwService {
@@ -106,7 +84,7 @@ public class GeneticMarkerVwServiceImpl implements GeneticMarkerVwService {
                 } else {
                     detectionResult.setMutation_result(detectionResult.getMutation_result() + ", p.Exon14 Skipping Mutauon");
                 }
-            } else if ("Amplification".equals(detectionResult.getVariant())) {
+            } else if ("Amplification".equals(detectionResult.getVariant()) || "Loss".equals(detectionResult.getVariant())) {
                 String mutation_result = detectionResult.getMutation_result();
                 String mutFreq = mutation_result.substring(mutation_result.indexOf("(") + 1, mutation_result.indexOf(")"));
                 String mutFreq2 = detectionResult.getMutFreq();
@@ -318,6 +296,7 @@ public class GeneticMarkerVwServiceImpl implements GeneticMarkerVwService {
     /**
      * 接口 - 改靶 ==> 由 vus 改为 靶向药物
      * 删除未知位点信息
+     *
      * @param userAccount
      * @param gene
      * @param variant

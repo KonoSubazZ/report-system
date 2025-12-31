@@ -623,7 +623,11 @@ public class NkbVariantTreatmentAnnotationVwServiceImpl implements NkbVariantTre
 							}else if(str.contains("Amplification")){
 								//EGFR 发生基因扩增，在样本中的扩增倍数为8.83
 								strNew = thisGeneticmarkerVw.getGene()+" 发生基因扩增，在样本中的扩增倍数为"+thisGeneticmarkerVw.getMutFreq().replace("CN=", "")+"。";
-							}else if(str.contains("exon") && str.contains("intron")){
+							}else if(str.contains("Loss")){
+								//EGFR 发生基因扩增，在样本中的扩增倍数为8.83
+								strNew = thisGeneticmarkerVw.getGene()+" 发生基因缺失，在样本中的扩增倍数为"+thisGeneticmarkerVw.getMutFreq().replace("CN=", "")+"。";
+							}
+							else if(str.contains("exon") && str.contains("intron")){
 								//exon4-intron4 c.372_375+11del（ins）CCCGTTGACTGGCAC	intron2-exon3 c.73-1_76GAAAG>AAAA
 								String strNum1="";
 								String strNum2="";

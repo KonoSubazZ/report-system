@@ -168,6 +168,8 @@ public class ReportCrServiceImpl implements ReportCrService {
         String unvariantDescription = "";
         if ("Amplification".equals(variant)) {
             unvariantDescription = "该变异为基因扩增，可能导致蛋白表达增加。";
+        } else if ("Loss".equals(variant)) {
+            unvariantDescription = "该变异为基因缺失，可能导致蛋白表达增加。";
         } else if ((variant.indexOf("fs") > -1 || variant.indexOf("*") > -1 || variant.indexOf("+") > -1 || variant.indexOf("-") > -1) && !(variant.indexOf("Fusion") > -1)) {
             unvariantDescription = "该变异为失活突变，可能会导致蛋白功能缺失。";
         } else {
@@ -268,7 +270,7 @@ public class ReportCrServiceImpl implements ReportCrService {
                 orderNum += 50000;
             } else {
                 orderNum += 70000;
-                if (variant.indexOf("Amplification") != -1 || variant.indexOf("Deletion") != -1) {
+                if (variant.indexOf("Amplification") != -1 || variant.indexOf("Loss") != -1 || variant.indexOf("Deletion") != -1) {
                     orderNum += 300;
                 } else if (variant.indexOf("Fusion") != -1) {
                     orderNum += 200;
