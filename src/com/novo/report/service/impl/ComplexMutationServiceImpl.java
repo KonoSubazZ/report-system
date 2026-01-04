@@ -518,6 +518,28 @@ public class ComplexMutationServiceImpl implements ComplexMutationService {
         return ret;
     }
 
+    public boolean wildType_happen_TongJi(String gene, List<Map> mutationList) {
+        boolean ret = true;
+        for (Map map : mutationList) {
+            String mutgene = map.get("gene").toString();
+            String pHGVS = map.get("pHGVS").toString();
+            if (mutgene.equals(gene)) {
+                List<String> strings = Arrays.asList("KRAS", "NRAS", "BRAF");
+                if (strings.contains(gene)) {
+                    String mutvariant = map.get("variant").toString();
+                    String mutFreq = map.get("mutFreq").toString();
+                    if (mutvariant.equals("Amplification") || mutvariant.equals("Loss") || mutvariant.contains("Fusion") || mutFreq.contains("合") || (mutgene.equals("BRAF") && pHGVS.contains("V600E"))) {
+                        continue;
+                    }
+                    ret = false;
+                } else {
+                    ret = false;
+                }
+            }
+        }
+        return ret;
+    }
+
     public boolean mutation_happen(String gene, List<Map> mutationList, Set<String> simple_vars) {
         boolean ret = false;
         for (Map map : mutationList) {
