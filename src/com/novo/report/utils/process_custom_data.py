@@ -269,7 +269,7 @@ def process_tongji_tip(report_json):
         tongji_mutation2 = []
         for item in report_json.get('BodyDrugNoComplexStr', []):
             drug_all = []
-            for drug in item.get('drugaStr',[]):
+            for drug in item.get('drugaStr', []):
                 drug_str = drug.get('nameLevel') + '（' + '敏感，A，' + drug.get('approvingAgency') + '）'
                 drug_all.append(drug_str)
             for drug in item.get('drugbStr'):
@@ -307,7 +307,7 @@ def process_tongji_tip(report_json):
 
         for item in report_json.get('ComplexDrugStr', []):
             drug_all = []
-            for drug in item.get('drugaStr',[]):
+            for drug in item.get('drugaStr', []):
                 drug_str = drug.get('nameLevel') + '（' + '敏感，A，' + drug.get('approvingAgency') + '）'
                 drug_all.append(drug_str)
             for drug in item.get('drugbStr'):
@@ -333,10 +333,13 @@ def process_tongji_tip(report_json):
                 drug_all.append(drug_str)
             item['drug_all'] = drug_all
 
+    # 合并匹配列表
+    list1 = report_json.get('BodyDrugNoComplexStr', [])
+    list2 = report_json.get('unknownVarAnalysisStr', [])
+    all_match_items = list1 + list2
+
     # 免疫处理
     tongji_immune = []
-    # 合并匹配列表
-    all_match_items = report_json.get('BodyDrugNoComplexStr', []) + report_json.get('unknownVarAnalysisStr', [])
     if report_json.get('positiveImmnue'):
         for item in report_json.get('positiveImmnue', []):
             immune = {}
@@ -350,7 +353,7 @@ def process_tongji_tip(report_json):
                 body_ori_variant = item_body.get('ori_variant', '')
                 body_mut_freq = item_body.get('mutFreq', '')
                 if gene == body_gene and ori_variant == body_ori_variant and mut_freq == body_mut_freq:
-                    immune['tongji_mutation'] = item_body.get('TJmutation','')
+                    immune['tongji_mutation'] = item_body.get('TJmutation', '')
                     is_matched = True
                     break
 
@@ -377,7 +380,7 @@ def process_tongji_tip(report_json):
                 body_ori_variant = item_body.get('ori_variant', '')
                 body_mut_freq = item_body.get('mutFreq', '')
                 if gene == body_gene and ori_variant == body_ori_variant and mut_freq == body_mut_freq:
-                    immune['tongji_mutation'] = item_body.get('TJmutation','')
+                    immune['tongji_mutation'] = item_body.get('TJmutation', '')
                     is_matched = True
                     break
 
@@ -392,6 +395,49 @@ def process_tongji_tip(report_json):
             tongji_immune.append(immune)
 
     report_json['tongji_immune'] = tongji_immune
+
+    # KNB共突变
+    is_report_knb = True
+    is_V600E = False
+    V600E_mutation = []
+    is_colon_cancer = '9256' in report_json.get('diseaseIdList', [])
+    if is_colon_cancer:
+
+        for item in all_match_items:
+            gene = item.get('gene')
+            variant = item.get('ori_variant')
+            if 'Fusion' in variant or 'Loss' in variant or 'Amplification' in variant:
+                continue
+            if gene == 'KRAS' or gene == 'NRAS':
+                is_report_knb = False
+            if gene == 'BRAF' and 'p.V600E' in variant:
+                is_report_knb = False
+                is_V600E = True
+
+    if is_V600E:
+        # 先筛选需要移除的项
+        to_remove = []
+        for item in all_match_items:
+            gene = item.get('gene', '')
+            variant = item.get('ori_variant', '')
+
+            if any(keyword in variant for keyword in ['Fusion', 'Loss', 'Amplification']):
+                continue
+
+            if (gene == 'BRAF' and 'p.V600E' in variant) or gene in ['KRAS', 'NRAS']:
+                to_remove.append(item)
+                V600E_mutation.append(item)
+
+        for item in to_remove:
+            if item in list1:
+                list1.remove(item)
+            if item in list2:
+                list2.remove(item)
+        report_json['V600E_mutation'] = V600E_mutation
+        report_json['BodyDrugNoComplexStr'] = list1
+        report_json['unknownVarAnalysisStr'] = list2
+    report_json['is_report_knb'] = is_report_knb
+
 
     # HRR
     tongji_hrr = ""
