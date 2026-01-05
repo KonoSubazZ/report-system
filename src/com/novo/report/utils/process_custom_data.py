@@ -268,6 +268,10 @@ def process_tongji_tip(report_json):
         tongji_mutation1 = []
         tongji_mutation2 = []
         for item in report_json.get('BodyDrugNoComplexStr', []):
+            mut_freq_type = item.get('mutFreqType')
+            if mut_freq_type == 'reads数':
+                item['mutFreq'] = '-'
+
             drug_all = []
             for drug in item.get('drugaStr', []):
                 drug_str = drug.get('nameLevel') + '（' + '敏感，A，' + drug.get('approvingAgency') + '）'
@@ -410,7 +414,7 @@ def process_tongji_tip(report_json):
                 continue
             if gene == 'KRAS' or gene == 'NRAS':
                 is_report_knb = False
-            if gene == 'BRAF' and 'p.V600E' in variant:
+            if gene == 'BRAF' and 'V600E' in variant:
                 is_report_knb = False
                 is_V600E = True
 
@@ -424,7 +428,7 @@ def process_tongji_tip(report_json):
             if any(keyword in variant for keyword in ['Fusion', 'Loss', 'Amplification']):
                 continue
 
-            if (gene == 'BRAF' and 'p.V600E' in variant) or gene in ['KRAS', 'NRAS']:
+            if (gene == 'BRAF' and 'V600E' in variant) or gene in ['KRAS', 'NRAS']:
                 to_remove.append(item)
                 V600E_mutation.append(item)
 
@@ -437,7 +441,6 @@ def process_tongji_tip(report_json):
         report_json['BodyDrugNoComplexStr'] = list1
         report_json['unknownVarAnalysisStr'] = list2
     report_json['is_report_knb'] = is_report_knb
-
 
     # HRR
     tongji_hrr = ""
