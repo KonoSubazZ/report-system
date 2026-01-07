@@ -20,6 +20,9 @@ def process_custom_data(report_json):
     if template_name == '泛实体瘤1238+1166基因报告-同济':
         process_tongji_tip(report_json)
 
+    # 广附一 EGFR20插入
+    if template_name == '非小细胞肺癌-报告模板-广附一' or template_name == '非小细胞肺癌-报告模板-广附一（简化版）':
+        process_guangfuyi_tip(report_json)
 
 def process_shanghaifeike_tip(report_json):
     shanghaifeike_tips_1 = []
@@ -52,7 +55,7 @@ def process_shanghaifeike_tip(report_json):
             item['ori_variant'] = new_variant
             exon = ''.join(re.findall(r'[0-9]', variant_split[1]))
             desc = ""
-            if "exon" in variant_split:
+            if "exon" in ori_variant:
                 desc = "外显子"
             else:
                 desc = "内含子"
@@ -86,7 +89,7 @@ def process_shanghaifeike_tip(report_json):
             item['ori_variant'] = new_variant
             exon = ''.join(re.findall(r'[0-9]', variant_split[1]))
             desc = ""
-            if "exon" in variant_split:
+            if "exon" in ori_variant:
                 desc = "外显子"
             else:
                 desc = "内含子"
@@ -404,7 +407,8 @@ def process_tongji_tip(report_json):
     is_report_knb = True
     is_V600E = False
     V600E_mutation = []
-    is_colon_cancer = '9256' in report_json.get('diseaseIdList', [])
+    is_colon_cancer = 9256 in report_json.get('diseaseIdList', [])
+    report_json['is_colon_cancer'] = is_colon_cancer
     if is_colon_cancer:
 
         for item in all_match_items:
@@ -414,9 +418,12 @@ def process_tongji_tip(report_json):
                 continue
             if gene == 'KRAS' or gene == 'NRAS':
                 is_report_knb = False
-            if gene == 'BRAF' and 'V600E' in variant:
-                is_report_knb = False
-                is_V600E = True
+            if gene == 'BRAF':
+                if 'V600E' in variant:
+                    is_report_knb = False
+                    is_V600E = True
+                else:
+                    is_report_knb = True
 
     if is_V600E:
         # 先筛选需要移除的项
@@ -432,14 +439,40 @@ def process_tongji_tip(report_json):
                 to_remove.append(item)
                 V600E_mutation.append(item)
 
-        for item in to_remove:
-            if item in list1:
-                list1.remove(item)
-            if item in list2:
-                list2.remove(item)
+        # for item in to_remove:
+        #     gene = item.get('gene', '')
+        #     if item in list1:
+        #         list1.remove(item)
+        #     if item in list2:
+        #         list2.remove(item)
+        list_filter1 = [x for x in report_json.get('tongji_mutation1', []) if
+                        not any(is_same_item(x, rm_item) for rm_item in to_remove)]
+        list_filter2 = [x for x in report_json.get('tongji_mutation2', []) if
+                        not any(is_same_item(x, rm_item) for rm_item in to_remove)]
+        list_filter3 = [x for x in report_json.get('unknownVarAnalysisStr', []) if
+                        not any(is_same_item(x, rm_item) for rm_item in to_remove)]
+
+        if len(V600E_mutation) == 1:
+            KRAS = {
+                'gene': 'KRAS',
+                'TJmutation': '野生型',
+                'mutFreq': '-',
+                'mutDesc': '-',
+                'drug_all': '-'
+            }
+            NRAS = {
+                'gene': 'NRAS',
+                'TJmutation': '野生型',
+                'mutFreq': '-',
+                'mutDesc': '-',
+                'drug_all': '-'
+            }
+            V600E_mutation = [KRAS, NRAS] + V600E_mutation
+
         report_json['V600E_mutation'] = V600E_mutation
-        report_json['BodyDrugNoComplexStr'] = list1
-        report_json['unknownVarAnalysisStr'] = list2
+        report_json['tongji_mutation1'] = list_filter1
+        report_json['tongji_mutation2'] = list_filter2
+        report_json['unknownVarAnalysisStr'] = list_filter3
     report_json['is_report_knb'] = is_report_knb
 
     # HRR
@@ -461,3 +494,47 @@ def process_tongji_tip(report_json):
                 tongji_hrr += gene + " " + new_variant + ";"
 
     report_json['tongji_hrr'] = tongji_hrr
+
+def is_same_item(item1, item2):
+    return item1.get('gene') == item2.get('gene') and item1.get('ori_variant') == item2.get('ori_variant')
+
+
+def process_guangfuyi_tip(report_json):
+    bodyDrugTipLineStr = report_json.get('bodyDrugTipLineStr', [])
+    unknownTipLineStr = report_json.get('unknownTipLineStr', [])
+    for item in bodyDrugTipLineStr:
+        gene = item.get('gene', '')
+        ori_variant = item.get('ori_variant', '')
+
+        if gene == 'EGFR' and 'exon20' in ori_variant and 'delins' in ori_variant:
+            cHGVS = item.get('cHGVS', '')
+            del_part, ins_seq = cHGVS.split('delins')
+            del_pos = del_part.split('.')[-1]
+            start, end = del_pos.split('_')
+            del_count = int(end) - int(start) + 1
+            ins_count = len(ins_seq)
+            if del_count < ins_count:
+                item['ExonicFunc'] = '20号外显子插入突变'
+            continue
+        if gene == 'EGFR' and 'exon20' in ori_variant and ('dup' in ori_variant or 'ins' in ori_variant):
+            item['ExonicFunc'] = '20号外显子插入突变'
+
+        report_json['bodyDrugTipLineStr'] = bodyDrugTipLineStr
+
+    for item in unknownTipLineStr:
+        gene = item.get('gene', '')
+        ori_variant = item.get('ori_variant', '')
+        if gene == 'EGFR' and 'exon20' in ori_variant and 'delins' in ori_variant:
+            cHGVS = item.get('cHGVS', '')
+            del_part, ins_seq = cHGVS.split('delins')
+            del_pos = del_part.split('.')[-1]
+            start, end = del_pos.split('_')
+            del_count = int(end) - int(start) + 1
+            ins_count = len(ins_seq)
+            if del_count < ins_count:
+                item['ExonicFunc'] = '20号外显子插入突变'
+            continue
+        if gene == 'EGFR' and 'exon20' in ori_variant and ('dup' in ori_variant or 'ins' in ori_variant):
+            item['ExonicFunc'] = '20号外显子插入突变'
+
+        report_json['unknownTipLineStr'] = unknownTipLineStr
