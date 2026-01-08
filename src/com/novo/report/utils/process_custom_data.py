@@ -478,12 +478,18 @@ def process_tongji_tip(report_json):
     # HRR
     tongji_hrr = ""
     HRR_info = report_json.get('HRRInfo')
+    tongji_hrr_table = []
     if HRR_info:
         HRR_genes = ["ATM", "BARD1", "BRCA1", "BRCA2", "BRIP1", "CDK12", "CHEK1", "CHEK2", "FANCL", "PALB2", "RAD51B",
                      "RAD51C", "RAD51D", "RAD54L", "PPP2R2A"]
         for gene in HRR_genes:
             variant = HRR_info.get(gene)
             if variant != "-":
+                tongji_hrr_table.append({
+                    'gene': gene,
+                    'variant': variant,
+                    'clinical_significance_desc': HRR_info.get('clinical_significance_desc1') if gene in ["BRCA1", "BRCA2"] else HRR_info.get('clinical_significance_desc2')
+                })
                 pattern = r'p\.(\S+)'
                 match = re.search(pattern, variant)
                 if match:
@@ -494,6 +500,7 @@ def process_tongji_tip(report_json):
                 tongji_hrr += gene + " " + new_variant + ";"
 
     report_json['tongji_hrr'] = tongji_hrr
+    report_json['tongji_hrr_table'] = tongji_hrr_table
 
 def is_same_item(item1, item2):
     return item1.get('gene') == item2.get('gene') and item1.get('ori_variant') == item2.get('ori_variant')
