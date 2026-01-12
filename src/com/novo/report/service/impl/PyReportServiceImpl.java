@@ -6816,6 +6816,7 @@ public class PyReportServiceImpl implements PyReportService {
                 Integer mutId = (mutIdObj instanceof Integer) ? (Integer) mutIdObj : null;
                 String variant = map1.get("variant") == null ? "/" : map1.get("variant").toString();
                 mutFreq = getMutFreq(ori_variant, mutFreq, null);
+                /*
                 if ("突变/融合".equals(info)) {
                     flag = !ori_variant.equals("Amplification");
                 } else if ("突变".equals(info)) {
@@ -6830,6 +6831,27 @@ public class PyReportServiceImpl implements PyReportService {
                     flag = ori_variant.contains("Fusion");
                 } else if ("扩增".equals(info)) {
                     flag = ori_variant.equals("Amplification");
+                }
+                */
+                // 20260112 更新指南标记物表格匹配逻辑
+                if ("突变/融合".equals(info)) {
+                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.contains("Fusion");
+                } else if ("突变".equals(info)) {
+                    flag = ori_variant.contains("c.") || ori_variant.contains("p.");
+                } else if ("突变/扩增/14号外显子跳跃".equals(info)) {
+                    if (ori_variant.contains("c.") || ori_variant.contains("p.") || "Amplification".equals(ori_variant) || "MET-MET Fusion M15:M13".equals(ori_variant)) {
+                        flag = true;
+                    }
+                } else if ("突变/扩增".equals(info)) {
+                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || "Amplification".equals(ori_variant);
+                } else if ("融合".equals(info)) {
+                    flag = ori_variant.contains("Fusion");
+                } else if ("扩增".equals(info)) {
+                    flag = ori_variant.equals("Amplification");
+                } else if ("突变/缺失".equals(info)) {
+                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss");
+                } else if ("突变/缺失/融合".equals(info)) {
+                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss") || ori_variant.contains("Fusion");
                 }
                 List<Map> drugList = map1.get("drugList") == null ? null : (List<Map>) map1.get("drugList");
                 if (!CollectionUtils.isEmpty(drugList)) {
@@ -6847,6 +6869,7 @@ public class PyReportServiceImpl implements PyReportService {
                     ori_variantList2.add(ori_variant);
                 }
             }
+            // 胚系
             for (Map map1 : crAllList) {
                 String gene1 = map1.get("Gene").toString();
                 String ori_variant = (transferOriVariant(map1.getOrDefault("ori_variant", "").toString()));
@@ -6860,6 +6883,10 @@ public class PyReportServiceImpl implements PyReportService {
                     flag = ori_variant.contains("Fusion");
                 } else if ("扩增".equals(info)) {
                     flag = ori_variant.equals("Amplification");
+                } else if ("突变/缺失".equals(info)) {
+                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss") || ori_variant.matches("^\\s*exon\\d+-\\d+ DEL\\s*$");
+                } else if ("突变/缺失/融合".equals(info)) {
+                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss") || ori_variant.matches("^\\s*exon\\d+-\\d+ DEL\\s*$") || ori_variant.contains("Fusion");
                 }
                 if (gene1.equals(gene.split("\\\\r\\\\n")[0]) && flag) {
                     ori_variantList2.add(ori_variant);
