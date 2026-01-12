@@ -371,7 +371,7 @@ public class GeneMarkerVwController {
                 String ori_variant_split = removeMutations(transferOriVariant(ori_variant));
                 if (!ori_variant_split.equals("Amplification") && ori_variant_split != null && !ori_variant_split.contains("Fusion") && !ori_variant_split.equals("Loss")) {
                     String[] splits = ori_variant_split.split(" ");
-                    if (splits.length >= 4) {
+                    if (splits.length >= 4 && ori_variant_split.contains("p.")) {
                         String pHGVS = ori_variant_split.substring(ori_variant_split.indexOf("p."));
                         tipLine.put("pHGVS", pHGVS);
                     } else {
@@ -555,7 +555,7 @@ public class GeneMarkerVwController {
                                     map1.put("Transcript", splits[0]);
                                     map1.put("Exon", splits[1]);
                                     map1.put("cHGVS", splits[2]);
-                                    if (splits.length >= 4) {
+                                    if (splits.length >= 4 && ori_variant_split.contains("p.")) {
                                         String pHGVS = ori_variant_split.substring(ori_variant_split.indexOf("p."));
                                         map1.put("pHGVS", pHGVS);
                                     } else {

@@ -1100,7 +1100,7 @@ public class PyReportServiceImpl implements PyReportService {
                                 targetDrugTipLine.put("Transcript", splits[0]);
                                 targetDrugTipLine.put("Exon", splits[1]);
                                 targetDrugTipLine.put("cHGVS", splits[2]);
-                                if (splits.length >= 4) {
+                                if (splits.length >= 4 && ori_variant_split.contains("p.")) {
                                     String pHGVS = ori_variant_split.substring(ori_variant_split.indexOf("p."));
                                     targetDrugTipLine.put("pHGVS", pHGVS);
                                     targetDrugTipLine.put("sf", pHGVS);
@@ -2709,7 +2709,7 @@ public class PyReportServiceImpl implements PyReportService {
                         map1.put("Transcript", splits[0]);
                         map1.put("Exon", splits[1]);
                         map1.put("cHGVS", splits[2]);
-                        if (splits.length >= 4) {
+                        if (splits.length >= 4 && ori_variant_split.contains("p.")) {
                             String pHGVS = ori_variant_split.substring(ori_variant_split.indexOf("p."));
                             map1.put("pHGVS", pHGVS);
                         } else {
