@@ -37,8 +37,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.novo.report.utils.ServiceUtils.getAppellation;
-import static com.novo.report.utils.ServiceUtils.toInteger;
+import static com.novo.report.utils.ServiceUtils.*;
 
 @Service
 public class PyReportServiceImpl implements PyReportService {
@@ -4504,6 +4503,10 @@ public class PyReportServiceImpl implements PyReportService {
                     variant = gene + "缺失";
                 } else if (oriVariant.contains("Fusion")) {
                     variant = oriVariant.split(" ")[0] + "融合";
+                } else if (oriVariant.contains("DEL") || oriVariant.contains("DUP")) {
+                    // 增加BRCA DEL DUP判断
+                    String[] variants = oriVariant.split(" ");
+                    variant = variants[2] + " " + variants[3] + " " + variants[4];
                 }
                 geneVariantMap.computeIfAbsent(gene, k -> new ArrayList<>()).add(variant);
             }

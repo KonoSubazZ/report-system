@@ -41,6 +41,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
             for (Map mutationDrug : mutationDrugList) {
                 String drugGene = String.valueOf(mutationDrug.getOrDefault("gene", ""));
                 // String resType = String.valueOf(mutationDrug.getOrDefault("resultTypeDesc", ""));
+                String ExonicFunc = String.valueOf(mutationDrug.getOrDefault("exonic_func", ""));
                 String oriVariant = String.valueOf(mutationDrug.getOrDefault("ori_variant", ""));
                 // 检查是否为靶向药物且基因匹配且是点突变
                 if (HRRGene.equals(drugGene)) {
@@ -54,6 +55,16 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
                             variantsBuilder.append(",");
                         }
                         variantsBuilder.append(variant);
+                    } else if (ExonicFunc.equals("DEL") || ExonicFunc.equals("DUP")) {
+                        HRRDetectedGeneCount++;
+                        String[] variants = oriVariant.split(" ");
+                        String variant = variants[2] + " " + variants[3] + " " + variants[4];
+                        variant = removeTrailingDots(variant);
+                        if (variantsBuilder.length() > 0) {
+                            variantsBuilder.append(",");
+                        }
+                        variantsBuilder.append(variant);
+
                     }
                 }
 

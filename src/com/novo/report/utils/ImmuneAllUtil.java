@@ -92,6 +92,10 @@ public class ImmuneAllUtil {
                 }
             }
             String type = map.get("type").toString();
+            // 暂时不检BRCA大片段缺失
+            String ExonicFunc = (String) map.getOrDefault("ExonicFunc", "");
+            if ("DEL".equals(ExonicFunc)) {
+            }
 
             /**把同基因的变异结果组合到一起，格式如下
              * Map<String,Set<String[]>> mut_gene = new HashMap();
@@ -109,6 +113,7 @@ public class ImmuneAllUtil {
                 String[] strings = {ori_variant, mutFreq, "扩增"};
                 sameKeyCombination(mut_gene, gene, strings);
             } else if (ori_variant.equals("Loss")) {
+                // TODO 免疫待增加 Loss
                 String[] strings = {ori_variant, mutFreq, "缺失"};
                 sameKeyCombination(mut_gene, gene, strings);
             } else if (ori_variant.indexOf("Fusion") != -1) {
