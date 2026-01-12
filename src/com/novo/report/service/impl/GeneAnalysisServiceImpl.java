@@ -41,7 +41,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
             for (Map mutationDrug : mutationDrugList) {
                 String drugGene = String.valueOf(mutationDrug.getOrDefault("gene", ""));
                 // String resType = String.valueOf(mutationDrug.getOrDefault("resultTypeDesc", ""));
-                String ExonicFunc = String.valueOf(mutationDrug.getOrDefault("exonic_func", ""));
+                String ExonicFunc = String.valueOf(mutationDrug.getOrDefault("ExonicFunc", ""));
                 String oriVariant = String.valueOf(mutationDrug.getOrDefault("ori_variant", ""));
                 // 检查是否为靶向药物且基因匹配且是点突变
                 if (HRRGene.equals(drugGene)) {
