@@ -4506,7 +4506,7 @@ public class PyReportServiceImpl implements PyReportService {
                 } else if (oriVariant.contains("DEL") || oriVariant.contains("DUP")) {
                     // 增加BRCA DEL DUP判断
                     String[] variants = oriVariant.split(" ");
-                    variant = variants[2] + " " + variants[3] + " " + variants[4];
+                    variant = variants[variants.length -1 ];
                 }
                 geneVariantMap.computeIfAbsent(gene, k -> new ArrayList<>()).add(variant);
             }

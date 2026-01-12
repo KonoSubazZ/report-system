@@ -94,7 +94,8 @@ public class ImmuneAllUtil {
             String type = map.get("type").toString();
             // 暂时不检BRCA大片段缺失
             String ExonicFunc = (String) map.getOrDefault("ExonicFunc", "");
-            if ("DEL".equals(ExonicFunc)) {
+            if ("DEL".equals(ExonicFunc) || "DUP".equals(ExonicFunc)) {
+                break;
             }
 
             /**把同基因的变异结果组合到一起，格式如下
