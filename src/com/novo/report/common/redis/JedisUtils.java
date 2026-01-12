@@ -9,9 +9,10 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 public class JedisUtils {
     // 连接池实例
-    private static final JedisPool jedisPool;
+    private static JedisPool jedisPool;
 
     // 静态初始化块，初始化连接池
+    /*
     static {
         try {
             // 创建连接池配置对象
@@ -51,14 +52,63 @@ public class JedisUtils {
         } catch (Exception e) {
             throw new RuntimeException("Redis连接池初始化失败", e);
         }
+    }*/
+
+    public static synchronized void init() {
+        // 若连接池已存在且未关闭，直接返回（避免重复创建，提高效率）
+        if (jedisPool != null && !jedisPool.isClosed()) {
+            System.out.println("Redis连接池已存在且可用，无需重复初始化");
+            return;
+        }
+
+        try {
+            // 1. 构建连接池配置（与原有JedisUtils逻辑一致，保证配置兼容）
+            JedisPoolConfig poolConfig = new JedisPoolConfig();
+            poolConfig.setMaxTotal(JedisConfig.getMaxTotal());
+            poolConfig.setMaxIdle(JedisConfig.getMaxIdle());
+            poolConfig.setMinIdle(JedisConfig.getMinIdle());
+            poolConfig.setTestOnBorrow(JedisConfig.isTestOnBorrow());
+
+            // 2. 获取连接配置（与原有JedisUtils逻辑一致，无改动）
+            String password = JedisConfig.getPassword();
+            String host = JedisConfig.getHost();
+            int port = JedisConfig.getPort();
+            int timeout = JedisConfig.getTimeout();
+
+            // 3. 创建连接池
+            if (password == null || password.trim().isEmpty()) {
+                jedisPool = new JedisPool(poolConfig, host, port, timeout);
+            } else {
+                jedisPool = new JedisPool(poolConfig, host, port, timeout, password);
+            }
+
+            // 4. 测试连接可用性（可选，与原有逻辑一致，失败则抛出异常）
+            try (Jedis jedis = jedisPool.getResource()) {
+                String ping = jedis.ping();
+                if (!"PONG".equals(ping)) {
+                    throw new RuntimeException("Redis连接测试失败，响应：" + ping);
+                }
+            }
+
+            System.out.println("Redis连接池初始化/重新初始化成功");
+        } catch (Exception e) {
+            // 清理无效连接池，避免残留无效实例
+            if (jedisPool != null) {
+                jedisPool.destroy();
+                jedisPool = null;
+            }
+            throw new RuntimeException("Redis连接池初始化失败", e);
+        }
     }
 
     /**
      * 从连接池获取Jedis实例
      */
     public static Jedis getResource() {
-        if (jedisPool == null) {
-            throw new RuntimeException("Jedis连接池未初始化");
+        if (jedisPool == null || jedisPool.isClosed()) {
+            if (jedisPool == null || jedisPool.isClosed()) {
+                init(); // 自动触发初始化
+            }
         }
         return jedisPool.getResource();
     }
@@ -116,9 +166,10 @@ public class JedisUtils {
 
     /**
      * 设置带过期时间的键值对
-     * @param key 键
+     *
+     * @param key     键
      * @param seconds 过期时间（秒）
-     * @param value 值
+     * @param value   值
      */
     public static String setex(String key, int seconds, String value) {
         Jedis jedis = null;
