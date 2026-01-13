@@ -66,6 +66,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
                         variantsBuilder.append(variant);
 
                     } else if (ExonicFunc.equals("基因缺失")) {
+                        HRRDetectedGeneCount++;
                         if (variantsBuilder.length() > 0) {
                             variantsBuilder.append(",");
                         }
