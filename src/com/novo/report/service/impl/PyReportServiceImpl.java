@@ -6887,9 +6887,9 @@ public class PyReportServiceImpl implements PyReportService {
                 } else if ("扩增".equals(info)) {
                     flag = ori_variant.equals("Amplification");
                 } else if ("突变/缺失".equals(info)) {
-                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss") || ori_variant.matches("^\\s*exon\\d+-\\d+ DEL\\s*$");
+                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss") || ori_variant.matches("\\s*exon\\d+-\\d+ DEL\\s*");
                 } else if ("突变/缺失/融合".equals(info)) {
-                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss") || ori_variant.matches("^\\s*exon\\d+-\\d+ DEL\\s*$") || ori_variant.contains("Fusion");
+                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss") || ori_variant.matches("\\s*exon\\d+-\\d+ DEL\\s*") || ori_variant.contains("Fusion");
                 }
                 if (gene1.equals(gene.split("\\\\r\\\\n")[0]) && flag) {
                     ori_variantList2.add(ori_variant);

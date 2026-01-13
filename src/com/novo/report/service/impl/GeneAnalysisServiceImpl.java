@@ -65,6 +65,11 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
                         }
                         variantsBuilder.append(variant);
 
+                    } else if (ExonicFunc.equals("基因缺失")) {
+                        if (variantsBuilder.length() > 0) {
+                            variantsBuilder.append(",");
+                        }
+                        variantsBuilder.append(oriVariant);
                     }
                 }
 
