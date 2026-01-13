@@ -4025,6 +4025,10 @@ public class PyReportServiceImpl implements PyReportService {
         String qrCodeBase64Str = generateAndUploadQRCode(report_id, sf.getClient(), sf.getSubbarcode(), rt.getTemplate_name(), pr.getReport_date(), logoPath, methylationTitle, pd);
         summaryOfRresults.put("binary", qrCodeBase64Str);
 
+        // 20260113 增加1238V6探针标识
+        List<String> v6panelList = moduleService.getconfPanelList("MOD_1238_V6");
+        summaryOfRresults.put("1238V6", v6panelList.contains(productName));
+
         String dataToJson = dataToJson(crAllList, list, sf, dMMRinfo, summaryOfRresults, targetDrugTipLineStr, chemoSummary, chemoAnalysis, sarcomaTyping, positiveDDR, positiveOther, negative, hpd, currentNgsAvailable.getReport_id());
         analysisReportDao.updateReportDetail(dataToJson, currentNgsAvailable.getReport_id());
 
