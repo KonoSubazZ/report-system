@@ -205,6 +205,8 @@ public class ModuleServiceImpl implements ModuleService {
                     notes.remove(notes.size() - 1);
                 }
                 // 关于拷贝数的提示，根据模板名称删除
+                // fix: 通用都检出CNV提示，故注释
+                /*
                 Map<String, Object> moduleConf = moduleDao.getModuleConf("SOMA_TIP_WITHOUT_CNV");
 
                 // List<String> templateList = MapUtils.getCommaSeparatedList(moduleConf, "templates");
@@ -212,6 +214,8 @@ public class ModuleServiceImpl implements ModuleService {
                 if (panelList.contains(panel)) {
                     notes.remove(9);
                 }
+
+                 */
                 noteList.addAll(notes);
             }
         }
