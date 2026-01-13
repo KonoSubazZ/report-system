@@ -37,7 +37,8 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.novo.report.utils.ServiceUtils.*;
+import static com.novo.report.utils.ServiceUtils.getAppellation;
+import static com.novo.report.utils.ServiceUtils.toInteger;
 
 @Service
 public class PyReportServiceImpl implements PyReportService {
@@ -4506,7 +4507,7 @@ public class PyReportServiceImpl implements PyReportService {
                 } else if (oriVariant.contains("DEL") || oriVariant.contains("DUP")) {
                     // 增加BRCA DEL DUP判断
                     String[] variants = oriVariant.split(" ");
-                    variant = variants[variants.length -1 ];
+                    variant = variants[variants.length - 1];
                 }
                 geneVariantMap.computeIfAbsent(gene, k -> new ArrayList<>()).add(variant);
             }
@@ -6852,9 +6853,9 @@ public class PyReportServiceImpl implements PyReportService {
                 } else if ("扩增".equals(info)) {
                     flag = ori_variant.equals("Amplification");
                 } else if ("突变/缺失".equals(info)) {
-                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss");
+                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss") || ori_variant.matches(".*exon\\d+-\\d+ DEL.*");
                 } else if ("突变/缺失/融合".equals(info)) {
-                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss") || ori_variant.contains("Fusion");
+                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss") || ori_variant.matches(".*exon\\d+-\\d+ DEL.*") || ori_variant.contains("Fusion");
                 }
                 List<Map> drugList = map1.get("drugList") == null ? null : (List<Map>) map1.get("drugList");
                 if (!CollectionUtils.isEmpty(drugList)) {
@@ -6876,6 +6877,7 @@ public class PyReportServiceImpl implements PyReportService {
             for (Map map1 : crAllList) {
                 String gene1 = map1.get("Gene").toString();
                 String ori_variant = (transferOriVariant(map1.getOrDefault("ori_variant", "").toString()));
+                String ExonicFunc = (String) map1.getOrDefault("ExonicFunc", "");
                 if ("突变/融合".equals(info)) {
                     flag = !ori_variant.equals("Amplification");
                 } else if ("突变".equals(info)) {
@@ -6887,9 +6889,9 @@ public class PyReportServiceImpl implements PyReportService {
                 } else if ("扩增".equals(info)) {
                     flag = ori_variant.equals("Amplification");
                 } else if ("突变/缺失".equals(info)) {
-                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss") || ori_variant.matches(".*exon\\d+-\\d+ DEL.*");
+                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss") || ExonicFunc.equals("DEL");
                 } else if ("突变/缺失/融合".equals(info)) {
-                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss") || ori_variant.matches(".*exon\\d+-\\d+ DEL.*") || ori_variant.contains("Fusion");
+                    flag = ori_variant.contains("c.") || ori_variant.contains("p.") || ori_variant.equals("Loss") || ExonicFunc.equals("DEL") || ori_variant.contains("Fusion");
                 }
                 if (gene1.equals(gene.split("\\\\r\\\\n")[0]) && flag) {
                     ori_variantList2.add(ori_variant);
