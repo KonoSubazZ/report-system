@@ -6444,6 +6444,8 @@ public class PyReportServiceImpl implements PyReportService {
                 mutation_type = gene + " 扩增";
                 sarcomaTypingList = analysisReportDao.getSarcomaTyping(gene, "扩增", sarcomaProductName);
                 getSarcomaTypingGourp(sarcomaTypingGourp, sarcomaTypingList);
+            } else if (ori_variant.equals("Loss")) {
+                // fix: 匹配肉瘤Loss报错
             } else if (ori_variant.indexOf("Fusion") != -1) {
                 mutation = ori_variant;
                 // Fusion变异解析
