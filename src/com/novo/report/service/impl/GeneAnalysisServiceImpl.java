@@ -101,7 +101,7 @@ public class GeneAnalysisServiceImpl implements GeneAnalysisService {
             HRRGeneDetectedInfo.put(gene, variant);
             if (!"-".equals(variant)) {
                 String formattedVariant = variant.replace(",", "、");
-                descBuilder.append(gene).append(" 突变").append(formattedVariant).append("；");
+                descBuilder.append(gene).append(" ").append(formattedVariant).append("；");
                 // 增加动态输出临床意义
                 if (coreHRRGenes.contains(gene)) {
                     clinical_significance_desc1 = map.get("clinical_significance_desc");
