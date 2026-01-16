@@ -61,9 +61,49 @@ if ($mutation =~ /Amplification/i) {
 	if ($info[2] =~ /p\./){
 		$site_description = $hgvs->chgvs($info[0],$info[1])."，导致相应蛋白序列中";
 		$site_description .= $hgvs->phgvs($info[2]);
-	} elsif ($mutation =~/intron/ || $mutation =~/promoter/ || $mutation =~/IVS/) {
+	} elsif ($mutation =~/intron/ || $mutation =~/promoter/ || $mutation =~/IVS/ ) {
 		$site_description = $hgvs->chgvs($info[0],$info[1]);
-	}
+	} elsif ($mutation =~/DEL/) {
+         # 定义默认外显子描述
+         my $exon_desc = "第1号到第2号外显子";
+
+         # 从$mutation中提取exon信息（匹配exonX-Y格式）
+        if ($mutation =~ /exon(\d+)-(\d+)/) {
+            # $1 = 起始外显子号，$2 = 结束外显子号
+            my $start_exon = $1;
+            my $end_exon = $2;
+            # 格式化为“第X号到第Y号外显子”
+            $exon_desc = "第${start_exon}号到第${end_exon}号外显子";
+        }
+        # 额外支持单个外显子（如exon1）
+        elsif ($mutation =~ /exon(\d+)/) {
+            my $exon_num = $1;
+            $exon_desc = "第${exon_num}号外显子";
+        }
+
+        # 拼接动态格式化后的话术
+        $site_description = "该变异发生在$gene基因的$exon_desc，此区域发生大片段缺失(large rearrangement deletions)";
+	} elsif ($mutation =~/DUP/) {
+             # 定义默认外显子描述
+             my $exon_desc = "第1号到第2号外显子";
+
+             # 从$mutation中提取exon信息（匹配exonX-Y格式）
+            if ($mutation =~ /exon(\d+)-(\d+)/) {
+                # $1 = 起始外显子号，$2 = 结束外显子号
+                my $start_exon = $1;
+                my $end_exon = $2;
+                # 格式化为“第X号到第Y号外显子”
+                $exon_desc = "第${start_exon}号到第${end_exon}号外显子";
+            }
+            # 额外支持单个外显子（如exon1）
+            elsif ($mutation =~ /exon(\d+)/) {
+                my $exon_num = $1;
+                $exon_desc = "第${exon_num}号外显子";
+            }
+
+            # 拼接动态格式化后的话术
+            $site_description = "该变异发生在$gene基因的$exon_desc，此区域发生大片段重复(large rearrangement duplication)";
+    	}
 	if ($freq =~ /合/) {
 		$site_description .= "，此突变在样本中的基因型为$freq" if ($freq and $freq ne '.');
 	} else {

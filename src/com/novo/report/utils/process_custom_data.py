@@ -545,3 +545,7 @@ def process_guangfuyi_tip(report_json):
             item['ExonicFunc'] = '20号外显子插入突变'
 
         report_json['unknownTipLineStr'] = unknownTipLineStr
+
+
+def process_anhuixiongke_tip(report_json):
+    return ;
