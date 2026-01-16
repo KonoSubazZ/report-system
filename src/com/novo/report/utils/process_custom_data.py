@@ -1,5 +1,6 @@
 import re
-
+import pymysql
+from datetime import datetime
 
 def process_custom_data(report_json):
     template_name = report_json.get('summaryOfRresults').get('template_name')
@@ -24,10 +25,20 @@ def process_custom_data(report_json):
     if template_name == '非小细胞肺癌-报告模板-广附一' or template_name == '非小细胞肺癌-报告模板-广附一（简化版）':
         process_guangfuyi_tip(report_json)
 
+
 def process_shanghaifeike_tip(report_json):
     shanghaifeike_tips_1 = []
     shanghaifeike_tips_2 = []
     shanghaifeike_tips_3 = []
+
+    subbarcode = report_json.get('subbarcode')
+    analysis_date = report_json.get('analysis_date')
+    product_name = report_json.get('panel')
+    patient_id = report_json.get('barcode')
+    hyphen_index = patient_id.find('-')
+    if hyphen_index != -1:
+        shanghaifeike_id = patient_id[hyphen_index + 1:]
+        report_json['shanghaifeike_id'] = shanghaifeike_id
 
     for item in report_json.get('complexDrugTipLineStr', []):
         comutation = item.get('comutation')
@@ -42,7 +53,28 @@ def process_shanghaifeike_tip(report_json):
         variant_split = ori_variant.split(" ")
         tip = ""
         if "Fusion" in ori_variant:
-            tip = f"{gene}基因{variant_split[0]}融合突变，变异丰度{mut_freq}。"
+            today = datetime.today()
+            today_formatted = today.strftime("%Y%m%d")
+            fusion_reads_list = mysql_query(product_name, today_formatted , subbarcode)
+
+            gene_str = variant_split[0]
+            fusion_flag = variant_split[1]
+            exon_str = variant_split[2]
+
+            gene_pair = gene_str.split('-')
+            gene1, gene2 = gene_pair[0], gene_pair[1]
+
+            exon_pair = exon_str.split(':')
+            exon1 = f"exon{exon_pair[0][1:]}"
+            exon2 = f"exon{exon_pair[1][1:]}"
+            mutation_reads = ""
+            for fusion_read in fusion_reads_list:
+                if mut_freq == fusion_read.get("freq") and ori_variant == fusion_read.get("ori_variant"):
+                    mutation_reads = fusion_read.get("sup_reads_uniq")
+                    break
+
+            result = f"{gene1}:{exon1}-{gene2}:{exon2} "
+            tip = f"{gene}基因{result}融合突变，变异丰度{mut_freq}(reads数:{mutation_reads})。"
 
         elif "Amplification" in ori_variant:
             tip = f"{gene}基因扩增，拷贝数{mut_freq}"
@@ -488,7 +520,9 @@ def process_tongji_tip(report_json):
                 tongji_hrr_table.append({
                     'gene': gene,
                     'variant': variant,
-                    'clinical_significance_desc': HRR_info.get('clinical_significance_desc1') if gene in ["BRCA1", "BRCA2"] else HRR_info.get('clinical_significance_desc2')
+                    'clinical_significance_desc': HRR_info.get('clinical_significance_desc1') if gene in ["BRCA1",
+                                                                                                          "BRCA2"] else HRR_info.get(
+                        'clinical_significance_desc2')
                 })
                 pattern = r'p\.(\S+)'
                 match = re.search(pattern, variant)
@@ -501,6 +535,7 @@ def process_tongji_tip(report_json):
 
     report_json['tongji_hrr'] = tongji_hrr
     report_json['tongji_hrr_table'] = tongji_hrr_table
+
 
 def is_same_item(item1, item2):
     return item1.get('gene') == item2.get('gene') and item1.get('ori_variant') == item2.get('ori_variant')
@@ -522,9 +557,11 @@ def process_guangfuyi_tip(report_json):
             ins_count = len(ins_seq)
             if del_count < ins_count:
                 item['ExonicFunc'] = '20号外显子插入突变'
+                item['ori_variant'] = ori_variant + '20号外显子插入突变'
             continue
         if gene == 'EGFR' and 'exon20' in ori_variant and ('dup' in ori_variant or 'ins' in ori_variant):
             item['ExonicFunc'] = '20号外显子插入突变'
+            item['ori_variant'] = ori_variant + '20号外显子插入突变'
 
         report_json['bodyDrugTipLineStr'] = bodyDrugTipLineStr
 
@@ -548,4 +585,62 @@ def process_guangfuyi_tip(report_json):
 
 
 def process_anhuixiongke_tip(report_json):
-    return ;
+    return;
+
+
+def mysql_query(product_name, analysis_date, subbarcode):
+    db_config = {
+        'host': '127.0.0.1',
+        'port': 8806,
+        'user': 'novo',
+        'password': 'GodIsLove',
+        'database': 'omics',
+        'charset': 'utf8mb4'
+    }
+
+    conn = None
+    cursor = None
+    result_list = []
+
+    try:
+        conn = pymysql.connect(**db_config)
+        cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+
+        query_sql = '''SELECT
+            b.ori_variant,
+            b.freq,
+            b.sup_reads_hq,
+            b.sup_reads_uniq
+            FROM
+            data_file_status AS a
+            LEFT JOIN fusion_file AS b ON a.file_id = b.file_id
+            WHERE
+            a.product_name = %s
+            AND a.analysis_date = %s
+            AND a.subbarcode = %s
+            AND a.file_type = %s'''
+
+        query_param = (
+            product_name,
+            analysis_date,
+            subbarcode,
+            "Fusion"
+        )
+
+        cursor.execute(query_sql, query_param)
+        all_results = cursor.fetchall()
+
+        if all_results:
+            for row in all_results:
+                result_list.append(row)
+
+    except pymysql.Error as e:
+        print(f"❌ 数据库查询失败：{e}")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return result_list
