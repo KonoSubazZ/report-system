@@ -644,3 +644,8 @@ def mysql_query(product_name, analysis_date, subbarcode):
             conn.close()
 
     return result_list
+if __name__ == '__main__':
+    today = datetime.today()
+    today_formatted = today.strftime("%Y%m%d")
+    print(today_formatted)
+    # mysql_query("CXK-2023-01-01-01", "2023-01-01", "01")
