@@ -25,6 +25,9 @@ def process_custom_data(report_json):
     if template_name == '非小细胞肺癌-报告模板-广附一' or template_name == '非小细胞肺癌-报告模板-广附一（简化版）':
         process_guangfuyi_tip(report_json)
 
+    # 安徽胸科54+6 增加 I 类MET展示
+    if template_name == '实体瘤54+6基因报告-安徽胸科':
+        process_anhuixiongke_tip(report_json)
 
 def process_shanghaifeike_tip(report_json):
     shanghaifeike_tips_1 = []
@@ -649,3 +652,32 @@ def extract_pure_digit(s):
     # 遍历每个字符，筛选数字并拼接
     pure_digit = ''.join([char for char in s if char.isdigit()])
     return pure_digit
+
+def process_anhuixiongke_tip(report_json):
+    category_1_variant_list = []
+    BodyDrugNoComplexStr = report_json.get('BodyDrugNoComplexStr', [])
+    for item in BodyDrugNoComplexStr:
+        gene = item.get('gene', '')
+        ori_variant = item.get('ori_variant', '')
+        ori_variant1 = item.get('ori_variant1', '')
+        variationClass2 = item.get('variationClass2', '')
+
+        if variationClass2 == '1':
+            if 'Amplification' in ori_variant or 'Loss' in ori_variant or 'Fusion' in ori_variant:
+                tip = f"{gene} {ori_variant} 突变"
+
+            else:
+                variant_split = ori_variant.split(' ')
+                if 'exon' in variant_split[1]:
+                    tip = f"{gene} {extract_pure_digit(variant_split[1])}号外显子突变"
+                elif 'intron' in variant_split[1]:
+                    tip = f"{gene} {extract_pure_digit(variant_split[1])}号基因内区突变"
+                else:
+                    tip = f"{gene} {ori_variant} 突变"
+
+            if ori_variant1 == 'MET 14号外显子跳跃':
+                tip += f'({ori_variant1})'
+
+            category_1_variant_list.append(tip)
+
+    report_json['category_1_variant_list'] = category_1_variant_list
