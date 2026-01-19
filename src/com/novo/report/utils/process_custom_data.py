@@ -65,8 +65,8 @@ def process_shanghaifeike_tip(report_json):
             gene1, gene2 = gene_pair[0], gene_pair[1]
 
             exon_pair = exon_str.split(':')
-            exon1 = f"exon{exon_pair[0][1:]}"
-            exon2 = f"exon{exon_pair[1][1:]}"
+            exon1 = f"exon{extract_pure_digit(exon_pair[0])}"
+            exon2 = f"exon{extract_pure_digit(exon_pair[1])}"
             mutation_reads = ""
             for fusion_read in fusion_reads_list:
                 if mut_freq == fusion_read.get("freq") and ori_variant == fusion_read.get("ori_variant"):
@@ -644,8 +644,9 @@ def mysql_query(product_name, analysis_date, subbarcode):
             conn.close()
 
     return result_list
-if __name__ == '__main__':
-    today = datetime.today()
-    today_formatted = today.strftime("%Y%m%d")
-    print(today_formatted)
-    # mysql_query("CXK-2023-01-01-01", "2023-01-01", "01")
+
+def extract_pure_digit(s):
+    """提取字符串中的纯数字，拼接后返回"""
+    # 遍历每个字符，筛选数字并拼接
+    pure_digit = ''.join([char for char in s if char.isdigit()])
+    return pure_digit
