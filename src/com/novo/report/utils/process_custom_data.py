@@ -42,6 +42,8 @@ def process_shanghaifeike_tip(report_json):
     if hyphen_index != -1:
         shanghaifeike_id = patient_id[hyphen_index + 1:]
         report_json['shanghaifeike_id'] = shanghaifeike_id
+    else:
+        report_json['shanghaifeike_id'] = patient_id
 
     for item in report_json.get('complexDrugTipLineStr', []):
         comutation = item.get('comutation')
