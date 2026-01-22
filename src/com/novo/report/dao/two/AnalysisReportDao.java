@@ -199,6 +199,7 @@ public interface AnalysisReportDao {
 
     Timestamp getUpdateByIdList(@Param("list1") List<Integer> mutIdList, @Param("list2") List<Integer> diseaseIdList);
 
+    // 临床实验排除的癌种
     Integer getClinicalNumber(@Param("annotation_id") Integer annotation_id, @Param("diseaseIdList") List<Integer> diseaseIdList);
 
     // 获取临床试验数据

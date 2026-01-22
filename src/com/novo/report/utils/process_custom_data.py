@@ -77,9 +77,21 @@ def process_shanghaifeike_tip(report_json):
                 if mut_freq == fusion_read.get("freq") and ori_variant == fusion_read.get("ori_variant"):
                     mutation_reads = fusion_read.get("sup_reads_uniq")
                     break
-
+            # 增加去除小数点
+            try:
+                float_mutation_reads = float(mutation_reads)
+                if float_mutation_reads.is_integer():
+                    mutation_reads = int(float_mutation_reads)
+                else:
+                    mutation_reads = float_mutation_reads
+            except:
+                mutation_reads = mutation_reads
             result = f"{gene1}:{exon1}-{gene2}:{exon2} "
-            tip = f"{gene}基因{result}融合突变，变异丰度{mut_freq}(reads数:{mutation_reads})。"
+            if ori_variant == "MET-MET Fusion M13:M15":
+                result = f"{gene1}:{exon1}--{gene2}:{exon2} 14号外显子跳跃突变"
+            else:
+                result = f"{gene1}:{exon1}--{gene2}:{exon2} 融合突变"
+            tip = f"{gene}基因{result}，变异丰度{mut_freq}(reads数:{mutation_reads})。"
 
         elif "Amplification" in ori_variant:
             tip = f"{gene}基因扩增，拷贝数{mut_freq}"
