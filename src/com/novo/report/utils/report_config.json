@@ -12,7 +12,8 @@
     "single_sample_SWR": "NOVO报告-单样本-圣维尔",
     "single_sample_SN": "NOVO检测报告-单样本-尚宁",
     "single_sample_BA": "NOVO检测报告-单样本-博奥",
-    "double_sample_BA": "NOVO检测报告-双样本-博奥"
+    "double_sample_BA": "NOVO检测报告-双样本-博奥",
+    "single_sample_LW": "NOVO检测报告-单样本-兰卫"
   },
   "advanced_templates": {
     "single_sample": [
@@ -154,6 +155,9 @@
     ],
     "double_sample_BA": [
       "消化道肿瘤50基因报告-双样本-博奥"
+    ],
+    "single_sample_LW": [
+      "肺癌68基因检测报告-单样本-兰卫"
     ]
   }
 }
