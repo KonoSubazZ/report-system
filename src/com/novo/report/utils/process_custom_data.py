@@ -86,9 +86,9 @@ def process_shanghaifeike_tip(report_json):
                     mutation_reads = float_mutation_reads
             except:
                 mutation_reads = mutation_reads
-            result = f"{gene1}:{exon1}-{gene2}:{exon2} "
+            # result = f"{gene1}:{exon1}-{gene2}:{exon2} "
             if ori_variant == "MET-MET Fusion M13:M15":
-                result = f"{gene1}:{exon1}--{gene2}:{exon2} 14号外显子跳跃突变"
+                result = f"14号外显子跳跃突变"
             else:
                 result = f"{gene1}:{exon1}--{gene2}:{exon2} 融合突变"
             tip = f"{gene}基因{result}，变异丰度{mut_freq}(reads数:{mutation_reads})。"
