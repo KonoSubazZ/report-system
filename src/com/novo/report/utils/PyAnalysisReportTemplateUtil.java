@@ -121,7 +121,7 @@ public class PyAnalysisReportTemplateUtil {
         data.put("crCheckLineStrPathopoiesia", rt.getCrCheckLineStrPathopoiesia());
         data.put("crCheckLineStrYF1280", rt.getCrCheckLineStrYF1280());
         // 增加关于林奇的判断
-        data.put("crCheckLineStrYF1280Lynch",rt.getCrCheckLineStrYF1280Lynch());
+        data.put("crCheckLineStrYF1280Lynch", rt.getCrCheckLineStrYF1280Lynch());
         data.put("crCheckLineStrYF1280Other", rt.getCrCheckLineStrYF1280Other());
 
         data.put("crCheckLineStrLess", rt.getCrCheckLineStrLess());
@@ -427,6 +427,8 @@ public class PyAnalysisReportTemplateUtil {
             String sampleRes = (String) rt.getMethylation().getOrDefault("sample_res", "");
 
             fileName = rt.getBarcode() + rt.getClient() + title + "-" + sampleRes + "-佛山市第一人民医院" + apr.getReport_id() + ".docx";
+        } else if (rt.getTemplate_name().equals("肺癌60基因报告-上海肺科")) {
+            fileName = rt.getBarcode() + rt.getTemplate_name() + apr.getReport_id() + ".docx";
         } else {
 //			fileName = rt.getBarcode()+rt.getClient()+rt.getTemplate_name()+apr.getReport_id()+".docx";
             fileName = rt.getBarcode() + rt.getClient() + rt.getTemplate_name().replaceAll("-湖肿|-药企|-维基生物|-格微|-病理科|-检验科|-无化疗", "") + apr.getReport_id() + ".docx";
@@ -502,7 +504,7 @@ public class PyAnalysisReportTemplateUtil {
         }
     }
 
-    private static  boolean IS_TEST_SERVER = IpUtil.getAllLocalIPv4s().contains("172.20.1.34");
+    private static boolean IS_TEST_SERVER = IpUtil.getAllLocalIPv4s().contains("172.20.1.34");
 
     public static String processSampleValue(String value) {
         return processSampleValueInternal(value, null);
