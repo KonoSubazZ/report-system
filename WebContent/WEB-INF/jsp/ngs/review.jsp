@@ -358,7 +358,8 @@
                             time: 1000
                         });
                     }
-                    window.open(res.data);
+                    let newUrl = res.data.replace('192.168.51.60','172.20.1.108')
+                    window.open(newUrl);
                 } else {
                     layer.msg(data.message, {time: 1000, icon: 0});
                 }
