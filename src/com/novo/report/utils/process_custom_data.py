@@ -562,6 +562,28 @@ def is_same_item(item1, item2):
 def process_guangfuyi_tip(report_json):
     bodyDrugTipLineStr = report_json.get('bodyDrugTipLineStr', [])
     unknownTipLineStr = report_json.get('unknownTipLineStr', [])
+    gfy_ori_variant = report_json.get('gfy_ori_variant', {})
+    gfy_egfr_list = gfy_ori_variant.get('gfyEGFR', [])
+
+    for idx in range(len(gfy_egfr_list)):
+        item = gfy_egfr_list[idx]
+        if 'exon20' in item and 'delins' in item:
+            cHGVS = item.split(' ')[2]
+            # 注意：这里原代码有个小问题，cHGVS是列表，需取对应元素再split（假设是分割后的第一个元素）
+            del_part, ins_seq = cHGVS.split('delins')  # 修正：列表不能直接split，取第一个元素
+            del_pos = del_part.split('.')[-1]
+            start, end = del_pos.split('_')
+            del_count = int(end) - int(start) + 1
+            ins_count = len(ins_seq)
+            if del_count < ins_count:
+                # 直接通过索引修改原列表的元素，实现原数据更新
+                gfy_egfr_list[idx] = item + ' 20号外显子插入突变'
+            continue  # 满足第一个条件，跳过后续判断
+
+        if 'exon20' in item and ('dup' in item or 'ins' in item):
+            # 同样通过索引修改原数据
+            gfy_egfr_list[idx] = item + ' 20号外显子插入突变'
+
     for item in bodyDrugTipLineStr:
         gene = item.get('gene', '')
         ori_variant = item.get('ori_variant', '')
@@ -600,11 +622,6 @@ def process_guangfuyi_tip(report_json):
             item['ExonicFunc'] = '20号外显子插入突变'
 
         report_json['unknownTipLineStr'] = unknownTipLineStr
-
-
-def process_anhuixiongke_tip(report_json):
-    return;
-
 
 def mysql_query(product_name, analysis_date, subbarcode):
     db_config = {
