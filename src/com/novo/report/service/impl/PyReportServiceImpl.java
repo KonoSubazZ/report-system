@@ -965,9 +965,12 @@ public class PyReportServiceImpl implements PyReportService {
                     String specialVariantDesc = variantService.specialVariantDesc1(gene, null, ori_variant, mutFreq);
                     String specialExonicFuncDesc = variantService.specialExonicFuncDesc(gene, null, ori_variant, mutFreq);
                     String specialExonicFuncDesc1 = variantService.specialExonicFuncDesc1(gene, mutId, variant, localParentMutIds);
+                    String specialExonicFuncDesc2 = variantService.specialExonicFuncDesc2(gene, mutId, variant, localParentMutIds);
                     targetDrugTipLine.put("ori_variant1", specialVariantDesc);
                     targetDrugTipLine.put("ExonicFunc2", specialExonicFuncDesc == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc);
-                    // targetDrugTipLine.put("ExonicFunc3", specialExonicFuncDesc1 == null ? translateMutType(ExonicFunc) : specialExonicFuncDesc1);
+
+                    // 三峡模板新增特殊输出需求19del
+                    targetDrugTipLine.put("ExonicFunc3", specialExonicFuncDesc2 == null ? translateMutType(ExonicFunc) : translateMutType(ExonicFunc) + specialExonicFuncDesc2);
 
                     // 同济特殊输出需求
 

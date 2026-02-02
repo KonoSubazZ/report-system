@@ -174,6 +174,14 @@ public class VariantServiceImpl implements VariantService {
     }
 
     @Override
+    public String specialExonicFuncDesc2(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds) {
+        if (isExon19Deletion(gene, mutId, oriVariant, localParentMutIds)) {
+            return oriVariant + " " + "( 19del )";
+        }
+        return null;
+    }
+
+    @Override
     public String specialExonicFuncDesc1(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds) {
 
         if (isMET14Skipping(gene, mutId, oriVariant, localParentMutIds)) {

@@ -29,6 +29,7 @@ def process_custom_data(report_json):
     if template_name == '实体瘤54+6基因报告-安徽胸科':
         process_anhuixiongke_tip(report_json)
 
+
 def process_shanghaifeike_tip(report_json):
     shanghaifeike_tips_1 = []
     shanghaifeike_tips_2 = []

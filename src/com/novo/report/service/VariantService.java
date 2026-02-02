@@ -76,6 +76,16 @@ public interface VariantService {
 	String specialExonicFuncDesc(String gene, Integer mutId, String oriVariant, String mutFreq);
 
 	/**
+	 * 	三峡特殊展示19del
+	 * @param gene
+	 * @param mutId
+	 * @param oriVariant
+	 * @param localParentMutIds
+	 * @return
+	 */
+	String specialExonicFuncDesc2(String gene, Integer mutId, String oriVariant, List<Integer> localParentMutIds);
+
+	/**
 	 * 贵医突变类型 MET14跳 特殊需求
 	 * @param gene
 	 * @param mutId
