@@ -690,6 +690,8 @@ def extract_pure_digit(s):
 def process_anhuixiongke_tip(report_json):
     category_1_variant_list = []
     BodyDrugNoComplexStr = report_json.get('BodyDrugNoComplexStr', [])
+    hotGeneDrugSet = report_json.get('hotGeneDrugSet', [])
+    category_1_variant_list.append(hotGeneDrugSet)
     for item in BodyDrugNoComplexStr:
         gene = item.get('gene', '')
         ori_variant = item.get('ori_variant', '')
@@ -712,6 +714,8 @@ def process_anhuixiongke_tip(report_json):
             if ori_variant1 == 'MET 14号外显子跳跃':
                 tip += f'({ori_variant1})'
 
+            if tip in category_1_variant_list:
+                continue
             category_1_variant_list.append(tip)
 
     report_json['category_1_variant_list'] = category_1_variant_list
