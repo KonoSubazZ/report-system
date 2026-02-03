@@ -691,7 +691,7 @@ def process_anhuixiongke_tip(report_json):
     category_1_variant_list = []
     BodyDrugNoComplexStr = report_json.get('BodyDrugNoComplexStr', [])
     hotGeneDrugSet = report_json.get('hotGeneDrugSet', [])
-    category_1_variant_list.append(hotGeneDrugSet)
+    category_1_variant_list.extend(hotGeneDrugSet)
     for item in BodyDrugNoComplexStr:
         gene = item.get('gene', '')
         ori_variant = item.get('ori_variant', '')
