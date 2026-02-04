@@ -29,6 +29,10 @@ def process_custom_data(report_json):
     if template_name == '实体瘤54+6基因报告-安徽胸科':
         process_anhuixiongke_tip(report_json)
 
+    # WJM
+    if template_name == '肉瘤1238+1166基因检测报告-WJM':
+        process_WJM_tip(report_json)
+
 
 def process_shanghaifeike_tip(report_json):
     shanghaifeike_tips_1 = []
@@ -719,3 +723,175 @@ def process_anhuixiongke_tip(report_json):
             category_1_variant_list.append(tip)
 
     report_json['category_1_variant_list'] = category_1_variant_list
+
+
+def process_WJM_tip(report_json):
+    # 肾癌/中线癌分型
+    if report_json.get('cancerTyping1166'):
+        cancerTyping1166DNA = []
+        cancerTyping1166RNA = []
+
+        for item in report_json.get('cancerTyping1166', []):
+            mut_freq_str = item.get('mut_freq', '')
+
+            try:
+                if mut_freq_str.endswith('%'):
+                    # 去除百分号后转浮点数，再除以100
+                    mut_freq_clean = mut_freq_str.replace('%', '')
+                    mut_freq = float(mut_freq_clean) / 100
+                else:
+                    # 无百分号则直接转浮点数（兼容小数/整数格式）
+                    mut_freq = float(mut_freq_str)
+            except:
+                # 处理空值、非数字等异常情况，默认设为0.0
+                mut_freq = 0.0
+
+            if mut_freq < 0 or mut_freq > 1:
+                cancerTyping1166RNA.append(item)
+            else:
+                cancerTyping1166DNA.append(item)
+
+        report_json['cancerTyping1166DNA'] = cancerTyping1166DNA
+        report_json['cancerTyping1166RNA'] = cancerTyping1166RNA
+
+    # 肉瘤分型
+    if report_json.get('sarcomaTyping'):
+        sarcomaTypingDNA = []
+        sarcomaTypingRNA = []
+
+        for item in report_json.get('sarcomaTyping', []):
+            mut_freq_str = item.get('mutFreq', '')
+            mutation = item.get('mutation')
+
+            try:
+                if mut_freq_str.endswith('%'):
+                    # 去除百分号后转浮点数，再除以100
+                    mut_freq_clean = mut_freq_str.replace('%', '')
+                    mut_freq = float(mut_freq_clean) / 100
+                else:
+                    # 无百分号则直接转浮点数（兼容小数/整数格式）
+                    mut_freq = float(mut_freq_str)
+            except:
+                # 处理空值、非数字等异常情况，默认设为0.0
+                mut_freq = 0.0
+
+            if (mut_freq < 0 or mut_freq > 1) and 'Fusion' in mutation:
+                sarcomaTypingRNA.append(item)
+            else:
+                sarcomaTypingDNA.append(item)
+
+        report_json['sarcomaTypingDNA'] = sarcomaTypingDNA
+        report_json['sarcomaTypingRNA'] = sarcomaTypingRNA
+
+    # 体系检出
+    if report_json.get('unknownTipLineStr'):
+        unknownTipLineStrDNA = []
+        unknownTipLineStrRNA = []
+
+        for item in report_json.get('unknownTipLineStr', []):
+            mut_freq_str = item.get('mutFreq')
+            ori_variant = item.get('ori_variant', '')
+
+            try:
+                if mut_freq_str.endswith('%'):
+                    # 去除百分号后转浮点数，再除以100
+                    mut_freq_clean = mut_freq_str.replace('%', '')
+                    mut_freq = float(mut_freq_clean) / 100
+                else:
+                    # 无百分号则直接转浮点数（兼容小数/整数格式）
+                    mut_freq = float(mut_freq_str)
+            except:
+                # 处理空值、非数字等异常情况，默认设为0.0
+                mut_freq = 0.0
+
+            if (mut_freq < 0 or mut_freq > 1) and 'Fusion' in ori_variant:
+                unknownTipLineStrRNA.append(item)
+            else:
+                unknownTipLineStrDNA.append(item)
+
+        report_json['unknownTipLineStrDNA'] = unknownTipLineStrDNA
+        report_json['unknownTipLineStrRNA'] = unknownTipLineStrRNA
+
+    if report_json.get('bodyDrugTipLineStr'):
+        bodyDrugTipLineStrDNA = []
+        bodyDrugTipLineStrRNA = []
+
+        for item in report_json.get('bodyDrugTipLineStr', []):
+            mut_freq_str = item.get('mutFreq', '')
+            ori_variant = item.get('ori_variant')
+
+            try:
+                if mut_freq_str.endswith('%'):
+                    # 去除百分号后转浮点数，再除以100
+                    mut_freq_clean = mut_freq_str.replace('%', '')
+                    mut_freq = float(mut_freq_clean) / 100
+                else:
+                    # 无百分号则直接转浮点数（兼容小数/整数格式）
+                    mut_freq = float(mut_freq_str)
+            except:
+                # 处理空值、非数字等异常情况，默认设为0.0
+                mut_freq = 0.0
+
+            if (mut_freq < 0 or mut_freq > 1) and 'Fusion' in ori_variant:
+                bodyDrugTipLineStrRNA.append(item)
+            else:
+                bodyDrugTipLineStrDNA.append(item)
+
+        report_json['bodyDrugTipLineStrDNA'] = bodyDrugTipLineStrDNA
+        report_json['bodyDrugTipLineStrRNA'] = bodyDrugTipLineStrRNA
+
+    if report_json.get('BodyDrugNoComplexStr'):
+        BodyDrugNoComplexStrDNA = []
+        BodyDrugNoComplexStrRNA = []
+
+        for item in report_json.get('BodyDrugNoComplexStr', []):
+            mut_freq_str = item.get('mutFreq', '')
+            ori_variant = item.get('ori_variant')
+
+            try:
+                if mut_freq_str.endswith('%'):
+                    # 去除百分号后转浮点数，再除以100
+                    mut_freq_clean = mut_freq_str.replace('%', '')
+                    mut_freq = float(mut_freq_clean) / 100
+                else:
+                    # 无百分号则直接转浮点数（兼容小数/整数格式）
+                    mut_freq = float(mut_freq_str)
+            except:
+                # 处理空值、非数字等异常情况，默认设为0.0
+                mut_freq = 0.0
+
+            if (mut_freq < 0 or mut_freq > 1) and 'Fusion' in ori_variant:
+                BodyDrugNoComplexStrRNA.append(item)
+            else:
+                BodyDrugNoComplexStrDNA.append(item)
+
+        report_json['BodyDrugNoComplexStrDNA'] = BodyDrugNoComplexStrDNA
+        report_json['BodyDrugNoComplexStrRNA'] = BodyDrugNoComplexStrRNA
+
+    if report_json.get('unknownVarAnalysisStr'):
+        unknownVarAnalysisStrDNA = []
+        unknownVarAnalysisStrRNA = []
+
+        for item in report_json.get('unknownVarAnalysisStr', []):
+            mut_freq_str = item.get('mutFreq', '')
+            ori_variant = item.get('ori_variant')
+
+            try:
+                if mut_freq_str.endswith('%'):
+                    # 去除百分号后转浮点数，再除以100
+                    mut_freq_clean = mut_freq_str.replace('%', '')
+                    mut_freq = float(mut_freq_clean) / 100
+                else:
+                    # 无百分号则直接转浮点数（兼容小数/整数格式）
+                    mut_freq = float(mut_freq_str)
+            except:
+                # 处理空值、非数字等异常情况，默认设为0.0
+                mut_freq = 0.0
+
+            if (mut_freq < 0 or mut_freq > 1) and 'Fusion' in ori_variant:
+                unknownVarAnalysisStrDNA.append(item)
+            else:
+                unknownVarAnalysisStrRNA.append(item)
+
+        report_json['unknownVarAnalysisStrDNA'] = unknownVarAnalysisStrDNA
+        report_json['unknownVarAnalysisStrRNA'] = unknownVarAnalysisStrRNA
