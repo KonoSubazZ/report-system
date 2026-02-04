@@ -889,9 +889,9 @@ def process_WJM_tip(report_json):
                 mut_freq = 0.0
 
             if (mut_freq < 0 or mut_freq > 1) and 'Fusion' in ori_variant:
-                unknownVarAnalysisStrDNA.append(item)
-            else:
                 unknownVarAnalysisStrRNA.append(item)
+            else:
+                unknownVarAnalysisStrDNA.append(item)
 
         report_json['unknownVarAnalysisStrDNA'] = unknownVarAnalysisStrDNA
         report_json['unknownVarAnalysisStrRNA'] = unknownVarAnalysisStrRNA
