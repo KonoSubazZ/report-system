@@ -169,7 +169,40 @@ public class ImmuneAllUtil {
                                     if (strings[0].contains("p.")) {
                                         substring = strings[0].substring(strings[0].indexOf("p."));
                                     }
-                                    if (strings[0].contains("p.L858R") || (strings[0].contains("exon19") && substring.contains("del"))) {
+                                    if (strings[0].contains("p.L858R")) {
+                                        outfile.add(raw_map);
+                                        b = false;
+                                    }
+                                    // 增加19delins的判断
+                                    if (strings[0].contains("exon19") && strings[0].contains("delins")) {
+                                        String[] geneSplit = strings[0].split(" ");
+                                        if (geneSplit.length >= 3) {
+                                            String cHGVS = geneSplit[2];
+                                            String[] delinsParts = cHGVS.split("delins");
+                                            String delPart = delinsParts[0];
+                                            String insSeq = delinsParts[1];
+
+                                            // 2. 提取缺失位置（按 "." 分割，取最后一段）
+                                            String[] dotParts = delPart.split("\\.");
+                                            String delPos = dotParts[dotParts.length - 1];
+
+                                            // 3. 按 "_" 分割起始和结束位置
+                                            String[] posParts = delPos.split("_");
+
+                                            // 4. 解析起始、结束位置，计算缺失长度
+                                            int start = Integer.parseInt(posParts[0]);
+                                            int end = Integer.parseInt(posParts[1]);
+                                            int delCount = end - start + 1;
+
+                                            // 5. 计算插入序列长度
+                                            int insCount = insSeq.length();
+
+                                            if (delCount > insCount) {
+                                                outfile.add(raw_map);
+                                                b = false;
+                                            }
+                                        }
+                                    } else if (strings[0].contains("exon19") && strings[0].contains("del") && !strings[0].contains("delins")) {
                                         outfile.add(raw_map);
                                         b = false;
                                     }
