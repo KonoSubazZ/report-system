@@ -30,7 +30,7 @@ def process_custom_data(report_json):
         process_anhuixiongke_tip(report_json)
 
     # WJM
-    if template_name == '肉瘤1238+1166基因检测报告-WJM':
+    if template_name == '肉瘤1238+1166基因检测报告-WJM' or template_name == '肉瘤550+596基因检测报告-WJM':
         process_WJM_tip(report_json)
 
 
