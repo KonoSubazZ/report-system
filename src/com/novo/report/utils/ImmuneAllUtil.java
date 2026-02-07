@@ -174,11 +174,11 @@ public class ImmuneAllUtil {
                                         b = false;
                                     }
                                     // 增加19delins的判断
-                                    if (strings[0].contains("exon19") && strings[0].contains("delins")) {
+                                    if (strings[0].contains("exon19") && substring.contains("delins")) {
                                         String[] geneSplit = strings[0].split(" ");
-                                        if (geneSplit.length >= 3) {
-                                            String cHGVS = geneSplit[2];
-                                            String[] delinsParts = cHGVS.split("delins");
+                                        if (geneSplit.length == 4) {
+                                            String pHGVS = geneSplit[3];
+                                            String[] delinsParts = pHGVS.split("delins");
                                             String delPart = delinsParts[0];
                                             String insSeq = delinsParts[1];
 
@@ -190,8 +190,8 @@ public class ImmuneAllUtil {
                                             String[] posParts = delPos.split("_");
 
                                             // 4. 解析起始、结束位置，计算缺失长度
-                                            int start = Integer.parseInt(posParts[0]);
-                                            int end = Integer.parseInt(posParts[1]);
+                                            int start = Integer.parseInt(posParts[0].substring(1));
+                                            int end = Integer.parseInt(posParts[1].substring(1));
                                             int delCount = end - start + 1;
 
                                             // 5. 计算插入序列长度
