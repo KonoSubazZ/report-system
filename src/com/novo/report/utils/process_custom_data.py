@@ -146,7 +146,11 @@ def process_shanghaifeike_tip(report_json):
                 new_variant = re.sub(pattern, r'\1(\2)', new_variant)
             item['ori_variant'] = new_variant
             # exon = ''.join(re.findall(r'[0-9]', variant_split[1]))
-            exon = re.search(r'\d+', variant_split[1]).group()
+            match = re.search(r'exon(\d+)', variant_split[1])
+            if match:
+                exon = match.group(1)
+            else:
+                exon = re.search(r'intron(\d+)', variant_split[1]).group(1)
             desc = ""
             if "exon" in ori_variant:
                 desc = "外显子"
