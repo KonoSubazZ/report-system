@@ -831,12 +831,14 @@ if __name__ == '__main__':
             panel = info_json['panel']
             if 'reportInfo' in info_json:
                 detected_gene_info = info_json['reportInfo']['detected_gene_info']
+                gene_tables = info_json['gene']['conf_genes']['gene_tables']
+                show_red_note = mark_genes_in_red(gene_tables, detected_gene_info, panel)
+                info_json['reportInfo']['show_red_note'] = show_red_note
             else:
                 # 增加未增加模块化的基因检测
-                detected_gene_info = info_json['summaryOfRresults']['detected_gene_info']
-            gene_tables = info_json['gene']['conf_genes']['gene_tables']
-            show_red_note = mark_genes_in_red(gene_tables, detected_gene_info, panel)
-            info_json['reportInfo']['show_red_note'] = show_red_note
+                detected_gene_info = info_json['summaryOfRresults']['detectedGeneInfo']
+                gene_tables = info_json['gene']['conf_genes']['gene_tables']
+                show_red_note = mark_genes_in_red(gene_tables, detected_gene_info, panel)
 
         # 样本总体评估
         if 'reportInfo' in info_json:
