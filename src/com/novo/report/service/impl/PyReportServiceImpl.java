@@ -4077,7 +4077,7 @@ public class PyReportServiceImpl implements PyReportService {
         // 增加配置，有模块化才使用新模块化逻辑
         if (templateConf != null) {
             // CUSTOM 报告一些基础数据
-
+            rt.setSummaryOfRresults(summaryOfRresults);
             HashMap<String, Object> reportInfo = generateReportInfoData(templateConf, pd,
                     allMutation, rt.getPanel(),
                     detectedGeneInfo, hasCRDrug,
@@ -4113,9 +4113,9 @@ public class PyReportServiceImpl implements PyReportService {
         }else{
             // 增加对于没有模块化模板的基因标红逻辑
             summaryOfRresults.put("detectedGeneInfo", detectedGeneInfo);
+            rt.setSummaryOfRresults(summaryOfRresults);
         }
 
-        rt.setSummaryOfRresults(summaryOfRresults);
 
         AnalysisReport analysisReport = null;
         String status = null;
