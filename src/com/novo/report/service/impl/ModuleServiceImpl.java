@@ -340,8 +340,8 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public String getConfGenes(String panel, List<String> geneSymbols) {
-        String genesJson = moduleDao.getConfGenes(panel);
+    public String getConfGenes(String panel, String templateName, List<String> geneSymbols) {
+        String genesJson = moduleDao.getConfGenes(panel, templateName);
         // 特殊配置 gene_panel 是否存在
         if (genesJson != null && !genesJson.isEmpty()) {
             return genesJson;

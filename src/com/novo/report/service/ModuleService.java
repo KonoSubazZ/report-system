@@ -219,7 +219,7 @@ public interface ModuleService {
     List<String> getconfCommonList(@Param("conf") String conf);
     List<String> getconfTemplateList(@Param("conf") String conf);
 
-    String getConfGenes(@Param("panel") String panel, @Param("geneSymbols") List<String> geneSymbols);
+    String getConfGenes(@Param("panel") String panel,String templateName,  @Param("geneSymbols") List<String> geneSymbols);
 
     /**
      * 获取遗传基因相关肿瘤

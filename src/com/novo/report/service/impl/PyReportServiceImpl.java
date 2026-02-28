@@ -798,12 +798,13 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setImmunonegativeGeneSet(immunonegativeGeneSet);
         }
 
+        String templateName = rt.getTemplate_name();
 
         // MOD 基因检测列表
         List<String> geneSymbols = analysisReportDao.getGeneSymbols(currentNgsAvailable.getProduct_id());
         boolean hasMET = geneSymbols.contains("MET");
         Map<String, Object> geneClassification = new HashMap<String, Object>();
-        Map<String, Object> geneMap = getGeneClassification(geneSymbols, geneClassification, templateConf, productName);
+        Map<String, Object> geneMap = getGeneClassification(geneSymbols, geneClassification, templateConf, productName, templateName);
         // 20250214 脑胶质瘤200增加基因list
         if (pr.getProduct_name().equals("novopm2_tis_200")) {
             Object genes = geneMap.get("genes") + ",1p/19q,Chr7/10";
@@ -4060,7 +4061,7 @@ public class PyReportServiceImpl implements PyReportService {
             Map<String, Object> HenanPeopleCustomInfo = geneHenanPeopleData(thisGeneticmarkerVwList, bodyDrugTipLineStr, unknownTipLineStr);
             rt.setHenanPeopleCustomInfo(HenanPeopleCustomInfo);
         }
-        String templateName = rt.getTemplate_name();
+        // String templateName = rt.getTemplate_name();
 
         // 各类型检出基因汇总
         Map<String, Object> detectedGeneInfo = new HashMap<>();
@@ -6305,7 +6306,7 @@ public class PyReportServiceImpl implements PyReportService {
      * @param panel
      * @return
      */
-    private Map<String, Object> getGeneClassification(List<String> geneSymbols, Map<String, Object> geneClassification, TemplateConf conf, String panel) {
+    private Map<String, Object> getGeneClassification(List<String> geneSymbols, Map<String, Object> geneClassification, TemplateConf conf, String panel, String templateName) {
 
         // 由之前 conf==null 改为所有的都会输出
         if (true) {
@@ -6346,7 +6347,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // 默认都会输出
-        String genesJson = moduleService.getConfGenes(panel, geneSymbols);
+        String genesJson = moduleService.getConfGenes(panel, templateName, geneSymbols);
         geneClassification.put("conf_genes", formatGenes(genesJson));
 
 

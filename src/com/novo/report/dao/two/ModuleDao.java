@@ -26,7 +26,7 @@ public interface ModuleDao {
 
     Map<String, Object> getModuleConf(@Param("conf") String conf);
 
-    String getConfGenes(String panel);
+    String getConfGenes(@Param("panel")String panel, @Param("templateName") String templateName);
 
     String getCRTumors(@Param("gene") String gene, @Param("gender") String gender);
 

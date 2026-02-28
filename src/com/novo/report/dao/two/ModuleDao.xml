@@ -106,6 +106,7 @@
         SELECT genes
         FROM gene_panel
         WHERE FIND_IN_SET(#{panels}, panel)
+        AND (templates = '*' OR  templates LIKE CONCAT('%', #{templateName}, '%'))
     </select>
 
     <select id="getCRTumors" resultType="java.lang.String">
