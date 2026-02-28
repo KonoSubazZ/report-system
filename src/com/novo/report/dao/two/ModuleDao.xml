@@ -105,7 +105,7 @@
     <select id="getConfGenes" resultType="java.lang.String">
         SELECT genes
         FROM gene_panel
-        WHERE FIND_IN_SET(#{panels}, panel)
+        WHERE FIND_IN_SET(#{panel}, panel)
         AND (templates = '*' OR  templates LIKE CONCAT('%', #{templateName}, '%'))
     </select>
 
