@@ -945,5 +945,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND analysis_date = #{analysis_date}
 		  AND product_name = #{product_name}
 	</select>
+    <select id="getMDM2imgBase64Str" resultType="java.lang.String">
+		SELECT
+			a.file_text AS imgBase64Str
+		FROM
+			data_file_status a
+		WHERE
+			a.subbarcode = #{subbarcode}
+		  AND a.analysis_date = #{analysis_date}
+		  AND a.product_name = #{product_name}
+		  AND a.file_type = 'MDM2_PIC';
+	</select>
+	<select id="getMDM2DataInfo" resultType="java.util.Map">
+		SELECT
+			mf.Tumor_cel_content,
+			mf.mdm2_cep12,
+			mf.cep12_cell,
+			mf.detection,
+			mf.examiner,
+			mf.auditor,
+			mf.result
+		FROM
+			mdm2_file mf
+				JOIN
+			data_file_status dfs ON mf.file_id = dfs.file_id
+		WHERE
+			dfs.subbarcode = #{subbarcode}
+		  AND dfs.analysis_date = #{analysis_date}
+		  AND dfs.product_name = #{product_name}
+		  AND dfs.file_type = 'MDM2';
+	</select>
 
 </mapper>

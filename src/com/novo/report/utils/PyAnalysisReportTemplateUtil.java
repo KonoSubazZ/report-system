@@ -366,6 +366,10 @@ public class PyAnalysisReportTemplateUtil {
             data.put("MGMTInfo", rt.getMGMTInfo());
         }
 
+        // 阿克曼MDM2数据
+        if (rt.getTemplate_name().contains("MDM2")) {
+            data.put("MDM2Info", rt.getMdm2());
+        }
         // 广附一合并met14跳数据
         if (rt.getTemplate_name().contains("广附一")) {
             data.put("bodyDrugNoComplexGFYStr", rt.getBodyDrugNoComplexGFYStr());

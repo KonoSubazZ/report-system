@@ -759,6 +759,15 @@ public class ReportTemplate {
     //超进展相关免疫
     private List<Map> hpdImmnue;
 
+    public Map getMdm2() {
+        return mdm2;
+    }
+
+    public void setMdm2(Map mdm2) {
+        this.mdm2 = mdm2;
+    }
+
+    private Map mdm2;
     public List<Map> getPositiveImmnue() {
         return positiveImmnue;
     }

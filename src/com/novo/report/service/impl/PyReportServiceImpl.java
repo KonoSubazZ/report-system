@@ -3025,6 +3025,23 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setBc(bc);
         }
 
+        // 阿克曼mdm2
+        if ("mdm2".equals(productName)) {
+            String MDM2imgBase64Str = analysisReportDao.getMDM2imgBase64Str(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            Map mdm2File = analysisReportDao.getMDM2DataInfo(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            Map<String, Object> mdm2Info = new HashMap<>();
+            mdm2Info.put("MDM2imgBase64Str", MDM2imgBase64Str);
+            if (mdm2Info != null) {
+                mdm2Info.put("Tumor_cel_content", mdm2File.getOrDefault("Tumor_cel_content", ""));
+                mdm2Info.put("mdm2_cep12", mdm2File.getOrDefault("mdm2_cep12", ""));
+                mdm2Info.put("cep12_cell", mdm2File.getOrDefault("cep12_cell", ""));
+                mdm2Info.put("detection", mdm2File.getOrDefault("detection", ""));
+                mdm2Info.put("examiner", mdm2File.getOrDefault("examiner", ""));
+                mdm2Info.put("auditor", mdm2File.getOrDefault("auditor", ""));
+                mdm2Info.put("result", mdm2File.getOrDefault("result", ""));
+            }
+            rt.setMdm2(mdm2Info);
+        }
         // 阅微MSI
         if ("msi".equals(productName)) {
             List<Map> microsatelliteInstability = analysisReportDao.getMicrosatelliteInstability(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
