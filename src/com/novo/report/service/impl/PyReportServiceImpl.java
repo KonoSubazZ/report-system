@@ -3031,7 +3031,7 @@ public class PyReportServiceImpl implements PyReportService {
             Map mdm2File = analysisReportDao.getMDM2DataInfo(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
             Map<String, Object> mdm2Info = new HashMap<>();
             mdm2Info.put("MDM2imgBase64Str", MDM2imgBase64Str);
-            if (mdm2Info != null) {
+            if (mdm2File != null) {
                 mdm2Info.put("Tumor_cel_content", mdm2File.getOrDefault("Tumor_cel_content", ""));
                 mdm2Info.put("mdm2_cep12", mdm2File.getOrDefault("mdm2_cep12", ""));
                 mdm2Info.put("cep12_cell", mdm2File.getOrDefault("cep12_cell", ""));
