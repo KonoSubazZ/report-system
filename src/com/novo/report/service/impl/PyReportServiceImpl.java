@@ -2209,8 +2209,9 @@ public class PyReportServiceImpl implements PyReportService {
         summaryOfRresults.put("crCheckLineStrYF1280Size", crCheckLineStrYF1280.size());
 
         // 20251212 增加双样本胚系林奇
+        // 20260318 林奇增加特定癌种子宫癌
         List<String> LynchPanels = moduleService.getconfPanelList("MOD_WITH_LYNCH");
-        if (LynchPanels.contains(productName) && (diseaseService.isEndometrialCarcinoma(diseaseId) || diseaseService.isColonCancer(diseaseId))) {
+        if (LynchPanels.contains(productName) && (diseaseService.isEndometrialCarcinoma(diseaseId) || diseaseService.isColonCancer(diseaseId) || diseaseId.equals(363))) {
             processLynchCRTable(rt);
         }
 
@@ -4128,7 +4129,7 @@ public class PyReportServiceImpl implements PyReportService {
             // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结、重要靶向基因汇总
             Map<String, Object> commonNote = generateCommonNote(templateConf, productName, rt, cancerInfo, query, hasMET);
             rt.setCommonNote(commonNote);
-        }else{
+        } else {
             // 增加对于没有模块化模板的基因标红逻辑
             summaryOfRresults.put("detectedGeneInfo", detectedGeneInfo);
             rt.setSummaryOfRresults(summaryOfRresults);
