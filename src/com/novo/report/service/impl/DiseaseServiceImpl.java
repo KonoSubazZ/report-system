@@ -108,7 +108,7 @@ public class DiseaseServiceImpl implements DiseaseService {
 
     @Override
     public boolean isColonCancer(Integer dId) {
-        List<Integer> diseaseHierarchyIds = Arrays.asList(10155, 5672, 9256, 219, 218, 261, 1520, 234, 3029, 3038, 12190, 12192, 1993, 50861, 10154, 4907, 4906, 10021, 10020);
+        List<Integer> diseaseHierarchyIds = Arrays.asList(10155, 5672, 9256, 219, 218, 261, 1520, 234, 3029, 3038, 12190, 12192, 1993, 50861, 10154, 4907, 4906, 10021);
         return diseaseHierarchyIds.contains(dId);
     }
 }
