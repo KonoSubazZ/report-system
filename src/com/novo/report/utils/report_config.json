@@ -13,8 +13,8 @@
     "single_sample_SN": "NOVO检测报告-单样本-尚宁",
     "single_sample_BA": "NOVO检测报告-单样本-博奥",
     "double_sample_BA": "NOVO检测报告-双样本-博奥",
-    "single_sample_LW": "NOVO检测报告-通用单样本-兰卫",
-    "double_sample_LW": "NOVO检测报告-通用双样本-兰卫",
+    "single_sample_LW": "NOVO检测报告-单样本-兰卫",
+    "double_sample_LW": "NOVO检测报告-双样本-兰卫",
     "double_sample_WJM": "NOVO检测报告-双样本-WJM",
     "single_sample_WJM": "NOVO检测报告-单样本-WJM"
   },
