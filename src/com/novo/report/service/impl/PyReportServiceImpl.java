@@ -6614,6 +6614,7 @@ public class PyReportServiceImpl implements PyReportService {
      * 'tis_550': {'肺癌': 12.0, '结直肠癌': 10.667, '其他': 10.0},
      * 'blo_484': {'肺癌': 11.429, '结直肠癌': 11.429, '其他': 11.429},
      * 'tis_484': {'肺癌': 11.429, '结直肠癌': 8.571, '其他': 8.571},
+     * 'tis1_462': {'肺癌': 5.71},
      *
      * @param snpIndelFileAll
      * @param productName
