@@ -124,7 +124,10 @@ def process_shanghaifeike_tip(report_json):
             var = new_variant[c_idx:]
             tip = f"{gene}基因{exon}号{desc}{ExonicFunc}{var}，突变丰度为{mut_freq}。"
 
-        if variationClass2 == "1" or (gene == "KRAS" and variationClass2 == "2") or (gene == "KRAS" and ori_variant != "Amplification"):
+        if (gene == "EGFR" and ori_variant == "Amplification"):
+            shanghaifeike_tips_2.append(tip)
+            item['variationClass'] = "II类"
+        elif variationClass2 == "1" or (gene == "KRAS" and ori_variant != "Amplification"):
             item['variationClass'] = "I类"
             shanghaifeike_tips_1.append(tip)
         else:
