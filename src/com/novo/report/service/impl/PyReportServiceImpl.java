@@ -114,6 +114,8 @@ public class PyReportServiceImpl implements PyReportService {
 
     @Autowired
     private NewLimsSampleService newLimsSampleService;
+    @Autowired
+    private GeneAnalysisDao geneAnalysisDao;
 
     public static String isAddSymbol(String drug_name_chinese, String cfda, List<Map> clinicalList) {
         List<String> drugNameChineseAll = new ArrayList<String>();
@@ -324,6 +326,12 @@ public class PyReportServiceImpl implements PyReportService {
         List<Map> cNVAll = analysisReportDao.getCNVAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         List<Map> fusionAll = analysisReportDao.getFusionAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
 
+        // MOD 样本信息
+        // 获取样本信息
+        // tmb462肺癌单样本需要根据pcode来判断是否获取TMB，移动获取样本信息到tmb
+        SampleFile sf = sampleFileService.getSampleFileBySubbarcode(currentNgsAvailable.getSubbarcode());
+        rt.setSample(sf);
+
         // MOD TMB逻辑
         // 获取化疗癌种
         String chem_cancer = StringUtils.isEmpty(pr.getChem_cancer()) ? "" : pr.getChem_cancer();
@@ -345,7 +353,7 @@ public class PyReportServiceImpl implements PyReportService {
             tmbProductName = productName;
         }
         if (StringUtils.isEmpty(tmb)) {
-            Map<String, String> map = getTmb(snpIndelFileAll, tmbProductName, chem_cancer);
+            Map<String, String> map = getTmb(snpIndelFileAll, tmbProductName, chem_cancer, sf.getPCODE());
             tmb = map.get("tmb");
             tmb_status = map.get("tmb_status");
         }
@@ -453,10 +461,7 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setHpdImmnue(hpdImmnue);
         }
         boolean isblood = false;
-        // MOD 样本信息
-        //获取样本信息
-        SampleFile sf = sampleFileService.getSampleFileBySubbarcode(currentNgsAvailable.getSubbarcode());
-        rt.setSample(sf);
+
 
         // 设置样本类型
         rt.setType(sf.getSample_type());
@@ -6621,7 +6626,7 @@ public class PyReportServiceImpl implements PyReportService {
      * @param chem_cancer
      * @return
      */
-    private Map<String, String> getTmb(List<Map> snpIndelFileAll, String productName, String chem_cancer) {
+    private Map<String, String> getTmb(List<Map> snpIndelFileAll, String productName, String chem_cancer, String pcode) {
         double tmbV = 0;
         String tmb_status = "";
         DecimalFormat df = new DecimalFormat("0.000");
@@ -6649,6 +6654,16 @@ public class PyReportServiceImpl implements PyReportService {
             } else if (productName.contains("tis_484")) {
                 tmb_status = getTmbStatus(tmbV, 11.429, 8.571, 8.571, chem_cancer);
             }
+        } else if (productName.equals("novopm2_tis1_462") && pcode == "BTO0029") {
+            // 新增肺癌462
+            long count = snpIndelFileAll.stream()
+                    .filter(map -> {
+                        double mutFreq = ((Number) map.get("mutFreq")).doubleValue();
+                        return mutFreq < 40 || mutFreq > 60;
+                    })
+                    .count();
+            tmbV = Double.valueOf(df.format(count / 1.4));
+            tmb_status = getTmbStatus(tmbV, 5.71, 0, 0, chem_cancer);
         }
         Map<String, String> map = new HashMap();
         map.put("tmb", String.valueOf(tmbV));
