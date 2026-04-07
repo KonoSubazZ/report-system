@@ -727,7 +727,7 @@ def process_anhuixiongke_tip(report_json):
                 if 'exon' in variant_split[1]:
                     tip = f"{gene} {extract_pure_digit(variant_split[1])}号外显子突变"
                 elif 'intron' in variant_split[1]:
-                    tip = f"{gene} {extract_pure_digit(variant_split[1])}号基因内区突变"
+                    tip = f"{gene} {extract_pure_digit(variant_split[1])}号内含子区突变"
                 else:
                     tip = f"{gene} {ori_variant} 突变"
 
