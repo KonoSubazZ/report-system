@@ -99,7 +99,7 @@ public interface AnalysisReportDao {
     List<Map> getCNVAll(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
     // 获取总的用药位点列表
-    @Select("SELECT distinct mapped_variant_id, gene, variant, ori_variant, ExonicFunc, mutFreq,exon,codon,cosmic,transcript,mut_type FROM mutation_related_report_view where report_id = #{report_id} order by gene")
+    @Select("SELECT distinct mapped_variant_id, gene, variant, ori_variant, ExonicFunc, mutFreq,exon,codon,cosmic,transcript,mut_type,Final_Check, Database_Info FROM mutation_related_report_view where report_id = #{report_id} order by gene")
     List<Map> getThisGeneticmarkeren7VwList(@Param("report_id") Integer report_id);
 
     @Select("SELECT distinct mapped_variant_id, gene, variant, ori_variant, ExonicFunc, mutFreq,exon,codon,cosmic,transcript FROM this_genetic_marker_vw2 where report_id = #{report_id} order by gene")
