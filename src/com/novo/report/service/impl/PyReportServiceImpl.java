@@ -745,7 +745,7 @@ public class PyReportServiceImpl implements PyReportService {
                             hotGeneDrugSet.add(gene + " 突变");
                         }
                     } else {
-                        hotGeneDrugSet.add(gene + ori_variant + " 突变");
+                        hotGeneDrugSet.add(gene + " " + ori_variant + " 突变");
                     }
                 }
             }
