@@ -24,6 +24,8 @@ public class FilterIlluminaSnpIndel {
 	private String ori_variant;
 	private String report;
 	private String filtered_rationale;
+	private String Final_Check;
+	private String Database_Info;
 	private String loaded_date;
 	private Integer record_id;
 	private Integer mapped_variant_id;
@@ -89,6 +91,23 @@ public class FilterIlluminaSnpIndel {
 	public void setTotalDepth(String totalDepth) {
 		this.totalDepth = totalDepth;
 	}
+
+	public String getFinal_Check() {
+		return Final_Check;
+	}
+
+	public void setFinal_Check(String final_Check) {
+		Final_Check = final_Check;
+	}
+
+	public String getDatabase_Info() {
+		return Database_Info;
+	}
+
+	public void setDatabase_Info(String database_Info) {
+		Database_Info = database_Info;
+	}
+
 	public String getMutFreq() {
 		return mutFreq;
 	}

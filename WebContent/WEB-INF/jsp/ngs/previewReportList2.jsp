@@ -6097,7 +6097,6 @@
         $(document).on('click', '.db-tag', function () {
             var info = $(this).find("span:hidden").first().text().trim();
             console.log("拿到的数据：", info);
-
             if(!info){
                 alert("暂无数据库信息");
                 return;
@@ -6154,6 +6153,7 @@
             });
         });
     });
+
 </script>
 
 </html>
