@@ -476,7 +476,7 @@
         	function urlRun4(){
 	   			  var objFrm = document.getElementById('cr');
 	   			  if('${currentNgsAvailable.platform}' == "Illumina"){
-	   				objFrm.src = "${pageContext.request.contextPath}/filterCr/illuminaCrList?subbarcode=${currentNgsAvailable.subbarcode}&platform=${currentNgsAvailable.platform}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}";  
+	   				objFrm.src = "${pageContext.request.contextPath}/filterCr/illuminaCrList?subbarcode=${currentNgsAvailable.subbarcode}&platform=${currentNgsAvailable.platform}&analysis_date=${currentNgsAvailable.analysis_date}&product_name=${currentNgsAvailable.product_name}&report_id=${currentNgsAvailable.report_id}";
 	   			  }
 	   		      	objFrm.style.display = "block";
     		}
