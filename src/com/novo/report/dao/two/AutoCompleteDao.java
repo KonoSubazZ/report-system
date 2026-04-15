@@ -85,4 +85,6 @@ public interface AutoCompleteDao {
 	String getTemplateUniversal(String universal);
 
 	String getCustomertypeBySubbarcode(String subbarcode);
+
+	List<AutoComplete> getTemplatesByPcode(String subbarcode);
 }

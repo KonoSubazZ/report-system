@@ -1,6 +1,7 @@
 package com.novo.report.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.novo.report.service.ComplexMutationService;
@@ -202,5 +203,10 @@ public class AutoCompleteServiceImpl implements AutoCompleteService {
 	@Override
 	public String getCustomertypeBySubbarcode(String subbarcode) {
 		return autoCompleteDao.getCustomertypeBySubbarcode(subbarcode);
+	}
+
+	@Override
+	public List<AutoComplete> getTemplatesByPcode(String subbarcode) {
+		return autoCompleteDao.getTemplatesByPcode(subbarcode);
 	}
 }

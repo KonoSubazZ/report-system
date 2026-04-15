@@ -142,4 +142,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getCustomertypeBySubbarcode" resultType="String">
 		SELECT customertype name from sample_file where subbarcode = #{subbarcode}
 	</select>
+	<select id="getTemplatesByPcode" resultType="AutoComplete">
+		SELECT
+		    b.template_id AS id,
+		    b.template_name AS name
+		FROM sample_file AS a
+		LEFT JOIN  pcode_template_mapping AS b ON a.PCODE = b.pcode
+		where a.subbarcode = #{subbarcode}
+	</select>
 </mapper>

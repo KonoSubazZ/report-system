@@ -1,9 +1,6 @@
 package com.novo.report.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -157,6 +154,24 @@ public class AutoCompleteController {
             }
             if (reportTemplateIdAndName.isEmpty()) {
                 return autoCompleteService.getReportTemplateIdAndName(product_id);
+            }
+
+            // 增加关于pcode的去重逻辑
+            if (reportTemplateIdAndName.size() > 1) {
+                List<AutoComplete> pcodeTemplates = autoCompleteService.getTemplatesByPcode(subbarcode);
+
+                List<AutoComplete> intersection = reportTemplateIdAndName.stream()
+                        .filter(template ->
+                                pcodeTemplates.stream()
+                                        .anyMatch(pcodeTemplate ->
+                                                pcodeTemplate.getId().equals(template.getId())
+                                        )
+                        )
+                        .collect(java.util.stream.Collectors.toList());
+
+                if (intersection.size() == 1) {
+                   return intersection;
+                }
             }
             return reportTemplateIdAndName;
         }
