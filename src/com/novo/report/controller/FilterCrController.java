@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.novo.report.beans.CurrentNgsAvailableData;
 import com.novo.report.beans.FilterPageBean;
 import com.novo.report.service.FilterCrService;
+
+import java.util.List;
+import java.util.Map;
+
 @Controller
 @RequestMapping("filterCr")
 public class FilterCrController {
@@ -57,5 +61,11 @@ public class FilterCrController {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	@RequestMapping("get_CR_clinical_significance_info")
+	@ResponseBody
+	public List<Map<String, Object>> getCRClinicalSignificanceInfo(Integer reportId) {
+		return filterCrService.getCRClinicalSignificanceInfo(reportId);
 	}
 }
