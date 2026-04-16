@@ -96,7 +96,8 @@
                     var kv = item.split(":",2);
                     var key = kv[0] || "";
                     var val = kv[1] || "";
-                    html += '<div class="db-item"><div class="db-key">'+ key +'</div><div class="db-val">'+ val +'</div></div>';
+                    let trans_val = trans_dbinfo(key, val);
+                    html += '<div class="db-item"><div class="db-key">'+ key +'</div><div class="db-val">'+ trans_val +'</div></div>';
                 });
                 $("body").append(
                     '<div class="db-modal">' +
@@ -112,6 +113,79 @@
                 if($(e.target).hasClass('db-modal')) $(this).remove();
             });
         });
+
+        // 翻译数据库信息
+        function translation_dbinfo(db, val) {
+            // 空值统一处理
+            if (val === undefined || val === null) val = "";
+            val = $.trim(val);
+
+            // ==============================
+            // 1. clinvar（CLNSIGCONF，ONC，SCIDN，SCI）
+            // unknown2 → 无注释信息
+            // . 和 unknown 保留
+            // ==============================
+            if ( db === "CLNSIGCONF" || db === "ONC" || db === "SCIDN" || db === "SCI") {
+                if (val === "unknown2") {
+                    return "无注释信息";
+                }
+                return val;
+            }
+
+            // ==============================
+            // 2. clinvar（CLNSIG，CLNREVSTAT）
+            // . → 无注释信息
+            // 其他保留
+            // ==============================
+            if (db === "CLNSIG" || db === "CLNREVSTAT") {
+                if (val === ".") {
+                    return "无注释信息";
+                }
+                return val;
+            }
+
+            // ==============================
+            // 3. oncokb、ckb
+            // unknown2 → 无注释信息
+            // . 和 unknown 保留
+            // ==============================
+            if (db === "oncokb" || db === "ckb") {
+                if (val === "unknown2") {
+                    return "无注释信息";
+                }
+                return val;
+            }
+
+            // ==============================
+            // 4. 4个预测软件 BayesDel、CADD、REVEL、VEST4
+            // unknown → 无注释信息
+            // . → VUS
+            // 其他保留
+            // ==============================
+            if (db === "BayesDel" || db === "CADD" || db === "REVEL" || db === "VEST4") {
+                if (val === "unknown") {
+                    return "无注释信息";
+                }
+                if (val === ".") {
+                    return "VUS";
+                }
+                return val;
+            }
+
+            // ==============================
+            // 5. HGMD
+            // - → 无注释信息
+            // 其他保留
+            // ==============================
+            if (db === "HGMD") {
+                if (val === "-") {
+                    return "无注释信息";
+                }
+                return val;
+            }
+
+            return val;
+        }
 
         function displayData(pageNo) {
             var pageSize = 10;
