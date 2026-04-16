@@ -1668,7 +1668,7 @@
                 });
             </script>
         </div>
-        <table class="table table-hover text-center" style="margin-top:20px;width: 80%;" id="table_wz">
+        <table class="table table-hover text-center" style="margin-top:20px;width: 90%;" id="table_wz">
             <tbody id="tInfo2" class="my-tbody">
             <tr id="medicine_tr">
                 <th><input id="allCb" type="checkbox">选择</th>
@@ -1694,6 +1694,16 @@
                 <th>解读结果</th>
                 <th>上次审核</th>
                 <th>操作</th>
+                <%--                <th>预测结果   </th>--%>
+                <th>
+                    预测结果
+                    <select class="form-control form-control-sm" id="filterFinalCheck" style="width:90px;display:inline-block;margin-left:5px;">
+                        <option value="">全部</option>
+                        <option value="解读">解读</option>
+                        <option value="良性">良性</option>
+                        <option value="VUS">VUS</option>
+                    </select>
+                </th>
             </tr>
             <c:forEach items="${medicineList}" var="item" varStatus="vs">
                 <c:choose>
@@ -1822,6 +1832,129 @@
                         <c:when test="${!item.has_drug}">
                             <input type="button" value="匹配" onclick="updateDrug(${vs.count})" class="btn"/>
                         </c:when></c:choose></td>
+                <%--                <td>--%>
+                <%--                    <label id="Final_Check_${vs.count}">${item.Final_Check}</label>--%>
+                <%--                </td>--%>
+                <%--                <td>--%>
+                <%--                        &lt;%&ndash; 1. 定义最终显示文本和颜色 &ndash;%&gt;--%>
+                <%--                    <c:set var="fc" value="${item.Final_Check}" />--%>
+                <%--                    <c:choose>--%>
+                <%--                        <c:when test="${--%>
+                <%--            fc == 'P' ||--%>
+                <%--            fc == 'Conflict' ||--%>
+                <%--            fc == 'Conflict-C' ||--%>
+                <%--            fc == 'Conflict-P' ||--%>
+                <%--            fc == 'Conflict-HP'--%>
+                <%--        }">--%>
+                <%--                            <c:set var="text" value="解读" />--%>
+                <%--                            <c:set var="bg" value="#dc3545" />--%>
+                <%--                            <c:set var="color" value="white" />--%>
+                <%--                        </c:when>--%>
+                <%--                        <c:when test="${fc == 'B' || fc == 'Conflict-B'}">--%>
+                <%--                            <c:set var="text" value="良性" />--%>
+                <%--                            <c:set var="bg" value="#28a745" />--%>
+                <%--                            <c:set var="color" value="white" />--%>
+                <%--                        </c:when>--%>
+                <%--                        <c:when test="${fc == 'VUS' || fc == 'Conflict-VUS'}">--%>
+                <%--                            <c:set var="text" value="VUS" />--%>
+                <%--                            <c:set var="bg" value="#ffc107" />--%>
+                <%--                            <c:set var="color" value="#222" />--%>
+                <%--                        </c:when>--%>
+                <%--                        <c:otherwise>--%>
+                <%--                            <c:set var="text" value="${fc}" />--%>
+                <%--                            <c:set var="bg" value="transparent" />--%>
+                <%--                            <c:set var="color" value="inherit" />--%>
+                <%--                        </c:otherwise>--%>
+                <%--                    </c:choose>--%>
+
+                <%--                        &lt;%&ndash; 2. 美化标签 + 点击弹窗 &ndash;%&gt;--%>
+                <%--                    <span class="database-info-tag"--%>
+                <%--                          style="background:${bg};color:${color};padding:4px 10px;border-radius:6px;font-weight:bold;cursor:pointer;display:inline-block;min-width:56px;"--%>
+                <%--                          onclick="showDatabaseInfo('${fn:replace(item.Database_Info, "'", "\\'")}')">--%>
+                <%--                            ${text}--%>
+                <%--                    </span>--%>
+
+                <%--                        &lt;%&ndash; 3. 全局弹窗样式（只需要出现一次，我放这里确保能用） &ndash;%&gt;--%>
+                <%--                    <style>--%>
+                <%--                        .database-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:Microsoft YaHei, sans-serif;}--%>
+                <%--                        .database-box{background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.2);width:680px;max-width:90%;padding:25px;position:relative;animation:fadeIn .3s;}--%>
+                <%--                        .database-title{font-size:18px;font-weight:bold;margin-bottom:18px;color:#333;border-left:4px solid #2f80eb;padding-left:10px;}--%>
+                <%--                        .database-item{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid #f0f0f0;}--%>
+                <%--                        .database-item:last-child{border-bottom:none;}--%>
+                <%--                        .database-key{font-weight:bold;color:#2f80eb;width:140px;}--%>
+                <%--                        .database-val{flex:1;color:#333;line-height:1.5;}--%>
+                <%--                        .database-close{position:absolute;top:20px;right:24px;font-size:22px;cursor:pointer;color:#999;}--%>
+                <%--                        .database-close:hover{color:#000;}--%>
+                <%--                        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}--%>
+                <%--                    </style>--%>
+
+                <%--                        &lt;%&ndash; 4. 弹窗JS &ndash;%&gt;--%>
+                <%--                    <script>--%>
+                <%--                        function showDatabaseInfo(info) {--%>
+                <%--                            if(!info || info.trim() === ''){--%>
+                <%--                                alert("无数据库信息");--%>
+                <%--                                return;--%>
+                <%--                            }--%>
+                <%--                            var arr = info.split(';');--%>
+                <%--                            var html = '';--%>
+                <%--                            arr.forEach(function(item){--%>
+                <%--                                var kv = item.split(':', 2);--%>
+                <%--                                var k = kv[0] || '';--%>
+                <%--                                var v = kv[1] || '';--%>
+                <%--                                html += '<div class="database-item"><div class="database-key">' + k + '</div><div class="database-val">' + v + '</div></div>';--%>
+                <%--                            });--%>
+                <%--                            var modal = `--%>
+                <%--            <div class="database-modal" onclick="if(event.target===this)closeDatabaseModal()">--%>
+                <%--                <div class="database-box">--%>
+                <%--                    <div class="database-close" onclick="closeDatabaseModal()">×</div>--%>
+                <%--                    <div class="database-title">基因数据库注释信息</div>--%>
+                <%--                    ${html}--%>
+                <%--                </div>--%>
+                <%--            </div>`;--%>
+                <%--                            $("body").append(modal);--%>
+                <%--                        }--%>
+                <%--                        function closeDatabaseModal(){--%>
+                <%--                            $(".database-modal").remove();--%>
+                <%--                        }--%>
+                <%--                    </script>--%>
+                <%--                </td>--%>
+                <td>
+                        <%-- 1. 映射规则：最新版 --%>
+                    <c:set var="fc" value="${item.Final_Check}" />
+                    <c:choose>
+                        <c:when test="${fc == 'P' || fc == 'Conflict' || fc == 'Conflict-C' || fc == 'Conflict-P' || fc == 'Conflict-HP'}">
+                            <c:set var="text" value="解读"/>
+                            <c:set var="bg" value="#dc3545"/>
+                            <c:set var="color" value="white"/>
+                        </c:when>
+                        <c:when test="${fc == 'B' || fc == 'Conflict-B'}">
+                            <c:set var="text" value="良性"/>
+                            <c:set var="bg" value="#28a745"/>
+                            <c:set var="color" value="white"/>
+                        </c:when>
+                        <c:when test="${fc == 'VUS' || fc == 'Conflict-VUS'}">
+                            <c:set var="text" value="VUS"/>
+                            <c:set var="bg" value="#ffc107"/>
+                            <c:set var="color" value="#222"/>
+                        </c:when>
+                        <c:otherwise>
+                            <c:set var="text" value="${fc}"/>
+                            <c:set var="bg" value="transparent"/>
+                            <c:set var="color" value="#333"/>
+                        </c:otherwise>
+                    </c:choose>
+
+                        <%-- 2. 安全标签：用 data-info 存数据，绝对不报错 --%>
+                    <span class="db-tag"
+                          style="background:${bg};color:${color};padding:4px 10px;border-radius:6px;font-weight:bold;cursor:pointer;display:inline-block;min-width:56px;"
+                          data-info="${item.Database_Info}"
+                          data-final="${item.Final_Check}"  >
+                            ${text}
+                            <span style="display:none;">${item.Database_Info}</span>
+
+
+                    </span>
+                </td>
                 </tr>
             </c:forEach>
             </tbody>
@@ -1924,6 +2057,7 @@
                         <th>变异丰度</th>
                         <th>循证医学证据</th>
                         <th>操作</th>
+
                     </tr>
                     <c:forEach items="${mmImmnueAlls}" var="item" varStatus="vs">
                         <tr id="immnueAll_tr_${vs.count}">
@@ -5950,4 +6084,76 @@
         </tr>
     </table>
 </form>
+<style>
+    .db-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:Microsoft YaHei}
+    .db-box{background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.2);width:680px;max-width:90%;padding:25px;position:relative}
+    .db-title{font-size:18px;font-weight:bold;margin-bottom:18px;color:#333;border-left:4px solid #2f80eb;padding-left:10px}
+    .db-item{display:flex;padding:10px 14px;border-bottom:1px solid #f0f0f0}
+    .db-key{font-weight:bold;color:#2f80eb;width:140px}
+    .db-val{flex:1;color:#333}
+</style>
+<script>
+    $(function(){
+        $(document).on('click', '.db-tag', function () {
+            var info = $(this).find("span:hidden").first().text().trim();
+            console.log("拿到的数据：", info);
+            if(!info){
+                alert("暂无数据库信息");
+                return;
+            }
+
+            // 从当前标签获取 原始 Final_Check
+            var rawFinalCheck = $(this).attr("data-final");
+
+            // 拼接生信结果（第一行）
+            var html = '<div class="db-item"><div class="db-key">生信结果</div><div class="db-val">' + rawFinalCheck + '</div></div>';
+
+            // 拼接数据库内容
+            info.split(";").forEach(function(item){
+                var kv = item.split(":",2);
+                var key = kv[0] || "";
+                var val = kv[1] || "";
+                html += '<div class="db-item"><div class="db-key">'+ key +'</div><div class="db-val">'+ val +'</div></div>';
+            });
+
+            $("body").append(
+                '<div class="db-modal">' +
+                '    <div class="db-box">' +
+                '        <div style="position:absolute;right:20px;top:15px;font-size:24px;cursor:pointer" onclick="$(this).closest(\'.db-modal\').remove()">×</div>' +
+                '        <div class="db-title">基因数据库详情</div>' +
+                html +
+                '    </div>' +
+                '</div>'
+            );
+        });
+
+        $(document).on('click','.db-modal',function(e){
+            if($(e.target).hasClass('db-modal')) $(this).remove();
+        });
+    });
+
+    $(function(){
+        // 筛选预测结果
+        $("#filterFinalCheck").change(function(){
+            var val = $(this).val();
+            $("tr[name='medicine_tr']").each(function(){
+                var tagElement = $(this).find(".db-tag");
+                var tagText = tagElement.clone()
+                    .children()
+                    .remove()
+                    .end()
+                    .text()
+                    .trim();
+
+                if(val == "" || tagText == val){
+                    $(this).show();
+                }else{
+                    $(this).hide();
+                }
+            });
+        });
+    });
+
+</script>
+
 </html>
