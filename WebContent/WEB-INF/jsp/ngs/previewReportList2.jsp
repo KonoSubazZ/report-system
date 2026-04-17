@@ -6157,6 +6157,7 @@
 
     // 翻译数据库信息
     function translation_dbinfo(db, val) {
+        console.log("db:", db, "val:", val);
         // 空值统一处理
         if (val === undefined || val === null) val = "";
         val = $.trim(val);
@@ -6166,7 +6167,7 @@
         // unknown2 → 无注释信息
         // . 和 unknown 保留
         // ==============================
-        if ( db === "CLNSIGCONF" || db === "Clinvar ONC" || db === "SCIDN" || db === "SCI") {
+        if ( db === "Clinvar CLNSIGCONF" || db === "Clinvar ONC" || db === "Clinvar SCIDN" || db === "Clinvar SCI") {
             if (val === "unknown2") {
                 return "无注释信息";
             }
