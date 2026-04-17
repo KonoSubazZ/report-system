@@ -6166,7 +6166,7 @@
         // unknown2 → 无注释信息
         // . 和 unknown 保留
         // ==============================
-        if ( db === "CLNSIGCONF" || db === "ONC" || db === "SCIDN" || db === "SCI") {
+        if ( db === "CLNSIGCONF" || db === "Clinvar ONC" || db === "SCIDN" || db === "SCI") {
             if (val === "unknown2") {
                 return "无注释信息";
             }
@@ -6190,7 +6190,7 @@
         // unknown2 → 无注释信息
         // . 和 unknown 保留
         // ==============================
-        if (db === "oncokb" || db === "ckb") {
+        if (db === "Oncokb" || db === "ckb") {
             if (val === "unknown2") {
                 return "无注释信息";
             }
