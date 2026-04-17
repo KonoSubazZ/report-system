@@ -96,7 +96,7 @@
                     var kv = item.split(":",2);
                     var key = kv[0] || "";
                     var val = kv[1] || "";
-                    let trans_val = trans_dbinfo(key, val);
+                    let trans_val = translation_dbinfo(key, val);
                     html += '<div class="db-item"><div class="db-key">'+ key +'</div><div class="db-val">'+ trans_val +'</div></div>';
                 });
                 $("body").append(
@@ -125,7 +125,7 @@
             // unknown2 → 无注释信息
             // . 和 unknown 保留
             // ==============================
-            if ( db === "CLNSIGCONF" || db === "ONC" || db === "SCIDN" || db === "SCI") {
+            if ( db === "CLNSIGCONF" || db === "Clinvar ONC" || db === "SCIDN" || db === "SCI") {
                 if (val === "unknown2") {
                     return "无注释信息";
                 }
@@ -149,7 +149,7 @@
             // unknown2 → 无注释信息
             // . 和 unknown 保留
             // ==============================
-            if (db === "oncokb" || db === "ckb") {
+            if (db === "Oncokb" || db === "ckb") {
                 if (val === "unknown2") {
                     return "无注释信息";
                 }

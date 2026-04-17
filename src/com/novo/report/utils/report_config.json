@@ -19,7 +19,9 @@
     "single_sample_WJM": "NOVO检测报告-单样本-WJM",
     "single_sample_JNZX": "NOVO检测报告-单样本-济南中心",
     "single_sample_SZJY": "NOVO检测报告-单样本-苏州九院",
-    "double_sample_SZJU": "NOVO检测报告-双样本-苏州九院"
+    "double_sample_SZJU": "NOVO检测报告-双样本-苏州九院",
+    "single_sample_JZYY": "NOVO检测报告-单样本-浙江医院",
+    "double_sample_JZYY": "NOVO检测报告-双样本-浙江医院"
   },
   "advanced_templates": {
     "single_sample": [
@@ -225,6 +227,15 @@
       "BRCA45基因报告-苏州九院",
       "消化道肿瘤50基因检测报告-双样本-苏州九院",
       "子宫内膜癌检测报告-苏州九院"
+    ],
+    "single_sample_JZYY": [
+      "肺癌49报告-浙江医院",
+      "泛实体瘤188基因报告-单样本-浙江医院"
+    ],
+    "double_sample_JZYY": [
+      "NOVO泛癌种1238报告-浙江医院",
+      "消化道肿瘤50基因报告-双样本-浙江医院",
+      "泛实体瘤188基因+HRDscore报告-浙江医院"
     ]
   }
 }
