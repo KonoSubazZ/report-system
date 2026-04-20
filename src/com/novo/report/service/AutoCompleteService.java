@@ -1,6 +1,7 @@
 package com.novo.report.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -74,4 +75,6 @@ public interface AutoCompleteService {
 	String getCustomertypeBySubbarcode(String subbarcode);
 
 	List<AutoComplete> getTemplatesByPcode(String subbarcode);
+
+	Set<Long> getAllPcodeTemplateIds();
 }

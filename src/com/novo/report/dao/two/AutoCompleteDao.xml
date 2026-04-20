@@ -147,7 +147,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    b.template_id AS id,
 		    b.template_name AS name
 		FROM sample_file AS a
-		LEFT JOIN  pcode_template_mapping AS b ON a.PCODE = b.pcode
+		INNER JOIN  pcode_template_mapping AS b ON a.PCODE = b.pcode
 		where a.subbarcode = #{subbarcode}
+	</select>
+	<select id="getAllPcodeTemplateIds" resultType="java.lang.Long">
+		SELECT DISTINCT template_id
+		FROM pcode_template_mapping
+		WHERE status = 1
 	</select>
 </mapper>

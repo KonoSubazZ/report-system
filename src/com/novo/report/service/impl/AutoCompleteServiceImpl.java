@@ -3,6 +3,7 @@ package com.novo.report.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import com.novo.report.service.ComplexMutationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -208,5 +209,10 @@ public class AutoCompleteServiceImpl implements AutoCompleteService {
 	@Override
 	public List<AutoComplete> getTemplatesByPcode(String subbarcode) {
 		return autoCompleteDao.getTemplatesByPcode(subbarcode);
+	}
+
+	@Override
+	public Set<Long> getAllPcodeTemplateIds() {
+		return autoCompleteDao.getAllPcodeTemplateIds();
 	}
 }

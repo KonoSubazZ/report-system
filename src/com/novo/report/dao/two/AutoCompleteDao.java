@@ -1,6 +1,7 @@
 package com.novo.report.dao.two;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -87,4 +88,6 @@ public interface AutoCompleteDao {
 	String getCustomertypeBySubbarcode(String subbarcode);
 
 	List<AutoComplete> getTemplatesByPcode(String subbarcode);
+
+	Set<Long> getAllPcodeTemplateIds();
 }
