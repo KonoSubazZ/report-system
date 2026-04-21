@@ -76,5 +76,5 @@ public interface AutoCompleteService {
 
 	List<AutoComplete> getTemplatesByPcode(String subbarcode);
 
-	Set<Long> getAllPcodeTemplateIds();
+	Set<Integer> getAllPcodeTemplateIds();
 }

@@ -212,7 +212,7 @@ public class AutoCompleteServiceImpl implements AutoCompleteService {
 	}
 
 	@Override
-	public Set<Long> getAllPcodeTemplateIds() {
+	public Set<Integer> getAllPcodeTemplateIds() {
 		return autoCompleteDao.getAllPcodeTemplateIds();
 	}
 }

@@ -89,5 +89,5 @@ public interface AutoCompleteDao {
 
 	List<AutoComplete> getTemplatesByPcode(String subbarcode);
 
-	Set<Long> getAllPcodeTemplateIds();
+	Set<Integer> getAllPcodeTemplateIds();
 }

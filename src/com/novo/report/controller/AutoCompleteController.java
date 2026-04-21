@@ -156,24 +156,6 @@ public class AutoCompleteController {
                 return autoCompleteService.getReportTemplateIdAndName(product_id);
             }
 
-            // 增加关于pcode的去重逻辑
-            if (reportTemplateIdAndName.size() > 1) {
-                List<AutoComplete> pcodeTemplates = autoCompleteService.getTemplatesByPcode(subbarcode);
-
-                List<AutoComplete> intersection = reportTemplateIdAndName.stream()
-                        .filter(template ->
-                                pcodeTemplates.stream()
-                                        .anyMatch(pcodeTemplate ->
-                                                pcodeTemplate.getId().equals(template.getId())
-                                        )
-                        )
-                        .collect(java.util.stream.Collectors.toList());
-
-                if (intersection.size() == 1) {
-                   return intersection;
-                }
-            }
-
             // 增加关于pcode的去重逻辑-v2
             if (reportTemplateIdAndName.size() > 1) {
                 // 1. 查询当前样本pcode对应的模板
@@ -191,7 +173,7 @@ public class AutoCompleteController {
                     // 【场景2：普通pcode（表里无配置）】
                     // 规则：一定不是特殊pcode对应的模板 → 排除掉【所有在pcode表中配置过的模板】
                     // 拿到所有“特殊pcode绑定的模板ID”（动态查询）
-                    Set<Long> specialTemplateIds = autoCompleteService.getAllPcodeTemplateIds();
+                    Set<Integer> specialTemplateIds = autoCompleteService.getAllPcodeTemplateIds();
 
                     // 过滤：只保留【没有被任何特殊pcode绑定】的模板
                     List<AutoComplete> normalTemplate = reportTemplateIdAndName.stream()
