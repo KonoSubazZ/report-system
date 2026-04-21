@@ -175,23 +175,18 @@ public class AutoCompleteController {
             }
 
             // 增加关于pcode的去重逻辑-v2
-            // 增加关于pcode的去重逻辑
             if (reportTemplateIdAndName.size() > 1) {
-                // 1. 查询当前样本pcode对应的模板（有配置就有值，没配置就是空）
+                // 1. 查询当前样本pcode对应的模板
                 List<AutoComplete> pcodeTemplates = autoCompleteService.getTemplatesByPcode(subbarcode);
 
-                // 2. 计算交集：候选列表 和 pcode配置模板 的重叠项
-                List<AutoComplete> intersection = reportTemplateIdAndName.stream()
-                        .filter(template -> pcodeTemplates.stream()
-                                .anyMatch(pcodeTemplate -> pcodeTemplate.getId().equals(template.getId()))
-                        ).collect(java.util.stream.Collectors.toList());
-
-                // ==============================================
-                // 核心逻辑：分场景动态去重（无任何硬编码ID）
-                // ==============================================
                 if (!pcodeTemplates.isEmpty()) {
                     // 【场景1：特殊pcode（表里有配置）】→ 按pcode交集去重
-                    return intersection.size() == 1 ? intersection : new ArrayList<>();
+                    List<AutoComplete> intersection = reportTemplateIdAndName.stream()
+                            .filter(template -> pcodeTemplates.stream()
+                                    .anyMatch(pcodeTemplate -> pcodeTemplate.getId().equals(template.getId()))
+                            ).collect(java.util.stream.Collectors.toList());
+
+                    return intersection.size() == 1 ? intersection : reportTemplateIdAndName;
                 } else {
                     // 【场景2：普通pcode（表里无配置）】
                     // 规则：一定不是特殊pcode对应的模板 → 排除掉【所有在pcode表中配置过的模板】
