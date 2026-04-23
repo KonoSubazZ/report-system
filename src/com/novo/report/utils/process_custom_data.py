@@ -911,3 +911,113 @@ def process_WJM_tip(report_json):
 
         report_json['unknownVarAnalysisStrDNA'] = unknownVarAnalysisStrDNA
         report_json['unknownVarAnalysisStrRNA'] = unknownVarAnalysisStrRNA
+
+
+def process_ZHSRRYY_tip(report_json):
+    # 处理检测结果汇总
+    result_summary = []
+    res_info = {}
+    report_info = report_json.get('reportInfo', {})
+    conf = report_info.get('conf', {})
+
+
+    # HRD
+    if conf.get('hrdStateScoreTip'):
+        hrdStateScoreTip = report_json.get('summaryOfRresults').get('hrdState')
+        if hrdStateScoreTip == '阳性':
+            hrd_desc = 'HRD 状态：阳性，提示对PARP抑制剂可能敏感。'
+        else:
+            hrd_desc = 'HRD 状态：阴性，提示对PARP抑制剂可能敏感。'
+
+
+
+        result_summary.append(hrd_desc)
+
+    # 无靶点表格
+    # 临床诊断
+    disease_name = report_info.get('diseaseName')
+    desc = f"NMPA/FDA适用于{disease_name}的多靶点药物有："
+    drug_list = []
+    for item in report_json.get('approvedDrugData', []):
+        drug = item.get('drug')
+        if drug:  # 避免空值
+            drug_list.append(drug)
+
+    # 拼接：逗号分隔 + 句号结尾
+    if drug_list:
+        desc += "、".join(drug_list) + "。"
+    else:
+        desc += "无。"
+
+
+
+    # 用药提示
+
+    # MSI
+    if conf.get('msi'):
+        msi_status = report_json.get('summaryOfRresults').get('msi_status')
+        if msi_status == 'MSI-H':
+            msi_desc = '微卫星不稳定型（MSI-H）患者免疫治疗预后较好，接受免疫检查点抑制剂药物治疗的获益率较高。'
+        else:
+            msi_desc = '微卫星稳定型（MSS）患者接受免疫检查点抑制剂药物治疗的获益率较低。'
+        result_summary.append(msi_desc)
+
+
+def query_HRD_info(product_name, analysis_date, subbarcode):
+    db_config = {
+        'host': '127.0.0.1',
+        'port': 8806,
+        'user': 'novo',
+        'password': 'GodIsLove',
+        'database': 'omics',
+        'charset': 'utf8mb4'
+    }
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = pymysql.connect(**db_config)
+        cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+
+        query_sql = '''SELECT
+            b.ori_variant,
+            b.freq,
+            b.sup_reads_hq,
+            b.sup_reads_uniq
+            FROM
+            data_file_status AS a
+            LEFT JOIN hrd_results_file AS b ON a.file_id = b.file_id
+            WHERE
+            a.product_name = %s
+           -- AND a.analysis_date = %s
+            AND a.subbarcode = %s
+            AND a.file_type = %s'''
+
+        query_param = (
+            product_name,
+            analysis_date,
+            subbarcode,
+            "HRD_results"
+        )
+
+        cursor.execute(query_sql, query_param)
+        results = cursor.fetchone()
+
+    except pymysql.Error as e:
+        print(f"❌ 数据库查询失败：{e}")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return results
+
+
+
+
+
+
+

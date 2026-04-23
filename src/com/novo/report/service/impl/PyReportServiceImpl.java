@@ -6983,10 +6983,12 @@ public class PyReportServiceImpl implements PyReportService {
             } else if ("Amplification".equals(ori_variant)) {
                 immnueMap.put(module + gene, gene + "扩增");
                 value = detectionSignificance;
-            } else if ("Loss".equals(ori_variant)) {
-                immnueMap.put(module + gene, gene + "缺失");
-                value = detectionSignificance;
-            } else if (ori_variant.contains("Fusion")) {
+            }
+//            else if ("Loss".equals(ori_variant)) {
+//                immnueMap.put(module + gene, gene + "缺失");
+//                value = detectionSignificance;
+//            }
+            else if (ori_variant.contains("Fusion")) {
                 ori_variant = ori_variant.split(" ")[0] + "融合";
                 sameKeyCombinationSet(immnueMap, module + gene, ori_variant);
                 value = detectionSignificance;
