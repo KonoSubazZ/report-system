@@ -56,7 +56,6 @@
                 if (
                     n.gene == item.gene &&
                     n.transcript == item.Transcript &&
-                    n.exon == item.exon &&
                     n.cHGVS == item.cHGVS &&
                     n.pHGVS == item.pHGVS &&
                     n.zygosity == item.Zygosity

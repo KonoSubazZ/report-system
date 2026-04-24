@@ -35,6 +35,10 @@ def process_custom_data(report_json):
             or template_name == '泛实体瘤108+33基因检测报告-单样本-WJM' or template_name == '泛实体瘤58+22基因检测报告-单样本-WJM':
         process_WJM_tip(report_json)
 
+    # 浙江省人民医院
+    if template_name == '泛实体瘤188基因+HRD检测报告-浙江省人民医院':
+        process_ZHSRRYY_tip(report_json)
+
 
 def process_shanghaifeike_tip(report_json):
     shanghaifeike_tips_1 = []
@@ -914,29 +918,34 @@ def process_WJM_tip(report_json):
 
 
 def process_ZHSRRYY_tip(report_json):
-    # 处理检测结果汇总
-    result_summary = []
+    # 个性化信息汇总
     res_info = {}
+
     report_info = report_json.get('reportInfo', {})
     conf = report_info.get('conf', {})
+    subbarcode = report_info.get('subbarcode')
+    product_name = report_json.get('panel')
 
+    # 检测结果汇总
+    result_summary = []
 
-    # HRD
+    ## HRD
     if conf.get('hrdStateScoreTip'):
         hrdStateScoreTip = report_json.get('summaryOfRresults').get('hrdState')
         if hrdStateScoreTip == '阳性':
             hrd_desc = 'HRD 状态：阳性，提示对PARP抑制剂可能敏感。'
         else:
             hrd_desc = 'HRD 状态：阴性，提示对PARP抑制剂可能敏感。'
-
-
-
         result_summary.append(hrd_desc)
 
-    # 无靶点表格
-    # 临床诊断
-    disease_name = report_info.get('diseaseName')
-    desc = f"NMPA/FDA适用于{disease_name}的多靶点药物有："
+        res = query_HRD_info(subbarcode,'', product_name)
+        print(f"hrd res{res}")
+        # res_info['result_summary'] = result_summary
+        res_info['hrd_info'] = res
+
+    ## 无靶点表格
+    disease_name = report_info.get('diseaseName') #临床诊断
+    approved_desc = f"NMPA/FDA适用于{disease_name}的多靶点药物有："
     drug_list = []
     for item in report_json.get('approvedDrugData', []):
         drug = item.get('drug')
@@ -945,15 +954,64 @@ def process_ZHSRRYY_tip(report_json):
 
     # 拼接：逗号分隔 + 句号结尾
     if drug_list:
-        desc += "、".join(drug_list) + "。"
+        approved_desc += "、".join(drug_list) + "。"
     else:
-        desc += "无。"
+        approved_desc += "无。"
+    result_summary.append(approved_desc)
+
+    ## 用药提示
+    bodyDrugTipLineStr = report_json.get('bodyDrugTipLineStr')
+    embryonalDrugTipLineStr = report_json.get('embryonalDrugTipLineStr')
+
+    drug_tip = '患者本次未检测到有用药突变'
+    if bodyDrugTipLineStr or embryonalDrugTipLineStr:
+        drug_tip = '患者本次检测到'
+
+        for index, item in enumerate(bodyDrugTipLineStr):
+            # 第 1、2、3... 条
+            # desc = f"{index + 1}、"
+
+            gene = item.get('gene')
+            pHGVS = item.get('pHGVS')
+            desc = f"{gene} {pHGVS}，"
+
+            # === 处理敏感药 ===
+            drugNameList = item.get('drugNameList', [])
+            sensitive_drugs = [d.get('name') for d in drugNameList if d.get('nameLevel')]
+            sensitive_str = '、'.join(sensitive_drugs) if sensitive_drugs else '暂无'
+
+            # === 处理耐药药 ===
+            ResistantDrug = item.get('ResistantDrug', [])
+            resistant_drugs = [d.get('name') for d in ResistantDrug if d.get('nameLevel')]
+            resistant_str = '、'.join(resistant_drugs) if resistant_drugs else '暂无'
+
+            # === 拼接最终描述 ===
+            desc += f"提示敏感药物：{sensitive_str}，潜在耐药药物：{resistant_str}。"
+            drug_tip += desc
 
 
+        for index, item in enumerate(embryonalDrugTipLineStr):
 
-    # 用药提示
+            gene = item.get('gene')
+            pHGVS = item.get('pHGVS')
+            desc = f"{gene} {pHGVS}，"
+            # === 处理敏感药 ===
+            drugNameList = item.get('drugNameList', [])
+            sensitive_drugs = [d.get('name') for d in drugNameList if d.get('nameLevel')]
+            sensitive_str = '、'.join(sensitive_drugs) if sensitive_drugs else '暂无'
 
-    # MSI
+            # === 处理耐药药 ===
+            ResistantDrug = item.get('ResistantDrug', [])
+            resistant_drugs = [d.get('name') for d in ResistantDrug if d.get('nameLevel')]
+            resistant_str = '、'.join(resistant_drugs) if resistant_drugs else '暂无'
+
+            # === 拼接最终描述 ===
+            desc += f"提示敏感药物：{sensitive_str}，潜在耐药药物：{resistant_str}。"
+            drug_tip += desc
+
+        result_summary.append(drug_tip)
+
+    ## MSI
     if conf.get('msi'):
         msi_status = report_json.get('summaryOfRresults').get('msi_status')
         if msi_status == 'MSI-H':
@@ -961,6 +1019,109 @@ def process_ZHSRRYY_tip(report_json):
         else:
             msi_desc = '微卫星稳定型（MSS）患者接受免疫检查点抑制剂药物治疗的获益率较低。'
         result_summary.append(msi_desc)
+
+    res_info['result_summary'] = result_summary
+
+    # 解读-用药提示-胚/体
+    if conf.get('somaticMutationTip'):
+        bodyDrugTipLineStr = report_json.get('bodyDrugTipLineStr')
+        bodyDrugTipLineStrI = []
+        bodyDrugTipLineStrII = []
+
+        has_BRCA1 = False
+        has_BRCA2 = False
+        for item in bodyDrugTipLineStr:
+            data = {}
+            sensitive_drugA = []
+            sensitive_drug_withoutA = []
+            resistant_drug = []
+
+            gene = item.get('gene')
+            mutFreq = item.get('mutFreq')
+            ExonicFunc = item.get('ExonicFunc')
+            variationClass2 = item.get('variationClass2')
+
+            if ExonicFunc == '基因扩增' or ExonicFunc == '基因缺失':
+                variant = f"{gene},{ExonicFunc},拷贝数 = {mutFreq}"
+            elif ExonicFunc == '基因融合':
+                variant = f"{gene},{ExonicFunc},reads数 = {mutFreq}"
+            else:
+                Exon = item.get('Exon')
+                desc = format_intron_exon(Exon)
+                pHGVS = item.get('pHGVS')
+                variant = f"{gene},{desc},{pHGVS},{ExonicFunc},丰度 = {mutFreq}"
+
+            drugNameList = item.get('drugNameList', [])
+            for drug in drugNameList:
+                if drug.get('level') == '1':
+                    sensitive_drugA.append(drug)
+                else:
+                    sensitive_drug_withoutA.append(drug)
+
+            resistant_drug = item.get('ResistantDrug', [])
+            data['variant'] = variant
+            data['sensitive_drugA'] = sensitive_drugA
+            data['sensitive_drug_withoutA'] = sensitive_drug_withoutA
+            data['resistant_drug'] = resistant_drug
+
+            if variationClass2 == '1':
+                if gene == 'BRCA1':
+                    has_BRCA1 = True
+                if gene == 'BRCA2':
+                    has_BRCA2 = True
+                bodyDrugTipLineStrI.append(data)
+            else:
+                bodyDrugTipLineStrII.append(data)
+
+        # 癌种限制和BRCA1/2相关的癌种
+        if not has_BRCA1:
+            BRCA1_drug_tip = {
+                'variant': 'BRCA1 未检出',
+                'sensitive_drugA': [],
+                'sensitive_drug_withoutA': [],
+                'resistant_drug': []
+            }
+            bodyDrugTipLineStrI.append(BRCA1_drug_tip)
+        if not has_BRCA2:
+            BRCA2_drug_tip = {
+                'variant': 'BRCA2 未检出',
+                'sensitive_drugA': [],
+                'sensitive_drug_withoutA': [],
+                'resistant_drug': []
+            }
+            bodyDrugTipLineStrI.append(BRCA2_drug_tip)
+
+        res_info['bodyDrugTipLineStrI'] = bodyDrugTipLineStrI
+        res_info['bodyDrugTipLineStrII'] = bodyDrugTipLineStrII
+
+    report_json['zzsrryy_info'] = res_info
+    save_debug_json(report_json)
+
+def format_intron_exon(seq_str):
+    """
+    同时格式化 exon（外显子）和 intron（内含子）
+    :param seq_str: 输入字符串，例如 exon2、intron10
+    :return: 格式化后的中文字符串
+    """
+    # 定义类型映射关系
+    type_map = {
+        "exon": "外显子",
+        "intron": "内含子"
+    }
+    # 提取类型前缀和数字部分
+    prefix = None
+    num_part = ""
+    for key in type_map.keys():
+        if seq_str.startswith(key):
+            prefix = key
+            # 提取前缀后的所有数字
+            num_part = ''.join([c for c in seq_str[len(key):] if c.isdigit()])
+            break
+    # 容错处理：无匹配前缀或无数字时返回原字符串
+    if not prefix or not num_part:
+        return seq_str
+    # 拼接结果
+    return f"{num_part}号{type_map[prefix]}"
 
 
 def query_HRD_info(product_name, analysis_date, subbarcode):
@@ -981,10 +1142,9 @@ def query_HRD_info(product_name, analysis_date, subbarcode):
         cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
 
         query_sql = '''SELECT
-            b.ori_variant,
-            b.freq,
-            b.sup_reads_hq,
-            b.sup_reads_uniq
+            b.LOH,
+            b.TAI,
+            b.LST
             FROM
             data_file_status AS a
             LEFT JOIN hrd_results_file AS b ON a.file_id = b.file_id
@@ -1014,6 +1174,29 @@ def query_HRD_info(product_name, analysis_date, subbarcode):
             conn.close()
 
     return results
+
+def save_debug_json(report_info_json, filename_prefix="debug_report"):
+    """
+    保存 JSON 到本地文件，方便调试
+    :param report_info_json: 要保存的 JSON 数据
+    :param filename_prefix: 文件名前缀
+    """
+    try:
+        # 生成带时间戳的文件名，避免覆盖
+        filename = f"/data/soft/{filename_prefix}.json"
+
+        # 写入文件（格式化，方便阅读）
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(
+                report_info_json,
+                f,
+                ensure_ascii=False,  # 显示中文
+                indent=4,          # 格式化缩进
+                default=str        # 兼容不可序列化对象
+            )
+        print(f"✅ 调试文件已保存：{filename}")
+    except Exception as e:
+        print(f"❌ 保存文件失败：{str(e)}")
 
 
 
