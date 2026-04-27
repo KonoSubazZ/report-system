@@ -6698,7 +6698,7 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
     // 获取tmb图片
-    private String getTmbPIC(String tmb, String chem_cancer, String subbarcode, String productName) {
+    private String getTmbPIC_v1(String tmb, String chem_cancer, String subbarcode, String productName) {
         Properties prop = new Properties();
         InputStream inStream = PyReportServiceImpl.class.getClassLoader().getResourceAsStream("jsch.properties");
         try {
@@ -6710,6 +6710,39 @@ public class PyReportServiceImpl implements PyReportService {
                 return Jsch.sshCommand("192.168.200.82", "dell", "Novogene2023", 22, "bash /TJPROJ2/OBD/module/tmb_report/TMBtoBase64.sh  " + tmb + " " + chem_cancer + " " + subbarcode + " " + productName);
             }
         } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String getTmbPIC(String tmb, String chem_cancer, String subbarcode, String productName) {
+        // 简单打印入参
+        System.out.println("getTmbPIC 入参：tmb=" + tmb + ", chem_cancer=" + chem_cancer + ", subbarcode=" + subbarcode + ", productName=" + productName);
+
+        Properties prop = new Properties();
+        InputStream inStream = PyReportServiceImpl.class.getClassLoader().getResourceAsStream("jsch.properties");
+        try {
+            prop.load(inStream);
+            List<Object> ips = Arrays.asList(IpUtil.getLocalIp4Address().toArray());
+            System.out.println("本机IP列表：" + ips);
+
+            if (ips.contains(ServerConfig.getServerFormalIP()) || ips.contains(ServerConfig.getServerTestIP())) {
+                String cmd = "python /TJPROJ2/OBD/module/tmb_report/TMBtoBase64.py  " + tmb + " " + chem_cancer + " " + subbarcode + " " + productName + "  /TJPROJ11/OBD/other/TMB_plot/";
+                System.out.println("执行线上命令：" + cmd);
+
+                String result = Jsch.sshCommand(prop.getProperty("host"), prop.getProperty("user"), prop.getProperty("pass"), Integer.valueOf(prop.getProperty("port")), cmd);
+                System.out.println("命令执行结果：" + result);
+                return result;
+            } else {
+                String cmd = "bash /TJPROJ2/OBD/module/tmb_report/TMBtoBase64.sh  " + tmb + " " + chem_cancer + " " + subbarcode + " " + productName;
+                System.out.println("执行本地命令：" + cmd);
+
+                String result = Jsch.sshCommand("192.168.200.82", "dell", "Novogene2023", 22, cmd);
+                System.out.println("命令执行结果：" + result);
+                return result;
+            }
+        } catch (Exception e) {
+            System.out.println("getTmbPIC 方法报错：");
             e.printStackTrace();
             return null;
         }
