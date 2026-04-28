@@ -6926,7 +6926,7 @@ public class PyReportServiceImpl implements PyReportService {
                 } else if ("突变".equals(info)) {
                     flag = ori_variant.contains("c.") || ori_variant.contains("p.");
                 } else if ("突变/扩增/14号外显子跳跃".equals(info)) {
-                    if (ori_variant.contains("c.") || ori_variant.contains("p.") || "Amplification".equals(ori_variant) || "MET-MET Fusion M15:M13".equals(ori_variant)) {
+                    if (ori_variant.contains("c.") || ori_variant.contains("p.") || "Amplification".equals(ori_variant) || "MET-MET Fusion M13:M15".equals(ori_variant)) {
                         flag = true;
                     }
                 } else if ("突变/扩增".equals(info)) {
