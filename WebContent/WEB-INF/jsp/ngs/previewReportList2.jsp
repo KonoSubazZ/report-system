@@ -6114,7 +6114,8 @@
                 var key = kv[0] || "";
                 var val = kv[1] || "";
                 let trans_val = translation_dbinfo( key, val)
-                html += '<div class="db-item"><div class="db-key">'+ key +'</div><div class="db-val">'+ trans_val +'</div></div>';
+                var keyColor = getDbKeyColor(key);
+                html += '<div class="db-item"><div class="db-key" style="color:' + keyColor + '">'+ key +'</div><div class="db-val">'+ trans_val +'</div></div>';
             });
 
             $("body").append(
@@ -6228,6 +6229,20 @@
 
         return val;
     }
+
+    // 获取数据库key的字体颜色
+    function getDbKeyColor(db) {
+        // 绿色 #00B050
+        if (db === "BayesDel" || db === "CADD" || db === "REVEL" || db === "VEST4" ||
+            db === "CLNSIG" || db === "CLNREVSTAT" ||
+            db === "Clinvar CLNSIGCONF" || db === "Clinvar ONC" || db === "Clinvar SCIDN" || db === "Clinvar SCI") {
+            return "#00B050";
+        }
+        
+        // 默认蓝色
+        return "#2f80eb";
+    }
+
 
 </script>
 

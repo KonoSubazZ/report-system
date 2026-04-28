@@ -92,6 +92,9 @@
         // 获取临床意义 + 颜色样式
         function getClinicalSignificanceHtml(n) {
             let clinical = "";
+            if (crClinicalData ===[]){
+                return;
+            }
             for (let i = 0; i < crClinicalData.length; i++) {
                 var item = crClinicalData[i];
                 if (
