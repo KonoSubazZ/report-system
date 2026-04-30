@@ -119,6 +119,16 @@ public class SampleFile {
 	private String customertype;	//客户类别
 	private String FAMILYFIRST;
 
+	public String getAdmissiondoctoremail() {
+		return admissiondoctoremail;
+	}
+
+	public void setAdmissiondoctoremail(String admissiondoctoremail) {
+		this.admissiondoctoremail = admissiondoctoremail;
+	}
+
+	private String admissiondoctoremail; //医生邮箱
+
 	public String getPCODE() {
 		return PCODE;
 	}

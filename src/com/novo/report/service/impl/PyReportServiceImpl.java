@@ -578,6 +578,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setSampleremark(sf.getSampleremark());
         rt.setMailingaddress(sf.getMailingaddress());
         rt.setAppellation(getAppellation(sf.getGender()));
+        rt.setAnalysisDate(currentNgsAvailable.getAnalysis_date());
 
         // MOD QC
         //生信QC以qc.txt文件为主

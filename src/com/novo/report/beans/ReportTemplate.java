@@ -344,6 +344,16 @@ public class ReportTemplate {
     private List<Map> commonTargetedDrug; // 常见靶向药物相关基因检测列表
     private List<Map> importantTargetedGeneFilter; // 重要靶向用药相关基因结果汇总
 
+    public String getAnalysisDate() {
+        return analysisDate;
+    }
+
+    public void setAnalysisDate(String analysisDate) {
+        this.analysisDate = analysisDate;
+    }
+
+    private String analysisDate; // 分析日期
+
     public Map<String, Object> getMrd() {
         return mrd;
     }

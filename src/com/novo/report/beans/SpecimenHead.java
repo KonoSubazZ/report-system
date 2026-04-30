@@ -78,6 +78,16 @@ public class SpecimenHead {
 	private String receivertelephone;	//接收电话
 	private String customertype;	//客户类别
 
+	public String getAdmissiondoctoremail() {
+		return admissiondoctoremail;
+	}
+
+	public void setAdmissiondoctoremail(String admissiondoctoremail) {
+		this.admissiondoctoremail = admissiondoctoremail;
+	}
+
+	private String admissiondoctoremail; //医生邮箱
+
 	/**
 	 * 是否为健康人群，否为健康人群
 	 */

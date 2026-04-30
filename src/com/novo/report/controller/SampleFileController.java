@@ -148,6 +148,7 @@ public class SampleFileController {
                     sf.setCustomertype(sh.getCustomertype());
                     sf.setLocationname(sh.getLocationname());
                     sf.setLaboratoryname(sh.getLaboratoryname());
+                    sf.setAdmissiondoctoremail(sh.getAdmissiondoctoremail());
                     sampleFileService.addSampleFile(sf);
                     model.addAttribute("sampleFile", sf);
                     return sf;
