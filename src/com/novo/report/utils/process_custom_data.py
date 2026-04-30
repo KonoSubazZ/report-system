@@ -929,6 +929,7 @@ def process_ZHSRRYY_tip(report_json):
     conf = report_info.get('conf', {})
     subbarcode = report_info.get('subbarcode')
     product_name = report_json.get('panel')
+    analysis_date = report_info.get('analysisDate')
 
     # 检测结果汇总
     result_summary = []
@@ -942,7 +943,7 @@ def process_ZHSRRYY_tip(report_json):
             hrd_desc = 'HRD 状态：阴性，提示对PARP抑制剂可能敏感。'
         result_summary.append(hrd_desc)
 
-        res = query_HRD_info(subbarcode,'', product_name)
+        res = query_HRD_info(subbarcode,analysis_date, product_name)
         print(f"hrd res{res}")
         # res_info['result_summary'] = result_summary
         res_info['hrd_info'] = res
@@ -1152,7 +1153,7 @@ def query_HRD_info(product_name, analysis_date, subbarcode):
             LEFT JOIN hrd_results_file AS b ON a.file_id = b.file_id
             WHERE
             a.product_name = %s
-           -- AND a.analysis_date = %s
+            AND a.analysis_date = %s
             AND a.subbarcode = %s
             AND a.file_type = %s'''
 
