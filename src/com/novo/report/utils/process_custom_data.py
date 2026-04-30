@@ -39,6 +39,9 @@ def process_custom_data(report_json):
     if template_name == '泛实体瘤188基因+HRD检测报告-浙江省人民医院':
         process_ZHSRRYY_tip(report_json)
 
+    # 齐鲁增加白系统对照QC
+    if template_name == "子宫内膜癌检测报告-齐鲁" or template_name == "泛实体瘤1238+1166基因检测报告-齐鲁" or template_name == "BRCA12基因检测报告-双样本-齐鲁":
+        process_QL_QC_info(report_json)
 
 def process_shanghaifeike_tip(report_json):
     shanghaifeike_tips_1 = []
@@ -1095,8 +1098,6 @@ def process_ZHSRRYY_tip(report_json):
         res_info['bodyDrugTipLineStrII'] = bodyDrugTipLineStrII
 
     report_json['zzsrryy_info'] = res_info
-    save_debug_json(report_json)
-
 def format_intron_exon(seq_str):
     """
     同时格式化 exon（外显子）和 intron（内含子）
@@ -1175,28 +1176,63 @@ def query_HRD_info(product_name, analysis_date, subbarcode):
 
     return results
 
-def save_debug_json(report_info_json, filename_prefix="debug_report"):
-    """
-    保存 JSON 到本地文件，方便调试
-    :param report_info_json: 要保存的 JSON 数据
-    :param filename_prefix: 文件名前缀
-    """
-    try:
-        # 生成带时间戳的文件名，避免覆盖
-        filename = f"/data/soft/{filename_prefix}.json"
 
-        # 写入文件（格式化，方便阅读）
-        with open(filename, "w", encoding="utf-8") as f:
-            json.dump(
-                report_info_json,
-                f,
-                ensure_ascii=False,  # 显示中文
-                indent=4,          # 格式化缩进
-                default=str        # 兼容不可序列化对象
-            )
-        print(f"✅ 调试文件已保存：{filename}")
-    except Exception as e:
-        print(f"❌ 保存文件失败：{str(e)}")
+def process_QL_QC_info(report_json):
+    subbarcode = report_json.get('subbarcode')
+    product_name = report_json.get('panel')
+    analysis_date = report_json.get('analysisDate')
+    QL_QC_info = query_QL_QC_info(product_name, analysis_date, subbarcode)
+    report_json['ql_qc_g_info'] = QL_QC_info
+
+
+def query_QL_QC_info(product_name, analysis_date, subbarcode):
+    db_config = {
+        'host': '127.0.0.1',
+        'port': 8806,
+        'user': 'novo',
+        'password': 'GodIsLove',
+        'database': 'omics',
+        'charset': 'utf8mb4'
+    }
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = pymysql.connect(**db_config)
+        cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+
+        query_sql = '''SELECT
+            b.*
+            FROM
+            data_file_status AS a
+            LEFT JOIN qc_g_file AS b ON a.file_id = b.file_id
+            WHERE
+            a.product_name = %s
+            AND a.analysis_date = %s
+            AND a.subbarcode = %s
+            AND a.file_type = %s'''
+
+        query_param = (
+            product_name,
+            analysis_date,
+            subbarcode,
+            "qc_g"
+        )
+
+        cursor.execute(query_sql, query_param)
+        results = cursor.fetchone()
+
+    except pymysql.Error as e:
+        print(f"❌ 数据库查询失败：{e}")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+    return results
 
 
 
