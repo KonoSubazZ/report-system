@@ -339,6 +339,7 @@ public class PyAnalysisReportTemplateUtil {
         data.put("positiveOtherGeneList", rt.getPositiveOtherGeneList());
         data.put("negativeGeneList", rt.getNegativeGeneList());
         data.put("hpdGeneList", rt.getHpdGeneList());
+        data.put("analysisDate",rt.getAnalysisDate());
 
         // ===============定制个性化数据===================
 

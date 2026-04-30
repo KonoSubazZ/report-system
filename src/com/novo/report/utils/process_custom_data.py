@@ -40,7 +40,8 @@ def process_custom_data(report_json):
         process_ZHSRRYY_tip(report_json)
 
     # 齐鲁增加白系统对照QC
-    if template_name == "子宫内膜癌检测报告-齐鲁" or template_name == "泛实体瘤1238+1166基因检测报告-齐鲁" or template_name == "BRCA12基因检测报告-双样本-齐鲁":
+    if (template_name == "子宫内膜癌检测报告-齐鲁" or template_name == "泛实体瘤1238+1166基因检测报告-齐鲁"
+            or template_name == "BRCA12基因检测报告-双样本-齐鲁") or template_name == "HRD+HRR检测报告-齐鲁":
         process_QL_QC_info(report_json)
 
 def process_shanghaifeike_tip(report_json):
@@ -49,7 +50,7 @@ def process_shanghaifeike_tip(report_json):
     shanghaifeike_tips_3 = []
 
     subbarcode = report_json.get('subbarcode')
-    analysis_date = report_json.get('analysis_date')
+    analysis_date = report_json.get('analysisDate')
     product_name = report_json.get('panel')
     patient_id = report_json.get('barcode')
     hyphen_index = patient_id.find('-')
@@ -1197,10 +1198,16 @@ def query_QL_QC_info(product_name, analysis_date, subbarcode):
 
     conn = None
     cursor = None
+    results = None
 
     try:
         conn = pymysql.connect(**db_config)
         cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+
+        # 去空格，防止匹配不上
+        product_name = str(product_name).strip()
+        analysis_date = str(analysis_date).strip()
+        subbarcode = str(subbarcode).strip()
 
         query_sql = '''SELECT
             b.*
@@ -1213,18 +1220,13 @@ def query_QL_QC_info(product_name, analysis_date, subbarcode):
             AND a.subbarcode = %s
             AND a.file_type = %s'''
 
-        query_param = (
-            product_name,
-            analysis_date,
-            subbarcode,
-            "qc_g"
-        )
+        query_param = (product_name, analysis_date, subbarcode, "qc_g")
 
         cursor.execute(query_sql, query_param)
         results = cursor.fetchone()
 
-    except pymysql.Error as e:
-        print(f"❌ 数据库查询失败：{e}")
+    except Exception as e:
+        log(f"报错：{e}")
 
     finally:
         if cursor:
@@ -1235,7 +1237,9 @@ def query_QL_QC_info(product_name, analysis_date, subbarcode):
     return results
 
 
-
+def log(msg):
+    with open("/data/soft/report/query_log.txt", "a", encoding="utf-8") as f:
+        print(msg, file=f)
 
 
 
