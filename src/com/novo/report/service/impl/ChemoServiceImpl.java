@@ -66,19 +66,19 @@ public class ChemoServiceImpl implements ChemoService {
                         res.put("allele", chemoDrugInfo.get("allele1"));
                         res.put("tox", translateSpecial(chemoDrugInfo.get("tox1")));
                         res.put("eff", translateSpecial(chemoDrugInfo.get("eff1")));
-                        res.put("trans_PMID", tran1 + " " + PMIDStr);
+                        res.put("trans_PMID", "/".equals(tran1) ? tran1 : tran1 + " " + PMIDStr);
                     } else if (allele.equals(chemoDrugInfo.get("allele2")) || sortString(allele).equals(chemoDrugInfo.get("allele2"))) {
                         String tran2 = chemoDrugInfo.get("trans2");
                         res.put("allele", chemoDrugInfo.get("allele2"));
                         res.put("tox", translateSpecial(chemoDrugInfo.get("tox2")));
                         res.put("eff", translateSpecial(chemoDrugInfo.get("eff2")));
-                        res.put("trans_PMID", tran2 + " " + PMIDStr);
+                        res.put("trans_PMID", "/".equals(tran2) ? tran2 : tran2 + " " + PMIDStr);
                     } else if (allele.equals(chemoDrugInfo.get("allele3")) || sortString(allele).equals(chemoDrugInfo.get("allele3"))) {
                         String tran3 = chemoDrugInfo.get("trans3");
                         res.put("allele", chemoDrugInfo.get("allele3"));
                         res.put("tox", translateSpecial(chemoDrugInfo.get("tox3")));
                         res.put("eff", translateSpecial(chemoDrugInfo.get("eff3")));
-                        res.put("trans_PMID", tran3 + " " + PMIDStr);
+                        res.put("trans_PMID", "/".equals(tran3) ? tran3 : tran3 + " " + PMIDStr);
 
                     }
                     if (res.containsKey("allele")) chemoVariantsDrugInfo.add(res);
@@ -187,11 +187,11 @@ public class ChemoServiceImpl implements ChemoService {
                         List<String> list = Arrays.asList("Efficacy", "Toxicity");
 
                         if (list.contains(type) || list.contains(type1)) {
-                            if (type.equals("Efficacy")){
+                            if (type.equals("Efficacy")) {
                                 drugsAtPosition.get(0).put("tox1", drugsAtPosition.get(1).get("tox1"));
                                 drugsAtPosition.get(0).put("tox2", drugsAtPosition.get(1).get("tox2"));
                                 drugsAtPosition.get(0).put("tox3", drugsAtPosition.get(1).get("tox3"));
-                            }else {
+                            } else {
                                 drugsAtPosition.get(0).put("eff1", drugsAtPosition.get(1).get("eff1"));
                                 drugsAtPosition.get(0).put("eff2", drugsAtPosition.get(1).get("eff2"));
                                 drugsAtPosition.get(0).put("eff3", drugsAtPosition.get(1).get("eff3"));
