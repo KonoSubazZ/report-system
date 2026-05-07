@@ -943,13 +943,14 @@ def process_ZHSRRYY_tip(report_json):
             hrd_desc = 'HRD 状态：阴性，提示对PARP抑制剂可能敏感。'
         result_summary.append(hrd_desc)
 
-        res = query_HRD_info(subbarcode,analysis_date, product_name)
+        res = query_HRD_info(product_name, analysis_date, subbarcode)
         print(f"hrd res{res}")
         # res_info['result_summary'] = result_summary
         res_info['hrd_info'] = res
 
     ## 无靶点表格
     disease_name = report_info.get('diseaseName') #临床诊断
+    log(report_info)
     approved_desc = f"NMPA/FDA适用于{disease_name}的多靶点药物有："
     drug_list = []
     for item in report_json.get('approvedDrugData', []):
@@ -978,7 +979,10 @@ def process_ZHSRRYY_tip(report_json):
 
             gene = item.get('gene')
             pHGVS = item.get('pHGVS')
-            desc = f"{gene} {pHGVS}，"
+            cHGVS = item.get('cHGVS')
+
+            # 优先用 pHGVS，等于 / 时改用 cHGVS
+            desc = f"{gene} {pHGVS}，" if pHGVS != "/" else f"{gene} {cHGVS}，"
 
             # === 处理敏感药 ===
             drugNameList = item.get('drugNameList', [])
@@ -1164,6 +1168,8 @@ def query_HRD_info(product_name, analysis_date, subbarcode):
             "HRD_results"
         )
 
+        log(f"查询 HRD 信息：{query_sql} {query_param}")
+
         cursor.execute(query_sql, query_param)
         results = cursor.fetchone()
 
@@ -1181,13 +1187,17 @@ def query_HRD_info(product_name, analysis_date, subbarcode):
 
 def process_QL_QC_info(report_json):
     subbarcode = report_json.get('subbarcode')
+    subbarcode = "TKHS260053714-1A"
     product_name = report_json.get('panel')
     analysis_date = report_json.get('analysisDate')
-    QL_QC_info = query_QL_QC_info(product_name, analysis_date, subbarcode)
+    log(report_json)
+    QL_QC_info = query_QL_QC_info(product_name, analysis_date, subbarcode, "qc_g", "DNA")
+    QL_QC_hrd_info = query_QL_QC_info(product_name, analysis_date, subbarcode, "qc_g_hrd", "HRD")
     report_json['ql_qc_g_info'] = QL_QC_info
+    report_json['ql_qc_g_hrd_info'] = QL_QC_hrd_info
 
 
-def query_QL_QC_info(product_name, analysis_date, subbarcode):
+def query_QL_QC_info(product_name, analysis_date, subbarcode,file_type, type):
     db_config = {
         'host': '127.0.0.1',
         'port': 8806,
@@ -1205,11 +1215,6 @@ def query_QL_QC_info(product_name, analysis_date, subbarcode):
         conn = pymysql.connect(**db_config)
         cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
 
-        # 去空格，防止匹配不上
-        product_name = str(product_name).strip()
-        analysis_date = str(analysis_date).strip()
-        subbarcode = str(subbarcode).strip()
-
         query_sql = '''SELECT
             b.*
             FROM
@@ -1219,9 +1224,11 @@ def query_QL_QC_info(product_name, analysis_date, subbarcode):
             a.product_name = %s
             AND a.analysis_date = %s
             AND a.subbarcode = %s
-            AND a.file_type = %s'''
+            AND a.file_type = %s
+            AND b.type = %s'''
 
-        query_param = (product_name, analysis_date, subbarcode, "qc_g")
+        query_param = (product_name, analysis_date, subbarcode, file_type, type)
+        log(f"查询 QL_QC 信息：{query_sql} {query_param}")
 
         cursor.execute(query_sql, query_param)
         results = cursor.fetchone()

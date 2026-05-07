@@ -902,7 +902,17 @@ if __name__ == '__main__':
         jinja_env.filters['percent_to_float'] = percent_to_float
         # 渲染模板
         tpl.render(info_json, jinja_env, autoescape=True)
-        tpl.save(output_path)
+
+        # 增加水印
+        # tpl.add_watermark(
+        #     text="测试水印",
+        #     font_name="宋体",
+        #     font_size=72,
+        #     color="#BFBFBF",
+        #     rotation=-45,
+        #     opacity=0.25
+        # )
+        # tpl.save(output_path)
 
         end_time = time.time()
         elapsed_time = end_time - start_time
