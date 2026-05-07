@@ -1187,7 +1187,7 @@ def query_HRD_info(product_name, analysis_date, subbarcode):
 
 def process_QL_QC_info(report_json):
     subbarcode = report_json.get('subbarcode')
-    subbarcode = "TKHS260053714-1A"
+    # subbarcode = "TKHS260053714-1A"
     product_name = report_json.get('panel')
     analysis_date = report_json.get('analysisDate')
     log(report_json)
