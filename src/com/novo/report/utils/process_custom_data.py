@@ -928,7 +928,7 @@ def process_ZHSRRYY_tip(report_json):
     report_info = report_json.get('reportInfo', {})
     conf = report_info.get('conf', {})
     subbarcode = report_json.get('subbarcode')
-    subbarcode = "TKHS260052919-2A"
+    # subbarcode = "TKHS260052919-2A"
     product_name = report_json.get('panel')
     analysis_date = report_json.get('analysisDate')
 
