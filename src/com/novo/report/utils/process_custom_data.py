@@ -927,9 +927,10 @@ def process_ZHSRRYY_tip(report_json):
 
     report_info = report_json.get('reportInfo', {})
     conf = report_info.get('conf', {})
-    subbarcode = report_info.get('subbarcode')
+    subbarcode = report_json.get('subbarcode')
+    subbarcode = "TKHS260052919-2A"
     product_name = report_json.get('panel')
-    analysis_date = report_info.get('analysisDate')
+    analysis_date = report_json.get('analysisDate')
 
     # 检测结果汇总
     result_summary = []
@@ -944,12 +945,11 @@ def process_ZHSRRYY_tip(report_json):
         result_summary.append(hrd_desc)
 
         res = query_HRD_info(product_name, analysis_date, subbarcode)
-        print(f"hrd res{res}")
         # res_info['result_summary'] = result_summary
         res_info['hrd_info'] = res
 
     ## 无靶点表格
-    disease_name = report_info.get('diseaseName') #临床诊断
+    disease_name = report_json.get('diseaseName')  # 临床诊断
     log(report_info)
     approved_desc = f"NMPA/FDA适用于{disease_name}的多靶点药物有："
     drug_list = []
