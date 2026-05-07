@@ -912,7 +912,7 @@ if __name__ == '__main__':
         #     rotation=-45,
         #     opacity=0.25
         # )
-        # tpl.save(output_path)
+        tpl.save(output_path)
 
         end_time = time.time()
         elapsed_time = end_time - start_time
