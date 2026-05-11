@@ -100,7 +100,7 @@
                 $("#emailForm").validate({
                     rules: {
                         "filename": {
-                            "required": function (element) {
+                            "required": function () {
                                 let customer = $("#customer").val(); // 获取选中的客户
                                 return customer !== "IVD-focus-武汉华中同济医院";
                             }
