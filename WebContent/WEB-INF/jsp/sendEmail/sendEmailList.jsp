@@ -99,7 +99,12 @@
             $("#reportBtn").click(function () {
                 $("#emailForm").validate({
                     rules: {
-                        "filename": {"required": true},
+                        "filename": {
+                            "required": function (element) {
+                                let customer = $("#customer").val(); // 获取选中的客户
+                                return customer !== "IVD-focus-武汉华中同济医院";
+                            }
+                        },
                         "subject": {"required": true},
                         "content": {"required": true},
                         "customer": {"required": true}
@@ -336,7 +341,7 @@
                                 <label>邮箱发送：</label>
                             </div>
                             <div class="field">
-                                <input type="radio" name="email" id="IVD" style="height:38px"  value="0"/>IVD&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="email" id="IVD" style="height:38px" value="0"/>IVD&nbsp;&nbsp;&nbsp;
                                 <input type="radio" name="email" id="LDT" style="height:38px" checked value="1"/>LDT
                             </div>
                         </div>
