@@ -30,9 +30,20 @@ def process_custom_data(report_json):
         process_anhuixiongke_tip(report_json)
 
     # WJM
+    # 20260514增加需求-通用panel的D/R分开展示
+
+    conf = report_json.get('conf', {})
+    sarcoma_typing = conf.get('sarcoma_typing', False)
+    brain_glioma_1166 = conf.get('brain_glioma_1166', False)
+    midline_cancer = conf.get('midline_cancer', False)
+    kidney_cancer = conf.get('kidney_cancer', False)
+    is_DR_panel = sarcoma_typing or brain_glioma_1166 or midline_cancer or kidney_cancer
+
+
     if template_name == '肉瘤1238+1166基因检测报告-WJM' or template_name == '肉瘤550+596基因检测报告-WJM'\
             or template_name == '泛实体瘤1238+1166基因检测报告-WJM' or template_name == '泛实体瘤550+596基因检测报告-WJM'\
-            or template_name == '泛实体瘤108+33基因检测报告-单样本-WJM' or template_name == '泛实体瘤58+22基因检测报告-单样本-WJM':
+            or template_name == '泛实体瘤108+33基因检测报告-单样本-WJM' or template_name == '泛实体瘤58+22基因检测报告-单样本-WJM'\
+            or is_DR_panel:
         process_WJM_tip(report_json)
 
     # 浙江省人民医院
