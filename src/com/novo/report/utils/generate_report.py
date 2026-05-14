@@ -332,6 +332,22 @@ def currencyimage(tpl, value, width, height):
     except Exception as e:
         raise RuntimeError(f"图片处理失败（值：{str(value)[:50]}）：{str(e)}")
 
+def sign_image(tpl, value, width, height):
+    BASE_DIR = "/data/soft/scripts/sign"
+    value = value.strip() + ".png"
+    file_path = os.path.join(BASE_DIR,value)
+    try:
+
+        if os.path.isfile(file_path):
+            with open(file_path, 'rb') as f:
+                image_stream = BytesIO(f.read())
+
+        # 3. 生成图片对象
+        return InlineImage(tpl, image_stream, width=Pt(width), height=Pt(height))
+
+    except Exception as e:
+        raise RuntimeError(f"图片处理失败（值：{str(file_path)[:50]}）：{str(e)}")
+
 def currencyimage_old(value, width, height):
     imgdata = base64.b64decode(value)
     # file = open('aa.png', 'wb')
@@ -877,6 +893,7 @@ if __name__ == '__main__':
         jinja_env.filters['mi'] = lambda value, width, height: myimage(tpl, value, width, height)
         jinja_env.filters['pdi'] = lambda value, width, height: pdimage(tpl, value, width, height)
         jinja_env.filters['ci'] = lambda value, width, height: currencyimage(tpl, value, width, height)
+        jinja_env.filters['sign'] = lambda value, width, height: sign_image(tpl, value, width, height)
         jinja_env.filters['red'] = red_gene
         jinja_env.filters['red2'] = red_gene2
         jinja_env.filters['redBody'] = red_bodyGene
