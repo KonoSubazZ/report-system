@@ -50,7 +50,17 @@ public class SendEmailController {
     public Map uploadSendEmail(@RequestParam("filename") List<MultipartFile> filenames, String customer, String subject, String content, String email, HttpSession session) {
         Map map = new HashMap();
         if (!"".equals(customer)) {
-            if (!filenames.get(0).isEmpty()) {
+            // 判断是否为特殊客户，该客户允许不上传文件
+            boolean isSpecialCustomer = "IVD-focus-武汉华中同济医院".equals(customer);
+
+            // 如果不是特殊客户，则必须上传文件
+            if (!isSpecialCustomer && (filenames == null || filenames.isEmpty() || filenames.get(0).isEmpty())) {
+                map.put("errorMessage", "没有选择文件！");
+                return map;
+            }
+
+            // 如果有文件，则处理文件上传
+            if (filenames != null && !filenames.isEmpty() && !filenames.get(0).isEmpty()) {
                 // 获取路径
                 String path = session.getServletContext().getRealPath("/");
                 String webappsPath = new File(path).getParent();
@@ -84,7 +94,9 @@ public class SendEmailController {
                 content = content.replace("\r\n", "<br>").replace(" ", "&nbsp;");
                 map = sendEmail(customer, file_path, filenameSize, subject, content, email);
             } else {
-                map.put("errorMessage", "没有选择文件！");
+                // 特殊客户没有上传文件，直接发送邮件（不带附件）
+                content = content.replace("\r\n", "<br>").replace(" ", "&nbsp;");
+                map = sendEmail(customer, null, new ArrayList<>(), subject, content, email);
             }
         } else {
             map.put("errorMessage", "没有选择送检机构！");
