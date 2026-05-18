@@ -2189,7 +2189,13 @@ public class PyReportServiceImpl implements PyReportService {
             }
             if (Clinical_significance.equals("1") || Clinical_significance.equals("2") || Clinical_significance.equals("3")) {
 
-                String crTumors = moduleService.getCRTumors(Gene, sf.getGender(), Clinical_significance);
+                String crTumors = "";
+                // 20260518增加个性化北京儿童omim表格
+                if ("泛实体瘤1238+1166基因报告-儿童肿瘤".equals(templateName) || "肉瘤1238+1166基因报告-儿童肿瘤".equals(templateName)) {
+                    crTumors = moduleService.getBJRTCRTumors(Gene, sf.getGender(), Clinical_significance);
+                } else {
+                    crTumors = moduleService.getCRTumors(Gene, sf.getGender(), Clinical_significance);
+                }
                 crCheckLine.put("cr_tumors", crTumors);
                 if (crTumors != null && !crTumors.equals("-")) {
                     String[] tumorsArray = crTumors.split("，");

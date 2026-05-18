@@ -43,7 +43,7 @@ def process_custom_data(report_json):
     if template_name == '肉瘤1238+1166基因检测报告-WJM' or template_name == '肉瘤550+596基因检测报告-WJM'\
             or template_name == '泛实体瘤1238+1166基因检测报告-WJM' or template_name == '泛实体瘤550+596基因检测报告-WJM'\
             or template_name == '泛实体瘤108+33基因检测报告-单样本-WJM' or template_name == '泛实体瘤58+22基因检测报告-单样本-WJM'\
-            or is_DR_panel:
+            or template_name == '泛实体瘤1238+1166基因报告-儿童肿瘤' or template_name == '肉瘤1238+1166基因报告-儿童肿瘤' or is_DR_panel:
         process_WJM_tip(report_json)
 
     # 浙江省人民医院

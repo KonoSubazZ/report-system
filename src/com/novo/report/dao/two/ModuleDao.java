@@ -31,4 +31,6 @@ public interface ModuleDao {
     String getCRTumors(@Param("gene") String gene, @Param("gender") String gender);
 
     String getMelanomaReferences(@Param("cancer") String cancer);
+
+    String getBJRTCRTumors(String gene, String gender);
 }

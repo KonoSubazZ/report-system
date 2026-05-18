@@ -230,6 +230,15 @@ public interface ModuleService {
      */
     String getCRTumors(String gene, String gender, String clinicalSignificance);
 
+    /**
+     * 个性化-获取北京儿童遗传基因相关肿瘤
+     * @param gender
+     * @param gene
+     * @param clinicalSignificance
+     * @return
+     */
+    String getBJRTCRTumors(String gene, String gender, String clinicalSignificance);
+
 
     List<String> getMelanomaReferences(String cancer);
 }

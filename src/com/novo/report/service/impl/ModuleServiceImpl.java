@@ -370,6 +370,24 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
+    public String getBJRTCRTumors(String gene, String gender, String clinicalSignificance) {
+        String DEFAULT_TUMORS = "-";
+        String MALE = "男";
+        String FEMALE = "女";
+
+        // 未知临床意义
+        if (clinicalSignificance.equals("3")) {
+            return DEFAULT_TUMORS;
+        }
+        if (!MALE.equals(gender) && !FEMALE.equals(gender)) {
+            gender = "/";
+        }
+
+        String CRTumors = moduleDao.getBJRTCRTumors(gene, gender);
+        return CRTumors == null ? DEFAULT_TUMORS : CRTumors;
+    }
+
+    @Override
     public List<String> getMelanomaReferences(String cancer) {
         String references = moduleDao.getMelanomaReferences(cancer);
 

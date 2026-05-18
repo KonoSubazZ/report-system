@@ -122,5 +122,12 @@
         FROM mod_references
         WHERE cancer = #{cancer}
     </select>
+    <select id="getBJRTCRTumors" resultType="java.lang.String">
+        SELECT tumors
+        FROM cr_related_tumors_bjrt
+        WHERE gender = #{gender}
+          AND gene = #{gene}
+          AND deleted = 0
+    </select>
 
 </mapper>
