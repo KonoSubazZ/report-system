@@ -1009,7 +1009,8 @@ public class GeneMarkerVwController {
                     }
 
                     // 肾细胞癌分型
-                    if (diseaseService.isRenalCellCarcinoma(diseaseId) || module.contains("肾癌1166分子分型")) {
+                    // 20260519 肾细胞癌 ==> 肾癌
+                    if (diseaseService.isKidneyCancer(diseaseId) || module.contains("肾癌1166分子分型")) {
 
                         List<AllCancerTyping> midlineTyping = analysisReportDao.getTypingInfo(product_name, "Kidney");
                         fusionAll.stream()
@@ -1036,6 +1037,7 @@ public class GeneMarkerVwController {
                                     cancerTyping.setUpdate_by(user_account);
 
                                     // 获取肾细胞癌分型
+                                    // 20260519 肾细胞癌 ==> 肾癌
                                     for (AllCancerTyping allCancerTyping : midlineTyping) {
                                         String gene1 = allCancerTyping.getGene();
                                         String molecularTyping = allCancerTyping.getMolecular_typing();
