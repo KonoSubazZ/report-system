@@ -1010,7 +1010,7 @@ public class GeneMarkerVwController {
 
                     // 肾细胞癌分型
                     // 20260519 肾细胞癌 ==> 肾癌
-                    if (diseaseService.isKidneyCancer(diseaseId) || module.contains("肾癌1166分子分型")) {
+                    if (diseaseService.isRenalCellCarcinoma(diseaseId) || module.contains("肾癌1166分子分型")) {
 
                         List<AllCancerTyping> midlineTyping = analysisReportDao.getTypingInfo(product_name, "Kidney");
                         fusionAll.stream()

@@ -3968,7 +3968,7 @@ public class PyReportServiceImpl implements PyReportService {
         // boolean cancerTyping1166Flag = (diseaseName.contains("肾细胞癌") || "肾癌1166分子分型".equals(module)) || diseaseFlag.get("Midline");
         boolean isNUTMidlinePanel = RNATPYingPanel.contains(productName) && diseaseService.isNUTMidlineCarcinoma(diseaseId);
         // 20260519 肾细胞癌 ==> 肾癌
-        boolean isRenalCellCarcinomaPanel = (RNATPYingPanel.contains(productName) && diseaseService.isKidneyCancer(diseaseId)) || "肾癌1166分子分型".equals(module);
+        boolean isRenalCellCarcinomaPanel = (RNATPYingPanel.contains(productName) && diseaseService.isRenalCellCarcinoma(diseaseId)) || "肾癌1166分子分型".equals(module);
         if (isNUTMidlinePanel || isRenalCellCarcinomaPanel) {
             // 肾细胞癌 肾癌做的特殊处理
             // 待移除，更新大报告和小报告关于这个的逻辑

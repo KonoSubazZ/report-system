@@ -47,7 +47,7 @@ public class DiseaseServiceImpl implements DiseaseService {
 
     @Override
     public boolean isRenalCellCarcinoma(Integer dId) {
-        List<Integer> diseaseHierarchyIds = Arrays.asList(4450, 4465, 4467);
+        List<Integer> diseaseHierarchyIds = Arrays.asList(263,4450, 4465, 4467);
         return diseaseHierarchyIds.contains(dId);
     }
 
