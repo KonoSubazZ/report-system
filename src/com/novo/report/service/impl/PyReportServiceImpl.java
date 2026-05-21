@@ -2191,7 +2191,8 @@ public class PyReportServiceImpl implements PyReportService {
 
                 String crTumors = "";
                 // 20260518增加个性化北京儿童omim表格
-                if ("泛实体瘤1238+1166基因报告-儿童肿瘤".equals(templateName) || "肉瘤1238+1166基因报告-儿童肿瘤".equals(templateName)) {
+                // 20260521 北京儿童omim表格变更为客户，覆盖范围为通用+个性化
+                if ("北京卓越财盛科技有限公司".equals(sf.getCustomer())) {
                     crTumors = moduleService.getBJRTCRTumors(Gene, sf.getGender(), Clinical_significance);
                 } else {
                     crTumors = moduleService.getCRTumors(Gene, sf.getGender(), Clinical_significance);
