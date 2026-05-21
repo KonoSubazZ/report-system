@@ -824,6 +824,17 @@ public class GeneMarkerVwController {
                         NF2Info.put("gene", "NF2");
                         NF2Info.put("info", "NF2 突变");
                         brainGlioma.add(NF2Info);
+
+                        // 20260521增加 MYB H3-3B
+                        Map<String, String> MYBInfo = new HashMap<>();
+                        MYBInfo.put("gene", "MYB");
+                        MYBInfo.put("info", "MYB 扩增/融合");
+                        brainGlioma.add(MYBInfo);
+
+                        Map<String, String> H3_3BInfo = new HashMap<>();
+                        H3_3BInfo.put("gene", "H3-3B");
+                        H3_3BInfo.put("info", "H3-3B 突变");
+                        brainGlioma.add(H3_3BInfo);
                     }
 
                     List<Map> spCna = analysisReportDao.getSpCna(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
@@ -863,15 +874,15 @@ public class GeneMarkerVwController {
                                 if (gene.equals(gene2)) {
                                     if ("TERT".equals(gene2) && ori_variant.contains("promoter") && "体系".equals(type)) { // TERT 启动子突变（仅体系）
                                         output = "检出";
-                                    } else if (Arrays.asList("IDH1", "IDH2", "ATRX", "H3-3A", "H3C2", "H3C3", "PIK3CA", "SMARCB1").contains(gene2) && (ori_variant.contains("p.") || ori_variant.contains("c.")) && "体系".equals(type)) { // 突变：体系I、II、III类变异
+                                    } else if (Arrays.asList("IDH1", "IDH2", "ATRX", "H3-3A", "H3C2", "H3C3", "PIK3CA").contains(gene2) && (ori_variant.contains("p.") || ori_variant.contains("c.")) && "体系".equals(type)) { // 突变：体系I、II、III类变异
                                         output = "检出";
-                                    } else if (Arrays.asList("EGFR", "MYCN", "PDGFRA", "MET").contains(gene2) && "Amplification".equals(ori_variant)) { // 只报出扩增
+                                    } else if (Arrays.asList("EGFR", "MYCN", "PDGFRA", "MET", "MYB").contains(gene2) && "Amplification".equals(ori_variant)) { // 只报出扩增
                                         output = "检出";
                                     } else if ("BRAF".equals(gene2) && (ori_variant.contains("p.") || ori_variant.contains("c.") || ori_variant.contains("Fusion")) && "体系".equals(type)) { // 突变+融合：体系I、II、III类变异
                                         output = "检出";
-                                    } else if (Arrays.asList("TP53", "PTEN", "TSC1", "TSC2", "NF1", "NF2").contains(gene2) && (ori_variant.contains("p.") || ori_variant.contains("c."))) { // 突变：体系I、II、III类变异+ 胚系致病性/可能致病性变异/不确定性变异
+                                    } else if (Arrays.asList("TP53", "PTEN", "TSC1", "TSC2", "NF1", "NF2", "H3-3B", "SMARCB1").contains(gene2) && (ori_variant.contains("p.") || ori_variant.contains("c."))) { // 突变：体系I、II、III类变异+ 胚系致病性/可能致病性变异/不确定性变异
                                         output = "检出";
-                                    } else if (Arrays.asList("FGFR1", "FGFR2", "FGFR3", "NTRK1", "NTRK2", "NTRK3", "ALK", "ROS1", "YAP1").contains(gene2) && ori_variant.contains("Fusion")) { // 只报出融合
+                                    } else if (Arrays.asList("FGFR1", "FGFR2", "FGFR3", "NTRK1", "NTRK2", "NTRK3", "ALK", "ROS1", "YAP1", "MYB", "MET").contains(gene2) && ori_variant.contains("Fusion")) { // 只报出融合
                                         output = "检出";
                                     } else if ("ZFTA".equals(gene2) && ori_variant.contains("ZFTA-RELA")) { // 只报ZFTA（C11orf95）-RELA融合
                                         output = "检出";
