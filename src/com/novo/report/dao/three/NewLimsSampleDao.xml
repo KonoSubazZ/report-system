@@ -42,6 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		AND upload_date = #{date}
 		AND (merge_product_name = #{productName}
 		    or product_name = #{productName})
+		AND status = '3'
 	</select>
 
 </mapper>
