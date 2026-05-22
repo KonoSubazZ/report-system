@@ -32,13 +32,14 @@ def process_custom_data(report_json):
     # WJM
     # 20260514增加需求-通用panel的D/R分开展示
 
-    conf = report_json.get('reportInfo').get('conf', {})
-    sarcoma_typing = conf.get('sarcomaTyping', False)
-    brain_glioma_1166 = conf.get('brainGlioma', False)
-    midline_cancer = conf.get('midlineCancer', False)
-    kidney_cancer = conf.get('kidneyCancer', False)
-    is_DR_panel = (sarcoma_typing or brain_glioma_1166 or midline_cancer or kidney_cancer) and "WES" not in template_name
-    log(conf)
+    # conf = report_json.get('reportInfo').get('conf', {})
+    # sarcoma_typing = conf.get('sarcomaTyping', False)
+    # brain_glioma_1166 = conf.get('brainGlioma', False)
+    # midline_cancer = conf.get('midlineCancer', False)
+    # kidney_cancer = conf.get('kidneyCancer', False)
+    panel = report_json.get("panel")
+    DR_panel = ["novopm2_tis_550_1166", "novopm2_tis_550_596", "novopm2_tis_169_596", "novopm2_tis1_169_596", "novopm2_tis1_108_33", "novopm2_tis1_58_22", "novopm2_tis1_1238_1166"]
+    is_DR_panel = panel in DR_panel
     log("is_DR_panel: %s" % is_DR_panel)
     report_json['is_DR_panel'] = is_DR_panel
 
