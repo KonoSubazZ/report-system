@@ -832,7 +832,7 @@ public class GeneMarkerVwController {
                         brainGlioma.add(MYBInfo);
 
                         Map<String, String> H3_3BInfo = new HashMap<>();
-                        H3_3BInfo.put("gene", "H3-3B");
+                        H3_3BInfo.put("gene", "H33B");
                         H3_3BInfo.put("info", "H3-3B 突变");
                         brainGlioma.add(H3_3BInfo);
                     }
@@ -843,6 +843,9 @@ public class GeneMarkerVwController {
                         String gene = map.get("gene") == null ? "" : map.get("gene").toString();
                         if ("H33A".equals(gene)) {
                             gene = "H3-3A";
+                        }
+                        if ("H33B".equals(gene)) {
+                            gene = "H3-3B";
                         }
                         // 特殊处理的分子标记物
                         if (Arrays.asList("MGMT", "chr", "pq", "CDKN2").contains(gene)) {
