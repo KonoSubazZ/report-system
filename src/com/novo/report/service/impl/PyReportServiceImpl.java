@@ -4141,7 +4141,7 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setReferences(references);
 
             // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结、重要靶向基因汇总
-            Map<String, Object> commonNote = generateCommonNote(templateConf, productName, rt, cancerInfo, query, hasMET);
+            Map<String, Object> commonNote = generateCommonNote(templateConf, productName, rt, cancerInfo, query, hasMET, sf.getCustomer());
             rt.setCommonNote(commonNote);
         } else {
             // 增加对于没有模块化模板的基因标红逻辑
@@ -4581,7 +4581,8 @@ public class PyReportServiceImpl implements PyReportService {
                                                    ReportTemplate rt,
                                                    Map cancerInfo,
                                                    CommonQueryVO query,
-                                                   boolean hasMET) {
+                                                   boolean hasMET,
+                                                   String customer) {
         Map<String, Object> res = new HashMap<>();
         String templateName = rt.getTemplate_name();
         Object type = rt.getSummaryOfRresults().get("type");
@@ -4757,8 +4758,13 @@ public class PyReportServiceImpl implements PyReportService {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("qc");
 
-            String type1 = "DNA"; // 默认类型
+            // 20260526-增加qc不升级配置
+            List<String> unupgradedCustomerList = moduleService.getconfTemplateList("QC_UPGRADE_DISABLED");
+            if (unupgradedCustomerList != null && unupgradedCustomerList.contains(customer)){
+                commonNote.setModule("qc_upgrade_disabled");
+            }
 
+            String type1 = "DNA"; // 默认类型
             if (panelType.contains("RNA")) {
                 type1 = "RNA";
             } else if (panelType.contains("HRD") || "tissue".equals(sampleType)) {
