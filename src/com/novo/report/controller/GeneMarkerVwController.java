@@ -1357,6 +1357,7 @@ public class GeneMarkerVwController {
         model.addAttribute("rna", rna);
         model.addAttribute("hrd", hrd);
         model.addAttribute("flag", flag);
+        addQcUpgradeInfo(currentNgsAvailable, sf, model);
 
         SampleFile sampleFile = sampleFileDao.selectSampleFileBySubbarcode(currentNgsAvailable.getSubbarcode());
         if (sampleFile != null) {
@@ -1365,6 +1366,29 @@ public class GeneMarkerVwController {
                 model.addAttribute("qualityType", "白细胞");
             }
         }
+    }
+
+    private void addQcUpgradeInfo(CurrentNgsAvailableData currentNgsAvailable, SampleFile sampleFile, Model model) {
+        String productName = currentNgsAvailable.getProduct_name();
+        String panelType = "";
+        if (!StringUtils.isBlank(productName)) {
+            Map<String, String> productInfo = lifeDao.getProductInfoByProductName(productName);
+            if (productInfo != null && productInfo.get("product_type") != null) {
+                panelType = productInfo.get("product_type");
+            }
+        }
+
+        String sampleType = sampleFile == null ? "" : sampleFile.getSample_type();
+        String customer = sampleFile == null ? "" : sampleFile.getCustomer();
+        List<String> unupgradedCustomerList = moduleService.getconfTemplateList("QC_UPGRADE_DISABLED");
+        if (unupgradedCustomerList == null) {
+            unupgradedCustomerList = Collections.emptyList();
+        }
+        boolean qcUpgradeEnabled = !unupgradedCustomerList.contains(customer);
+
+        model.addAttribute("qcUpgradeEnabled", qcUpgradeEnabled);
+        model.addAttribute("qcPanelType", panelType == null ? "" : panelType.trim());
+        model.addAttribute("qcSampleType", sampleType == null ? "" : sampleType.trim());
     }
 
     public String transferOriVariant(String ori_variant) {

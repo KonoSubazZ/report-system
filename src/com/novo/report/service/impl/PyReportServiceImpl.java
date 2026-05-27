@@ -589,11 +589,12 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setGenome_alignment(sf.getGenome_alignment());
         rt.setBase_quality(sf.getBase_quality());
         //QC质控信息
+        boolean qcUpgradeEnabled = isQcUpgradeEnabled(sf.getCustomer());
         Map qc = analysisReportDao.getQC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         if (qc != null && qc.size() > 0) {
             rt.setTumorcellcontent(qc.get("tumorcellcontent").toString());
             rt.setDNA_total(qc.get("DNA_total").toString());
-            rt.setDNA_degradation(qc.get("DNA_degradation").toString());
+            rt.setDNA_degradation(formatDnaDegradation(qc.get("DNA_degradation").toString(), qcUpgradeEnabled));
             rt.setOutbound_quantity(qc.get("outbound_quantity").toString());
             rt.setPlane_data(qc.get("plane_data").toString());
             rt.setSequencing_depth(qc.get("sequencing_depth").toString());
@@ -638,7 +639,7 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setDNA_total(sf.getDNA_total());
         }
         if (!StringUtils.isEmpty(sf.getDNA_degradation())) {
-            rt.setDNA_degradation(sf.getDNA_degradation());
+            rt.setDNA_degradation(formatDnaDegradation(sf.getDNA_degradation(), qcUpgradeEnabled));
         }
         if (!StringUtils.isEmpty(sf.getOutbound_quantity())) {
             rt.setOutbound_quantity(sf.getOutbound_quantity());
@@ -648,6 +649,9 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setRna(rna);
         //QC HRD质控信息
         Map hrd = analysisReportDao.getQCHRD(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+        if (hrd != null && hrd.get("DNA_degradation") != null) {
+            hrd.put("DNA_degradation", formatDnaDegradation(hrd.get("DNA_degradation").toString(), qcUpgradeEnabled));
+        }
         rt.setHrd(hrd);
         // 20250311 样本质量评估
         if (rna != null && rna.size() > 0) {
@@ -7429,6 +7433,28 @@ public class PyReportServiceImpl implements PyReportService {
             default:
                 return levelStr; // 返回原始值
         }
+    }
+
+    private boolean isQcUpgradeEnabled(String customer) {
+        List<String> unupgradedCustomerList = moduleService.getconfTemplateList("QC_UPGRADE_DISABLED");
+        return unupgradedCustomerList == null || !unupgradedCustomerList.contains(customer);
+    }
+
+    private String formatDnaDegradation(String dnaDegradation, boolean qcUpgradeEnabled) {
+        if (!qcUpgradeEnabled || StringUtils.isBlank(dnaDegradation)) {
+            return dnaDegradation;
+        }
+        String value = dnaDegradation.trim().toUpperCase();
+        if ("A".equals(value)) {
+            return "1";
+        }
+        if ("B".equals(value) || "C".equals(value)) {
+            return "2";
+        }
+        if ("D".equals(value)) {
+            return "3";
+        }
+        return dnaDegradation;
     }
 
     private void processLynchCRTable(ReportTemplate rt) {

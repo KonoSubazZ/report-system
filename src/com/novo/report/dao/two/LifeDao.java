@@ -62,4 +62,6 @@ public interface LifeDao {
 
 	Integer getPendingAndErrorCount(@Param("subbarcode")String subbarcode, @Param("analysis_date")String analysis_date);
 	Map<String, String>  getProductInfo(@Param("product_id")Integer product_id);
+
+	Map<String, String> getProductInfoByProductName(@Param("product_name") String product_name);
 }

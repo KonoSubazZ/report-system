@@ -149,4 +149,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where
 		    product_id=#{product_id}
 	</select>
+
+	<select id="getProductInfoByProductName" resultType="java.util.Map">
+		select
+			product_name,
+			type as product_type
+		from
+			product
+		where
+			product_name=#{product_name}
+			or path_name=#{product_name}
+		limit 1
+	</select>
 </mapper>
