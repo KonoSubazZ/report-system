@@ -835,6 +835,10 @@ public class GeneMarkerVwController {
                         H3_3BInfo.put("gene", "H33B");
                         H3_3BInfo.put("info", "H3-3B 突变");
                         brainGlioma.add(H3_3BInfo);
+
+                        // 20260527脑胶质瘤MET增加融合
+                        brainGlioma.stream().filter(map -> "MET".equals(map.get("gene"))).forEach(map -> map.put("info", "MET 扩增和融合"));
+
                     }
 
                     List<Map> spCna = analysisReportDao.getSpCna(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
