@@ -12,16 +12,6 @@ public class ReportTemplate {
     }
 
     private SampleFile sample;
-
-    public Integer getReportId() {
-        return reportId;
-    }
-
-    public void setReportId(Integer reportId) {
-        this.reportId = reportId;
-    }
-
-    private Integer reportId;
     private String client; // 委 托人
     private String contact; // 联 系人
     private String customer; // 送 检
