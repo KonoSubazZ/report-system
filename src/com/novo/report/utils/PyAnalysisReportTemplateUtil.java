@@ -21,6 +21,7 @@ public class PyAnalysisReportTemplateUtil {
         // TODO 待升级-固定目录
         String docxPath = path + "docx/" + rt.getTemplate_name() + ".docx";
         Map<String, Object> data = new HashMap<String, Object>();
+        data.put("reportId", apr.getReport_id());
         if (apr.getProduct_name().contains("novoivd")) {
             data.put("age", StringUtils.isEmpty(rt.getAge()) ? "/" : rt.getAge());
             data.put("client", StringUtils.isEmpty(rt.getClient()) ? "/" : rt.getClient());

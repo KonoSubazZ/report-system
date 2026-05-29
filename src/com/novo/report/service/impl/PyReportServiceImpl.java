@@ -4152,7 +4152,7 @@ public class PyReportServiceImpl implements PyReportService {
             summaryOfRresults.put("detectedGeneInfo", detectedGeneInfo);
             rt.setSummaryOfRresults(summaryOfRresults);
         }
-
+        rt.setReportId(reportId);
 
         AnalysisReport analysisReport = null;
         String status = null;

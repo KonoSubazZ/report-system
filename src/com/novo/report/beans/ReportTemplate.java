@@ -12,6 +12,16 @@ public class ReportTemplate {
     }
 
     private SampleFile sample;
+
+    public Integer getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(Integer reportId) {
+        this.reportId = reportId;
+    }
+
+    private Integer reportId;
     private String client; // 委 托人
     private String contact; // 联 系人
     private String customer; // 送 检
@@ -52,7 +62,7 @@ public class ReportTemplate {
     private String c797stestresult2;
     private String template_id;
     private String template_name;
-    private String short_name;
+
     private String age;
     private String tumorcellexpression;
     private String immunocellexpression;
