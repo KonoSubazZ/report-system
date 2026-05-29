@@ -1,3 +1,4 @@
+import json
 import re
 import pymysql
 from datetime import datetime
@@ -39,17 +40,20 @@ def process_custom_data(report_json):
     # kidney_cancer = conf.get('kidneyCancer', False)
     panel = report_json.get("panel")
     DR_panel = ["novopm2_tis_1238_1166", "novopm2_tis_550_596", "novopm2_tis_169_596", "novopm2_tis1_169_596", "novopm2_tis1_108_33", "novopm2_tis1_58_22", "novopm2_tis1_1238_1166"]
+    to_update_json_data = {}
     is_DR_panel = panel in DR_panel
     log("is_DR_panel: %s" % is_DR_panel)
     report_json['is_DR_panel'] = is_DR_panel
-
+    report_id = report_json.get('reportId')
 
     if (template_name == '肉瘤1238+1166基因检测报告-WJM' or template_name == '肉瘤550+596基因检测报告-WJM'\
             or template_name == '泛实体瘤1238+1166基因检测报告-WJM' or template_name == '泛实体瘤550+596基因检测报告-WJM'\
             or template_name == '泛实体瘤108+33基因检测报告-单样本-WJM' or template_name == '泛实体瘤58+22基因检测报告-单样本-WJM'\
             or template_name == '泛实体瘤1238+1166基因报告-儿童肿瘤' or template_name == '肉瘤1238+1166基因报告-儿童肿瘤' or
             template_name == '肉瘤1238+1166基因报告' or template_name == '肉瘤1238+1166基因检测报告' or is_DR_panel):
-        process_WJM_tip(report_json)
+        to_update_json_data['is_DR_panel'] = is_DR_panel
+        process_WJM_tip(report_json, to_update_json_data)
+        update_report_json_fields(report_id, to_update_json_data)
 
     # 浙江省人民医院
     if template_name == '泛实体瘤188基因+HRD检测报告-浙江省人民医院':
@@ -765,7 +769,7 @@ def process_anhuixiongke_tip(report_json):
     report_json['category_1_variant_list'] = category_1_variant_list
 
 
-def process_WJM_tip(report_json):
+def process_WJM_tip(report_json, to_update_json_data):
     # 肾癌/中线癌分型
     if report_json.get('cancerTyping1166'):
         cancerTyping1166DNA = []
@@ -793,6 +797,8 @@ def process_WJM_tip(report_json):
 
         report_json['cancerTyping1166DNA'] = cancerTyping1166DNA
         report_json['cancerTyping1166RNA'] = cancerTyping1166RNA
+        to_update_json_data['cancerTyping1166DNA'] = cancerTyping1166DNA
+        to_update_json_data['cancerTyping1166RNA'] = cancerTyping1166RNA
 
     # 肉瘤分型
     if report_json.get('sarcomaTyping'):
@@ -822,6 +828,8 @@ def process_WJM_tip(report_json):
 
         report_json['sarcomaTypingDNA'] = sarcomaTypingDNA
         report_json['sarcomaTypingRNA'] = sarcomaTypingRNA
+        to_update_json_data['sarcomaTypingDNA'] = sarcomaTypingDNA
+        to_update_json_data['sarcomaTypingRNA'] = sarcomaTypingRNA
 
     # 体系检出
     if report_json.get('unknownTipLineStr'):
@@ -851,6 +859,8 @@ def process_WJM_tip(report_json):
 
         report_json['unknownTipLineStrDNA'] = unknownTipLineStrDNA
         report_json['unknownTipLineStrRNA'] = unknownTipLineStrRNA
+        to_update_json_data['unknownTipLineStrDNA'] = unknownTipLineStrDNA
+        to_update_json_data['unknownTipLineStrRNA'] = unknownTipLineStrRNA
 
     if report_json.get('bodyDrugTipLineStr'):
         bodyDrugTipLineStrDNA = []
@@ -879,6 +889,8 @@ def process_WJM_tip(report_json):
 
         report_json['bodyDrugTipLineStrDNA'] = bodyDrugTipLineStrDNA
         report_json['bodyDrugTipLineStrRNA'] = bodyDrugTipLineStrRNA
+        to_update_json_data['bodyDrugTipLineStrDNA'] = bodyDrugTipLineStrDNA
+        to_update_json_data['bodyDrugTipLineStrRNA'] = bodyDrugTipLineStrRNA
 
     if report_json.get('BodyDrugNoComplexStr'):
         BodyDrugNoComplexStrDNA = []
@@ -907,6 +919,8 @@ def process_WJM_tip(report_json):
 
         report_json['BodyDrugNoComplexStrDNA'] = BodyDrugNoComplexStrDNA
         report_json['BodyDrugNoComplexStrRNA'] = BodyDrugNoComplexStrRNA
+        to_update_json_data['BodyDrugNoComplexStrDNA'] = BodyDrugNoComplexStrDNA
+        to_update_json_data['BodyDrugNoComplexStrRNA'] = BodyDrugNoComplexStrRNA
 
     if report_json.get('unknownVarAnalysisStr'):
         unknownVarAnalysisStrDNA = []
@@ -935,6 +949,8 @@ def process_WJM_tip(report_json):
 
         report_json['unknownVarAnalysisStrDNA'] = unknownVarAnalysisStrDNA
         report_json['unknownVarAnalysisStrRNA'] = unknownVarAnalysisStrRNA
+        to_update_json_data['unknownVarAnalysisStrDNA'] = unknownVarAnalysisStrDNA
+        to_update_json_data['unknownVarAnalysisStrRNA'] = unknownVarAnalysisStrRNA
 
 
 def process_ZHSRRYY_tip(report_json):
@@ -1146,9 +1162,18 @@ def format_intron_exon(seq_str):
     # 拼接结果
     return f"{num_part}号{type_map[prefix]}"
 
+def _check_sql_identifier(identifier):
+    if not re.match(r'^[A-Za-z_][A-Za-z0-9_]*$', identifier or ''):
+        raise ValueError("invalid sql identifier: %s" % identifier)
 
-def query_HRD_info(product_name, analysis_date, subbarcode):
-    db_config = {
+
+def _json_path_for_field(field_name):
+    _check_sql_identifier(field_name)
+    return '$.%s' % field_name
+
+
+def _default_db_config():
+    return {
         'host': '127.0.0.1',
         'port': 8806,
         'user': 'novo',
@@ -1156,6 +1181,89 @@ def query_HRD_info(product_name, analysis_date, subbarcode):
         'database': 'omics',
         'charset': 'utf8mb4'
     }
+
+
+def update_report_json_fields(report_id, fields, table_name='analysis_report_store',
+                              json_column='report_detail', id_column='report_id',
+                              db_config=None):
+    """
+    用 JSON_SET 局部更新指定表的大 JSON 字段：不存在的字段会新增，已存在字段会覆盖。
+    示例：update_report_json_fields('23976', {'is_DR_panel': True})
+    """
+    if not report_id:
+        raise ValueError("report_id is required")
+    if not isinstance(fields, dict) or not fields:
+        raise ValueError("fields must be a non-empty dict")
+
+    _check_sql_identifier(table_name)
+    _check_sql_identifier(json_column)
+    _check_sql_identifier(id_column)
+
+    if db_config is None:
+        db_config = _default_db_config()
+
+    json_set_args = []
+    update_params = []
+    for field_name, field_value in fields.items():
+        json_set_args.append("%s, JSON_EXTRACT(%s, '$')")
+        update_params.append(_json_path_for_field(field_name))
+        update_params.append(json.dumps(field_value, ensure_ascii=False))
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = pymysql.connect(**db_config)
+        cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+
+        update_sql = (
+            "UPDATE {table_name} "
+            "SET {json_column} = JSON_SET(COALESCE(NULLIF({json_column}, ''), JSON_OBJECT()), {json_set_args}) "
+            "WHERE {id_column} = %s"
+        ).format(
+            table_name=table_name,
+            json_column=json_column,
+            json_set_args=', '.join(json_set_args),
+            id_column=id_column
+        )
+        cursor.execute(update_sql, update_params + [report_id])
+
+        conn.commit()
+        return cursor.rowcount
+
+    except Exception:
+        if conn:
+            conn.rollback()
+        raise
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+
+def update_current_report_detail_fields(report_json, field_names=None):
+    """
+    将 report_json 里已计算出的字段写回 analysis_report_store.report_detail。
+    默认写回 is_DR_panel；后续新增计算字段时传入 field_names 即可。
+    """
+    if field_names is None:
+        field_names = ['is_DR_panel']
+
+    fields = {}
+    for field_name in field_names:
+        if field_name in report_json:
+            fields[field_name] = report_json.get(field_name)
+    if not fields:
+        return 0
+
+    report_id = report_json.get('reportId') or report_json.get('report_id')
+    return update_report_json_fields(report_id, fields)
+
+
+def query_HRD_info(product_name, analysis_date, subbarcode):
+    db_config = _default_db_config()
 
     conn = None
     cursor = None
@@ -1214,14 +1322,7 @@ def process_QL_QC_info(report_json):
 
 
 def query_QL_QC_info(product_name, analysis_date, subbarcode,file_type, type):
-    db_config = {
-        'host': '127.0.0.1',
-        'port': 8806,
-        'user': 'novo',
-        'password': 'GodIsLove',
-        'database': 'omics',
-        'charset': 'utf8mb4'
-    }
+    db_config = _default_db_config()
 
     conn = None
     cursor = None
