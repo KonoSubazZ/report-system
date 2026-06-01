@@ -25,6 +25,22 @@ from docxtpl import DocxTemplate, RichText, InlineImage
 from assess_sample_quality import assess_sample_quality
 from process_custom_data import process_custom_data
 
+CUSTOM_REPORT_DETAIL_FIELDS = [
+    'is_DR_panel',
+    'cancerTyping1166DNA',
+    'cancerTyping1166RNA',
+    'sarcomaTypingDNA',
+    'sarcomaTypingRNA',
+    'unknownTipLineStrDNA',
+    'unknownTipLineStrRNA',
+    'bodyDrugTipLineStrDNA',
+    'bodyDrugTipLineStrRNA',
+    'BodyDrugNoComplexStrDNA',
+    'BodyDrugNoComplexStrRNA',
+    'unknownVarAnalysisStrDNA',
+    'unknownVarAnalysisStrRNA',
+]
+
 
 def setup_logging():
     """
@@ -881,8 +897,13 @@ if __name__ == '__main__':
 
         # 处理个性化模板
         process_custom_data(info_json)
+        custom_report_detail = {
+            field: info_json[field]
+            for field in CUSTOM_REPORT_DETAIL_FIELDS
+            if field in info_json
+        }
         with open(json_path, 'w', encoding='utf-8') as f:
-            json.dump(info_json, f, ensure_ascii=False)
+            json.dump(custom_report_detail, f, ensure_ascii=False)
         # 模板初始化过滤器
         jinja_env = jinja2.Environment()
         jinja_env.filters['ms'] = mystyle
