@@ -42,6 +42,7 @@ public class AnalysisReport {
 	private Integer flag;
 	private String filename91360;
 	private String file_path91360;
+	private String customReportDetail;
 
 	public Integer getSend_way() {
 		return send_way;
@@ -303,5 +304,13 @@ public class AnalysisReport {
 
 	public void setFile_path91360(String file_path91360) {
 		this.file_path91360 = file_path91360;
+	}
+
+	public String getCustomReportDetail() {
+		return customReportDetail;
+	}
+
+	public void setCustomReportDetail(String customReportDetail) {
+		this.customReportDetail = customReportDetail;
 	}
 }

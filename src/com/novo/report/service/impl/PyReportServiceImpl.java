@@ -45,6 +45,21 @@ public class PyReportServiceImpl implements PyReportService {
 
     private static final Logger qrcodeLogger = LogUtils.getLogger("ReportQrcodeLogger");
     public static final org.slf4j.Logger QRCODE_LOGGER = LoggerFactory.getLogger("qrcode");
+    private static final List<String> CUSTOM_REPORT_DETAIL_FIELDS = Arrays.asList(
+            "is_DR_panel",
+            "cancerTyping1166DNA",
+            "cancerTyping1166RNA",
+            "sarcomaTypingDNA",
+            "sarcomaTypingRNA",
+            "unknownTipLineStrDNA",
+            "unknownTipLineStrRNA",
+            "bodyDrugTipLineStrDNA",
+            "bodyDrugTipLineStrRNA",
+            "BodyDrugNoComplexStrDNA",
+            "BodyDrugNoComplexStrRNA",
+            "unknownVarAnalysisStrDNA",
+            "unknownVarAnalysisStrRNA"
+    );
 
 
     @Autowired
@@ -4179,7 +4194,7 @@ public class PyReportServiceImpl implements PyReportService {
         analysisReport.setUser(user_account);
         analysisReportDao.updateAnalysisReport(analysisReport);
         // 存储报告数据内容
-        String rtToJson = gson.toJson(rt);
+        String rtToJson = mergeCustomReportDetailFields(gson.toJson(rt), analysisReport.getCustomReportDetail(), gson);
         AnalysisReportStore analysisReportStore = new AnalysisReportStore();
         analysisReportStore.setReport_id(pr.getReport_id());
         analysisReportStore.setReport_filename(pr.getReport_filename());
@@ -5909,6 +5924,31 @@ public class PyReportServiceImpl implements PyReportService {
             getHotInfo = crList.stream().filter(map -> gene.equals(map.get("gene"))).collect(Collectors.toList());
         }
         return getHotInfo;
+    }
+
+    private String mergeCustomReportDetailFields(String rtToJson, String customReportDetail, Gson gson) {
+        if (StringUtils.isBlank(customReportDetail)) {
+            return rtToJson;
+        }
+        try {
+            JsonElement rtElement = new JsonParser().parse(rtToJson);
+            JsonElement customElement = new JsonParser().parse(customReportDetail);
+            if (!rtElement.isJsonObject() || !customElement.isJsonObject()) {
+                return rtToJson;
+            }
+
+            JsonObject rtObject = rtElement.getAsJsonObject();
+            JsonObject customObject = customElement.getAsJsonObject();
+            for (String field : CUSTOM_REPORT_DETAIL_FIELDS) {
+                if (customObject.has(field)) {
+                    rtObject.add(field, customObject.get(field));
+                }
+            }
+            return gson.toJson(rtObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return rtToJson;
+        }
     }
 
     //将数据转换为json

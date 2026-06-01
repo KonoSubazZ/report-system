@@ -441,7 +441,7 @@ public class PyAnalysisReportTemplateUtil {
         }
         fileName = replaceFileName(fileName);
         String filePath = (webappsPath + "/TESTREPORT/" + rt.getPlatforms() + "/" + fileName);
-        File downloads = Downloads(response, request, data, filePath, docxPath, fileName);
+        File downloads = Downloads(response, request, data, filePath, docxPath, fileName, apr);
         if (downloads != null) {
             apr.setReport_filename(fileName);
             apr.setReport_file_path(webappsPath + "/TESTREPORT/" + rt.getPlatforms() + "/");
@@ -463,7 +463,7 @@ public class PyAnalysisReportTemplateUtil {
         return fileName;
     }
 
-    public static File Downloads(HttpServletResponse response, HttpServletRequest request, Map<String, Object> info, String filePath, String docxPath, String fileName) throws Exception {
+    public static File Downloads(HttpServletResponse response, HttpServletRequest request, Map<String, Object> info, String filePath, String docxPath, String fileName, AnalysisReport apr) throws Exception {
         try {
             File htmlFile = null;
             File file = null;
@@ -475,6 +475,9 @@ public class PyAnalysisReportTemplateUtil {
                 createJsonFile(file, json);
                 TemplateUtil2 templateUtil = new TemplateUtil2();
                 htmlFile = templateUtil.stat_report(file, docxPath, filePath);
+                if (htmlFile != null) {
+                    apr.setCustomReportDetail(readFile(file));
+                }
                 return htmlFile;
             } finally {
                 if (file.exists()) { // 如果已存在,删除旧文件
@@ -486,6 +489,21 @@ public class PyAnalysisReportTemplateUtil {
             e1.printStackTrace();
         }
         return null;
+    }
+
+    private static String readFile(File file) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        Reader reader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+        try {
+            char[] buffer = new char[4096];
+            int len;
+            while ((len = reader.read(buffer)) != -1) {
+                sb.append(buffer, 0, len);
+            }
+        } finally {
+            reader.close();
+        }
+        return sb.toString();
     }
 
     public static void createJsonFile(File file, String json) {

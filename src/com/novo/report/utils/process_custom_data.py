@@ -44,7 +44,6 @@ def process_custom_data(report_json):
     is_DR_panel = panel in DR_panel
     log("is_DR_panel: %s" % is_DR_panel)
     report_json['is_DR_panel'] = is_DR_panel
-    report_id = report_json.get('reportId')
 
     if (template_name == '肉瘤1238+1166基因检测报告-WJM' or template_name == '肉瘤550+596基因检测报告-WJM'\
             or template_name == '泛实体瘤1238+1166基因检测报告-WJM' or template_name == '泛实体瘤550+596基因检测报告-WJM'\
@@ -53,7 +52,6 @@ def process_custom_data(report_json):
             template_name == '肉瘤1238+1166基因报告' or template_name == '肉瘤1238+1166基因检测报告' or is_DR_panel):
         to_update_json_data['is_DR_panel'] = is_DR_panel
         process_WJM_tip(report_json, to_update_json_data)
-        update_report_json_fields(report_id, to_update_json_data)
 
     # 浙江省人民医院
     if template_name == '泛实体瘤188基因+HRD检测报告-浙江省人民医院':
@@ -1172,6 +1170,13 @@ def _json_path_for_field(field_name):
     return '$.%s' % field_name
 
 
+def _debug_log(msg):
+    try:
+        log("[custom_json_update] %s" % msg)
+    except Exception:
+        pass
+
+
 def _default_db_config():
     return {
         'host': '127.0.0.1',
@@ -1202,12 +1207,23 @@ def update_report_json_fields(report_id, fields, table_name='analysis_report_sto
     if db_config is None:
         db_config = _default_db_config()
 
+    _debug_log("db_config host=%s port=%s database=%s user=%s" % (
+        db_config.get('host'), db_config.get('port'), db_config.get('database'), db_config.get('user')
+    ))
+
     json_set_args = []
     update_params = []
+    json_paths = []
     for field_name, field_value in fields.items():
+        json_path = _json_path_for_field(field_name)
         json_set_args.append("%s, JSON_EXTRACT(%s, '$')")
-        update_params.append(_json_path_for_field(field_name))
+        update_params.append(json_path)
         update_params.append(json.dumps(field_value, ensure_ascii=False))
+        json_paths.append(json_path)
+
+    _debug_log("start report_id=%s table=%s column=%s fields=%s paths=%s" % (
+        report_id, table_name, json_column, list(fields.keys()), json_paths
+    ))
 
     conn = None
     cursor = None
@@ -1215,6 +1231,41 @@ def update_report_json_fields(report_id, fields, table_name='analysis_report_sto
     try:
         conn = pymysql.connect(**db_config)
         cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+
+        cursor.execute(
+            "SELECT DATABASE() AS db_name, @@hostname AS mysql_host, @@port AS mysql_port, "
+            "USER() AS login_user, CURRENT_USER() AS current_user"
+        )
+        _debug_log("connection_identity %s" % cursor.fetchone())
+
+        range_sql = "SELECT MIN({id_column}) AS min_id, MAX({id_column}) AS max_id FROM {table_name}".format(
+            table_name=table_name,
+            id_column=id_column
+        )
+        cursor.execute(range_sql)
+        _debug_log("table_id_range table=%s %s" % (table_name, cursor.fetchone()))
+
+        count_sql = "SELECT COUNT(1) AS row_count FROM {table_name} WHERE {id_column} = %s".format(
+            table_name=table_name,
+            id_column=id_column
+        )
+        cursor.execute(count_sql, (report_id,))
+        row_count = cursor.fetchone().get('row_count')
+        _debug_log("before_update report_id=%s matched_rows=%s" % (report_id, row_count))
+
+        try:
+            report_id_int = int(report_id)
+            nearby_sql = (
+                "SELECT {id_column} FROM {table_name} "
+                "WHERE {id_column} BETWEEN %s AND %s ORDER BY {id_column} LIMIT 20"
+            ).format(
+                table_name=table_name,
+                id_column=id_column
+            )
+            cursor.execute(nearby_sql, (report_id_int - 10, report_id_int + 10))
+            _debug_log("nearby_ids report_id=%s rows=%s" % (report_id, cursor.fetchall()))
+        except Exception as nearby_error:
+            _debug_log("nearby_ids_skip report_id=%s error=%s" % (report_id, nearby_error))
 
         update_sql = (
             "UPDATE {table_name} "
@@ -1227,11 +1278,37 @@ def update_report_json_fields(report_id, fields, table_name='analysis_report_sto
             id_column=id_column
         )
         cursor.execute(update_sql, update_params + [report_id])
+        affected_rows = cursor.rowcount
 
         conn.commit()
-        return cursor.rowcount
+        verify_selects = []
+        verify_params = []
+        for field_name in fields.keys():
+            verify_selects.append("JSON_CONTAINS_PATH({json_column}, 'one', %s) AS `{field_name}`".format(
+                json_column=json_column,
+                field_name=field_name
+            ))
+            verify_params.append(_json_path_for_field(field_name))
 
-    except Exception:
+        verify_sql = "SELECT {verify_selects} FROM {table_name} WHERE {id_column} = %s".format(
+            verify_selects=', '.join(verify_selects),
+            table_name=table_name,
+            id_column=id_column
+        )
+        cursor.execute(verify_sql, verify_params + [report_id])
+        verify_row = cursor.fetchone()
+        _debug_log("success report_id=%s rowcount=%s fields=%s" % (
+            report_id, affected_rows, list(fields.keys())
+        ))
+        _debug_log("verify report_id=%s exists=%s" % (
+            report_id, verify_row
+        ))
+        return affected_rows
+
+    except Exception as e:
+        _debug_log("error report_id=%s fields=%s error=%s" % (
+            report_id, list(fields.keys()), e
+        ))
         if conn:
             conn.rollback()
         raise
@@ -1243,22 +1320,15 @@ def update_report_json_fields(report_id, fields, table_name='analysis_report_sto
             conn.close()
 
 
-def update_current_report_detail_fields(report_json, field_names=None):
+def update_current_report_detail_fields(report_id, fields):
     """
-    将 report_json 里已计算出的字段写回 analysis_report_store.report_detail。
-    默认写回 is_DR_panel；后续新增计算字段时传入 field_names 即可。
+    将已计算出的字段局部写回 analysis_report_store.report_detail。
     """
-    if field_names is None:
-        field_names = ['is_DR_panel']
-
-    fields = {}
-    for field_name in field_names:
-        if field_name in report_json:
-            fields[field_name] = report_json.get(field_name)
     if not fields:
+        _debug_log("skip report_id=%s reason=empty_fields" % report_id)
         return 0
 
-    report_id = report_json.get('reportId') or report_json.get('report_id')
+    _debug_log("prepare report_id=%s fields=%s" % (report_id, list(fields.keys())))
     return update_report_json_fields(report_id, fields)
 
 
