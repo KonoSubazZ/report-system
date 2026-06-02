@@ -1384,15 +1384,47 @@ public class GeneMarkerVwController {
 
         String sampleType = sampleFile == null ? "" : sampleFile.getSample_type();
         String customer = sampleFile == null ? "" : sampleFile.getCustomer();
-        List<String> unupgradedCustomerList = moduleService.getconfTemplateList("QC_UPGRADE_DISABLED");
-        if (unupgradedCustomerList == null) {
-            unupgradedCustomerList = Collections.emptyList();
-        }
-        boolean qcUpgradeEnabled = !unupgradedCustomerList.contains(customer);
+        String recordercode = sampleFile == null ? "" : sampleFile.getRecordercode();
+        boolean qcUpgradeEnabled = !isQcUpgradeDisabled(customer, recordercode);
 
         model.addAttribute("qcUpgradeEnabled", qcUpgradeEnabled);
         model.addAttribute("qcPanelType", panelType == null ? "" : panelType.trim());
         model.addAttribute("qcSampleType", sampleType == null ? "" : sampleType.trim());
+    }
+
+    private boolean isQcUpgradeDisabled(String customer, String recordercode) {
+        List<String> disabledConfigList = moduleService.getconfTemplateList("QC_UPGRADE_DISABLED");
+        return matchQcUpgradeDisabledConfig(disabledConfigList, customer, recordercode);
+    }
+
+    private boolean matchQcUpgradeDisabledConfig(List<String> disabledConfigList, String customer, String recordercode) {
+        if (disabledConfigList == null || disabledConfigList.isEmpty() || StringUtils.isBlank(customer)) {
+            return false;
+        }
+
+        String targetCustomer = customer.trim();
+        String targetRecordercode = StringUtils.trimToEmpty(recordercode);
+        for (String config : disabledConfigList) {
+            if (StringUtils.isBlank(config)) {
+                continue;
+            }
+
+            String[] items = config.split(";");
+            if (items.length == 0 || !targetCustomer.equals(items[0].trim())) {
+                continue;
+            }
+
+            if (items.length == 1 || StringUtils.isBlank(targetRecordercode)) {
+                return true;
+            }
+
+            for (int i = 1; i < items.length; i++) {
+                if (targetRecordercode.equals(items[i].trim())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public String transferOriVariant(String ori_variant) {

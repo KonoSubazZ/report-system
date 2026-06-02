@@ -604,7 +604,7 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setGenome_alignment(sf.getGenome_alignment());
         rt.setBase_quality(sf.getBase_quality());
         //QC质控信息
-        boolean qcUpgradeEnabled = isQcUpgradeEnabled(sf.getCustomer());
+        boolean qcUpgradeEnabled = isQcUpgradeEnabled(sf.getCustomer(), sf.getRecordercode());
         Map qc = analysisReportDao.getQC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         if (qc != null && qc.size() > 0) {
             rt.setTumorcellcontent(qc.get("tumorcellcontent").toString());
@@ -4776,46 +4776,8 @@ public class PyReportServiceImpl implements PyReportService {
         if (templateConf != null && templateConf.getQc()) {
             ModCommonNote commonNote = new ModCommonNote();
             commonNote.setModule("qc");
-
-            // 20260526-增加qc不升级配置
-            List<String> unupgradedCustomerInfoList = moduleService.getconfTemplateList("QC_UPGRADE_DISABLED");
-            // 匹配标记
-            boolean match = false;
-
-            for (String customerInfo : unupgradedCustomerInfoList) {
-                // 1. 分割 customer recordcode
-                String[] items = customerInfo.split(";");
-                if (items.length == 0) {
-                    continue;
-                }
-
-                // 2. 判断是否符合customer
-                String configCustomer = items[0].trim();
-                if (!configCustomer.equals(customer)) {
-                    continue;
-                }
-
-                // 3. customer匹配成功，开始判断子账号，如果没有配置子账号或者录单没有子账号，默认通过
-                if (items.length == 1 || recordercode.isEmpty()) {
-                    match = true;
-                    break;
-                }
-
-                // 4. 有子账号
-                List<String> codeList = new ArrayList<>();
-                for (int i = 1; i < items.length; i++) {
-                    codeList.add(items[i]);
-                }
-
-                // 5. 判断传入的 recordCode 是否在配置里
-                if (codeList.contains(recordercode)) {
-                    match = true;
-                    break;
-                }
-            }
-
-            // 最终匹配成功，设置模块
-            if (match) {
+            // 20260526-增加qc不升级配置：支持 customer 或 customer;recordercode 配置
+            if (isQcUpgradeDisabled(customer, recordercode)) {
                 commonNote.setModule("qc_upgrade_disabled");
             }
 
@@ -7511,9 +7473,43 @@ public class PyReportServiceImpl implements PyReportService {
         }
     }
 
-    private boolean isQcUpgradeEnabled(String customer) {
-        List<String> unupgradedCustomerList = moduleService.getconfTemplateList("QC_UPGRADE_DISABLED");
-        return unupgradedCustomerList == null || !unupgradedCustomerList.contains(customer);
+    private boolean isQcUpgradeEnabled(String customer, String recordercode) {
+        return !isQcUpgradeDisabled(customer, recordercode);
+    }
+
+    private boolean isQcUpgradeDisabled(String customer, String recordercode) {
+        List<String> disabledConfigList = moduleService.getconfTemplateList("QC_UPGRADE_DISABLED");
+        return matchQcUpgradeDisabledConfig(disabledConfigList, customer, recordercode);
+    }
+
+    private boolean matchQcUpgradeDisabledConfig(List<String> disabledConfigList, String customer, String recordercode) {
+        if (disabledConfigList == null || disabledConfigList.isEmpty() || StringUtils.isBlank(customer)) {
+            return false;
+        }
+
+        String targetCustomer = customer.trim();
+        String targetRecordercode = StringUtils.trimToEmpty(recordercode);
+        for (String config : disabledConfigList) {
+            if (StringUtils.isBlank(config)) {
+                continue;
+            }
+
+            String[] items = config.split(";");
+            if (items.length == 0 || !targetCustomer.equals(items[0].trim())) {
+                continue;
+            }
+
+            if (items.length == 1 || StringUtils.isBlank(targetRecordercode)) {
+                return true;
+            }
+
+            for (int i = 1; i < items.length; i++) {
+                if (targetRecordercode.equals(items[i].trim())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private String formatDnaDegradation(String dnaDegradation, boolean qcUpgradeEnabled) {
