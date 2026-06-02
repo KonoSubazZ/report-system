@@ -4160,7 +4160,7 @@ public class PyReportServiceImpl implements PyReportService {
             rt.setReferences(references);
 
             // CUSTOM 生成静态解析、附录信息 ==> msi、tmb、mmr、化疗、qc、检测小结、重要靶向基因汇总
-            Map<String, Object> commonNote = generateCommonNote(templateConf, productName, rt, cancerInfo, query, hasMET, sf.getCustomer());
+            Map<String, Object> commonNote = generateCommonNote(templateConf, productName, rt, cancerInfo, query, hasMET, sf.getCustomer(), sf.getRecordercode());
             rt.setCommonNote(commonNote);
         } else {
             // 增加对于没有模块化模板的基因标红逻辑
@@ -4600,7 +4600,8 @@ public class PyReportServiceImpl implements PyReportService {
                                                    Map cancerInfo,
                                                    CommonQueryVO query,
                                                    boolean hasMET,
-                                                   String customer) {
+                                                   String customer,
+                                                   String recordercode) {
         Map<String, Object> res = new HashMap<>();
         String templateName = rt.getTemplate_name();
         Object type = rt.getSummaryOfRresults().get("type");
@@ -4777,8 +4778,44 @@ public class PyReportServiceImpl implements PyReportService {
             commonNote.setModule("qc");
 
             // 20260526-增加qc不升级配置
-            List<String> unupgradedCustomerList = moduleService.getconfTemplateList("QC_UPGRADE_DISABLED");
-            if (unupgradedCustomerList != null && unupgradedCustomerList.contains(customer)){
+            List<String> unupgradedCustomerInfoList = moduleService.getconfTemplateList("QC_UPGRADE_DISABLED");
+            // 匹配标记
+            boolean match = false;
+
+            for (String customerInfo : unupgradedCustomerInfoList) {
+                // 1. 分割 customer recordcode
+                String[] items = customerInfo.split(";");
+                if (items.length == 0) {
+                    continue;
+                }
+
+                // 2. 判断是否符合customer
+                String configCustomer = items[0].trim();
+                if (!configCustomer.equals(customer)) {
+                    continue;
+                }
+
+                // 3. customer匹配成功，开始判断子账号，如果没有配置子账号或者录单没有子账号，默认通过
+                if (items.length == 1 || recordercode.isEmpty()) {
+                    match = true;
+                    break;
+                }
+
+                // 4. 有子账号
+                List<String> codeList = new ArrayList<>();
+                for (int i = 1; i < items.length; i++) {
+                    codeList.add(items[i]);
+                }
+
+                // 5. 判断传入的 recordCode 是否在配置里
+                if (codeList.contains(recordercode)) {
+                    match = true;
+                    break;
+                }
+            }
+
+            // 最终匹配成功，设置模块
+            if (match) {
                 commonNote.setModule("qc_upgrade_disabled");
             }
 
