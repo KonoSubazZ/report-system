@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.novo.report.dao.three.AICancerDao">
+
+	<select id="getAICancer" resultType="java.lang.String">
+		select aicancer
+		from myapp_conf
+		where con3=#{subbarocde}
+		  and sample_type = 'T'
+		  and aicancer_score=100
+	</select>
+</mapper>
