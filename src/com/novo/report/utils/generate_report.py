@@ -13,7 +13,7 @@ from docx.shared import Pt
 from html import escape
 from io import BytesIO
 import requests
-
+import traceback
 
 # import docxtpl
 # from docxtpl import DocxTemplate, R, RichText, InlineImage, NEWPARAGRAPH_XML, TAB_XML, PAGE_BREAK, Listing
@@ -968,6 +968,6 @@ if __name__ == '__main__':
 
     except Exception as e:
         main_logger, sample_quality_logger, python_error_logger = setup_logging()
-        python_error_logger.info(f" 错误: {e}")
-        print(f"❌ 发生错误: {e}")
+        python_error_logger.info(f"错误: {e}")
+        python_error_logger.info(traceback.format_exc())
         raise e
