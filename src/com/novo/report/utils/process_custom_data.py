@@ -614,18 +614,50 @@ def process_guangfuyi_tip(report_json):
 
     for idx in range(len(gfy_egfr_list)):
         item = gfy_egfr_list[idx]
+        # if 'exon20' in item and 'delins' in item:
+        #     cHGVS = item.split(' ')[2]
+        #     # 注意：这里原代码有个小问题，cHGVS是列表，需取对应元素再split（假设是分割后的第一个元素）
+        #     del_part, ins_seq = cHGVS.split('delins')  # 修正：列表不能直接split，取第一个元素
+        #     del_pos = del_part.split('.')[-1]
+        #     start, end = del_pos.split('_')
+        #     del_count = int(end) - int(start) + 1
+        #     ins_count = len(ins_seq)
+        #     if del_count < ins_count:
+        #         # 直接通过索引修改原列表的元素，实现原数据更新
+        #         gfy_egfr_list[idx] = item + ' 20号外显子插入突变'
+        #     continue  # 满足第一个条件，跳过后续判断
         if 'exon20' in item and 'delins' in item:
-            cHGVS = item.split(' ')[2]
-            # 注意：这里原代码有个小问题，cHGVS是列表，需取对应元素再split（假设是分割后的第一个元素）
-            del_part, ins_seq = cHGVS.split('delins')  # 修正：列表不能直接split，取第一个元素
-            del_pos = del_part.split('.')[-1]
-            start, end = del_pos.split('_')
-            del_count = int(end) - int(start) + 1
+            # 取出蛋白命名（p.D770delinsGY）
+            pHGVS = item.split(' ')[3]
+
+            #  按 delins 拆分
+            parts = pHGVS.split('delins')
+            if len(parts) != 2:
+                continue
+
+            del_part, ins_seq = parts
+
+            numbers = re.findall(r'\d+', del_part)  # 提取所有数字
+            if len(numbers) == 1:
+                del_count = 1
+
+            elif len(numbers) == 2:
+                # 两个位置（如 770_772）→ 计算区间
+                start = int(numbers[0])
+                end = int(numbers[1])
+                del_count = end - start + 1
+
+            else:
+                continue  # 格式异常跳过
+
+            # 插入氨基酸数量
             ins_count = len(ins_seq)
+
+            # 判断
             if del_count < ins_count:
-                # 直接通过索引修改原列表的元素，实现原数据更新
                 gfy_egfr_list[idx] = item + ' 20号外显子插入突变'
-            continue  # 满足第一个条件，跳过后续判断
+
+            continue
 
         if 'exon20' in item and ('dup' in item or 'ins' in item):
             # 同样通过索引修改原数据
@@ -636,11 +668,28 @@ def process_guangfuyi_tip(report_json):
         ori_variant = item.get('ori_variant', '')
 
         if gene == 'EGFR' and 'exon20' in ori_variant and 'delins' in ori_variant:
-            cHGVS = item.get('cHGVS', '')
-            del_part, ins_seq = cHGVS.split('delins')
-            del_pos = del_part.split('.')[-1]
-            start, end = del_pos.split('_')
-            del_count = int(end) - int(start) + 1
+            pHGVS = ori_variant.split(' ')[3]
+            #  按 delins 拆分
+            parts = pHGVS.split('delins')
+            if len(parts) != 2:
+                continue
+
+            del_part, ins_seq = parts
+            # 提取所有数字
+            numbers = re.findall(r'\d+', del_part)
+            if len(numbers) == 1:
+                del_count = 1
+
+            elif len(numbers) == 2:
+                # 两个位置（如 770_772）→ 计算区间
+                start = int(numbers[0])
+                end = int(numbers[1])
+                del_count = end - start + 1
+
+            else:
+                continue
+
+            # 插入氨基酸数量
             ins_count = len(ins_seq)
             if del_count < ins_count:
                 item['ExonicFunc'] = '20号外显子插入突变'
@@ -655,16 +704,49 @@ def process_guangfuyi_tip(report_json):
     for item in unknownTipLineStr:
         gene = item.get('gene', '')
         ori_variant = item.get('ori_variant', '')
-        if gene == 'EGFR' and 'exon20' in ori_variant and 'delins' in ori_variant:
-            cHGVS = item.get('cHGVS', '')
-            del_part, ins_seq = cHGVS.split('delins')
-            del_pos = del_part.split('.')[-1]
-            start, end = del_pos.split('_')
-            del_count = int(end) - int(start) + 1
+        # if gene == 'EGFR' and 'exon20' in ori_variant and 'delins' in ori_variant:
+        #     cHGVS = item.get('cHGVS', '')
+        #     del_part, ins_seq = cHGVS.split('delins')
+        #     del_pos = del_part.split('.')[-1]
+        #     start, end = del_pos.split('_')
+        #     del_count = int(end) - int(start) + 1
+        #     ins_count = len(ins_seq)
+        #     if del_count < ins_count:
+        #         item['ExonicFunc'] = '20号外显子插入突变'
+        #     continue
+        if 'exon20' in ori_variant and 'delins' in ori_variant:
+            # 取出蛋白命名（p.D770delinsGY）
+            pHGVS = ori_variant.split(' ')[3]
+
+            #  按 delins 拆分
+            parts = pHGVS.split('delins')
+            if len(parts) != 2:
+                continue
+
+            del_part, ins_seq = parts
+
+            numbers = re.findall(r'\d+', del_part)  # 提取所有数字
+            if len(numbers) == 1:
+                del_count = 1
+
+            elif len(numbers) == 2:
+                # 两个位置（如 770_772）→ 计算区间
+                start = int(numbers[0])
+                end = int(numbers[1])
+                del_count = end - start + 1
+
+            else:
+                continue  # 格式异常跳过
+
+            # 插入氨基酸数量
             ins_count = len(ins_seq)
+
+            # 判断
             if del_count < ins_count:
-                item['ExonicFunc'] = '20号外显子插入突变'
+                gfy_egfr_list[idx] = item + ' 20号外显子插入突变'
+
             continue
+
         if gene == 'EGFR' and 'exon20' in ori_variant and ('dup' in ori_variant or 'ins' in ori_variant):
             item['ExonicFunc'] = '20号外显子插入突变'
 
