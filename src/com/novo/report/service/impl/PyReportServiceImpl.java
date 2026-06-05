@@ -604,7 +604,9 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setGenome_alignment(sf.getGenome_alignment());
         rt.setBase_quality(sf.getBase_quality());
         //QC质控信息
-        boolean qcUpgradeEnabled = isQcUpgradeEnabled(sf.getCustomer(), sf.getRecordercode());
+        // TODO: 临时测试 — qcUpgradeEnabled 永远为 false
+        // boolean qcUpgradeEnabled = isQcUpgradeEnabled(sf.getCustomer(), sf.getRecordercode());
+        boolean qcUpgradeEnabled = false;
         Map qc = analysisReportDao.getQC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         if (qc != null && qc.size() > 0) {
             rt.setTumorcellcontent(qc.get("tumorcellcontent").toString());
@@ -7478,8 +7480,10 @@ public class PyReportServiceImpl implements PyReportService {
     }
 
     private boolean isQcUpgradeDisabled(String customer, String recordercode) {
-        List<String> disabledConfigList = moduleService.getconfTemplateList("QC_UPGRADE_DISABLED");
-        return matchQcUpgradeDisabledConfig(disabledConfigList, customer, recordercode);
+        // TODO: 临时测试 — 永远返回 true（QC升级永远禁用）
+        return true;
+        // List<String> disabledConfigList = moduleService.getconfTemplateList("QC_UPGRADE_DISABLED");
+        // return matchQcUpgradeDisabledConfig(disabledConfigList, customer, recordercode);
     }
 
     private boolean matchQcUpgradeDisabledConfig(List<String> disabledConfigList, String customer, String recordercode) {

@@ -1394,7 +1394,9 @@ public class GeneMarkerVwController {
         String sampleType = sampleFile == null ? "" : sampleFile.getSample_type();
         String customer = sampleFile == null ? "" : sampleFile.getCustomer();
         String recordercode = sampleFile == null ? "" : sampleFile.getRecordercode();
-        boolean qcUpgradeEnabled = !isQcUpgradeDisabled(customer, recordercode);
+        // TODO: 临时测试 — qcUpgradeEnabled 永远为 false
+        // boolean qcUpgradeEnabled = !isQcUpgradeDisabled(customer, recordercode);
+        boolean qcUpgradeEnabled = false;
 
         model.addAttribute("qcUpgradeEnabled", qcUpgradeEnabled);
         model.addAttribute("qcPanelType", panelType == null ? "" : panelType.trim());
@@ -1402,8 +1404,10 @@ public class GeneMarkerVwController {
     }
 
     private boolean isQcUpgradeDisabled(String customer, String recordercode) {
-        List<String> disabledConfigList = moduleService.getconfTemplateList("QC_UPGRADE_DISABLED");
-        return matchQcUpgradeDisabledConfig(disabledConfigList, customer, recordercode);
+        // TODO: 临时测试 — 永远返回 true（QC升级永远禁用）
+        return true;
+        // List<String> disabledConfigList = moduleService.getconfTemplateList("QC_UPGRADE_DISABLED");
+        // return matchQcUpgradeDisabledConfig(disabledConfigList, customer, recordercode);
     }
 
     private boolean matchQcUpgradeDisabledConfig(List<String> disabledConfigList, String customer, String recordercode) {
