@@ -16,7 +16,7 @@
 			comparison,client,commission_date,sales_contact,report_receiver,
 			collect_date,data_path,info_officer,sample_nature,selected_genes,
 			testing_before_medicine,other_description,loaded_date,clinicalremark,
-			cancertype,pathologicaltype,remark,product_name,clinicalstages,libraryname,
+			cancertype,disease,pathologicaltype,remark,product_name,clinicalstages,libraryname,
 			doctorname,fastcode,locationname,report_upload_date,sample_source,
 			from_organ,turmor_cell_ratio,gene_type,gene_result,
 			medication_history,birthplace,family_history,sample_type,room,bed,emailaddress,saleremail,supportemail,manageremail,pmemail,customer,
@@ -33,7 +33,7 @@
 			#{sales_contact},#{report_receiver},#{collect_date},
 			#{data_path},#{info_officer},#{sample_nature},
 			#{selected_genes},#{testing_before_medicine},
-			#{other_description},sysdate(),#{clinicalremark},#{cancertype},#{pathologicaltype},#{remark},#{product_name},
+			#{other_description},sysdate(),#{clinicalremark},#{cancertype},#{disease},#{pathologicaltype},#{remark},#{product_name},
 			#{clinicalstages},#{libraryname},#{doctorname},#{fastcode},#{locationname},#{report_upload_date},#{sample_source},
 			#{from_organ},#{turmor_cell_ratio},#{gene_type},#{gene_result},#{medication_history},#{birthplace},#{family_history},
 			#{sample_type},#{room},#{bed},#{emailaddress},#{saleremail},#{supportemail},#{manageremail},#{pmemail},#{customer},
@@ -55,7 +55,7 @@
 			data_path=#{data_path},info_officer=#{info_officer},sample_nature=#{sample_nature},
 			selected_genes=#{selected_genes},testing_before_medicine=#{testing_before_medicine},
 			other_description=#{other_description},loaded_date=sysdate(),clinicalremark=#{clinicalremark},
-			cancertype=#{cancertype},pathologicaltype=#{pathologicaltype},remark=#{remark},product_name=#{product_name},
+			cancertype=#{cancertype},disease=#{disease},pathologicaltype=#{pathologicaltype},remark=#{remark},product_name=#{product_name},
 			clinicalstages=#{clinicalstages},libraryname=#{libraryname},doctorname=#{doctorname},fastcode=#{fastcode},
 			locationname=#{locationname},report_upload_date=#{report_upload_date},sample_source=#{sample_source},
 			from_organ=#{from_organ},turmor_cell_ratio=#{turmor_cell_ratio},gene_type=#{gene_type},
@@ -92,7 +92,7 @@
 		select sample_id,person_id,person_name,age,
 			gender,birthday,patient_phone,patient_id,hospital,received_date,barcode,subbarcode,specimen_type,specimen_quantity,testing_program,disease_type,
 			comparison,client,commission_date,sales_contact,report_receiver,collect_date,data_path,info_officer,sample_nature,selected_genes,
-			testing_before_medicine,other_description,loaded_date,clinicalremark,cancertype,pathologicaltype,remark,product_name,clinicalstages,
+			testing_before_medicine,other_description,loaded_date,clinicalremark,cancertype,disease,pathologicaltype,remark,product_name,clinicalstages,
 			libraryname,doctorname,fastcode,locationname,report_upload_date,sample_source,from_organ,turmor_cell_ratio,
 			gene_type,gene_result,medication_history,birthplace,family_history,sample_type,room,bed,emailaddress,saleremail,supportemail,manageremail,pmemail,customer,
 			tumorcellcontent,DNA_total,DNA_degradation,outbound_quantity,plane_data,sequencing_depth,coverage,coverage_uniformity,genome_alignment,base_quality,
@@ -118,7 +118,7 @@
 		select sample_id,person_id,person_name,age,
 		gender,birthday,patient_id,hospital,received_date,barcode,subbarcode,specimen_type,specimen_quantity,testing_program,disease_type,
 		comparison,client,commission_date,sales_contact,report_receiver,collect_date,data_path,info_officer,sample_nature,selected_genes,
-		testing_before_medicine,other_description,loaded_date,clinicalremark,cancertype,pathologicaltype,remark,product_name,clinicalstages,
+		testing_before_medicine,other_description,loaded_date,clinicalremark,cancertype,disease,pathologicaltype,remark,product_name,clinicalstages,
 		libraryname,doctorname,fastcode,locationname,report_upload_date,sample_source,from_organ,turmor_cell_ratio,
 		gene_type,gene_result,medication_history,birthplace,family_history
 		from sample_file
@@ -136,7 +136,7 @@
 		select sample_id,person_id,person_name,age,
 			gender,birthday,patient_id,hospital,received_date,barcode,subbarcode,specimen_type,specimen_quantity,testing_program,disease_type,
 			comparison,client,commission_date,sales_contact,report_receiver,collect_date,data_path,info_officer,sample_nature,selected_genes,
-			testing_before_medicine,other_description,loaded_date,clinicalremark,cancertype,pathologicaltype,remark,product_name,clinicalstages,
+			testing_before_medicine,other_description,loaded_date,clinicalremark,cancertype,disease,pathologicaltype,remark,product_name,clinicalstages,
 			libraryname,doctorname,fastcode,locationname,report_upload_date,sample_source,from_organ,turmor_cell_ratio,
 			gene_type,gene_result,medication_history,birthplace,family_history
 		from sample_file

@@ -112,10 +112,19 @@ public class GeneMarkerVwController {
             model.addAttribute("geneticMarkerVwPageBean", currentNgsAvailable);
             model.addAttribute("product", product);
             if (diseaseClass == null) {
-                diseaseClass = lifeService.getDiseaseClassFromSampleCancertype(currentNgsAvailable.getReport_id());
+                // === 新逻辑：优先用 sample_file.disease，其次 Cancertype，最后 disease_type ===
+                diseaseClass = lifeService.getDiseaseClassFromSampleDisease(currentNgsAvailable.getReport_id());
+                if (diseaseClass == null) {
+                    diseaseClass = lifeService.getDiseaseClassFromSampleCancertype(currentNgsAvailable.getReport_id());
+                }
                 if (diseaseClass == null) {
                     diseaseClass = lifeService.getDiseaseClassFromSampleInfo(currentNgsAvailable.getReport_id());
                 }
+                // === 原逻辑（已废弃）：优先用 Cancertype，其次用 disease_type ===
+                // diseaseClass = lifeService.getDiseaseClassFromSampleCancertype(currentNgsAvailable.getReport_id());
+                // if (diseaseClass == null) {
+                //     diseaseClass = lifeService.getDiseaseClassFromSampleInfo(currentNgsAvailable.getReport_id());
+                // }
                 if (diseaseClass != null) {
                     analysisReport.setPrimary_cancer_id(diseaseClass.getClass_id());
                     lifeService.updatePrimaryCancerId(analysisReport);

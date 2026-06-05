@@ -7,6 +7,7 @@ import com.novo.report.beans.*;
 import com.novo.report.common.Result;
 import com.novo.report.dao.one.SpecimenHeadDao;
 import com.novo.report.dao.three.NewLimsSampleDao;
+import com.novo.report.dao.three.AICancerDao;
 import com.novo.report.dao.two.SampleFileDao;
 import com.novo.report.service.SampleFileService;
 import com.novo.report.utils.HttpApiClientUtil;
@@ -42,6 +43,8 @@ public class SampleFileServiceImpl implements SampleFileService {
     private SpecimenHeadDao specimenHeadDao;
     @Autowired
     private NewLimsSampleDao newLimsSampleDao;
+    @Autowired
+    private AICancerDao aiCancerDao;
     private final Gson gson = new Gson();
 
     @Override
@@ -126,6 +129,9 @@ public class SampleFileServiceImpl implements SampleFileService {
                 } else {
                     sf.setDisease_type(sh.getClinicalremark());
                 }
+                // 从 AICancerDao.getAICancer 获取 aicancer 字段，填充 disease
+                String aiCancer = aiCancerDao.getAICancer(sh.getSubBarcode());
+                sf.setDisease(aiCancer);
                 sf.setReport_receiver(sh.getReportreceiver());
                 sf.setSpecimen_type(sh.getSampletype() == null ? (sh.getShsampletype() == null ? (sh.getSrsampletype() == null ? sh.getSrsampletype() : sh.getSrsampletype().trim()) : sh.getShsampletype().trim()) : sh.getSampletype());
                 String specimen_type = sf.getSpecimen_type();

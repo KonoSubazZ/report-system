@@ -40,6 +40,8 @@ public interface LifeService {
 
 	DiseaseClass getDiseaseClassFromSampleCancertype(Integer report_id);
 
+	DiseaseClass getDiseaseClassFromSampleDisease(Integer report_id);
+
 	String getGender(Integer report_id);
 
 	String getAnalysis_date(Integer report_id);

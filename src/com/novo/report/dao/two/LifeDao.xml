@@ -90,7 +90,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where disease_class_chinese IN (select disease_type from sample_file where subbarcode IN (select subbarcode from analysis_report where report_id=#{report_id}))
 		and disease_area = 'onco' limit 1
 	</select>
-	
+
+	<select id="getDiseaseClassFromSampleDisease" resultType="DiseaseClass">
+		select class_id,disease_class_chinese from disease_class
+		where disease_class_chinese IN (select disease from sample_file where subbarcode IN (select subbarcode from analysis_report where report_id=#{report_id}))
+		and disease_area = 'onco' limit 1
+	</select>
+
 	<update id="updatePrimaryCancerId">
 		update analysis_report  set primary_cancer_id =#{0} where report_id = #{1}
 	</update>

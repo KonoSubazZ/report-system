@@ -32,6 +32,7 @@ public class SampleFile {
 	private String age;
 	private String clinicalremark;
 	private String cancertype;
+	private String disease;		// 疾病 (新增DB列)
 	private String pathologicaltype;
 	private String product_name;
 	private String remark;
@@ -530,6 +531,12 @@ public class SampleFile {
 	}
 	public void setCancertype(String cancertype) {
 		this.cancertype = cancertype;
+	}
+	public String getDisease() {
+		return disease;
+	}
+	public void setDisease(String disease) {
+		this.disease = disease;
 	}
 	public String getPathologicaltype() {
 		return pathologicaltype;

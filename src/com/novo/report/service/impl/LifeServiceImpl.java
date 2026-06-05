@@ -160,6 +160,11 @@ public class LifeServiceImpl implements LifeService {
     }
 
     @Override
+    public DiseaseClass getDiseaseClassFromSampleDisease(Integer report_id) {
+        return lifeDao.getDiseaseClassFromSampleDisease(report_id);
+    }
+
+    @Override
     public String getGender(Integer report_id) {
         return lifeDao.getGender(report_id);
     }
