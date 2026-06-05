@@ -8,6 +8,7 @@ import com.novo.report.dao.two.AnalysisReportDao;
 import com.novo.report.service.NewLimsSampleService;
 import com.novo.report.service.SampleFileService;
 import com.novo.report.service.SpecimenHeadService;
+import com.novo.report.dao.three.AICancerDao;
 import com.novo.report.service.SystemPropertyService;
 import com.novo.report.utils.TranslateUtil;
 import org.apache.commons.io.IOUtils;
@@ -53,6 +54,8 @@ public class SampleFileController {
 
     @Autowired
     private AnalysisReportDao analysisReportDao;
+    @Autowired
+    private AICancerDao aiCancerDao;
 
     //根据SUBBARCODE获取样本信息
     @RequestMapping("getSpecimenHeadBySubbarcode")
@@ -115,6 +118,9 @@ public class SampleFileController {
                     if ("否".equals(sh.getPatientinfoisacancer())) {
                         sf.setDisease_type("健康人群");
                     }
+
+                    // 从 AICancerDao.getAICancer 获取 aicancer 字段，填充 disease
+                    sf.setDisease(aiCancerDao.getAICancer(subbarcode));
 
                     sf.setReport_receiver(sh.getReportreceiver());
                     String specimennum = sh.getSpecimennum();

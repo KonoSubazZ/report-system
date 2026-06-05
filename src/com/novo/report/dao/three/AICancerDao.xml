@@ -11,5 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where con3=#{subbarocde}
 		  and sample_type = 'T'
 		  and aicancer_score=100
+		order by id desc
+		limit 1
 	</select>
 </mapper>
