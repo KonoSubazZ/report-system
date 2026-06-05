@@ -29,6 +29,13 @@ import java.util.stream.Collectors;
 @RequestMapping("geneMarkerVw")
 public class GeneMarkerVwController {
 
+    private static final List<String> GBM1238_BRAIN_GLIOMA_ORDER = Arrays.asList(
+            "MGMT", "chr", "pq", "TERT", "IDH1", "IDH2", "ATRX", "EGFR", "CDKN2", "BRAF",
+            "H33A", "H33B", "H3C2", "H3C3", "TP53", "PTEN", "PIK3CA", "MYCN", "PDGFRA",
+            "FGFR1", "FGFR2", "FGFR3", "NTRK1", "NTRK2", "NTRK3", "ALK", "ROS1", "MET",
+            "SMARCB1", "TSC1", "TSC2", "NF1", "NF2", "MYB", "YAP1", "ZFTA"
+    );
+
     @Autowired
     private GeneticMarkerVwService geneticMarkerVwService;
 
@@ -849,6 +856,9 @@ public class GeneMarkerVwController {
                         brainGlioma.stream().filter(map -> "MET".equals(map.get("gene"))).forEach(map -> map.put("info", "MET 扩增和融合"));
 
                     }
+                    if (product_name.equals("novopm2_tis_GBM1238")) {
+                        sortGbm1238BrainGliomaMaps(brainGlioma);
+                    }
 
                     List<Map> spCna = analysisReportDao.getSpCna(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
                     for (Map map : brainGlioma) {
@@ -917,6 +927,9 @@ public class GeneMarkerVwController {
                         mmBrainGlioma.setId(id);
                         mmBrainGliomas.add(mmBrainGlioma);
                     }
+                }
+                if (product_name.equals("novopm2_tis_GBM1238")) {
+                    sortGbm1238BrainGliomas(mmBrainGliomas);
                 }
                 model.addAttribute("mmBrainGliomas", mmBrainGliomas);
             }
@@ -1379,6 +1392,19 @@ public class GeneMarkerVwController {
                 model.addAttribute("qualityType", "白细胞");
             }
         }
+    }
+
+    private void sortGbm1238BrainGliomaMaps(List<Map> brainGlioma) {
+        brainGlioma.sort(Comparator.comparingInt(map -> getGbm1238BrainGliomaOrder(map.get("gene"))));
+    }
+
+    private void sortGbm1238BrainGliomas(List<MmBrainGlioma> mmBrainGliomas) {
+        mmBrainGliomas.sort(Comparator.comparingInt(mmBrainGlioma -> getGbm1238BrainGliomaOrder(mmBrainGlioma.getGene())));
+    }
+
+    private int getGbm1238BrainGliomaOrder(Object gene) {
+        int index = GBM1238_BRAIN_GLIOMA_ORDER.indexOf(gene == null ? "" : gene.toString());
+        return index >= 0 ? index : GBM1238_BRAIN_GLIOMA_ORDER.size();
     }
 
     private void addQcUpgradeInfo(CurrentNgsAvailableData currentNgsAvailable, SampleFile sampleFile, Model model) {

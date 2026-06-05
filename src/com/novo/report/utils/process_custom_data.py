@@ -91,9 +91,9 @@ def process_shanghaifeike_tip(report_json):
         variant_split = ori_variant.split(" ")
         tip = ""
         if "Fusion" in ori_variant:
-            today = datetime.today()
-            today_formatted = today.strftime("%Y%m%d")
-            fusion_reads_list = mysql_query(product_name, today_formatted , subbarcode)
+            # today = datetime.today()
+            # today_formatted = today.strftime("%Y%m%d")
+            fusion_reads_list = mysql_query(product_name, analysis_date , subbarcode)
 
             gene_str = variant_split[0]
             fusion_flag = variant_split[1]
@@ -1031,6 +1031,70 @@ def process_WJM_tip(report_json, to_update_json_data):
         report_json['unknownVarAnalysisStrRNA'] = unknownVarAnalysisStrRNA
         to_update_json_data['unknownVarAnalysisStrDNA'] = unknownVarAnalysisStrDNA
         to_update_json_data['unknownVarAnalysisStrRNA'] = unknownVarAnalysisStrRNA
+
+    remove_alk_dna_negative_immune_for_same_rna_fusion(report_json, to_update_json_data)
+
+
+def remove_alk_dna_negative_immune_for_same_rna_fusion(report_json, to_update_json_data):
+    rna_alk_fusion_variants = set()
+    dna_alk_fusion_variants = set()
+    negative_immnue = report_json.get('negativeImmnue', [])
+    for item in negative_immnue:
+        variant = item.get('variant') or ''
+        if not variant or item.get('gene') != 'ALK' or 'Fusion' not in variant:
+            continue
+
+        if is_rna_fusion_item(item):
+            rna_alk_fusion_variants.add(variant)
+        else:
+            dna_alk_fusion_variants.add(variant)
+
+    same_breakpoint_variants = rna_alk_fusion_variants & dna_alk_fusion_variants
+    if not same_breakpoint_variants:
+        return
+
+    filtered_negative_immnue = [
+        item for item in negative_immnue
+        if not is_same_breakpoint_alk_dna_negative_immune(item, same_breakpoint_variants)
+    ]
+    if len(filtered_negative_immnue) == len(negative_immnue):
+        return
+
+    report_json['negativeImmnue'] = filtered_negative_immnue
+    to_update_json_data['negativeImmnue'] = filtered_negative_immnue
+
+    summary = report_json.get('summaryOfRresults', {})
+    summary['negativeImmnueNum'] = sum(1 for item in filtered_negative_immnue if item.get('varDesc') != '/')
+    report_json['summaryOfRresults'] = summary
+    to_update_json_data['summaryOfRresults'] = summary
+
+
+def get_variant_value(item):
+    return item.get('variant') or item.get('ori_variant') or item.get('mutation') or ''
+
+
+def is_rna_fusion_item(item):
+    variant = get_variant_value(item)
+    return (parse_mut_freq(item.get('mutFreq', '')) < 0 or parse_mut_freq(item.get('mutFreq', '')) > 1) and 'Fusion' in variant
+
+
+def parse_mut_freq(mut_freq_str):
+    try:
+        mut_freq_str = str(mut_freq_str)
+        if mut_freq_str.endswith('%'):
+            return float(mut_freq_str.replace('%', '')) / 100
+        return float(mut_freq_str)
+    except:
+        return 0.0
+
+
+def is_same_breakpoint_alk_dna_negative_immune(item, same_breakpoint_variants):
+    return (
+            item.get('gene') == 'ALK'
+            and 'Fusion' in get_variant_value(item)
+            and item.get('variant') in same_breakpoint_variants
+            and not is_rna_fusion_item(item)
+    )
 
 
 def process_ZHSRRYY_tip(report_json):

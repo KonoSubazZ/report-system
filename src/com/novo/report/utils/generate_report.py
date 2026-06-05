@@ -39,6 +39,8 @@ CUSTOM_REPORT_DETAIL_FIELDS = [
     'BodyDrugNoComplexStrRNA',
     'unknownVarAnalysisStrDNA',
     'unknownVarAnalysisStrRNA',
+    'negativeImmnue',
+    'summaryOfRresults',
 ]
 
 
