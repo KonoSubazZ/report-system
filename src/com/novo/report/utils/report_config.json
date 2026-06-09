@@ -22,7 +22,7 @@
     "double_sample_SZJU": "NOVO检测报告-双样本-苏州九院",
     "single_sample_JZYY": "NOVO检测报告-单样本-浙江医院",
     "double_sample_JZYY": "NOVO检测报告-双样本-浙江医院",
-    "double_sample_JZSRMYY": "NOVO报检测告-双样本-浙江省人民医院",
+    "double_sample_JZSRMYY": "NOVO检测报告-双样本-浙江省人民医院",
     "double_sample_BJRT": "NOVO检测报告-双样本-儿童肿瘤"
   },
   "advanced_templates": {
@@ -263,9 +263,9 @@
       "泛实体瘤1238基因检测报告-浙江省人民医院"
     ],
     "double_sample_BJRT": [
-      "肉瘤1238+1166基因报告-儿童肿瘤",
-      "NOVO泛癌种1238报告-儿童肿瘤",
-      "全外显子组升级版（WES Plus）基因报告-儿童肿瘤"
+      "肉瘤1238+1166基因报告-儿童肿瘤_unreleased",
+      "NOVO泛癌种1238报告-儿童肿瘤_unreleased",
+      "全外显子组升级版（WES Plus）基因报告-儿童肿瘤_unreleased"
     ]
   }
 }

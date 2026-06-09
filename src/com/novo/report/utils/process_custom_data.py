@@ -39,7 +39,7 @@ def process_custom_data(report_json):
     # midline_cancer = conf.get('midlineCancer', False)
     # kidney_cancer = conf.get('kidneyCancer', False)
     panel = report_json.get("panel")
-    DR_panel = ["novopm2_tis_1238_1166", "novopm2_tis_550_596", "novopm2_tis_169_596", "novopm2_tis1_169_596", "novopm2_tis1_108_33", "novopm2_tis1_58_22", "novopm2_tis1_1238_1166"]
+    DR_panel = ["novopm2_tis_1238_1166", "novopm2_tis_550_596", "novopm2_tis_169_596", "novopm2_tis1_169_596", "novopm2_tis1_108_33", "novopm2_tis1_58_22", "novopm2_tis1_1238_1166","novopm2_tis_1249_1166"]
     to_update_json_data = {}
     is_DR_panel = panel in DR_panel
     log("is_DR_panel: %s" % is_DR_panel)
