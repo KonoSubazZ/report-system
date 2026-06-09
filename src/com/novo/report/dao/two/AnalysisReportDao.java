@@ -708,4 +708,10 @@ public interface AnalysisReportDao {
     List<Map> getImmuneUrinaryTable();
 
     String getPDINFOFilePath(CommonQueryVO query);
+
+    // 20260609 FRaPD
+    Map getFRaPDInfo(String subbarcode, String analysisDate, String productName);
+
+    // 20260609 FRaPD图片
+    String getFRA_PIC(String subbarcode, String analysisDate, String productName);
 }

@@ -3077,6 +3077,55 @@ public class PyReportServiceImpl implements PyReportService {
             }
             rt.setMdm2(mdm2Info);
         }
+        // Ackerman pd_FRa
+        if ("pd_FRa".equals(productName)) {
+            Map pdFRaInfo = analysisReportDao.getFRaPDInfo(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            if (pdFRaInfo == null) {
+                pdFRaInfo = new HashMap();
+            }
+            List<String> pdFRaFields = Arrays.asList("subbarcode", "client", "Ackerman_num", "test_item", "HE_Dyeing",
+                    "Seen_microscopically", "positive_2_3", "reporter", "reviewers", "Tumor_cel_content",
+                    "Tumor_cell_count", "Detection_method", "Detect_antibody");
+            for (String field : pdFRaFields) {
+                pdFRaInfo.put(field, pdFRaInfo.getOrDefault(field, ""));
+            }
+            Object detectAntibodyObj = pdFRaInfo.get("Detect_antibody");
+            String detectAntibody = detectAntibodyObj == null ? "" : detectAntibodyObj.toString();
+            String[] detectAntibodys = detectAntibody.split(" ");
+            if (detectAntibodys.length == 2) {
+                pdFRaInfo.put("antibody", detectAntibodys[1]);
+            }
+
+            String he_PIC = analysisReportDao.getHE_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            String yangkong_PIC = analysisReportDao.getYangkong_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            String yinkong_PIC = analysisReportDao.getYinkong_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            String fra_PIC = analysisReportDao.getFRA_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            if (!StringUtils.isEmpty(he_PIC)) {
+                pdFRaInfo.put("he_PIC_status", true);
+                pdFRaInfo.put("he_PIC", he_PIC);
+            } else {
+                pdFRaInfo.put("he_PIC_status", false);
+            }
+            if (!StringUtils.isEmpty(yangkong_PIC)) {
+                pdFRaInfo.put("yangkong_PIC_status", true);
+                pdFRaInfo.put("yangkong_PIC", yangkong_PIC);
+            } else {
+                pdFRaInfo.put("yangkong_PIC_status", false);
+            }
+            if (!StringUtils.isEmpty(yinkong_PIC)) {
+                pdFRaInfo.put("yinkong_PIC_status", true);
+                pdFRaInfo.put("yinkong_PIC", yinkong_PIC);
+            } else {
+                pdFRaInfo.put("yinkong_PIC_status", false);
+            }
+            if (!StringUtils.isEmpty(fra_PIC)) {
+                pdFRaInfo.put("fra_PIC_status", true);
+                pdFRaInfo.put("fra_PIC", fra_PIC);
+            } else {
+                pdFRaInfo.put("fra_PIC_status", false);
+            }
+            rt.setPDInfo(pdFRaInfo);
+        }
         // 阅微MSI
         if ("msi".equals(productName)) {
             List<Map> microsatelliteInstability = analysisReportDao.getMicrosatelliteInstability(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());

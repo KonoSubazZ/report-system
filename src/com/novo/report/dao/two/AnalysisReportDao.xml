@@ -1182,5 +1182,40 @@
           AND dfs.product_name = #{product_name}
           AND dfs.file_type = 'MDM2';
     </select>
+    <select id="getFRaPDInfo" resultType="java.util.Map">
+        SELECT
+            pd.subbarcode,
+            pd.client,
+            pd.Ackerman_num,
+            pd.test_item,
+            pd.HE_Dyeing,
+            pd.Seen_microscopically,
+            pd.positive_2_3,
+            pd.reporter,
+            pd.reviewers,
+            pd.Tumor_cel_content,
+            pd.Tumor_cell_count,
+            pd.Detection_method,
+            pd.Detect_antibody
+        FROM
+            pdinfo_file pd
+                JOIN data_file_status pds ON pd.file_id = pds.file_id
+        WHERE
+            pds.subbarcode = #{subbarcode}
+          AND pds.analysis_date = #{analysis_date}
+          AND pds.product_name = #{product_name}
+          AND pds.file_type = 'PDINFO';
+    </select>
+    <select id="getFRA_PIC" resultType="java.lang.String">
+        SELECT
+            file_text
+        FROM
+            data_file_status
+        WHERE
+            subbarcode = #{subbarcode}
+          AND analysis_date = #{analysis_date}
+          AND product_name = #{product_name}
+          AND file_type = 'FRA_PIC';
+    </select>
 
 </mapper>
