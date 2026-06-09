@@ -3104,7 +3104,7 @@ public class PyReportServiceImpl implements PyReportService {
             pdFRaInfo.put("he_PIC", he_PIC);
             pdFRaInfo.put("yangkong_PIC", yangkong_PIC);
             pdFRaInfo.put("yinkong_PIC", yinkong_PIC);
-            pdFRaInfo.put("fra_PIC_status", true);
+            pdFRaInfo.put("fra_PIC", fra_PIC);
             rt.setPDInfo(pdFRaInfo);
         }
         // Ackerman pd_Nectin4
