@@ -378,6 +378,10 @@ public interface AnalysisReportDao {
     @Select("SELECT file_id,subbarcode,client,Ackerman_num,test_item,Overall_quality,HE_Dyeing,Seen_microscopically,TPS,CPS,claudin2,claudin3,reporter,reviewers,Tumor_cel_content,Tumor_cell_count,Detection_method,Detect_antibody FROM omics.pdinfo_file WHERE file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"PDINFO\" and status=\"Loaded\")")
     Map getPDInfo(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
+    // Nectin4 data info
+    @Select("SELECT file_id,subbarcode,client,Ackerman_num,test_item,HE_Dyeing,Seen_microscopically,claudin18_0,claudin18_1,claudin18_2,claudin18_3,reporter,reviewers,Tumor_cel_content,Tumor_cell_count,Detection_method,Detect_antibody FROM omics.pdinfo_file WHERE file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"PDINFO\" and status=\"Loaded\")")
+    Map getNectin4PDInfo(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
+
     //获取HE的图片
     @Select("SELECT file_text FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"HE_PIC\" and status=\"Loaded\"")
     String getHE_PIC(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
@@ -393,6 +397,10 @@ public interface AnalysisReportDao {
     //获取PD的图片
     @Select("SELECT file_text FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"PD_PIC\" and status=\"Loaded\"")
     String getPD_PIC(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
+
+    // Nectin4 picture
+    @Select("SELECT file_text FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"Nectin4_PIC\" and status=\"Loaded\"")
+    String getNectin4_PIC(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 
     // 预后评估
     @Select("SELECT gene,ori_variant,mutFreq,prognosis_evaluation,prognosis_assessment FROM omics.pdoftc_file WHERE file_id IN (SELECT file_id FROM omics.data_file_status WHERE subbarcode=#{subbarcode} and analysis_date=#{analysis_date} and product_name=#{product_name} and file_type=\"PDofTC\" and status=\"Loaded\")")

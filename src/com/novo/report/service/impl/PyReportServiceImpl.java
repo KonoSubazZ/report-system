@@ -3100,31 +3100,39 @@ public class PyReportServiceImpl implements PyReportService {
             String yangkong_PIC = analysisReportDao.getYangkong_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
             String yinkong_PIC = analysisReportDao.getYinkong_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
             String fra_PIC = analysisReportDao.getFRA_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
-            if (!StringUtils.isEmpty(he_PIC)) {
-                pdFRaInfo.put("he_PIC_status", true);
-                pdFRaInfo.put("he_PIC", he_PIC);
-            } else {
-                pdFRaInfo.put("he_PIC_status", false);
-            }
-            if (!StringUtils.isEmpty(yangkong_PIC)) {
-                pdFRaInfo.put("yangkong_PIC_status", true);
-                pdFRaInfo.put("yangkong_PIC", yangkong_PIC);
-            } else {
-                pdFRaInfo.put("yangkong_PIC_status", false);
-            }
-            if (!StringUtils.isEmpty(yinkong_PIC)) {
-                pdFRaInfo.put("yinkong_PIC_status", true);
-                pdFRaInfo.put("yinkong_PIC", yinkong_PIC);
-            } else {
-                pdFRaInfo.put("yinkong_PIC_status", false);
-            }
-            if (!StringUtils.isEmpty(fra_PIC)) {
-                pdFRaInfo.put("fra_PIC_status", true);
-                pdFRaInfo.put("fra_PIC", fra_PIC);
-            } else {
-                pdFRaInfo.put("fra_PIC_status", false);
-            }
+
+            pdFRaInfo.put("he_PIC", he_PIC);
+            pdFRaInfo.put("yangkong_PIC", yangkong_PIC);
+            pdFRaInfo.put("yinkong_PIC", yinkong_PIC);
+            pdFRaInfo.put("fra_PIC_status", true);
             rt.setPDInfo(pdFRaInfo);
+        }
+        // Ackerman pd_Nectin4
+        if ("pd_Nectin4".equals(productName)) {
+            Map pdNectin4Info = analysisReportDao.getNectin4PDInfo(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            if (pdNectin4Info == null) {
+                pdNectin4Info = new HashMap();
+            }
+            List<String> pdNectin4Fields = Arrays.asList("subbarcode", "client", "Ackerman_num", "test_item", "HE_Dyeing",
+                    "Seen_microscopically", "claudin18_0", "claudin18_1", "claudin18_2", "claudin18_3",
+                    "reporter", "reviewers", "Tumor_cel_content", "Tumor_cell_count", "Detection_method",
+                    "Detect_antibody");
+            for (String field : pdNectin4Fields) {
+                pdNectin4Info.put(field, pdNectin4Info.getOrDefault(field, ""));
+            }
+            Object detectAntibodyObj = pdNectin4Info.get("Detect_antibody");
+            String detectAntibody = detectAntibodyObj == null ? "" : detectAntibodyObj.toString();
+            String[] detectAntibodys = detectAntibody.split(" ");
+            if (detectAntibodys.length == 2) {
+                pdNectin4Info.put("antibody", detectAntibodys[1]);
+            }
+
+            String he_PIC = analysisReportDao.getHE_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            String nectin4_PIC = analysisReportDao.getNectin4_PIC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+
+            pdNectin4Info.put("he_PIC", he_PIC);
+            pdNectin4Info.put("nectin4_PIC", nectin4_PIC);
+            rt.setPDInfo(pdNectin4Info);
         }
         // 阅微MSI
         if ("msi".equals(productName)) {
