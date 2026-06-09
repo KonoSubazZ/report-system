@@ -1196,7 +1196,8 @@
             pd.Tumor_cel_content,
             pd.Tumor_cell_count,
             pd.Detection_method,
-            pd.Detect_antibody
+            pd.Detect_antibody,
+            pd.test_results,
         FROM
             pdinfo_file pd
                 JOIN data_file_status pds ON pd.file_id = pds.file_id
