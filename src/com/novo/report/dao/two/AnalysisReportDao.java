@@ -722,4 +722,10 @@ public interface AnalysisReportDao {
 
     // 20260609 FRaPD图片
     String getFRA_PIC(String subbarcode, String analysisDate, String productName);
+
+    // 20260609 ALK data info
+    Map getALKDataInfo(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
+
+    // 20260609 ALK picture
+    String getALKimgBase64Str(@Param("subbarcode") String subbarcode, @Param("analysis_date") String analysis_date, @Param("product_name") String product_name);
 }

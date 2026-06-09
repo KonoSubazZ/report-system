@@ -1217,5 +1217,33 @@
           AND product_name = #{product_name}
           AND file_type = 'FRA_PIC';
     </select>
+    <select id="getALKDataInfo" resultType="java.util.Map">
+        SELECT
+            arf.tumor_cell_ratio,
+            arf.positive_cell_ratio,
+            arf.fish_result,
+            arf.result,
+            arf.reporter,
+            arf.reviewer
+        FROM
+            alk_rearrangement_file arf
+                JOIN data_file_status dfs ON arf.file_id = dfs.file_id
+        WHERE
+            dfs.subbarcode = #{subbarcode}
+          AND dfs.analysis_date = #{analysis_date}
+          AND dfs.product_name = #{product_name}
+          AND dfs.file_type = 'alk_rearrangement';
+    </select>
+    <select id="getALKimgBase64Str" resultType="java.lang.String">
+        SELECT
+            file_text
+        FROM
+            data_file_status
+        WHERE
+            subbarcode = #{subbarcode}
+          AND analysis_date = #{analysis_date}
+          AND product_name = #{product_name}
+          AND file_type = 'ALK_PIC';
+    </select>
 
 </mapper>

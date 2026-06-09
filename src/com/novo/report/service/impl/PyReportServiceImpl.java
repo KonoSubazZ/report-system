@@ -3134,6 +3134,21 @@ public class PyReportServiceImpl implements PyReportService {
             pdNectin4Info.put("nectin4_PIC", nectin4_PIC);
             rt.setPDInfo(pdNectin4Info);
         }
+        // Ackerman pd_ALK
+        if ("pd_ALK".equals(productName)) {
+            String ALKimgBase64Str = analysisReportDao.getALKimgBase64Str(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            Map pdALKInfo = analysisReportDao.getALKDataInfo(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
+            if (pdALKInfo == null) {
+                pdALKInfo = new HashMap();
+            }
+            pdALKInfo.put("ALKimgBase64Str", ALKimgBase64Str);
+            List<String> pdALKFields = Arrays.asList("tumor_cell_ratio", "positive_cell_ratio", "fish_result",
+                    "result", "reporter", "reviewer");
+            for (String field : pdALKFields) {
+                pdALKInfo.put(field, pdALKInfo.getOrDefault(field, ""));
+            }
+            rt.setPDInfo(pdALKInfo);
+        }
         // 阅微MSI
         if ("msi".equals(productName)) {
             List<Map> microsatelliteInstability = analysisReportDao.getMicrosatelliteInstability(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
