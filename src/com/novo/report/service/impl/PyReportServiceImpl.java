@@ -7396,7 +7396,7 @@ public class PyReportServiceImpl implements PyReportService {
         }
 
         // 判断是否有PD
-        if (pd != null && !"PD-L1检测报告".equals(pageName) && !"Claudin18.2检测报告".equals(pageName)) {
+        if (pd != null && !"PD-L1检测报告".equals(pageName) && !"Claudin18.2检测报告".equals(pageName) && !"Nectin-4(PVRL4)表达检测报告".equals(pageName) && !"叶酸受体α（FRα）表达检测报告".equals(pageName)) {
             pageName = pageName.replace("检测报告", "+PD-L1检测报告");
         }
         // Generate the unique QR code string
