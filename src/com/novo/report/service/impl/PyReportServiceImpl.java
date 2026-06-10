@@ -58,7 +58,9 @@ public class PyReportServiceImpl implements PyReportService {
             "BodyDrugNoComplexStrDNA",
             "BodyDrugNoComplexStrRNA",
             "unknownVarAnalysisStrDNA",
-            "unknownVarAnalysisStrRNA"
+            "unknownVarAnalysisStrRNA",
+            "negativeImmnue",
+            "summaryOfRresults"
     );
 
 

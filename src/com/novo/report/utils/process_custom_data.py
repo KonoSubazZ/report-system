@@ -1,7 +1,7 @@
 import json
 import re
 import pymysql
-from datetime import datetime
+# from datetime import datetime
 
 def process_custom_data(report_json):
     template_name = report_json.get('summaryOfRresults').get('template_name')
