@@ -3116,7 +3116,7 @@ public class PyReportServiceImpl implements PyReportService {
             List<String> pdNectin4Fields = Arrays.asList("subbarcode", "client", "Ackerman_num", "test_item", "HE_Dyeing",
                     "Seen_microscopically", "claudin18_0", "claudin18_1", "claudin18_2", "claudin18_3",
                     "reporter", "reviewers", "Tumor_cel_content", "Tumor_cell_count", "Detection_method",
-                    "Detect_antibody");
+                    "Detect_antibody", "Hscore");
             for (String field : pdNectin4Fields) {
                 pdNectin4Info.put(field, pdNectin4Info.getOrDefault(field, ""));
             }
