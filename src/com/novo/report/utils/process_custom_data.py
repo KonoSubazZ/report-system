@@ -42,7 +42,7 @@ def process_custom_data(report_json):
     DR_panel = ["novopm2_tis_1238_1166", "novopm2_tis_550_596", "novopm2_tis_169_596", "novopm2_tis1_169_596", "novopm2_tis1_108_33", "novopm2_tis1_58_22", "novopm2_tis1_1238_1166","novopm2_tis_1249_1166"]
     to_update_json_data = {}
     is_DR_panel = panel in DR_panel
-    log("is_DR_panel: %s" % is_DR_panel)
+    # log("is_DR_panel: %s" % is_DR_panel)
     report_json['is_DR_panel'] = is_DR_panel
 
     if (template_name == '肉瘤1238+1166基因检测报告-WJM' or template_name == '肉瘤550+596基因检测报告-WJM'\
