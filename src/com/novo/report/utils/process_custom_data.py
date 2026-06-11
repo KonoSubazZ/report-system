@@ -145,6 +145,8 @@ def process_shanghaifeike_tip(report_json):
 
         elif "Amplification" in ori_variant:
             tip = f"{gene}基因扩增，拷贝数{mut_freq}"
+        elif "Loss" in ori_variant:
+            tip = f"{gene}基因缺失，拷贝数{mut_freq}"
         else:
             new_variant = ori_variant.replace(" ", ":")
             ExonicFunc = item.get('ExonicFunc')
@@ -199,6 +201,8 @@ def process_shanghaifeike_tip(report_json):
 
         elif "Amplification" in ori_variant:
             tip = f"{gene}基因扩增，拷贝数{mut_freq}"
+        elif "Loss" in ori_variant:
+            tip = f"{gene}基因缺失，拷贝数{mut_freq}"
         else:
             new_variant = ori_variant.replace(" ", ":")
             ExonicFunc = item.get('ExonicFunc')
@@ -230,7 +234,7 @@ def process_shanghaifeike_tip(report_json):
                 "gene": hot_gene,
                 "ori_variant": "未检出相关突变",
                 "mut_freq": "-",
-                "variationClass2": "-"
+                "variationClass": "-"
             })
     # 按照gene顺序排序
     gene_order = {gene: idx for idx, gene in enumerate(shanghaifeike_hot_gene_list)}
@@ -249,6 +253,7 @@ def process_shanghaifeike_tip(report_json):
     report_json['shanghaifeike_tips_2'] = shanghaifeike_tips_2
     report_json['shanghaifeike_tips_3'] = shanghaifeike_tips_3
     report_json['shanghaifeike_hot_gene_info'] = shanghaifeike_hot_gene_info
+    log(shanghaifeike_hot_gene_info)
     report_json["cnv_loss_display_text"] = cnv_loss_full_text
 
 def parse_and_check_kras(gene, ori_variant):
