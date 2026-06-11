@@ -4482,12 +4482,18 @@ public class PyReportServiceImpl implements PyReportService {
             String sclip1_info = fusionRes.get(0).get("sclip1_info").toString();
 
             // 融合增加亚型
-            String db_info = fusionRes.get(0).get("db_info").toString();
+            Object cosmicObj = fusionRes.get(0).get("cosmic65");
+            String cosmic65;
+            if (cosmicObj == null) {
+                cosmic65 = "";
+            } else {
+                cosmic65 = cosmicObj.toString().trim();
+            }
             String subType = "";
-            if (db_info.contains("亚型") && "ALK".equals(gene)) {
-                int idx = db_info.indexOf("亚型");
+            if (!cosmic65.isEmpty() && cosmic65.contains("亚型") && "ALK".equals(gene)) {
+                int idx = cosmic65.indexOf("亚型");
                 // 截取"亚型"后面所有字符，再取第一个数字字符
-                String after = db_info.substring(idx + 2);
+                String after = cosmic65.substring(idx + 2);
                 char digitChar = after.charAt(0);
                 String num = String.valueOf(digitChar);
                 subType = "(" + "v" +  num + ")";
