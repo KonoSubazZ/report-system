@@ -31,6 +31,10 @@ public class ServerConfig {
         return prop.getProperty("subreport_call_api");
     }
 
+    public static String getCyfzExcelCustomers() {
+        return prop.getProperty("cyfz_excel_customers", "");
+    }
+
     public static void main(String[] args) throws IOException {
         System.out.println(getServerFormalIP());
         System.out.println(getServerTestIP());

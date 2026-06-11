@@ -4,6 +4,7 @@ import com.novo.report.beans.*;
 import com.novo.report.common.CommonQueryVO;
 import com.novo.report.common.Result;
 import com.novo.report.dao.two.AnalysisReportDao;
+import com.novo.report.dao.two.AnalysisReportStoreDao;
 import com.novo.report.service.*;
 import com.novo.report.utils.*;
 import net.sf.json.JSONObject;
@@ -56,7 +57,27 @@ public class NgsReportController {
     @Autowired
     private AnalysisReportDao analysisReportDao;
     @Autowired
+    private AnalysisReportStoreDao analysisReportStoreDao;
+    @Autowired
     private SubReportService subReportService;
+
+    private boolean needCyfzExcel(String customer) {
+        if (StringUtils.isBlank(customer)) {
+            return false;
+        }
+        String customers = ServerConfig.getCyfzExcelCustomers();
+        if (StringUtils.isBlank(customers)) {
+            return false;
+        }
+        for (String configuredCustomer : customers.split(",")) {
+            configuredCustomer = configuredCustomer.trim();
+            if (StringUtils.isNotBlank(configuredCustomer)
+                    && (customer.equals(configuredCustomer) || customer.contains(configuredCustomer))) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     //产生报告
     @RequestMapping("createReport")
@@ -260,6 +281,21 @@ public class NgsReportController {
             // 附件
             List<String> list = new ArrayList<String>();
             list.add(analysisReport.getReport_file_path() + analysisReport.getReport_filename());
+
+            if (needCyfzExcel(sf.getCustomer())) {
+                String reportDetail = analysisReportStoreDao.getReportDetailByReportId(analysisReport.getReport_id());
+                String cyfzExcelPath = CyfzExcelExportUtil.createExcel(
+                        reportDetail,
+                        sf.getSubbarcode(),
+                        analysisReport.getReport_file_path()
+                );
+                if (StringUtils.isBlank(cyfzExcelPath)) {
+                    success[0] = false;
+                    map.put("errorMessage", "邮件发送失败，CYFZ Excel生成失败");
+                    return map;
+                }
+                list.add(cyfzExcelPath);
+            }
 
             // 生成小报告逻辑
             List<Object> ips = Arrays.asList(IpUtil.getLocalIp4Address().toArray());

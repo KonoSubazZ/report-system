@@ -5,6 +5,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="com.novo.report.dao.two.AnalysisReportStoreDao">
 
+	<select id="getReportDetailByReportId" resultType="String">
+		select json_extract(report_detail, '$') as report_detail
+		from analysis_report_store
+		where report_id = #{report_id}
+	</select>
+
 	<insert id="insertAnalysisReportStore">
 		<selectKey keyProperty="count" resultType="java.lang.Integer" order="BEFORE">
 			select count(*) from analysis_report_store where report_id = #{report_id}
