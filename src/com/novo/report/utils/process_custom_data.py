@@ -7,7 +7,7 @@ def process_custom_data(report_json):
     template_name = report_json.get('summaryOfRresults').get('template_name')
 
     # 上海肺科
-    if template_name == '肺癌60基因报告-上海肺科':
+    if template_name == '肺癌60基因报告-上海肺科' or template_name == '实体瘤188基因报告-上海肺科':
         process_shanghaifeike_tip(report_json)
 
     # 山肿胚系
@@ -67,6 +67,14 @@ def process_shanghaifeike_tip(report_json):
     shanghaifeike_tips_2 = []
     shanghaifeike_tips_3 = []
 
+    # ========== 核心基因检测 EGFR ALK ROS1 KRAS BRAF PIK3CA ==========
+    shanghaifeike_hot_gene_list = ["EGFR", "ALK", "ROS1", "KRAS", "BRAF", "PIK3CA"]
+    shanghaifeike_hot_gene_info = []
+
+    # ========== CNV拷贝数缺失检测 MTAP CDKN2A CDKN2B ==========
+    cnv_loss_target_genes = ["MTAP", "CDKN2A", "CDKN2B"]
+    loss_detected_genes = set()
+
     subbarcode = report_json.get('subbarcode')
     analysis_date = report_json.get('analysisDate')
     product_name = report_json.get('panel')
@@ -88,7 +96,16 @@ def process_shanghaifeike_tip(report_json):
         ori_variant = item.get('ori_variant')
         mut_freq = item.get('mutFreq')
         variationClass2 = item.get('variationClass2')
+        variationClass = item.get('variationClass')
         variant_split = ori_variant.split(" ")
+        # 热点基因检测
+        if gene in shanghaifeike_hot_gene_list:
+            shanghaifeike_hot_gene_info.append({"gene": gene, "ori_variant": ori_variant, "mut_freq": mut_freq, "variationClass": variationClass})
+
+        # CNV拷贝数缺失检测
+        if gene in cnv_loss_target_genes and ori_variant and "loss" in ori_variant.lower():
+            loss_detected_genes.add(gene)
+
         tip = ""
         if "Fusion" in ori_variant:
             # today = datetime.today()
@@ -153,7 +170,7 @@ def process_shanghaifeike_tip(report_json):
         if (gene == "EGFR" and ori_variant == "Amplification"):
             shanghaifeike_tips_2.append(tip)
             item['variationClass'] = "II类"
-        elif variationClass2 == "1" or (gene == "KRAS" and ori_variant != "Amplification"):
+        elif variationClass2 == "1" or (parse_and_check_kras(gene, ori_variant)):
             item['variationClass'] = "I类"
             shanghaifeike_tips_1.append(tip)
         else:
@@ -165,6 +182,16 @@ def process_shanghaifeike_tip(report_json):
         ori_variant = item.get('ori_variant')
         mut_freq = item.get('mutFreq')
         variationClass2 = item.get('variationClass2')
+        variationClass = item.get('variationClass')
+
+        # 热点基因检测
+        if gene in shanghaifeike_hot_gene_list:
+            shanghaifeike_hot_gene_info.append({"gene": gene, "ori_variant": ori_variant, "mut_freq": mut_freq, "variationClass": variationClass})
+
+        # CNV拷贝数缺失检测
+        if gene in cnv_loss_target_genes and ori_variant and "loss" in ori_variant.lower():
+            loss_detected_genes.add(gene)
+
         variant_split = ori_variant.split(" ")
         tip = ""
         if "Fusion" in ori_variant:
@@ -195,11 +222,90 @@ def process_shanghaifeike_tip(report_json):
             tip = f"{gene}基因{exon}号{desc}{ExonicFunc}{var}，突变丰度为{mut_freq}。"
             shanghaifeike_tips_3.append(tip)
 
+    # 添加缺失的基因信息
+    exist_gene_set = {row["gene"] for row in shanghaifeike_hot_gene_info}
+    for hot_gene in shanghaifeike_hot_gene_list:
+        if hot_gene not in exist_gene_set:
+            shanghaifeike_hot_gene_info.append({
+                "gene": hot_gene,
+                "ori_variant": "未检出相关突变",
+                "mut_freq": "-",
+                "variationClass2": "-"
+            })
+    # 按照gene顺序排序
+    gene_order = {gene: idx for idx, gene in enumerate(shanghaifeike_hot_gene_list)}
+    shanghaifeike_hot_gene_info.sort(key=lambda d: gene_order[d["gene"]])
+
+    # ========== 拷贝数缺失检测结果 ==========
+    # cnv_loss_result_dict = {}
+    result_parts = []
+    for g in cnv_loss_target_genes:
+        res = "阳性" if g in loss_detected_genes else "阴性"
+        # cnv_loss_result_dict[g] = res
+        result_parts.append(f"{g}{res}")
+    cnv_loss_full_text = "；".join(result_parts)
+
     report_json['shanghaifeike_tips_1'] = shanghaifeike_tips_1
     report_json['shanghaifeike_tips_2'] = shanghaifeike_tips_2
     report_json['shanghaifeike_tips_3'] = shanghaifeike_tips_3
+    report_json['shanghaifeike_hot_gene_info'] = shanghaifeike_hot_gene_info
+    report_json["cnv_loss_display_text"] = cnv_loss_full_text
 
+def parse_and_check_kras(gene, ori_variant):
+    """
+    自动解析整条突变字符串并判定KRAS特殊I类
+    """
+    if "KRAS" not in gene:
+        return False
 
+    pattern = r"(NM_\d+\.\d+)\s+exon(\d+)\s+(c\.[A-Z0-9_>]+)\s+(p\.[A-Z0-9]+)"
+    match = re.match(pattern, ori_variant.strip())
+    if not match:
+        return False
+
+    transcript, exon_str, hgvs_c, hgvs_p = match.groups()
+    exon = int(exon_str)
+    return check_kras_special_class(transcript, exon, hgvs_c, hgvs_p)
+
+def check_kras_special_class(transcript, exon, hgvs_c, hgvs_p):
+    """
+    KRAS特殊I类突变判定
+    :param transcript: 转录本编号
+    :param exon: 外显子数字
+    :param hgvs_c: c.开头突变
+    :param hgvs_p: p.开头蛋白突变
+    :return: (是否特殊I类, 判定说明)
+    """
+    # 校验转录本
+    # if transcript != "NM_033360.4":
+    #     return False, f"转录本{transcript}非目标转录本，不纳入特殊I类"
+
+    p_raw = hgvs_p.lstrip("p.")
+    if not p_raw:
+        return False
+
+    # 规则集合
+    if exon == 2:
+        if p_raw.startswith(("G12", "G13")):
+            return True
+        else:
+            return False
+
+    elif exon == 3:
+        if p_raw.startswith("Q61"):
+            return True
+        else:
+            return False
+
+    elif exon == 4:
+        target_p = {"K117N", "A146T", "A146V", "A146P"}
+        if p_raw in target_p:
+            return True
+        else:
+            return False
+
+    else:
+        return False
 def process_shanzhong_tip(report_json):
     # 山肿胚系开发
     cr_tips = []
