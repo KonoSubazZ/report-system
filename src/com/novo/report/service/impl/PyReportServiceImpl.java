@@ -4480,6 +4480,19 @@ public class PyReportServiceImpl implements PyReportService {
                     .filter(fusion -> fusion.get("my_ori_variant").equals(oriVariant))
                     .collect(Collectors.toList());
             String sclip1_info = fusionRes.get(0).get("sclip1_info").toString();
+
+            // 融合增加亚型
+            String db_info = fusionRes.get(0).get("db_info").toString();
+            String subType = "";
+            if (db_info.contains("亚型") && "ALK".equals(gene)) {
+                int idx = db_info.indexOf("亚型");
+                // 截取"亚型"后面所有字符，再取第一个数字字符
+                String after = db_info.substring(idx + 2);
+                char digitChar = after.charAt(0);
+                String num = String.valueOf(digitChar);
+                subType = "(" + "v" +  num + ")";
+            }
+
             String[] sclip1Split = sclip1_info.split(":");
             String num1 = "";
             if (sclip1Split[3].contains("exon")) {
@@ -4495,7 +4508,7 @@ public class PyReportServiceImpl implements PyReportService {
             } else {
                 num2 = sclip2Split[3].split("_")[1].substring(1);
             }
-            TJmutation = TJmutation + " " + sclip1Split[1] + "(" + sclip1Split[0] + ":" + "EX" + num1.replaceAll("[^0-9]", "") + ")" + "-" + sclip2Split[1] + "(" + sclip2Split[0] + ":" + "EX" + num2.replaceAll("[^0-9]", "") + ")";
+            TJmutation = TJmutation + " " + sclip1Split[1] + "(" + sclip1Split[0] + ":" + "EX" + num1.replaceAll("[^0-9]", "") + ")" + "-" + sclip2Split[1] + "(" + sclip2Split[0] + ":" + "EX" + num2.replaceAll("[^0-9]", "") + ")" + subType;
 
         } else {
             int index = oriVariant.indexOf("p.") >= 0 ? oriVariant.indexOf("p.") : oriVariant.indexOf("c.");
