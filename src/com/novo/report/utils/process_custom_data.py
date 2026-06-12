@@ -96,11 +96,8 @@ def process_shanghaifeike_tip(report_json):
         ori_variant = item.get('ori_variant')
         mut_freq = item.get('mutFreq')
         variationClass2 = item.get('variationClass2')
-        variationClass = item.get('variationClass')
+        # variationClass = item.get('variationClass')
         variant_split = ori_variant.split(" ")
-        # 热点基因检测
-        if gene in shanghaifeike_hot_gene_list:
-            shanghaifeike_hot_gene_info.append({"gene": gene, "ori_variant": ori_variant, "mut_freq": mut_freq, "variationClass": variationClass})
 
         # CNV拷贝数缺失检测
         if gene in cnv_loss_target_genes and ori_variant and "loss" in ori_variant.lower():
@@ -169,15 +166,23 @@ def process_shanghaifeike_tip(report_json):
             var = new_variant[c_idx:]
             tip = f"{gene}基因{exon}号{desc}{ExonicFunc}{var}，突变丰度为{mut_freq}。"
 
+        is_shanghaifeike_hot_gene = gene in shanghaifeike_hot_gene_list
         if (gene == "EGFR" and ori_variant == "Amplification"):
-            shanghaifeike_tips_2.append(tip)
             item['variationClass'] = "II类"
+            if not is_shanghaifeike_hot_gene:
+                shanghaifeike_tips_2.append(tip)
         elif variationClass2 == "1" or (parse_and_check_kras(gene, ori_variant)):
             item['variationClass'] = "I类"
-            shanghaifeike_tips_1.append(tip)
+            if not is_shanghaifeike_hot_gene:
+                shanghaifeike_tips_1.append(tip)
         else:
-            shanghaifeike_tips_2.append(tip)
             item['variationClass'] = "II类"
+            if not is_shanghaifeike_hot_gene:
+                shanghaifeike_tips_2.append(tip)
+
+        # 热点基因检测
+        if is_shanghaifeike_hot_gene:
+            shanghaifeike_hot_gene_info.append({"gene": gene, "ori_variant": ori_variant, "mut_freq": mut_freq, "variationClass": item['variationClass']})
 
     for item in report_json.get('unknownTipLineStr', []):
         gene = item.get('gene')
@@ -189,6 +194,7 @@ def process_shanghaifeike_tip(report_json):
         # 热点基因检测
         if gene in shanghaifeike_hot_gene_list:
             shanghaifeike_hot_gene_info.append({"gene": gene, "ori_variant": ori_variant, "mut_freq": mut_freq, "variationClass": variationClass})
+            continue
 
         # CNV拷贝数缺失检测
         if gene in cnv_loss_target_genes and ori_variant and "loss" in ori_variant.lower():
@@ -224,7 +230,8 @@ def process_shanghaifeike_tip(report_json):
             c_idx = new_variant.find('c.')
             var = new_variant[c_idx:]
             tip = f"{gene}基因{exon}号{desc}{ExonicFunc}{var}，突变丰度为{mut_freq}。"
-            shanghaifeike_tips_3.append(tip)
+
+        shanghaifeike_tips_3.append(tip)
 
     # 添加缺失的基因信息
     exist_gene_set = {row["gene"] for row in shanghaifeike_hot_gene_info}
@@ -254,6 +261,7 @@ def process_shanghaifeike_tip(report_json):
     report_json['shanghaifeike_tips_3'] = shanghaifeike_tips_3
     report_json['shanghaifeike_hot_gene_info'] = shanghaifeike_hot_gene_info
     log(shanghaifeike_hot_gene_info)
+    log(shanghaifeike_tips_3)
     report_json["cnv_loss_display_text"] = cnv_loss_full_text
 
 def parse_and_check_kras(gene, ori_variant):

@@ -1002,5 +1002,50 @@ public class NgsReportController {
         return info;
     }
 
+    @RequestMapping(value = "downloadCyfzExcel", method = RequestMethod.GET)
+    public void downloadCyfzExcel(String subbarcode, HttpServletRequest request, HttpServletResponse response) {
+        InputStream in = null;
+        try {
+            if (StringUtils.isBlank(subbarcode)) {
+                subbarcode = request.getParameter("subarcode");
+            }
+            if (StringUtils.isBlank(subbarcode)) {
+                response.setContentType("text/plain;charset=utf-8");
+                response.getWriter().write("subbarcode不能为空");
+                return;
+            }
+
+            AnalysisReport report = analysisReportDao.getReport(subbarcode);
+            if (report == null || report.getReport_id() == null) {
+                response.setContentType("text/plain;charset=utf-8");
+                response.getWriter().write("未找到已生成报告：" + subbarcode);
+                return;
+            }
+
+            String reportDetail = analysisReportStoreDao.getReportDetailByReportId(report.getReport_id());
+            String outputDir = StringUtils.defaultIfBlank(report.getReport_file_path(), System.getProperty("java.io.tmpdir"));
+            String excelPath = CyfzExcelExportUtil.createExcel(reportDetail, subbarcode, outputDir);
+            if (StringUtils.isBlank(excelPath)) {
+                response.setContentType("text/plain;charset=utf-8");
+                response.getWriter().write("CYFZ Excel生成失败：" + subbarcode);
+                return;
+            }
+
+            File excelFile = new File(excelPath);
+            String filenameEncoder = URLEncoder.encode(excelFile.getName(), "utf-8").replace("+", " ");
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition", "attachment;filename=" + filenameEncoder);
+
+            in = new FileInputStream(excelFile);
+            ServletOutputStream out = response.getOutputStream();
+            IOUtils.copy(in, out);
+            out.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
+    }
+
 }
 
