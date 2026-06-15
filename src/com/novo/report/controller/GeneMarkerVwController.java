@@ -1067,6 +1067,9 @@ public class GeneMarkerVwController {
                                     String fusionQuality = String.valueOf(fusionAllMap.get("fusion_quality"));
                                     Integer reportId = currentNgsAvailable.getReport_id();
 
+                                    if (fusionQuality.contains("DNA")) {
+                                        mutFreq += "%";
+                                    }
                                     CancerTyping cancerTyping = new CancerTyping();
                                     cancerTyping.setReport_id(reportId);
                                     cancerTyping.setGene(gene);
