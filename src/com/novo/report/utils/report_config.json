@@ -15,8 +15,6 @@
     "double_sample_BA": "NOVO检测报告-双样本-博奥",
     "single_sample_LW": "NOVO检测报告-单样本-兰卫",
     "double_sample_LW": "NOVO检测报告-双样本-兰卫",
-    "double_sample_WJM": "NOVO检测报告-双样本-WJM",
-    "single_sample_WJM": "NOVO检测报告-单样本-WJM",
     "single_sample_JNZX": "NOVO检测报告-单样本-济南中心",
     "single_sample_SZJY": "NOVO检测报告-单样本-苏州九院",
     "double_sample_SZJU": "NOVO检测报告-双样本-苏州九院",
@@ -198,14 +196,6 @@
       "中国人群BRCA12基因分子分型研究_双样本-兰卫",
       "消化道肿瘤50基因报告-双样本-兰卫",
       "BRCA12基因+同源重组修复缺陷评分（HRD score）报告-兰卫"
-    ],
-    "double_sample_WJM": [
-      "肉瘤1238+1166基因检测报告-WJM",
-      "肉瘤550+596基因检测报告-WJM"
-    ],
-    "single_sample_WJM": [
-      "泛实体瘤108+33基因检测报告-单样本-WJM",
-      "泛实体瘤58+22基因检测报告-单样本-WJM"
     ],
     "single_sample_JNZX": [
       "肺癌11基因报告-济南中心",
