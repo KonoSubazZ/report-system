@@ -607,8 +607,8 @@ public class PyReportServiceImpl implements PyReportService {
         rt.setBase_quality(sf.getBase_quality());
         //QC质控信息
         // TODO: 临时测试 — qcUpgradeEnabled 永远为 false
-        // boolean qcUpgradeEnabled = isQcUpgradeEnabled(sf.getCustomer(), sf.getRecordercode());
-        boolean qcUpgradeEnabled = false;
+        boolean qcUpgradeEnabled = isQcUpgradeEnabled(sf.getCustomer(), sf.getRecordercode());
+        // boolean qcUpgradeEnabled = false;
         Map qc = analysisReportDao.getQC(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
         if (qc != null && qc.size() > 0) {
             rt.setTumorcellcontent(qc.get("tumorcellcontent").toString());
