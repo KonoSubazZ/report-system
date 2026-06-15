@@ -5970,6 +5970,7 @@
             var depth = num("sequencing_depth");
             if (isWes) return depth >= 400 ? "合格" : (depth >= 300 ? "警戒" : "不合格");
             if (isBlood) return depth >= 1500 ? "合格" : (depth >= 1000 ? "警戒" : "不合格");
+            if (isWhiteCell) return depth >= 100 ? "合格" :  "不合格";
             return depth >= 500 ? "合格" : (depth >= 400 ? "警戒" : "不合格");
         }
 
@@ -5984,6 +5985,7 @@
         }
 
         function worstStatus(list) {
+            if (isDnaHrd) return dnaStatus();
             if ($.inArray("不合格", list) >= 0) return "不合格";
             if ($.inArray("警戒", list) >= 0) return "警戒";
             return "合格";
