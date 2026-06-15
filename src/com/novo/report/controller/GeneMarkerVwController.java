@@ -1008,15 +1008,18 @@ public class GeneMarkerVwController {
                     List<Map> fusionAll = analysisReportDao.getFusionAll(currentNgsAvailable.getSubbarcode(), currentNgsAvailable.getAnalysis_date(), currentNgsAvailable.getProduct_name());
                     if (diseaseService.isNUTMidlineCarcinoma(diseaseId)) {
                         List<AllCancerTyping> midlineTyping = analysisReportDao.getTypingInfo(product_name, "Midline");
-
                         fusionAll.stream()
                                 .forEach(fusionAllMap -> {
                                     String gene = String.valueOf(fusionAllMap.get("gene"));
                                     String variant = String.valueOf(fusionAllMap.get("my_ori_variant"));
+
                                     String mutFreq = String.valueOf(fusionAllMap.get("mutFreq"));
                                     String transcript1 = String.valueOf(fusionAllMap.get("sclip1_info")).split(":")[0];
                                     String transcript2 = String.valueOf(fusionAllMap.get("sclip2_info")).split(":")[0];
                                     String fusionQuality = String.valueOf(fusionAllMap.get("fusion_quality"));
+                                    if (fusionQuality.contains("DNA")) {
+                                        mutFreq += "%";
+                                    }
                                     String transcript = transcript1 + "/" + transcript2;
                                     Integer reportId = currentNgsAvailable.getReport_id();
 
