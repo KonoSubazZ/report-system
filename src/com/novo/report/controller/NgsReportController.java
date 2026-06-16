@@ -123,6 +123,47 @@ public class NgsReportController {
         }
     }
 
+    //下载小报告
+    @RequestMapping("downloadSmallReport")
+    public void downloadSmallReport(Integer report_id, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            AnalysisReport analysisReport = analysisReportDao.getReportById(report_id);
+            if (analysisReport == null || StringUtils.isBlank(analysisReport.getSmall_report_file_path())) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.getWriter().write("File not found");
+                return;
+            }
+
+            File file = new File(analysisReport.getSmall_report_file_path());
+            if (!file.exists() || !file.isFile()) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.getWriter().write("File not found");
+                return;
+            }
+
+            String agent = request.getHeader("User-Agent");
+            String filename = file.getName();
+            String filenameEncoder;
+            if (agent != null && (agent.contains("MSIE") || agent.contains("Trident"))) {
+                filenameEncoder = URLEncoder.encode(filename, "utf-8").replace("+", " ");
+            } else if (agent != null && agent.contains("Firefox")) {
+                BASE64Encoder base64Encoder = new BASE64Encoder();
+                filenameEncoder = "=?utf-8?B?" + base64Encoder.encode(filename.getBytes("utf-8")) + "?=";
+            } else {
+                filenameEncoder = URLEncoder.encode(filename, "utf-8");
+            }
+
+            response.setContentType(request.getServletContext().getMimeType(filename));
+            response.setHeader("Content-Disposition", "attachment;filename=" + filenameEncoder);
+            try (InputStream in = new FileInputStream(file);
+                 ServletOutputStream out = response.getOutputStream()) {
+                IOUtils.copy(in, out);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     //删除报告
     @ResponseBody
     @RequestMapping("deleteNgsReportByReportId")

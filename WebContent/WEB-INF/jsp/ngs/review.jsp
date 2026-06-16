@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
@@ -102,6 +103,19 @@
                     <i class="layui-icon layui-icon-download-circle"
                        style="font-size: 20px; color: #1E9FFF;margin-left: 5px;" onclick="download()"></i>
                 </div>
+
+                <div style="width:100px;margin-top: 30px;">小报告文件</div>
+                <div style="cursor: pointer;margin-top: 30px;">
+                    <c:choose>
+                        <c:when test="${not empty analysisReport.small_report_file_path}">
+                            <c:set var="smallReportPathItems" value="${fn:split(analysisReport.small_report_file_path, '/')}"/>
+                            <span>${smallReportPathItems[fn:length(smallReportPathItems) - 1]}</span>
+                            <i class="layui-icon layui-icon-download-circle"
+                               style="font-size: 20px; color: #1E9FFF;margin-left: 5px;" onclick="downloadSmallReport()"></i>
+                        </c:when>
+                        <c:otherwise>-</c:otherwise>
+                    </c:choose>
+                </div>
             </div>
             <div class="layui-col-5" style="display: flex;position: relative">
                 <c:if test="${analysisReport.analyzer == currentNgsAvailableData.user or analysisReport.analyzer == 'tumor'}">
@@ -166,6 +180,11 @@
     // 下载文件
     function download() {
         window.location.href = "${pageContext.request.contextPath}/ngs/download?report_id=${analysisReport.report_id}";
+    }
+
+    // 下载小报告文件
+    function downloadSmallReport() {
+        window.location.href = "${pageContext.request.contextPath}/ngs/downloadSmallReport?report_id=${analysisReport.report_id}";
     }
 
     layui.use(function () {
