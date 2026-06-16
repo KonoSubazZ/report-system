@@ -115,26 +115,30 @@
                 <div style="width:100px">解读备注</div>
                 <div style="width:600px">${currentNgsAvailableData.reporter_comment}</div>
 
-                <div style="width:100px;margin-top: 30px;">报告文件</div>
-                <div id="download" style="cursor: pointer;margin-top: 30px;">
-                    <%--                    <i class="layui-icon layui-icon-file" style="font-size: 20px; color: #1E9FFF;"></i> --%>
-                    <span id="fileName"
-                          onclick="previewPdf(${analysisReport.report_id})">${analysisReport.report_filename}</span>
-                    <i class="layui-icon layui-icon-download-circle"
-                       style="font-size: 20px; color: #1E9FFF;margin-left: 5px;" onclick="download()"></i>
+                <div style="width:100%;display:flex;margin-top:30px;">
+                    <div style="width:120px;">报告文件</div>
+                    <div id="download" style="cursor: pointer;">
+                        <%--                    <i class="layui-icon layui-icon-file" style="font-size: 20px; color: #1E9FFF;"></i> --%>
+                        <span id="fileName"
+                              onclick="previewPdf(${analysisReport.report_id})">${analysisReport.report_filename}</span>
+                        <i class="layui-icon layui-icon-download-circle"
+                           style="font-size: 20px; color: #1E9FFF;margin-left: 5px;" onclick="download()"></i>
+                    </div>
                 </div>
 
-                <div style="width:100px;margin-top: 30px;clear: both;">小报告文件</div>
-                <div style="cursor: pointer;margin-top: 30px;">
-                    <c:choose>
-                        <c:when test="${not empty analysisReport.small_report_file_path}">
-                            <c:set var="smallReportPathItems" value="${fn:split(analysisReport.small_report_file_path, '/')}"/>
-                            <span id="smallReportFileName" onclick="downloadSmallReport()">${smallReportPathItems[fn:length(smallReportPathItems) - 1]}</span>
-                            <i class="layui-icon layui-icon-download-circle"
-                               style="font-size: 20px; color: #1E9FFF;margin-left: 5px;" onclick="downloadSmallReport()"></i>
-                        </c:when>
-                        <c:otherwise>-</c:otherwise>
-                    </c:choose>
+                <div style="width:100%;display:flex;margin-top:30px;">
+                    <div style="width:120px;">小报告文件</div>
+                    <div style="cursor: pointer;">
+                        <c:choose>
+                            <c:when test="${not empty analysisReport.small_report_file_path}">
+                                <c:set var="smallReportPathItems" value="${fn:split(analysisReport.small_report_file_path, '/')}"/>
+                                <span id="smallReportFileName" onclick="downloadSmallReport()">${smallReportPathItems[fn:length(smallReportPathItems) - 1]}</span>
+                                <i class="layui-icon layui-icon-download-circle"
+                                   style="font-size: 20px; color: #1E9FFF;margin-left: 5px;" onclick="downloadSmallReport()"></i>
+                            </c:when>
+                            <c:otherwise>-</c:otherwise>
+                        </c:choose>
+                    </div>
                 </div>
             </div>
             <div class="layui-col-5" style="display: flex;position: relative">

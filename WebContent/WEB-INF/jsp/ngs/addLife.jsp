@@ -184,6 +184,13 @@
                     }
                 }
             </script>
+            <style>
+                .sample-info-label {
+                    width: 85px;
+                    white-space: nowrap;
+                    overflow: visible;
+                }
+            </style>
             <table style="width:100%">
                 <tr>
                     <td>
@@ -226,7 +233,7 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            <div class="label" style="width:130px">
+                            <div class="label sample-info-label">
                                 <label>联系电话：</label>
                             </div>
                             <div class="field">
@@ -240,7 +247,7 @@
                 <tr>
                     <td>
                         <div class="form-group" style="margin-right: 50px">
-                            <div class="label" style="width:130px">
+                            <div class="label sample-info-label">
                                 <label>接收时间：</label>
                             </div>
                             <div class="field">
@@ -252,7 +259,7 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            <div class="label" style="width:130px">
+                            <div class="label sample-info-label">
                                 <label>门诊/住院号：</label>
                             </div>
                             <div class="field">
@@ -473,7 +480,7 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            <div class="label" style="width:130px">
+                            <div class="label sample-info-label">
                                 <label>送检科室：</label>
                             </div>
                             <div class="field">
@@ -499,7 +506,7 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            <div class="label" style="width:130px">
+                            <div class="label sample-info-label">
                                 <label>订单编号：</label>
                             </div>
                             <div class="field">
@@ -524,7 +531,7 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            <div class="label" style="width:130px">
+                            <div class="label sample-info-label">
                                 <label>样本采集时间：</label>
                             </div>
                             <div class="field">
