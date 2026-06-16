@@ -168,6 +168,16 @@
 		update sample_file set specimenno=#{specimenno} where subbarcode=#{subbarcode}
 	</update>
 
+	<update id="updateReportSampleInfo">
+		update sample_file
+		set patient_phone=#{patient_phone},
+			locationname=#{locationname},
+			room=#{room},
+			commission_date=#{commission_date},
+			collect_date=#{collect_date}
+		where subbarcode=#{subbarcode}
+	</update>
+
 	<select id="isExistPerson_id" resultType="Integer">
 		select count(*) from sample_file where person_id=#{person_id}
 	</select>

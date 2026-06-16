@@ -72,6 +72,9 @@
                                                                 $("#sales_contact").val(data.sales_contact);
                                                                 $("#commission_date").val(data.commission_date);
                                                                 $("#received_date").val(data.received_date);
+                                                                $("#patient_phone").val(data.patient_phone);
+                                                                $("#locationname").val(data.locationname);
+                                                                $("#room").val(data.room);
                                                                 $("#person_name").val(data.person_name);
                                                                 $("#gender").val(data.gender);
                                                                 $("#age").val(data.age);
@@ -147,11 +150,39 @@
             </table>
         </form>
         <form id="pdl1Form" method="post" class="form-x">
+            <input type="hidden" id="report_id" value="${currentNgsAvailable.report_id }"/>
             <script type="text/javascript">
                 $(function () {
                     getTime("update_date");
                     getTime("created_date");
                 });
+
+                function updateReportSampleInfo() {
+                    var sub_val = $("#subbarcode").val();
+                    if (sub_val != "") {
+                        $.ajax({
+                            cache: false,
+                            type: "POST",
+                            url: "${pageContext.request.contextPath}/sampleFile/updateReportSampleInfo",
+                            data: {
+                                "subbarcode": sub_val,
+                                "patient_phone": $("#patient_phone").val(),
+                                "locationname": $("#locationname").val(),
+                                "room": $("#room").val(),
+                                "commission_date": $("#commission_date").val(),
+                                "collect_date": $("#collect_date").val(),
+                                "report_id": $("#report_id").val()
+                            },
+                            success: function (data) {
+                                alert("数据库字段：" + data.databaseMessage
+                                    + "\n历史报告记录：" + data.reportDetailMessage
+                                    + "\n小报告：" + data.subreportMessage);
+                            }
+                        });
+                    } else {
+                        alert("请先选择样本编号！");
+                    }
+                }
             </script>
             <table style="width:100%">
                 <tr>
@@ -196,11 +227,11 @@
                     <td>
                         <div class="form-group">
                             <div class="label" style="width:85px">
-                                <label>联系人：</label>
+                                <label>联系电话：</label>
                             </div>
                             <div class="field">
-                                <input type="text" class="input w50" id="sales_contact"
-                                       value="${sampleFile.sales_contact }" readonly="readonly"/>
+                                <input type="text" class="input w50" id="patient_phone" onchange="updateReportSampleInfo()"
+                                       value="${sampleFile.patient_phone }"/>
                                 <div class="tips"></div>
                             </div>
                         </div>
@@ -210,11 +241,11 @@
                     <td>
                         <div class="form-group" style="margin-right: 50px">
                             <div class="label" style="width:85px">
-                                <label>委托日期：</label>
+                                <label>接收时间：</label>
                             </div>
                             <div class="field">
                                 <input type="text" class="input w50" id="commission_date"
-                                       value="${sampleFile.commission_date }" readonly="readonly"/>
+                                       value="${sampleFile.commission_date }" onchange="updateReportSampleInfo()"/>
                                 <div class="tips"></div>
                             </div>
                         </div>
@@ -222,11 +253,11 @@
                     <td>
                         <div class="form-group">
                             <div class="label" style="width:85px">
-                                <label>接收日期：</label>
+                                <label>门诊/住院号：</label>
                             </div>
                             <div class="field">
-                                <input type="text" class="input w50" id="received_date"
-                                       value="${sampleFile.received_date }" readonly="readonly"/>
+                                <input type="text" class="input w50" id="room" onchange="updateReportSampleInfo()"
+                                       value="${sampleFile.room }"/>
                                 <div class="tips"></div>
                             </div>
                         </div>
@@ -443,11 +474,11 @@
                     <td>
                         <div class="form-group">
                             <div class="label" style="width:85px">
-                                <label>临床备注：</label>
+                                <label>送检科室：</label>
                             </div>
                             <div class="field">
-                                <input type="text" class="input w50" id="clinicalremark"
-                                       value="${sampleFile.clinicalremark }" readonly="readonly"/>
+                                <input type="text" class="input w50" id="locationname" onchange="updateReportSampleInfo()"
+                                       value="${sampleFile.locationname }"/>
                                 <div class="tips"></div>
                             </div>
                         </div>
@@ -469,11 +500,10 @@
                     <td>
                         <div class="form-group">
                             <div class="label" style="width:85px">
-                                <label>备 注：</label>
+                                <label>订单编号：</label>
                             </div>
                             <div class="field">
-                                <input type="text" class="input w50" id="remark" value="${sampleFile.remark }"
-                                       readonly="readonly"/>
+                                <input type="text" class="input w50" id="order_no" value="-"/>
                                 <div class="tips"></div>
                             </div>
                         </div>
@@ -495,11 +525,11 @@
                     <td>
                         <div class="form-group">
                             <div class="label" style="width:85px">
-                                <label>样本量：</label>
+                                <label>样本采集时间：</label>
                             </div>
                             <div class="field">
-                                <input type="text" class="input w50" id="specimen_quantity"
-                                       value="${sampleFile.specimen_quantity }" readonly="readonly"/>
+                                <input type="text" class="input w50" id="collect_date"
+                                       value="${sampleFile.collect_date }" onchange="updateReportSampleInfo()"/>
                                 <div class="tips"></div>
                             </div>
                         </div>
@@ -521,11 +551,10 @@
                     <td>
                         <div class="form-group">
                             <div class="label" style="width:85px">
-                                <label>寄样日期：</label>
+                                <label></label>
                             </div>
                             <div class="field">
-                                <input type="text" class="input w50" id="collect_date"
-                                       value="${sampleFile.collect_date }" readonly="readonly"/>
+                                <input type="hidden" id="received_date" value="${sampleFile.received_date }"/>
                                 <div class="tips"></div>
                             </div>
                         </div>

@@ -11,6 +11,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where report_id = #{report_id}
 	</select>
 
+	<update id="updateReportDetailByReportId">
+		update analysis_report_store
+		set report_detail = #{report_detail}
+		where report_id = #{report_id}
+	</update>
+
 	<insert id="insertAnalysisReportStore">
 		<selectKey keyProperty="count" resultType="java.lang.Integer" order="BEFORE">
 			select count(*) from analysis_report_store where report_id = #{report_id}

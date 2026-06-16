@@ -31,6 +31,7 @@ public interface SampleFileService {
 	void updateAge(SampleFile sampleFile);
 	void updateDiseaseType(SampleFile sampleFile);
 	void updateSpecimenno(SampleFile sampleFile);
+	Map<String, Object> updateReportSampleInfo(SampleFile sampleFile, Integer reportId);
 	SampleFile getSampleFileBySubbarcode(String subbarcode);
 	Integer isExistPerson_id(Integer person_id);
 	void saveMutationsNum(NumberOfMutations numberOfMutations);

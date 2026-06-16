@@ -8,10 +8,14 @@ import com.novo.report.common.Result;
 import com.novo.report.dao.one.SpecimenHeadDao;
 import com.novo.report.dao.three.NewLimsSampleDao;
 import com.novo.report.dao.three.AICancerDao;
+import com.novo.report.dao.two.AnalysisReportStoreDao;
 import com.novo.report.dao.two.SampleFileDao;
+import com.novo.report.dao.two.SubreportDao;
 import com.novo.report.service.SampleFileService;
 import com.novo.report.utils.HttpApiClientUtil;
+import com.novo.report.utils.LogUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.CellType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,17 +29,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 @Service
 public class SampleFileServiceImpl implements SampleFileService {
+    private static final Logger reportSampleInfoUpdateLogger = LogUtils.getLogger("ReportSampleInfoUpdateLogger");
+    private static final String UPDATE_SUBREPORT_SAMPLE_INFO_SCRIPT = "/data/soft/scripts/update_subreport_sample_info.py";
+    private static final long UPDATE_SUBREPORT_TIMEOUT_MS = 120 * 1000;
 
     @Autowired
     private SampleFileDao sampleFileDao;
@@ -45,6 +57,10 @@ public class SampleFileServiceImpl implements SampleFileService {
     private NewLimsSampleDao newLimsSampleDao;
     @Autowired
     private AICancerDao aiCancerDao;
+    @Autowired
+    private AnalysisReportStoreDao analysisReportStoreDao;
+    @Autowired
+    private SubreportDao subreportDao;
     private final Gson gson = new Gson();
 
     @Override
@@ -225,6 +241,127 @@ public class SampleFileServiceImpl implements SampleFileService {
     @Override
     public void updateSpecimenno(SampleFile sampleFile) {
         sampleFileDao.updateSpecimenno(sampleFile);
+    }
+
+    @Override
+    public Map<String, Object> updateReportSampleInfo(SampleFile sampleFile, Integer reportId) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("database", false);
+        result.put("reportDetail", false);
+        result.put("subreport", false);
+        result.put("databaseMessage", "未执行");
+        result.put("reportDetailMessage", "未执行");
+        result.put("subreportMessage", "未执行");
+
+        try {
+            sampleFileDao.updateReportSampleInfo(sampleFile);
+            result.put("database", true);
+            result.put("databaseMessage", "数据库字段修改成功");
+        } catch (Exception e) {
+            result.put("databaseMessage", "数据库字段修改失败：" + e.getMessage());
+            reportSampleInfoUpdateLogger.severe(buildSampleInfoLog(sampleFile, reportId, result));
+            return result;
+        }
+
+        if (reportId == null) {
+            result.put("reportDetailMessage", "未传 report_id，跳过历史报告记录");
+            result.put("subreportMessage", "未传 report_id，跳过小报告");
+            reportSampleInfoUpdateLogger.info(buildSampleInfoLog(sampleFile, reportId, result));
+            return result;
+        }
+
+        try {
+            String reportDetail = analysisReportStoreDao.getReportDetailByReportId(reportId);
+            if (StringUtils.isBlank(reportDetail)) {
+                result.put("reportDetailMessage", "没有 report_detail，跳过历史报告记录");
+            } else {
+                JsonObject reportJson = new JsonParser().parse(reportDetail).getAsJsonObject();
+                JsonObject sampleInfo = reportJson.has("SampleInfo") && reportJson.get("SampleInfo").isJsonObject()
+                        ? reportJson.getAsJsonObject("SampleInfo") : new JsonObject();
+                updateJsonSampleInfo(sampleInfo, sampleFile);
+                reportJson.add("SampleInfo", sampleInfo);
+                int count = analysisReportStoreDao.updateReportDetailByReportId(reportId, gson.toJson(reportJson));
+                result.put("reportDetail", count > 0);
+                result.put("reportDetailMessage", count > 0 ? "历史报告记录修改成功" : "历史报告记录未更新");
+            }
+        } catch (Exception e) {
+            result.put("reportDetailMessage", "历史报告记录修改失败：" + e.getMessage());
+        }
+
+        try {
+            String subreportPath = subreportDao.getSubreportFilePath(reportId);
+            if (StringUtils.isBlank(subreportPath)) {
+                result.put("subreportMessage", "没有小报告路径，跳过小报告");
+            } else {
+                String message = updateSubreportSampleInfo(subreportPath, sampleFile);
+                result.put("subreport", message.startsWith("success"));
+                result.put("subreportMessage", message);
+            }
+        } catch (Exception e) {
+            result.put("subreportMessage", "小报告修改失败：" + e.getMessage());
+        }
+
+        reportSampleInfoUpdateLogger.info(buildSampleInfoLog(sampleFile, reportId, result));
+        return result;
+    }
+
+    private void updateJsonSampleInfo(JsonObject sampleInfo, SampleFile sampleFile) {
+        addJsonProperty(sampleInfo, "patient_phone", sampleFile.getPatient_phone());
+        addJsonProperty(sampleInfo, "locationname", sampleFile.getLocationname());
+        addJsonProperty(sampleInfo, "room", sampleFile.getRoom());
+        addJsonProperty(sampleInfo, "commission_date", sampleFile.getCommission_date());
+        addJsonProperty(sampleInfo, "collect_date", sampleFile.getCollect_date());
+    }
+
+    private void addJsonProperty(JsonObject jsonObject, String name, String value) {
+        jsonObject.addProperty(name, value == null ? "" : value);
+    }
+
+    private String updateSubreportSampleInfo(String subreportPath, SampleFile sampleFile) throws Exception {
+        String sampleInfoJson = gson.toJson(buildSubreportSampleInfo(sampleFile));
+        ProcessBuilder processBuilder = new ProcessBuilder("python", UPDATE_SUBREPORT_SAMPLE_INFO_SCRIPT, subreportPath, sampleInfoJson);
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+        boolean completed = process.waitFor(UPDATE_SUBREPORT_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        if (!completed) {
+            process.destroyForcibly();
+            return "小报告修改超时";
+        }
+        StringBuilder output = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line);
+            }
+        }
+        String message = output.toString();
+        if (process.exitValue() == 0) {
+            return StringUtils.isBlank(message) ? "success: 小报告修改成功" : message;
+        }
+        return StringUtils.isBlank(message) ? "小报告修改失败" : message;
+    }
+
+    private Map<String, String> buildSubreportSampleInfo(SampleFile sampleFile) {
+        Map<String, String> sampleInfo = new HashMap<String, String>();
+        sampleInfo.put("送检医院", "-");
+        sampleInfo.put("送检科室", sampleFile.getLocationname());
+        sampleInfo.put("订单编号", "-");
+        sampleInfo.put("联系电话", sampleFile.getPatient_phone());
+        sampleInfo.put("门诊/住院号", sampleFile.getRoom());
+        sampleInfo.put("接收时间", sampleFile.getCommission_date());
+        sampleInfo.put("样本采集时间", sampleFile.getCollect_date());
+        return sampleInfo;
+    }
+
+    private String buildSampleInfoLog(SampleFile sampleFile, Integer reportId, Map<String, Object> result) {
+        return "report_id=" + reportId
+                + ", subbarcode=" + sampleFile.getSubbarcode()
+                + ", patient_phone=" + sampleFile.getPatient_phone()
+                + ", locationname=" + sampleFile.getLocationname()
+                + ", room=" + sampleFile.getRoom()
+                + ", commission_date=" + sampleFile.getCommission_date()
+                + ", collect_date=" + sampleFile.getCollect_date()
+                + ", result=" + result;
     }
 
     @Override

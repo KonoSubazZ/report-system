@@ -42,6 +42,8 @@ public interface SampleFileDao {
 
 	void updateSpecimenno(SampleFile sampleFile);
 
+	void updateReportSampleInfo(SampleFile sampleFile);
+
 	Integer isExistPerson_id(Integer person_id);
 	
 	void saveMutationsNum(NumberOfMutations numberOfMutations);

@@ -398,6 +398,12 @@ public class SampleFileController {
         }
     }
 
+    @RequestMapping("updateReportSampleInfo")
+    @ResponseBody
+    public Object updateReportSampleInfo(SampleFile sampleFile, Integer report_id) {
+        return sampleFileService.updateReportSampleInfo(sampleFile, report_id);
+    }
+
     @RequestMapping("getSampleFileBySubbarcode")
     @ResponseBody
     public Object getSampleFileBySubbarcode(String subbarcode) {
