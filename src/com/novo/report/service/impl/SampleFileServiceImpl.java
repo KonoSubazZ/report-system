@@ -311,6 +311,7 @@ public class SampleFileServiceImpl implements SampleFileService {
         addJsonProperty(sampleInfo, "room", sampleFile.getRoom());
         addJsonProperty(sampleInfo, "commission_date", sampleFile.getCommission_date());
         addJsonProperty(sampleInfo, "collect_date", sampleFile.getCollect_date());
+        addJsonProperty(sampleInfo, "received_date", sampleFile.getReceived_date());
     }
 
     private void addJsonProperty(JsonObject jsonObject, String name, String value) {
@@ -348,7 +349,7 @@ public class SampleFileServiceImpl implements SampleFileService {
         sampleInfo.put("订单编号", "-");
         sampleInfo.put("联系电话", sampleFile.getPatient_phone());
         sampleInfo.put("门诊/住院号", sampleFile.getRoom());
-        sampleInfo.put("接收时间", sampleFile.getCommission_date());
+        sampleInfo.put("接收时间", sampleFile.getReceived_date());
         sampleInfo.put("样本采集时间", sampleFile.getCollect_date());
         return sampleInfo;
     }
@@ -361,6 +362,7 @@ public class SampleFileServiceImpl implements SampleFileService {
                 + ", room=" + sampleFile.getRoom()
                 + ", commission_date=" + sampleFile.getCommission_date()
                 + ", collect_date=" + sampleFile.getCollect_date()
+                + ", received_date=" + sampleFile.getReceived_date()
                 + ", result=" + result;
     }
 

@@ -171,6 +171,7 @@
                                 "room": $("#room").val(),
                                 "commission_date": $("#commission_date").val(),
                                 "collect_date": $("#collect_date").val(),
+                                "received_date": $("#received_date").val(),
                                 "report_id": $("#report_id").val()
                             },
                             success: function (data) {
@@ -247,12 +248,12 @@
                 <tr>
                     <td>
                         <div class="form-group" style="margin-right: 50px">
-                            <div class="label sample-info-label">
-                                <label>接收时间：</label>
+                            <div class="label" style="width:85px">
+                                <label>委托时间：</label>
                             </div>
                             <div class="field">
                                 <input type="text" class="input w50" id="commission_date"
-                                       value="${sampleFile.commission_date }" onchange="updateReportSampleInfo()"/>
+                                       value="${sampleFile.commission_date }" readonly="readonly"/>
                                 <div class="tips"></div>
                             </div>
                         </div>
@@ -557,11 +558,12 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            <div class="label" style="width:85px">
-                                <label></label>
+                            <div class="label sample-info-label">
+                                <label>接收时间：</label>
                             </div>
                             <div class="field">
-                                <input type="hidden" id="received_date" value="${sampleFile.received_date }"/>
+                                <input type="text" class="input w50" id="received_date"
+                                       value="${sampleFile.received_date }" onchange="updateReportSampleInfo()"/>
                                 <div class="tips"></div>
                             </div>
                         </div>
