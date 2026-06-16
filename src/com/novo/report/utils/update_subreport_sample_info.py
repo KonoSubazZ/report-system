@@ -4,6 +4,8 @@ import os
 import sys
 
 from docx import Document
+from docx.oxml.ns import qn
+from docx.shared import Pt
 
 
 def normalize_label(text):
@@ -15,7 +17,23 @@ def set_cell_text(cell, label, value):
     if "：" not in text:
         return
     prefix = text.split("：", 1)[0]
-    cell.text = "%s： %s" % (prefix, value if value else "-")
+    new_text = "%s： %s" % (prefix, value if value else "-")
+    if not cell.paragraphs:
+        cell.text = new_text
+        return
+
+    paragraph = cell.paragraphs[0]
+    if paragraph.runs:
+        run = paragraph.runs[0]
+        run.text = new_text
+        for extra_run in paragraph.runs[1:]:
+            extra_run.text = ""
+    else:
+        run = paragraph.add_run(new_text)
+
+    run.font.name = u"微软雅黑"
+    run._element.rPr.rFonts.set(qn("w:eastAsia"), u"微软雅黑")
+    run.font.size = Pt(10.5)
 
 
 def update_sample_info(docx_path, sample_info):

@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -37,7 +37,7 @@
         border-radius: 4px;
     }
 
-    #fileName:hover {
+    #fileName:hover, #smallReportFileName:hover {
         color: #0a84ff;
     }
 
@@ -124,12 +124,12 @@
                        style="font-size: 20px; color: #1E9FFF;margin-left: 5px;" onclick="download()"></i>
                 </div>
 
-                <div style="width:100px;margin-top: 30px;">小报告文件</div>
+                <div style="width:100px;margin-top: 30px;clear: both;">小报告文件</div>
                 <div style="cursor: pointer;margin-top: 30px;">
                     <c:choose>
                         <c:when test="${not empty analysisReport.small_report_file_path}">
                             <c:set var="smallReportPathItems" value="${fn:split(analysisReport.small_report_file_path, '/')}"/>
-                            <span>${smallReportPathItems[fn:length(smallReportPathItems) - 1]}</span>
+                            <span id="smallReportFileName" onclick="downloadSmallReport()">${smallReportPathItems[fn:length(smallReportPathItems) - 1]}</span>
                             <i class="layui-icon layui-icon-download-circle"
                                style="font-size: 20px; color: #1E9FFF;margin-left: 5px;" onclick="downloadSmallReport()"></i>
                         </c:when>
@@ -518,3 +518,4 @@
     }
 </script>
 </html>
+

@@ -226,7 +226,7 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            <div class="label" style="width:85px">
+                            <div class="label" style="width:130px">
                                 <label>联系电话：</label>
                             </div>
                             <div class="field">
@@ -240,7 +240,7 @@
                 <tr>
                     <td>
                         <div class="form-group" style="margin-right: 50px">
-                            <div class="label" style="width:85px">
+                            <div class="label" style="width:130px">
                                 <label>接收时间：</label>
                             </div>
                             <div class="field">
@@ -252,7 +252,7 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            <div class="label" style="width:85px">
+                            <div class="label" style="width:130px">
                                 <label>门诊/住院号：</label>
                             </div>
                             <div class="field">
@@ -473,7 +473,7 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            <div class="label" style="width:85px">
+                            <div class="label" style="width:130px">
                                 <label>送检科室：</label>
                             </div>
                             <div class="field">
@@ -499,7 +499,7 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            <div class="label" style="width:85px">
+                            <div class="label" style="width:130px">
                                 <label>订单编号：</label>
                             </div>
                             <div class="field">
@@ -524,7 +524,7 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            <div class="label" style="width:85px">
+                            <div class="label" style="width:130px">
                                 <label>样本采集时间：</label>
                             </div>
                             <div class="field">
