@@ -195,7 +195,7 @@ def process_shanghaifeike_tip(report_json):
         # 热点基因检测
         if gene in shanghaifeike_hot_gene_list:
             shanghaifeike_hot_gene_info.append({"gene": gene, "ori_variant": ori_variant, "mut_freq": mut_freq, "variationClass": variationClass})
-            continue
+            # continue
 
         # CNV拷贝数缺失检测
         if gene in cnv_loss_target_genes and ori_variant and "loss" in ori_variant.lower():
