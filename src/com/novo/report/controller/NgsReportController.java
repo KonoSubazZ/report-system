@@ -1062,9 +1062,9 @@ public class NgsReportController {
                 response.getWriter().write("subbarcode is blank");
                 return;
             }
-            if (subbarcodeList.size() > 0) {
-                List<String> reportDetails = new ArrayList<String>();
-                List<String> matchedSubbarcodes = new ArrayList<String>();
+            if (!subbarcodeList.isEmpty()) {
+                List<String> reportDetails = new ArrayList<>();
+                List<String> matchedSubbarcodes = new ArrayList<>();
                 String outputDir = System.getProperty("java.io.tmpdir");
                 for (String itemSubbarcode : subbarcodeList) {
                     AnalysisReport itemReport = analysisReportDao.getReport(itemSubbarcode);
