@@ -166,7 +166,8 @@ def process_shanghaifeike_tip(report_json):
             var = new_variant[c_idx:]
             tip = f"{gene}基因{exon}号{desc}{ExonicFunc}{var}，突变丰度为{mut_freq}。"
 
-        is_shanghaifeike_hot_gene = gene in shanghaifeike_hot_gene_list
+        # is_shanghaifeike_hot_gene = gene in shanghaifeike_hot_gene_list
+        is_shanghaifeike_hot_gene = False
         if (gene == "EGFR" and ori_variant == "Amplification"):
             item['variationClass'] = "II类"
             if not is_shanghaifeike_hot_gene:
