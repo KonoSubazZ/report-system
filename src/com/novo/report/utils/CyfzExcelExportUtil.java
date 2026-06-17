@@ -111,12 +111,13 @@ public class CyfzExcelExportUtil {
             }
 
             String gene = firstNotBlank(getString(item, "gene"), getString(item, "Gene"));
-            String variant = joinWithSpace(
-                    getString(item, "Transcript"),
-                    getString(item, "Exon"),
-                    getString(item, "cHGVS"),
-                    getString(item, "pHGVS")
-            );
+//            String variant = joinWithSpace(
+//                    getString(item, "Transcript"),
+//                    getString(item, "Exon"),
+//                    getString(item, "cHGVS"),
+//                    getString(item, "pHGVS")
+//            );
+            String variant = getString(item, "ori_variant");
             String mutFreq = getString(item, "mutFreq");
             String mutDesc = getMutDesc(gene, variant, mutFreq, geneticCancerRiskInfo);
             String result = "共检测到" + getString(summary, "crCheckLineStrYF1280Size")
