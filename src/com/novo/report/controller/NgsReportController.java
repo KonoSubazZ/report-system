@@ -1056,6 +1056,57 @@ public class NgsReportController {
                 return;
             }
 
+            List<String> subbarcodeList = splitSubbarcode(subbarcode);
+            if (subbarcodeList.isEmpty()) {
+                response.setContentType("text/plain;charset=utf-8");
+                response.getWriter().write("subbarcode is blank");
+                return;
+            }
+            if (subbarcodeList.size() > 0) {
+                List<String> reportDetails = new ArrayList<String>();
+                List<String> matchedSubbarcodes = new ArrayList<String>();
+                String outputDir = System.getProperty("java.io.tmpdir");
+                for (String itemSubbarcode : subbarcodeList) {
+                    AnalysisReport itemReport = analysisReportDao.getReport(itemSubbarcode);
+                    if (itemReport == null || itemReport.getReport_id() == null) {
+                        continue;
+                    }
+                    String itemReportDetail = analysisReportStoreDao.getReportDetailByReportId(itemReport.getReport_id());
+                    if (StringUtils.isBlank(itemReportDetail)) {
+                        continue;
+                    }
+                    reportDetails.add(itemReportDetail);
+                    matchedSubbarcodes.add(itemSubbarcode);
+                    if (StringUtils.isNotBlank(itemReport.getReport_file_path())) {
+                        outputDir = itemReport.getReport_file_path();
+                    }
+                }
+
+                if (reportDetails.isEmpty()) {
+                    response.setContentType("text/plain;charset=utf-8");
+                    response.getWriter().write("no report found: " + subbarcode);
+                    return;
+                }
+
+                String excelPath = CyfzExcelExportUtil.createExcel(reportDetails, matchedSubbarcodes, outputDir);
+                if (StringUtils.isBlank(excelPath)) {
+                    response.setContentType("text/plain;charset=utf-8");
+                    response.getWriter().write("CYFZ Excel create failed: " + subbarcode);
+                    return;
+                }
+
+                File excelFile = new File(excelPath);
+                String filenameEncoder = URLEncoder.encode(excelFile.getName(), "utf-8").replace("+", " ");
+                response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                response.setHeader("Content-Disposition", "attachment;filename=" + filenameEncoder);
+
+                in = new FileInputStream(excelFile);
+                ServletOutputStream out = response.getOutputStream();
+                IOUtils.copy(in, out);
+                out.flush();
+                return;
+            }
+
             AnalysisReport report = analysisReportDao.getReport(subbarcode);
             if (report == null || report.getReport_id() == null) {
                 response.setContentType("text/plain;charset=utf-8");
@@ -1086,6 +1137,20 @@ public class NgsReportController {
         } finally {
             IOUtils.closeQuietly(in);
         }
+    }
+
+    private List<String> splitSubbarcode(String subbarcode) {
+        List<String> subbarcodeList = new ArrayList<String>();
+        if (StringUtils.isBlank(subbarcode)) {
+            return subbarcodeList;
+        }
+        for (String item : subbarcode.split(",")) {
+            String value = StringUtils.trimToEmpty(item);
+            if (StringUtils.isNotBlank(value)) {
+                subbarcodeList.add(value);
+            }
+        }
+        return subbarcodeList;
     }
 
 }

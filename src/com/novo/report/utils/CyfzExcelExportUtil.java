@@ -13,8 +13,10 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class CyfzExcelExportUtil {
@@ -50,6 +52,42 @@ public class CyfzExcelExportUtil {
         }
 
         String fileName = "CYFZ-" + sanitizeFileName(subbarcode) + ".xlsx";
+        File outputFile = new File(dir, fileName);
+        writeExcel(outputFile, rows);
+        return outputFile.getAbsolutePath();
+    }
+
+    public static String createExcel(List<String> reportDetails, List<String> subbarcodes, String outputDir) throws IOException {
+        if (reportDetails == null || subbarcodes == null || reportDetails.size() != subbarcodes.size()
+                || reportDetails.isEmpty() || StringUtils.isBlank(outputDir)) {
+            return null;
+        }
+
+        List<List<String>> rows = new ArrayList<List<String>>();
+        for (int i = 0; i < reportDetails.size(); i++) {
+            String reportDetail = reportDetails.get(i);
+            String subbarcode = subbarcodes.get(i);
+            if (StringUtils.isBlank(reportDetail) || StringUtils.isBlank(subbarcode)) {
+                continue;
+            }
+
+            JsonElement element = new JsonParser().parse(reportDetail);
+            if (!element.isJsonObject()) {
+                continue;
+            }
+
+            rows.addAll(buildRows(element.getAsJsonObject(), subbarcode));
+        }
+        if (rows.isEmpty()) {
+            return null;
+        }
+
+        File dir = new File(outputDir);
+        if (!dir.exists() && !dir.mkdirs()) {
+            return null;
+        }
+
+        String fileName = "CYFZ_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xlsx";
         File outputFile = new File(dir, fileName);
         writeExcel(outputFile, rows);
         return outputFile.getAbsolutePath();
