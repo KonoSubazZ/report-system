@@ -282,14 +282,12 @@ public class SampleFileController {
     public Object getsampleFileByPage(SampleFilePageBean sampleFilePageBean) {
         sampleFilePageBean.setPageNo((sampleFilePageBean.getPageNo() - 1) * sampleFilePageBean.getPageSize());
         return sampleFileService.getsampleFileByPage(sampleFilePageBean);
-
     }
 
     //更新lims信息
     @RequestMapping("RefulshLims")
     @ResponseBody
     public Object RefulshLims() {
-
         return sampleFileService.RefulshLims();
     }
 
