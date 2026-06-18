@@ -1697,7 +1697,8 @@
                 <%--                <th>预测结果   </th>--%>
                 <th>
                     预测结果
-                    <select class="form-control form-control-sm" id="filterFinalCheck" style="width:90px;display:inline-block;margin-left:5px;">
+                    <select class="form-control form-control-sm" id="filterFinalCheck"
+                            style="width:90px;display:inline-block;margin-left:5px;">
                         <option value="">全部</option>
                         <option value="解读">解读</option>
                         <option value="良性">良性</option>
@@ -1920,7 +1921,7 @@
                 <%--                </td>--%>
                 <td>
                         <%-- 1. 映射规则：最新版 --%>
-                    <c:set var="fc" value="${item.Final_Check}" />
+                    <c:set var="fc" value="${item.Final_Check}"/>
                     <c:choose>
                         <c:when test="${fc == 'P' || fc == 'Conflict' || fc == 'Conflict-C' || fc == 'Conflict-P' || fc == 'Conflict-HP'}">
                             <c:set var="text" value="解读"/>
@@ -1948,7 +1949,7 @@
                     <span class="db-tag"
                           style="background:${bg};color:${color};padding:4px 10px;border-radius:6px;font-weight:bold;cursor:pointer;display:inline-block;min-width:56px;"
                           data-info="${item.Database_Info}"
-                          data-final="${item.Final_Check}"  >
+                          data-final="${item.Final_Check}">
                             ${text}
                             <span style="display:none;">${item.Database_Info}</span>
 
@@ -3723,7 +3724,11 @@
 
 
 
+
+
                     ${pageContext.request.contextPath}/geneMarkerVw/addDrugRecord?userAccount=
+
+
 
 
 
@@ -3737,7 +3742,11 @@
 
 
 
+
+
                     ${geneticMarkerVwPageBean.subbarcode}&reportId=
+
+
 
 
 
@@ -5710,693 +5719,804 @@
 
 </script>
 <c:if test="${qcUpgradeEnabled}">
-<form id="userForm">
-    <input type="hidden" name="flag" value="${flag }"/>
-    <input type="hidden" name="file_id" value="${qc.file_id }"/>
-    <input type="hidden" name="rna_file_id" value="${rna.file_id }"/>
-    <input type="hidden" name="hrd_file_id" value="${hrd.file_id }"/>
-    <input type="hidden" name="subbarcode" value="${currentNgsAvailable.subbarcode }"/>
-    <table class="table table-bordered table-hover definewidth m10" id="qc-upgrade-table">
-        <tr>
-            <td width="10%" class="tableleft">肿瘤细胞含量</td>
-            <td width="10%" class="tableleft">
-                <c:choose>
-                    <c:when test="${qc != null}">
-                        <input type="text" id="tumorcellcontent" name="tumorcellcontent" style="color: red;" value="${qc.tumorcellcontent }"/>
-                    </c:when>
-                    <c:when test="${rna != null}">
-                        <input type="text" id="tumorcellcontent" name="tumorcellcontent" style="color: red;" value="${rna.tumorcellcontent }"/>
-                    </c:when>
-                    <c:when test="${hrd != null}">
-                        <input type="text" id="tumorcellcontent" name="tumorcellcontent" style="color: red;" value="${hrd.tumorcellcontent }"/>
-                    </c:when>
-                </c:choose>
-                <label class="error" for="tumorcellcontent" generated="true" style="color: red;"></label>
-            </td>
-            <td id="qc-standard-tumorcellcontent"></td>
-        </tr>
-        <c:if test="${qc != null}">
+    <form id="userForm">
+        <input type="hidden" name="flag" value="${flag }"/>
+        <input type="hidden" name="file_id" value="${qc.file_id }"/>
+        <input type="hidden" name="rna_file_id" value="${rna.file_id }"/>
+        <input type="hidden" name="hrd_file_id" value="${hrd.file_id }"/>
+        <input type="hidden" name="subbarcode" value="${currentNgsAvailable.subbarcode }"/>
+        <table class="table table-bordered table-hover definewidth m10" id="qc-upgrade-table">
             <tr>
-                <td width="10%" class="tableleft">DNA总量（ng）</td>
-                <td><input type="text" id="DNA_total" name="DNA_total" style="color: red;" value="${qc.DNA_total }"/><label class="error" for="DNA_total" generated="true" style="color: red;"></label></td>
-                <td id="qc-standard-DNA_total"></td>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">DNA降解程度</td>
-                <td><input type="text" id="DNA_degradation" name="DNA_degradation" style="color: red;" value="${qc.DNA_degradation }"/><label class="error" for="DNA_degradation" generated="true" style="color: red;"></label></td>
-                <td id="qc-standard-DNA_degradation">1-2级</td>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">DNA预文库总量（ng）</td>
-                <td><input type="text" id="outbound_quantity" name="outbound_quantity" style="color: red;" value="${qc.outbound_quantity }"/><label class="error" for="outbound_quantity" generated="true" style="color: red;"></label></td>
-                <td id="qc-standard-outbound_quantity"></td>
-            </tr>
-        </c:if>
-        <c:if test="${rna != null}">
-            <tr>
-                <td width="10%" class="tableleft">RNA总量（ng）</td>
-                <td><input type="text" id="RNA_total" name="RNA_total" style="color: red;" value="${rna.RNA_total }"/><label class="error" for="RNA_total" generated="true" style="color: red;"></label></td>
-                <td>≥100</td>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">RNA降解程度（DV200）</td>
-                <td><input type="text" id="RNA_degradation" name="RNA_degradation" style="color: red;" value="${rna.RNA_degradation }"/><label class="error" for="RNA_degradation" generated="true" style="color: red;"></label></td>
-                <td>≥30 (2100)<br>≥70 (QSEP)</td>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">RNA预文库总量（ng）</td>
-                <td><input type="text" id="rna_outbound_quantity" name="rna_outbound_quantity" style="color: red;" value="${rna.outbound_quantity }"/><label class="error" for="rna_outbound_quantity" generated="true" style="color: red;"></label></td>
-                <td>≥320</td>
-            </tr>
-        </c:if>
-        <c:if test="${hrd != null && qc == null}">
-            <tr>
-                <td width="10%" class="tableleft">DNA总量（ng）</td>
-                <td><input type="text" id="hrd_DNA_total" name="hrd_DNA_total" style="color: red;" value="${hrd.DNA_total }"/><label class="error" for="hrd_DNA_total" generated="true" style="color: red;"></label></td>
-                <td id="qc-standard-hrd_DNA_total"></td>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">DNA降解程度</td>
-                <td><input type="text" id="hrd_DNA_degradation" name="hrd_DNA_degradation" style="color: red;" value="${hrd.DNA_degradation }"/><label class="error" for="hrd_DNA_degradation" generated="true" style="color: red;"></label></td>
-                <td>1-2级</td>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">DNA预文库总量（ng）</td>
-                <td><input type="text" id="hrd_outbound_quantity" name="hrd_outbound_quantity" style="color: red;" value="${hrd.outbound_quantity }"/><label class="error" for="hrd_outbound_quantity" generated="true" style="color: red;"></label></td>
-                <td id="qc-standard-hrd_outbound_quantity"></td>
-            </tr>
-        </c:if>
-        <c:if test="${hrd != null}">
-            <tr>
-                <td width="10%" class="tableleft">HRD平均测序深度</td>
-                <td><input type="text" id="hrd_sequencing_depth" name="hrd_sequencing_depth" style="color: red;" value="${hrd.sequencing_depth }"/><label class="error" for="hrd_sequencing_depth" generated="true" style="color: red;"></label></td>
-                <td>≥200</td>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">HRD覆盖均一性</td>
-                <td><input type="text" id="hrd_coverage_uniformity" name="hrd_coverage_uniformity" style="color: red;" value="${hrd.coverage_uniformity }"/><label class="error" for="hrd_coverage_uniformity" generated="true" style="color: red;"></label></td>
-                <td>≥80%</td>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">HRD基因组比对率</td>
-                <td><input type="text" id="hrd_genome_alignment" name="hrd_genome_alignment" style="color: red;" value="${hrd.genome_alignment }"/><label class="error" for="hrd_genome_alignment" generated="true" style="color: red;"></label></td>
-                <td>≥95%</td>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">HRD碱基质量Q30占比</td>
-                <td><input type="text" id="hrd_base_quality" name="hrd_base_quality" style="color: red;" value="${hrd.base_quality }"/><label class="error" for="hrd_base_quality" generated="true" style="color: red;"></label></td>
-                <td>≥80%</td>
-            </tr>
-        </c:if>
-        <c:if test="${qc != null}">
-            <tr>
-                <td width="10%" class="tableleft">DNA平均测序深度</td>
-                <td><input type="text" id="sequencing_depth" name="sequencing_depth" style="color: red;" value="${qc.sequencing_depth }"/><label class="error" for="sequencing_depth" generated="true" style="color: red;"></label></td>
-                <td id="qc-standard-sequencing_depth"></td>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">DNA覆盖均一性</td>
-                <td><input type="text" id="coverage_uniformity" name="coverage_uniformity" style="color: red;" value="${qc.coverage_uniformity }"/><label class="error" for="coverage_uniformity" generated="true" style="color: red;"></label></td>
-                <td id="qc-standard-coverage_uniformity"></td>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">DNA基因组比对率</td>
-                <td><input type="text" id="genome_alignment" name="genome_alignment" style="color: red;" value="${qc.genome_alignment }"/><label class="error" for="genome_alignment" generated="true" style="color: red;"></label></td>
-                <td>≥95%</td>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">DNA碱基质量Q30占比</td>
-                <td><input type="text" id="base_quality" name="base_quality" style="color: red;" value="${qc.base_quality }"/><label class="error" for="base_quality" generated="true" style="color: red;"></label></td>
-                <td>≥80%</td>
-            </tr>
-        </c:if>
-        <c:if test="${rna != null}">
-            <tr>
-                <td width="10%" class="tableleft">RNA测序总reads数（条）</td>
-                <td><input type="text" id="total_reads" name="total_reads" style="color: red;" value="${rna.total_reads }"/><label class="error" for="total_reads" generated="true" style="color: red;"></label></td>
-                <td>≥12,000,000</td>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">RNA碱基质量Q30占比</td>
-                <td><input type="text" id="rna_base_quality" name="rna_base_quality" style="color: red;" value="${rna.base_quality }"/><label class="error" for="rna_base_quality" generated="true" style="color: red;"></label></td>
-                <td>≥80%</td>
-            </tr>
-        </c:if>
-        <tr>
-            <td width="10%" class="tableleft">总体质量评估</td>
-            <td><input type="text" id="qc_overall_status" readonly="readonly"/></td>
-            <td id="qc-standard-overall"></td>
-        </tr>
-        <tr>
-            <td colspan="3">
-                <center>
-                    <input name="update" id="update" type="submit" class="btn btn-primary" value="修改"/>
-                </center>
-            </td>
-        </tr>
-    </table>
-</form>
-<script>
-    $(function () {
-        var panelType = "${qcPanelType}".toUpperCase();
-        var sampleType = "${qcSampleType}";
-        var qualityType = "${qualityType}";
-        var isBlood = sampleType == "blood";
-        var isWhiteCell = qualityType != null && qualityType != "";
-        var isWes = panelType.indexOf("WES") >= 0;
-        var isHrdOnly = panelType == "HRD";
-        var isDnaHrd = panelType == "DNA_HRD";
-        var isHrdPanel = isHrdOnly || isDnaHrd;
-        var isDnaRna = panelType == "DNA_RNA";
-
-        function num(id) {
-            var value = $("#" + id).val();
-            if (value == null) return NaN;
-            value = $.trim(value.toString()).replace(/,/g, "").replace(/%/g, "");
-            return parseFloat(value);
-        }
-
-        function clearPass(id, pass) {
-            var el = document.getElementById(id);
-            if (el && pass) {
-                el.style.color = "";
-            }
-        }
-
-        function setText(id, text) {
-            var el = document.getElementById(id);
-            if (el) {
-                el.innerHTML = text;
-            }
-        }
-
-        function passMin(id, min) {
-            clearPass(id, num(id) >= min);
-        }
-
-        function passSpecialOrMin(id, min) {
-            var value = $.trim(($("#" + id).val() || "").toString());
-            clearPass(id, value == "/" || value == "-" || value == "不适用" || num(id) >= min);
-        }
-
-        function passDegradation(id) {
-            var input = $("#" + id);
-            var value = $.trim((input.val() || "").toString()).toUpperCase();
-            if (value == "A") {
-                input.val("1");
-                value = "1";
-            } else if (value == "B" || value == "C") {
-                input.val("2");
-                value = "2";
-            } else if (value == "D") {
-                input.val("3");
-                value = "3";
-            }
-            clearPass(id, value == "1" || value == "2" || value == "/" || value == "-" || value == "不适用");
-        }
-
-        var tumorMin = isHrdPanel ? 20 : 10;
-        setText("qc-standard-tumorcellcontent", (isBlood || isWhiteCell) ? "不适用" : "≥" + tumorMin + "%");
-        if (isBlood || isWhiteCell) {
-            passSpecialOrMin("tumorcellcontent", tumorMin);
-        } else {
-            passSpecialOrMin("tumorcellcontent", tumorMin);
-        }
-
-        var dnaTotalMin = 50;
-        if (isBlood) dnaTotalMin = isWes ? 20 : 10;
-        if (isWhiteCell) dnaTotalMin = 50;
-        if (isWes && !isBlood) dnaTotalMin = 100;
-        if (isHrdOnly) dnaTotalMin = 200;
-        if (isDnaHrd) dnaTotalMin = 250;
-        setText("qc-standard-DNA_total", "≥" + dnaTotalMin);
-        setText("qc-standard-hrd_DNA_total", "≥" + dnaTotalMin);
-        passMin("DNA_total", dnaTotalMin);
-        passMin("hrd_DNA_total", dnaTotalMin);
-
-        var libraryMin = isDnaHrd ? 640 : 320;
-        setText("qc-standard-outbound_quantity", "≥" + libraryMin);
-        setText("qc-standard-hrd_outbound_quantity", "≥" + libraryMin);
-        passMin("outbound_quantity", libraryMin);
-        passMin("rna_outbound_quantity", 320);
-        passMin("hrd_outbound_quantity", libraryMin);
-
-        passDegradation("DNA_degradation");
-        passDegradation("hrd_DNA_degradation");
-        passMin("RNA_total", 100);
-        passMin("RNA_degradation", 30);
-
-        var depthMin = 500;
-        if (isBlood) depthMin = 1500;
-        if (isWhiteCell) depthMin = 100;
-        if (isWes) depthMin = 400;
-        if (isHrdOnly) depthMin = 200;
-        setText("qc-standard-sequencing_depth", "≥" + depthMin);
-        passMin("sequencing_depth", depthMin);
-        passMin("hrd_sequencing_depth", 200);
-
-        var coverageMin = isHrdOnly ? 80 : 90;
-        setText("qc-standard-coverage_uniformity", "≥" + coverageMin + "%");
-        passMin("coverage_uniformity", coverageMin);
-        passMin("hrd_coverage_uniformity", 80);
-        passMin("genome_alignment", 95);
-        passMin("hrd_genome_alignment", 95);
-        passMin("base_quality", 80);
-        passMin("hrd_base_quality", 80);
-        passMin("total_reads", 12000000);
-        passMin("rna_base_quality", 80);
-
-        function dnaStatus() {
-            var depth = num("sequencing_depth");
-            if (isWhiteCell) return depth >= 100 ? (depth >= 50 ? "警戒" : "不合格");
-            if (isWes) return depth >= 400 ? "合格" : (depth >= 300 ? "警戒" : "不合格");
-            if (isBlood) return depth >= 1500 ? "合格" : (depth >= 1000 ? "警戒" : "不合格");
-            return depth >= 500 ? "合格" : (depth >= 400 ? "警戒" : "不合格");
-        }
-
-        function hrdStatus() {
-            var depth = num("hrd_sequencing_depth");
-            return depth >= 200 ? "合格" : "不合格";
-        }
-
-        function rnaStatus() {
-            var reads = num("total_reads");
-            return reads >= 12000000 ? "合格" : (reads >= 10000000 ? "警戒" : "不合格");
-        }
-
-        function worstStatus(list) {
-            if (isDnaHrd) return dnaStatus();
-            if ($.inArray("不合格", list) >= 0) return "不合格";
-            if ($.inArray("警戒", list) >= 0) return "警戒";
-            return "合格";
-        }
-
-        var statusList = [];
-        if ($("#sequencing_depth").length) statusList.push(dnaStatus());
-        if ($("#hrd_sequencing_depth").length) statusList.push(hrdStatus());
-        if ($("#total_reads").length) statusList.push(rnaStatus());
-        var overall = statusList.length == 0 ? "" : worstStatus(statusList);
-        $("#qc_overall_status").val(overall);
-        if (overall == "合格") {
-            document.getElementById("qc_overall_status").style.color = "";
-        } else {
-            document.getElementById("qc_overall_status").style.color = "red";
-        }
-        setText("qc-standard-overall", isDnaRna ? "DNA与RNA取较低结果" : "根据测序深度/reads数判断");
-    });
-</script>
-</c:if>
-<c:if test="${!qcUpgradeEnabled}">
-<form id="userForm">
-    <input type="hidden" name="flag" value="${flag }"/>
-    <input type="hidden" name="file_id" value="${qc.file_id }"/>
-    <input type="hidden" name="rna_file_id" value="${rna.file_id }"/>
-    <input type="hidden" name="hrd_file_id" value="${hrd.file_id }"/>
-    <input type="hidden" name="subbarcode" value="${currentNgsAvailable.subbarcode }"/>
-    <table class="table table-bordered table-hover definewidth m10">
-        <tr>
-            <td width="10%" class="tableleft">肿瘤细胞含量</td>
-            <td width="10%" class="tableleft">
-                <c:choose>
-                    <c:when test="${qc != null}">
-                        <input type="text" id="tumorcellcontent" name="tumorcellcontent" style="color: red;"
-                               value="${qc.tumorcellcontent }"/>
-                    </c:when>
-                    <c:when test="${rna != null}">
-                        <input type="text" id="tumorcellcontent" name="tumorcellcontent" style="color: red;"
-                               value="${rna.tumorcellcontent }"/>
-                    </c:when>
-                    <c:when test="${hrd != null}">
-                        <input type="text" id="tumorcellcontent" name="tumorcellcontent" style="color: red;"
-                               value="${hrd.tumorcellcontent }"/>
-                    </c:when>
-                </c:choose>
-                <label class="error" for="tumorcellcontent" generated="true" style="color: red;"></label>
-            </td>
-            <td>≥10%</td>
-            <c:choose>
-                <c:when test="${qualityType == '白细胞' || type == 'blood'}">
-                    <script>
-                        var tumorcellcontent = $("#tumorcellcontent").val();
-                        if (tumorcellcontent.includes('%') && tumorcellcontent.replace(/%/g, '') >= 10 && tumorcellcontent.replace(/%/g, '') <= 100 || tumorcellcontent == "不适用") {
-                            document.getElementById('tumorcellcontent').style.color = '';
-                        }
-                    </script>
-                </c:when>
-                <c:when test="${type == 'tissue'}">
-                    <script>
-                        var tumorcellcontent = $("#tumorcellcontent").val();
-                        if (tumorcellcontent.includes('%') && tumorcellcontent.replace(/%/g, '') >= 10 && tumorcellcontent.replace(/%/g, '') <= 100 || tumorcellcontent == "/" || tumorcellcontent == "-") {
-                            document.getElementById('tumorcellcontent').style.color = '';
-                        }
-                    </script>
-                </c:when>
-            </c:choose>
-        </tr>
-        <c:if test="${qc != null}">
-            <tr>
-                <td width="10%" class="tableleft">DNA总量（ng）</td>
-                <td><input type="text" id="DNA_total" name="DNA_total" style="color: red;"
-                           value="${qc.DNA_total }"/><label class="error" for="DNA_total" generated="true"
-                                                            style="color: red;"></label></td>
-                <td>
+                <td width="10%" class="tableleft">肿瘤细胞含量</td>
+                <td width="10%" class="tableleft">
                     <c:choose>
-                        <c:when test="${qualityType == '白细胞'}">≥100
-                            <script>
-                                var DNA_total = $("#DNA_total").val();
-                                if (DNA_total >= 100) {
-                                    document.getElementById('DNA_total').style.color = '';
-                                }
-                            </script>
+                        <c:when test="${qc != null}">
+                            <input type="text" id="tumorcellcontent" name="tumorcellcontent" style="color: red;"
+                                   value="${qc.tumorcellcontent }"/>
                         </c:when>
-                        <c:when test="${type == 'tissue'}">≥100
-                            <script>
-                                var DNA_total = $("#DNA_total").val();
-                                if (DNA_total >= 100) {
-                                    document.getElementById('DNA_total').style.color = '';
-                                }
-                            </script>
+                        <c:when test="${rna != null}">
+                            <input type="text" id="tumorcellcontent" name="tumorcellcontent" style="color: red;"
+                                   value="${rna.tumorcellcontent }"/>
                         </c:when>
-                        <c:when test="${type == 'blood'}">≥20
-                            <script>
-                                var DNA_total = $("#DNA_total").val();
-                                if (DNA_total >= 20) {
-                                    document.getElementById('DNA_total').style.color = '';
-                                }
-                            </script>
+                        <c:when test="${hrd != null}">
+                            <input type="text" id="tumorcellcontent" name="tumorcellcontent" style="color: red;"
+                                   value="${hrd.tumorcellcontent }"/>
                         </c:when>
                     </c:choose>
+                    <label class="error" for="tumorcellcontent" generated="true" style="color: red;"></label>
                 </td>
+                <td id="qc-standard-tumorcellcontent"></td>
+            </tr>
+            <c:if test="${qc != null}">
+                <tr>
+                    <td width="10%" class="tableleft">DNA总量（ng）</td>
+                    <td><input type="text" id="DNA_total" name="DNA_total" style="color: red;"
+                               value="${qc.DNA_total }"/><label class="error" for="DNA_total" generated="true"
+                                                                style="color: red;"></label></td>
+                    <td id="qc-standard-DNA_total"></td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">DNA降解程度</td>
+                    <td><input type="text" id="DNA_degradation" name="DNA_degradation" style="color: red;"
+                               value="${qc.DNA_degradation }"/><label class="error" for="DNA_degradation"
+                                                                      generated="true" style="color: red;"></label></td>
+                    <td id="qc-standard-DNA_degradation">1-2级</td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">DNA预文库总量（ng）</td>
+                    <td><input type="text" id="outbound_quantity" name="outbound_quantity" style="color: red;"
+                               value="${qc.outbound_quantity }"/><label class="error" for="outbound_quantity"
+                                                                        generated="true" style="color: red;"></label>
+                    </td>
+                    <td id="qc-standard-outbound_quantity"></td>
+                </tr>
+            </c:if>
+            <c:if test="${rna != null}">
+                <tr>
+                    <td width="10%" class="tableleft">RNA总量（ng）</td>
+                    <td><input type="text" id="RNA_total" name="RNA_total" style="color: red;"
+                               value="${rna.RNA_total }"/><label class="error" for="RNA_total" generated="true"
+                                                                 style="color: red;"></label></td>
+                    <td>≥100</td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">RNA降解程度（DV200）</td>
+                    <td><input type="text" id="RNA_degradation" name="RNA_degradation" style="color: red;"
+                               value="${rna.RNA_degradation }"/><label class="error" for="RNA_degradation"
+                                                                       generated="true" style="color: red;"></label>
+                    </td>
+                    <td>≥30 (2100)<br>≥70 (QSEP)</td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">RNA预文库总量（ng）</td>
+                    <td><input type="text" id="rna_outbound_quantity" name="rna_outbound_quantity" style="color: red;"
+                               value="${rna.outbound_quantity }"/><label class="error" for="rna_outbound_quantity"
+                                                                         generated="true" style="color: red;"></label>
+                    </td>
+                    <td>≥320</td>
+                </tr>
+            </c:if>
+            <c:if test="${hrd != null && qc == null}">
+                <tr>
+                    <td width="10%" class="tableleft">DNA总量（ng）</td>
+                    <td><input type="text" id="hrd_DNA_total" name="hrd_DNA_total" style="color: red;"
+                               value="${hrd.DNA_total }"/><label class="error" for="hrd_DNA_total" generated="true"
+                                                                 style="color: red;"></label></td>
+                    <td id="qc-standard-hrd_DNA_total"></td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">DNA降解程度</td>
+                    <td><input type="text" id="hrd_DNA_degradation" name="hrd_DNA_degradation" style="color: red;"
+                               value="${hrd.DNA_degradation }"/><label class="error" for="hrd_DNA_degradation"
+                                                                       generated="true" style="color: red;"></label>
+                    </td>
+                    <td>1-2级</td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">DNA预文库总量（ng）</td>
+                    <td><input type="text" id="hrd_outbound_quantity" name="hrd_outbound_quantity" style="color: red;"
+                               value="${hrd.outbound_quantity }"/><label class="error" for="hrd_outbound_quantity"
+                                                                         generated="true" style="color: red;"></label>
+                    </td>
+                    <td id="qc-standard-hrd_outbound_quantity"></td>
+                </tr>
+            </c:if>
+            <c:if test="${hrd != null}">
+                <tr>
+                    <td width="10%" class="tableleft">HRD平均测序深度</td>
+                    <td><input type="text" id="hrd_sequencing_depth" name="hrd_sequencing_depth" style="color: red;"
+                               value="${hrd.sequencing_depth }"/><label class="error" for="hrd_sequencing_depth"
+                                                                        generated="true" style="color: red;"></label>
+                    </td>
+                    <td>≥200</td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">HRD覆盖均一性</td>
+                    <td><input type="text" id="hrd_coverage_uniformity" name="hrd_coverage_uniformity"
+                               style="color: red;" value="${hrd.coverage_uniformity }"/><label class="error"
+                                                                                               for="hrd_coverage_uniformity"
+                                                                                               generated="true"
+                                                                                               style="color: red;"></label>
+                    </td>
+                    <td>≥80%</td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">HRD基因组比对率</td>
+                    <td><input type="text" id="hrd_genome_alignment" name="hrd_genome_alignment" style="color: red;"
+                               value="${hrd.genome_alignment }"/><label class="error" for="hrd_genome_alignment"
+                                                                        generated="true" style="color: red;"></label>
+                    </td>
+                    <td>≥95%</td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">HRD碱基质量Q30占比</td>
+                    <td><input type="text" id="hrd_base_quality" name="hrd_base_quality" style="color: red;"
+                               value="${hrd.base_quality }"/><label class="error" for="hrd_base_quality"
+                                                                    generated="true" style="color: red;"></label></td>
+                    <td>≥80%</td>
+                </tr>
+            </c:if>
+            <c:if test="${qc != null}">
+                <tr>
+                    <td width="10%" class="tableleft">DNA平均测序深度</td>
+                    <td><input type="text" id="sequencing_depth" name="sequencing_depth" style="color: red;"
+                               value="${qc.sequencing_depth }"/><label class="error" for="sequencing_depth"
+                                                                       generated="true" style="color: red;"></label>
+                    </td>
+                    <td id="qc-standard-sequencing_depth"></td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">DNA覆盖均一性</td>
+                    <td><input type="text" id="coverage_uniformity" name="coverage_uniformity" style="color: red;"
+                               value="${qc.coverage_uniformity }"/><label class="error" for="coverage_uniformity"
+                                                                          generated="true" style="color: red;"></label>
+                    </td>
+                    <td id="qc-standard-coverage_uniformity"></td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">DNA基因组比对率</td>
+                    <td><input type="text" id="genome_alignment" name="genome_alignment" style="color: red;"
+                               value="${qc.genome_alignment }"/><label class="error" for="genome_alignment"
+                                                                       generated="true" style="color: red;"></label>
+                    </td>
+                    <td>≥95%</td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">DNA碱基质量Q30占比</td>
+                    <td><input type="text" id="base_quality" name="base_quality" style="color: red;"
+                               value="${qc.base_quality }"/><label class="error" for="base_quality" generated="true"
+                                                                   style="color: red;"></label></td>
+                    <td>≥80%</td>
+                </tr>
+            </c:if>
+            <c:if test="${rna != null}">
+                <tr>
+                    <td width="10%" class="tableleft">RNA测序总reads数（条）</td>
+                    <td><input type="text" id="total_reads" name="total_reads" style="color: red;"
+                               value="${rna.total_reads }"/><label class="error" for="total_reads" generated="true"
+                                                                   style="color: red;"></label></td>
+                    <td>≥12,000,000</td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">RNA碱基质量Q30占比</td>
+                    <td><input type="text" id="rna_base_quality" name="rna_base_quality" style="color: red;"
+                               value="${rna.base_quality }"/><label class="error" for="rna_base_quality"
+                                                                    generated="true" style="color: red;"></label></td>
+                    <td>≥80%</td>
+                </tr>
+            </c:if>
+            <tr>
+                <td width="10%" class="tableleft">总体质量评估</td>
+                <td><input type="text" id="qc_overall_status" readonly="readonly"/></td>
+                <td id="qc-standard-overall"></td>
             </tr>
             <tr>
-                <td width="10%" class="tableleft">DNA降解程度</td>
-                <td><input type="text" id="DNA_degradation" name="DNA_degradation" style="color: red;"
-                           value="${qc.DNA_degradation }"/><label class="error" for="DNA_degradation" generated="true"
-                                                                  style="color: red;"></label></td>
-                <td>A/B/C级</td>
-                <script>
-                    var DNA_degradation = $("#DNA_degradation").val();
-                    if (DNA_degradation == "A" || DNA_degradation == "B" || DNA_degradation == "C") {
-                        document.getElementById('DNA_degradation').style.color = '';
-                    }
-                </script>
+                <td colspan="3">
+                    <center>
+                        <input name="update" id="update" type="submit" class="btn btn-primary" value="修改"/>
+                    </center>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <script>
+        $(function () {
+            var panelType = "${qcPanelType}".toUpperCase();
+            var sampleType = "${qcSampleType}";
+            var qualityType = "${qualityType}";
+            var isBlood = sampleType == "blood";
+            var isWhiteCell = qualityType != null && qualityType != "";
+            var isWes = panelType.indexOf("WES") >= 0;
+            var isHrdOnly = panelType == "HRD";
+            var isDnaHrd = panelType == "DNA_HRD";
+            var isHrdPanel = isHrdOnly || isDnaHrd;
+            var isDnaRna = panelType == "DNA_RNA";
+
+            function num(id) {
+                var value = $("#" + id).val();
+                if (value == null) return NaN;
+                value = $.trim(value.toString()).replace(/,/g, "").replace(/%/g, "");
+                return parseFloat(value);
+            }
+
+            function clearPass(id, pass) {
+                var el = document.getElementById(id);
+                if (el && pass) {
+                    el.style.color = "";
+                }
+            }
+
+            function setText(id, text) {
+                var el = document.getElementById(id);
+                if (el) {
+                    el.innerHTML = text;
+                }
+            }
+
+            function passMin(id, min) {
+                clearPass(id, num(id) >= min);
+            }
+
+            function passSpecialOrMin(id, min) {
+                var value = $.trim(($("#" + id).val() || "").toString());
+                clearPass(id, value == "/" || value == "-" || value == "不适用" || num(id) >= min);
+            }
+
+            function passDegradation(id) {
+                var input = $("#" + id);
+                var value = $.trim((input.val() || "").toString()).toUpperCase();
+                if (value == "A") {
+                    input.val("1");
+                    value = "1";
+                } else if (value == "B" || value == "C") {
+                    input.val("2");
+                    value = "2";
+                } else if (value == "D") {
+                    input.val("3");
+                    value = "3";
+                }
+                clearPass(id, value == "1" || value == "2" || value == "/" || value == "-" || value == "不适用");
+            }
+
+            var tumorMin = isHrdPanel ? 20 : 10;
+            setText("qc-standard-tumorcellcontent", (isBlood || isWhiteCell) ? "不适用" : "≥" + tumorMin + "%");
+            if (isBlood || isWhiteCell) {
+                passSpecialOrMin("tumorcellcontent", tumorMin);
+            } else {
+                passSpecialOrMin("tumorcellcontent", tumorMin);
+            }
+
+            var dnaTotalMin = 50;
+            if (isBlood) dnaTotalMin = isWes ? 20 : 10;
+            if (isWhiteCell) dnaTotalMin = 50;
+            if (isWes && !isBlood) dnaTotalMin = 100;
+            if (isHrdOnly) dnaTotalMin = 200;
+            if (isDnaHrd) dnaTotalMin = 250;
+            setText("qc-standard-DNA_total", "≥" + dnaTotalMin);
+            setText("qc-standard-hrd_DNA_total", "≥" + dnaTotalMin);
+            passMin("DNA_total", dnaTotalMin);
+            passMin("hrd_DNA_total", dnaTotalMin);
+
+            var libraryMin = isDnaHrd ? 640 : 320;
+            setText("qc-standard-outbound_quantity", "≥" + libraryMin);
+            setText("qc-standard-hrd_outbound_quantity", "≥" + libraryMin);
+            passMin("outbound_quantity", libraryMin);
+            passMin("rna_outbound_quantity", 320);
+            passMin("hrd_outbound_quantity", libraryMin);
+
+            passDegradation("DNA_degradation");
+            passDegradation("hrd_DNA_degradation");
+            passMin("RNA_total", 100);
+            passMin("RNA_degradation", 30);
+
+            var depthMin = 500;
+            if (isBlood) depthMin = 1500;
+            if (isWhiteCell) depthMin = 100;
+            if (isWes) depthMin = 400;
+            if (isHrdOnly) depthMin = 200;
+            setText("qc-standard-sequencing_depth", "≥" + depthMin);
+            passMin("sequencing_depth", depthMin);
+            passMin("hrd_sequencing_depth", 200);
+
+            var coverageMin = isHrdOnly ? 80 : 90;
+            setText("qc-standard-coverage_uniformity", "≥" + coverageMin + "%");
+            passMin("coverage_uniformity", coverageMin);
+            passMin("hrd_coverage_uniformity", 80);
+            passMin("genome_alignment", 95);
+            passMin("hrd_genome_alignment", 95);
+            passMin("base_quality", 80);
+            passMin("hrd_base_quality", 80);
+            passMin("total_reads", 12000000);
+            passMin("rna_base_quality", 80);
+
+            function dnaStatus() {
+                var depth = num("sequencing_depth");
+                if (isWhiteCell) return depth >= 100 ? "合格" : (depth >= 50 ? "警戒" : "不合格");
+                if (isWes) return depth >= 400 ? "合格" : (depth >= 300 ? "警戒" : "不合格");
+                if (isBlood) return depth >= 1500 ? "合格" : (depth >= 1000 ? "警戒" : "不合格");
+                return depth >= 500 ? "合格" : (depth >= 400 ? "警戒" : "不合格");
+            }
+
+            function hrdStatus() {
+                var depth = num("hrd_sequencing_depth");
+                return depth >= 200 ? "合格" : "不合格";
+            }
+
+            function rnaStatus() {
+                var reads = num("total_reads");
+                return reads >= 12000000 ? "合格" : (reads >= 10000000 ? "警戒" : "不合格");
+            }
+
+            function worstStatus(list) {
+                if (isDnaHrd) return dnaStatus();
+                if ($.inArray("不合格", list) >= 0) return "不合格";
+                if ($.inArray("警戒", list) >= 0) return "警戒";
+                return "合格";
+            }
+
+            var statusList = [];
+            if ($("#sequencing_depth").length) statusList.push(dnaStatus());
+            if ($("#hrd_sequencing_depth").length) statusList.push(hrdStatus());
+            if ($("#total_reads").length) statusList.push(rnaStatus());
+            var overall = statusList.length == 0 ? "" : worstStatus(statusList);
+            $("#qc_overall_status").val(overall);
+            if (overall == "合格") {
+                document.getElementById("qc_overall_status").style.color = "";
+            } else {
+                document.getElementById("qc_overall_status").style.color = "red";
+            }
+            setText("qc-standard-overall", isDnaRna ? "DNA与RNA取较低结果" : "根据测序深度/reads数判断");
+        });
+    </script>
+</c:if>
+<c:if test="${!qcUpgradeEnabled}">
+    <form id="userForm">
+        <input type="hidden" name="flag" value="${flag }"/>
+        <input type="hidden" name="file_id" value="${qc.file_id }"/>
+        <input type="hidden" name="rna_file_id" value="${rna.file_id }"/>
+        <input type="hidden" name="hrd_file_id" value="${hrd.file_id }"/>
+        <input type="hidden" name="subbarcode" value="${currentNgsAvailable.subbarcode }"/>
+        <table class="table table-bordered table-hover definewidth m10">
+            <tr>
+                <td width="10%" class="tableleft">肿瘤细胞含量</td>
+                <td width="10%" class="tableleft">
+                    <c:choose>
+                        <c:when test="${qc != null}">
+                            <input type="text" id="tumorcellcontent" name="tumorcellcontent" style="color: red;"
+                                   value="${qc.tumorcellcontent }"/>
+                        </c:when>
+                        <c:when test="${rna != null}">
+                            <input type="text" id="tumorcellcontent" name="tumorcellcontent" style="color: red;"
+                                   value="${rna.tumorcellcontent }"/>
+                        </c:when>
+                        <c:when test="${hrd != null}">
+                            <input type="text" id="tumorcellcontent" name="tumorcellcontent" style="color: red;"
+                                   value="${hrd.tumorcellcontent }"/>
+                        </c:when>
+                    </c:choose>
+                    <label class="error" for="tumorcellcontent" generated="true" style="color: red;"></label>
+                </td>
+                <td>≥10%</td>
                 <c:choose>
                     <c:when test="${qualityType == '白细胞' || type == 'blood'}">
                         <script>
-                            var DNA_degradation = $("#DNA_degradation").val();
-                            if (DNA_degradation == "A" || DNA_degradation == "B" || DNA_degradation == "C" || DNA_degradation == "不适用") {
-                                document.getElementById('DNA_degradation').style.color = '';
+                            var tumorcellcontent = $("#tumorcellcontent").val();
+                            if (tumorcellcontent.includes('%') && tumorcellcontent.replace(/%/g, '') >= 10 && tumorcellcontent.replace(/%/g, '') <= 100 || tumorcellcontent == "不适用") {
+                                document.getElementById('tumorcellcontent').style.color = '';
                             }
                         </script>
                     </c:when>
                     <c:when test="${type == 'tissue'}">
                         <script>
-                            var DNA_degradation = $("#DNA_degradation").val();
-                            if (DNA_degradation == "A" || DNA_degradation == "B" || DNA_degradation == "C" || DNA_degradation == "/" || DNA_degradation == "-") {
-                                document.getElementById('DNA_degradation').style.color = '';
+                            var tumorcellcontent = $("#tumorcellcontent").val();
+                            if (tumorcellcontent.includes('%') && tumorcellcontent.replace(/%/g, '') >= 10 && tumorcellcontent.replace(/%/g, '') <= 100 || tumorcellcontent == "/" || tumorcellcontent == "-") {
+                                document.getElementById('tumorcellcontent').style.color = '';
                             }
                         </script>
                     </c:when>
                 </c:choose>
             </tr>
-            <tr>
-                <td width="10%" class="tableleft">DNA预文库总量（ng）</td>
-                <td><input type="text" id="outbound_quantity" name="outbound_quantity" style="color: red;"
-                           value="${qc.outbound_quantity }"/><label class="error" for="outbound_quantity"
-                                                                    generated="true" style="color: red;"></label></td>
-                <td>≥500</td>
-                <script>
-                    var outbound_quantity = $("#outbound_quantity").val();
-                    if (outbound_quantity >= 500) {
-                        document.getElementById('outbound_quantity').style.color = '';
-                    }
-                </script>
-            </tr>
-        </c:if>
-        <c:if test="${rna != null}">
-            <tr>
-                <td width="10%" class="tableleft">RNA总量（ng）</td>
-                <td><input type="text" id="RNA_total" name="RNA_total" style="color: red;"
-                           value="${rna.RNA_total }"/><label class="error" for="RNA_total" generated="true"
-                                                             style="color: red;"></label></td>
-                <td>≥100</td>
-                <script>
-                    var RNA_total = $("#RNA_total").val();
-                    if (RNA_total >= 100) {
-                        document.getElementById('RNA_total').style.color = '';
-                    }
-                </script>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">RNA降解程度（DV200）</td>
-                <td><input type="text" id="RNA_degradation" name="RNA_degradation" style="color: red;"
-                           value="${rna.RNA_degradation }"/><label class="error" for="RNA_degradation" generated="true"
-                                                                   style="color: red;"></label></td>
-                <td>≥30 (2100) <br>≥70 (QSEP)</td>
-                <script>
-                    var RNA_degradation = $("#RNA_degradation").val();
-                    if (RNA_degradation >= 30) {
-                        document.getElementById('RNA_degradation').style.color = '';
-                    }
-                </script>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">RNA预文库总量（ng）</td>
-                <td><input type="text" id="rna_outbound_quantity" name="rna_outbound_quantity" style="color: red;"
-                           value="${rna.outbound_quantity }"/><label class="error" for="rna_outbound_quantity"
-                                                                     generated="true" style="color: red;"></label></td>
-                <td>≥500</td>
-                <script>
-                    var rna_outbound_quantity = $("#rna_outbound_quantity").val();
-                    if (rna_outbound_quantity >= 500) {
-                        document.getElementById('rna_outbound_quantity').style.color = '';
-                    }
-                </script>
-            </tr>
-        </c:if>
-        <c:if test="${hrd != null && qc == null}">
-            <tr>
-                <td width="10%" class="tableleft">DNA总量（ng）</td>
-                <td><input type="text" id="hrd_DNA_total" name="hrd_DNA_total" style="color: red;"
-                           value="${hrd.DNA_total }"/><label class="error" for="hrd_DNA_total" generated="true"
-                                                             style="color: red;"></label></td>
-                <td>≥200</td>
-                <script>
-                    var hrd_DNA_total = $("#hrd_DNA_total").val();
-                    if (hrd_DNA_total >= 200) {
-                        document.getElementById('hrd_DNA_total').style.color = '';
-                    }
-                </script>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">DNA降解程度</td>
-                <td><input type="text" id="hrd_DNA_degradation" name="hrd_DNA_degradation" style="color: red;"
-                           value="${hrd.DNA_degradation }"/><label class="error" for="hrd_DNA_degradation"
-                                                                   generated="true" style="color: red;"></label></td>
-                <td>A/B/C级</td>
-                <script>
-                    var hrd_DNA_degradation = $("#hrd_DNA_degradation").val();
-                    if (hrd_DNA_degradation == "A" || hrd_DNA_degradation == "B" || hrd_DNA_degradation == "C") {
-                        document.getElementById('hrd_DNA_degradation').style.color = '';
-                    }
-                </script>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">DNA预文库总量（ng）</td>
-                <td><input type="text" id="hrd_outbound_quantity" name="hrd_outbound_quantity" style="color: red;"
-                           value="${hrd.outbound_quantity }"/><label class="error" for="hrd_outbound_quantity"
-                                                                     generated="true" style="color: red;"></label></td>
-                <td>≥500</td>
-                <script>
-                    var hrd_outbound_quantity = $("#hrd_outbound_quantity").val();
-                    if (hrd_outbound_quantity >= 500) {
-                        document.getElementById('hrd_outbound_quantity').style.color = '';
-                    }
-                </script>
-            </tr>
-        </c:if>
-        <c:if test="${hrd != null}">
-            <tr>
-                <td width="10%" class="tableleft">HRD平均测序深度</td>
-                <td><input type="text" id="hrd_sequencing_depth" name="hrd_sequencing_depth" style="color: red;"
-                           value="${hrd.sequencing_depth }"/><label class="error" for="hrd_sequencing_depth"
-                                                                    generated="true" style="color: red;"></label></td>
-                <td>≥200</td>
-                <script>
-                    var hrd_sequencing_depth = $("#hrd_sequencing_depth").val();
-                    if (hrd_sequencing_depth >= 200) {
-                        document.getElementById('hrd_sequencing_depth').style.color = '';
-                    }
-                </script>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">HRD覆盖均一性</td>
-                <td><input type="text" id="hrd_coverage_uniformity" name="hrd_coverage_uniformity" style="color: red;"
-                           value="${hrd.coverage_uniformity }"/><label class="error" for="hrd_coverage_uniformity"
-                                                                       generated="true" style="color: red;"></label>
-                </td>
-                <td>≥80%</td>
-                <script>
-                    var hrd_coverage_uniformity = $("#hrd_coverage_uniformity").val();
-                    if (hrd_coverage_uniformity.includes('%') && hrd_coverage_uniformity.replace(/%/g, '') >= 80 && hrd_coverage_uniformity.replace(/%/g, '') <= 100) {
-                        document.getElementById('hrd_coverage_uniformity').style.color = '';
-                    }
-                </script>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">HRD基因组比对率</td>
-                <td><input type="text" id="hrd_genome_alignment" name="hrd_genome_alignment" style="color: red;"
-                           value="${hrd.genome_alignment }"/><label class="error" for="hrd_genome_alignment"
-                                                                    generated="true" style="color: red;"></label></td>
-                <td>≥95%</td>
-                <script>
-                    var hrd_genome_alignment = $("#hrd_genome_alignment").val();
-                    if (hrd_genome_alignment.includes('%') && hrd_genome_alignment.replace(/%/g, '') >= 95 && hrd_genome_alignment.replace(/%/g, '') <= 100) {
-                        document.getElementById('hrd_genome_alignment').style.color = '';
-                    }
-                </script>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">HRD碱基质量Q30占比</td>
-                <td><input type="text" id="hrd_base_quality" name="hrd_base_quality" style="color: red;"
-                           value="${hrd.base_quality }"/><label class="error" for="hrd_base_quality" generated="true"
+            <c:if test="${qc != null}">
+                <tr>
+                    <td width="10%" class="tableleft">DNA总量（ng）</td>
+                    <td><input type="text" id="DNA_total" name="DNA_total" style="color: red;"
+                               value="${qc.DNA_total }"/><label class="error" for="DNA_total" generated="true"
                                                                 style="color: red;"></label></td>
-                <td>≥80%</td>
-                <script>
-                    var hrd_base_quality = $("#hrd_base_quality").val();
-                    if (hrd_base_quality.includes('%') && hrd_base_quality.replace(/%/g, '') >= 80 && hrd_base_quality.replace(/%/g, '') <= 100) {
-                        document.getElementById('hrd_base_quality').style.color = '';
-                    }
-                </script>
-            </tr>
-        </c:if>
-        <c:if test="${qc != null}">
-            <tr>
-                <td width="10%" class="tableleft">DNA平均测序深度</td>
-                <td><input type="text" id="sequencing_depth" name="sequencing_depth" style="color: red;"
-                           value="${qc.sequencing_depth }"/><label class="error" for="sequencing_depth" generated="true"
-                                                                   style="color: red;"></label></td>
-                <td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${qualityType == '白细胞'}">≥100
+                                <script>
+                                    var DNA_total = $("#DNA_total").val();
+                                    if (DNA_total >= 100) {
+                                        document.getElementById('DNA_total').style.color = '';
+                                    }
+                                </script>
+                            </c:when>
+                            <c:when test="${type == 'tissue'}">≥100
+                                <script>
+                                    var DNA_total = $("#DNA_total").val();
+                                    if (DNA_total >= 100) {
+                                        document.getElementById('DNA_total').style.color = '';
+                                    }
+                                </script>
+                            </c:when>
+                            <c:when test="${type == 'blood'}">≥20
+                                <script>
+                                    var DNA_total = $("#DNA_total").val();
+                                    if (DNA_total >= 20) {
+                                        document.getElementById('DNA_total').style.color = '';
+                                    }
+                                </script>
+                            </c:when>
+                        </c:choose>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">DNA降解程度</td>
+                    <td><input type="text" id="DNA_degradation" name="DNA_degradation" style="color: red;"
+                               value="${qc.DNA_degradation }"/><label class="error" for="DNA_degradation"
+                                                                      generated="true"
+                                                                      style="color: red;"></label></td>
+                    <td>A/B/C级</td>
+                    <script>
+                        var DNA_degradation = $("#DNA_degradation").val();
+                        if (DNA_degradation == "A" || DNA_degradation == "B" || DNA_degradation == "C") {
+                            document.getElementById('DNA_degradation').style.color = '';
+                        }
+                    </script>
                     <c:choose>
-                        <c:when test="${qualityType == '白细胞'}">≥100
+                        <c:when test="${qualityType == '白细胞' || type == 'blood'}">
                             <script>
-                                var sequencing_depth = $("#sequencing_depth").val();
-                                if (sequencing_depth >= 100) {
-                                    document.getElementById('sequencing_depth').style.color = '';
+                                var DNA_degradation = $("#DNA_degradation").val();
+                                if (DNA_degradation == "A" || DNA_degradation == "B" || DNA_degradation == "C" || DNA_degradation == "不适用") {
+                                    document.getElementById('DNA_degradation').style.color = '';
                                 }
                             </script>
                         </c:when>
-                        <c:when test="${type == 'tissue'}">≥500
+                        <c:when test="${type == 'tissue'}">
                             <script>
-                                var sequencing_depth = $("#sequencing_depth").val();
-                                if (sequencing_depth >= 500) {
-                                    document.getElementById('sequencing_depth').style.color = '';
-                                }
-                            </script>
-                        </c:when>
-                        <c:when test="${type == 'blood'}">≥1500
-                            <script>
-                                var sequencing_depth = $("#sequencing_depth").val();
-                                if (sequencing_depth >= 1500) {
-                                    document.getElementById('sequencing_depth').style.color = '';
+                                var DNA_degradation = $("#DNA_degradation").val();
+                                if (DNA_degradation == "A" || DNA_degradation == "B" || DNA_degradation == "C" || DNA_degradation == "/" || DNA_degradation == "-") {
+                                    document.getElementById('DNA_degradation').style.color = '';
                                 }
                             </script>
                         </c:when>
                     </c:choose>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">DNA预文库总量（ng）</td>
+                    <td><input type="text" id="outbound_quantity" name="outbound_quantity" style="color: red;"
+                               value="${qc.outbound_quantity }"/><label class="error" for="outbound_quantity"
+                                                                        generated="true" style="color: red;"></label>
+                    </td>
+                    <td>≥500</td>
+                    <script>
+                        var outbound_quantity = $("#outbound_quantity").val();
+                        if (outbound_quantity >= 500) {
+                            document.getElementById('outbound_quantity').style.color = '';
+                        }
+                    </script>
+                </tr>
+            </c:if>
+            <c:if test="${rna != null}">
+                <tr>
+                    <td width="10%" class="tableleft">RNA总量（ng）</td>
+                    <td><input type="text" id="RNA_total" name="RNA_total" style="color: red;"
+                               value="${rna.RNA_total }"/><label class="error" for="RNA_total" generated="true"
+                                                                 style="color: red;"></label></td>
+                    <td>≥100</td>
+                    <script>
+                        var RNA_total = $("#RNA_total").val();
+                        if (RNA_total >= 100) {
+                            document.getElementById('RNA_total').style.color = '';
+                        }
+                    </script>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">RNA降解程度（DV200）</td>
+                    <td><input type="text" id="RNA_degradation" name="RNA_degradation" style="color: red;"
+                               value="${rna.RNA_degradation }"/><label class="error" for="RNA_degradation"
+                                                                       generated="true"
+                                                                       style="color: red;"></label></td>
+                    <td>≥30 (2100) <br>≥70 (QSEP)</td>
+                    <script>
+                        var RNA_degradation = $("#RNA_degradation").val();
+                        if (RNA_degradation >= 30) {
+                            document.getElementById('RNA_degradation').style.color = '';
+                        }
+                    </script>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">RNA预文库总量（ng）</td>
+                    <td><input type="text" id="rna_outbound_quantity" name="rna_outbound_quantity" style="color: red;"
+                               value="${rna.outbound_quantity }"/><label class="error" for="rna_outbound_quantity"
+                                                                         generated="true" style="color: red;"></label>
+                    </td>
+                    <td>≥500</td>
+                    <script>
+                        var rna_outbound_quantity = $("#rna_outbound_quantity").val();
+                        if (rna_outbound_quantity >= 500) {
+                            document.getElementById('rna_outbound_quantity').style.color = '';
+                        }
+                    </script>
+                </tr>
+            </c:if>
+            <c:if test="${hrd != null && qc == null}">
+                <tr>
+                    <td width="10%" class="tableleft">DNA总量（ng）</td>
+                    <td><input type="text" id="hrd_DNA_total" name="hrd_DNA_total" style="color: red;"
+                               value="${hrd.DNA_total }"/><label class="error" for="hrd_DNA_total" generated="true"
+                                                                 style="color: red;"></label></td>
+                    <td>≥200</td>
+                    <script>
+                        var hrd_DNA_total = $("#hrd_DNA_total").val();
+                        if (hrd_DNA_total >= 200) {
+                            document.getElementById('hrd_DNA_total').style.color = '';
+                        }
+                    </script>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">DNA降解程度</td>
+                    <td><input type="text" id="hrd_DNA_degradation" name="hrd_DNA_degradation" style="color: red;"
+                               value="${hrd.DNA_degradation }"/><label class="error" for="hrd_DNA_degradation"
+                                                                       generated="true" style="color: red;"></label>
+                    </td>
+                    <td>A/B/C级</td>
+                    <script>
+                        var hrd_DNA_degradation = $("#hrd_DNA_degradation").val();
+                        if (hrd_DNA_degradation == "A" || hrd_DNA_degradation == "B" || hrd_DNA_degradation == "C") {
+                            document.getElementById('hrd_DNA_degradation').style.color = '';
+                        }
+                    </script>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">DNA预文库总量（ng）</td>
+                    <td><input type="text" id="hrd_outbound_quantity" name="hrd_outbound_quantity" style="color: red;"
+                               value="${hrd.outbound_quantity }"/><label class="error" for="hrd_outbound_quantity"
+                                                                         generated="true" style="color: red;"></label>
+                    </td>
+                    <td>≥500</td>
+                    <script>
+                        var hrd_outbound_quantity = $("#hrd_outbound_quantity").val();
+                        if (hrd_outbound_quantity >= 500) {
+                            document.getElementById('hrd_outbound_quantity').style.color = '';
+                        }
+                    </script>
+                </tr>
+            </c:if>
+            <c:if test="${hrd != null}">
+                <tr>
+                    <td width="10%" class="tableleft">HRD平均测序深度</td>
+                    <td><input type="text" id="hrd_sequencing_depth" name="hrd_sequencing_depth" style="color: red;"
+                               value="${hrd.sequencing_depth }"/><label class="error" for="hrd_sequencing_depth"
+                                                                        generated="true" style="color: red;"></label>
+                    </td>
+                    <td>≥200</td>
+                    <script>
+                        var hrd_sequencing_depth = $("#hrd_sequencing_depth").val();
+                        if (hrd_sequencing_depth >= 200) {
+                            document.getElementById('hrd_sequencing_depth').style.color = '';
+                        }
+                    </script>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">HRD覆盖均一性</td>
+                    <td><input type="text" id="hrd_coverage_uniformity" name="hrd_coverage_uniformity"
+                               style="color: red;"
+                               value="${hrd.coverage_uniformity }"/><label class="error" for="hrd_coverage_uniformity"
+                                                                           generated="true" style="color: red;"></label>
+                    </td>
+                    <td>≥80%</td>
+                    <script>
+                        var hrd_coverage_uniformity = $("#hrd_coverage_uniformity").val();
+                        if (hrd_coverage_uniformity.includes('%') && hrd_coverage_uniformity.replace(/%/g, '') >= 80 && hrd_coverage_uniformity.replace(/%/g, '') <= 100) {
+                            document.getElementById('hrd_coverage_uniformity').style.color = '';
+                        }
+                    </script>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">HRD基因组比对率</td>
+                    <td><input type="text" id="hrd_genome_alignment" name="hrd_genome_alignment" style="color: red;"
+                               value="${hrd.genome_alignment }"/><label class="error" for="hrd_genome_alignment"
+                                                                        generated="true" style="color: red;"></label>
+                    </td>
+                    <td>≥95%</td>
+                    <script>
+                        var hrd_genome_alignment = $("#hrd_genome_alignment").val();
+                        if (hrd_genome_alignment.includes('%') && hrd_genome_alignment.replace(/%/g, '') >= 95 && hrd_genome_alignment.replace(/%/g, '') <= 100) {
+                            document.getElementById('hrd_genome_alignment').style.color = '';
+                        }
+                    </script>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">HRD碱基质量Q30占比</td>
+                    <td><input type="text" id="hrd_base_quality" name="hrd_base_quality" style="color: red;"
+                               value="${hrd.base_quality }"/><label class="error" for="hrd_base_quality"
+                                                                    generated="true"
+                                                                    style="color: red;"></label></td>
+                    <td>≥80%</td>
+                    <script>
+                        var hrd_base_quality = $("#hrd_base_quality").val();
+                        if (hrd_base_quality.includes('%') && hrd_base_quality.replace(/%/g, '') >= 80 && hrd_base_quality.replace(/%/g, '') <= 100) {
+                            document.getElementById('hrd_base_quality').style.color = '';
+                        }
+                    </script>
+                </tr>
+            </c:if>
+            <c:if test="${qc != null}">
+                <tr>
+                    <td width="10%" class="tableleft">DNA平均测序深度</td>
+                    <td><input type="text" id="sequencing_depth" name="sequencing_depth" style="color: red;"
+                               value="${qc.sequencing_depth }"/><label class="error" for="sequencing_depth"
+                                                                       generated="true"
+                                                                       style="color: red;"></label></td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${qualityType == '白细胞'}">≥100
+                                <script>
+                                    var sequencing_depth = $("#sequencing_depth").val();
+                                    if (sequencing_depth >= 100) {
+                                        document.getElementById('sequencing_depth').style.color = '';
+                                    }
+                                </script>
+                            </c:when>
+                            <c:when test="${type == 'tissue'}">≥500
+                                <script>
+                                    var sequencing_depth = $("#sequencing_depth").val();
+                                    if (sequencing_depth >= 500) {
+                                        document.getElementById('sequencing_depth').style.color = '';
+                                    }
+                                </script>
+                            </c:when>
+                            <c:when test="${type == 'blood'}">≥1500
+                                <script>
+                                    var sequencing_depth = $("#sequencing_depth").val();
+                                    if (sequencing_depth >= 1500) {
+                                        document.getElementById('sequencing_depth').style.color = '';
+                                    }
+                                </script>
+                            </c:when>
+                        </c:choose>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">DNA覆盖均一性</td>
+                    <td><input type="text" id="coverage_uniformity" name="coverage_uniformity" style="color: red;"
+                               value="${qc.coverage_uniformity }"/><label class="error" for="coverage_uniformity"
+                                                                          generated="true" style="color: red;"></label>
+                    </td>
+                    <td>≥90%</td>
+                    <script>
+                        var coverage_uniformity = $("#coverage_uniformity").val();
+                        if (coverage_uniformity.includes('%') && coverage_uniformity.replace(/%/g, '') >= 90 && coverage_uniformity.replace(/%/g, '') <= 100) {
+                            document.getElementById('coverage_uniformity').style.color = '';
+                        }
+                    </script>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">DNA基因组比对率</td>
+                    <td><input type="text" id="genome_alignment" name="genome_alignment" style="color: red;"
+                               value="${qc.genome_alignment }"/><label class="error" for="genome_alignment"
+                                                                       generated="true"
+                                                                       style="color: red;"></label></td>
+                    <td>≥95%</td>
+                    <script>
+                        var genome_alignment = $("#genome_alignment").val();
+                        if (genome_alignment.includes('%') && genome_alignment.replace(/%/g, '') >= 95 && genome_alignment.replace(/%/g, '') <= 100) {
+                            document.getElementById('genome_alignment').style.color = '';
+                        }
+                    </script>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">DNA碱基质量Q30占比</td>
+                    <td><input type="text" id="base_quality" name="base_quality" style="color: red;"
+                               value="${qc.base_quality }"/><label class="error" for="base_quality" generated="true"
+                                                                   style="color: red;"></label></td>
+                    <td>≥80%</td>
+                    <script>
+                        var base_quality = $("#base_quality").val();
+                        if (base_quality.includes('%') && base_quality.replace(/%/g, '') >= 80 && base_quality.replace(/%/g, '') <= 100) {
+                            document.getElementById('base_quality').style.color = '';
+                        }
+                    </script>
+                </tr>
+            </c:if>
+            <c:if test="${rna != null}">
+                <tr>
+                    <td width="10%" class="tableleft">RNA测序总reads数（条）</td>
+                    <td><input type="text" id="total_reads" name="total_reads" style="color: red;"
+                               value="${rna.total_reads }"/><label class="error" for="total_reads" generated="true"
+                                                                   style="color: red;"></label></td>
+                    <td>≥12,000,000</td>
+                    <script>
+                        var total_reads = $("#total_reads").val();
+                        if (total_reads >= 12000000) {
+                            document.getElementById('total_reads').style.color = '';
+                        }
+                    </script>
+                </tr>
+                <tr>
+                    <td width="10%" class="tableleft">RNA碱基质量Q30占比</td>
+                    <td><input type="text" id="rna_base_quality" name="rna_base_quality" style="color: red;"
+                               value="${rna.base_quality }"/><label class="error" for="rna_base_quality"
+                                                                    generated="true"
+                                                                    style="color: red;"></label></td>
+                    <td>≥80%</td>
+                    <script>
+                        var rna_base_quality = $("#rna_base_quality").val();
+                        if (rna_base_quality.includes('%') && rna_base_quality.replace(/%/g, '') >= 80) {
+                            document.getElementById('rna_base_quality').style.color = '';
+                        }
+                    </script>
+                </tr>
+            </c:if>
+            <tr>
+                <td colspan="3">
+                    <center>
+                        <input name="update" id="update" type="submit" class="btn btn-primary" value="修改"/>
+                    </center>
                 </td>
             </tr>
-            <tr>
-                <td width="10%" class="tableleft">DNA覆盖均一性</td>
-                <td><input type="text" id="coverage_uniformity" name="coverage_uniformity" style="color: red;"
-                           value="${qc.coverage_uniformity }"/><label class="error" for="coverage_uniformity"
-                                                                      generated="true" style="color: red;"></label></td>
-                <td>≥90%</td>
-                <script>
-                    var coverage_uniformity = $("#coverage_uniformity").val();
-                    if (coverage_uniformity.includes('%') && coverage_uniformity.replace(/%/g, '') >= 90 && coverage_uniformity.replace(/%/g, '') <= 100) {
-                        document.getElementById('coverage_uniformity').style.color = '';
-                    }
-                </script>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">DNA基因组比对率</td>
-                <td><input type="text" id="genome_alignment" name="genome_alignment" style="color: red;"
-                           value="${qc.genome_alignment }"/><label class="error" for="genome_alignment" generated="true"
-                                                                   style="color: red;"></label></td>
-                <td>≥95%</td>
-                <script>
-                    var genome_alignment = $("#genome_alignment").val();
-                    if (genome_alignment.includes('%') && genome_alignment.replace(/%/g, '') >= 95 && genome_alignment.replace(/%/g, '') <= 100) {
-                        document.getElementById('genome_alignment').style.color = '';
-                    }
-                </script>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">DNA碱基质量Q30占比</td>
-                <td><input type="text" id="base_quality" name="base_quality" style="color: red;"
-                           value="${qc.base_quality }"/><label class="error" for="base_quality" generated="true"
-                                                               style="color: red;"></label></td>
-                <td>≥80%</td>
-                <script>
-                    var base_quality = $("#base_quality").val();
-                    if (base_quality.includes('%') && base_quality.replace(/%/g, '') >= 80 && base_quality.replace(/%/g, '') <= 100) {
-                        document.getElementById('base_quality').style.color = '';
-                    }
-                </script>
-            </tr>
-        </c:if>
-        <c:if test="${rna != null}">
-            <tr>
-                <td width="10%" class="tableleft">RNA测序总reads数（条）</td>
-                <td><input type="text" id="total_reads" name="total_reads" style="color: red;"
-                           value="${rna.total_reads }"/><label class="error" for="total_reads" generated="true"
-                                                               style="color: red;"></label></td>
-                <td>≥12,000,000</td>
-                <script>
-                    var total_reads = $("#total_reads").val();
-                    if (total_reads >= 12000000) {
-                        document.getElementById('total_reads').style.color = '';
-                    }
-                </script>
-            </tr>
-            <tr>
-                <td width="10%" class="tableleft">RNA碱基质量Q30占比</td>
-                <td><input type="text" id="rna_base_quality" name="rna_base_quality" style="color: red;"
-                           value="${rna.base_quality }"/><label class="error" for="rna_base_quality" generated="true"
-                                                                style="color: red;"></label></td>
-                <td>≥80%</td>
-                <script>
-                    var rna_base_quality = $("#rna_base_quality").val();
-                    if (rna_base_quality.includes('%') && rna_base_quality.replace(/%/g, '') >= 80) {
-                        document.getElementById('rna_base_quality').style.color = '';
-                    }
-                </script>
-            </tr>
-        </c:if>
-        <tr>
-            <td colspan="3">
-                <center>
-                    <input name="update" id="update" type="submit" class="btn btn-primary" value="修改"/>
-                </center>
-            </td>
-        </tr>
-    </table>
-</form>
+        </table>
+    </form>
 </c:if>
 <style>
-    .db-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:Microsoft YaHei}
-    .db-box{background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.2);width:680px;max-width:90%;padding:25px;position:relative}
-    .db-title{font-size:18px;font-weight:bold;margin-bottom:18px;color:#333;border-left:4px solid #2f80eb;padding-left:10px}
-    .db-item{display:flex;padding:10px 14px;border-bottom:1px solid #f0f0f0}
-    .db-key{font-weight:bold;color:#2f80eb;width:140px}
-    .db-val{flex:1;color:#333}
+    .db-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        font-family: Microsoft YaHei
+    }
+
+    .db-box {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        width: 680px;
+        max-width: 90%;
+        padding: 25px;
+        position: relative
+    }
+
+    .db-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 18px;
+        color: #333;
+        border-left: 4px solid #2f80eb;
+        padding-left: 10px
+    }
+
+    .db-item {
+        display: flex;
+        padding: 10px 14px;
+        border-bottom: 1px solid #f0f0f0
+    }
+
+    .db-key {
+        font-weight: bold;
+        color: #2f80eb;
+        width: 140px
+    }
+
+    .db-val {
+        flex: 1;
+        color: #333
+    }
 </style>
 <script>
-    $(function(){
+    $(function () {
         $(document).on('click', '.db-tag', function () {
             var info = $(this).find("span:hidden").first().text().trim();
             console.log("拿到的数据：", info);
-            if(!info){
+            if (!info) {
                 alert("暂无数据库信息");
                 return;
             }
@@ -6408,13 +6528,13 @@
             var html = '<div class="db-item"><div class="db-key">生信结果</div><div class="db-val">' + rawFinalCheck + '</div></div>';
 
             // 拼接数据库内容
-            info.split(";").forEach(function(item){
-                var kv = item.split(":",2);
+            info.split(";").forEach(function (item) {
+                var kv = item.split(":", 2);
                 var key = kv[0] || "";
                 var val = kv[1] || "";
-                let trans_val = translation_dbinfo( key, val)
+                let trans_val = translation_dbinfo(key, val)
                 var keyColor = getDbKeyColor(key);
-                html += '<div class="db-item"><div class="db-key" style="color:' + keyColor + '">'+ key +'</div><div class="db-val">'+ trans_val +'</div></div>';
+                html += '<div class="db-item"><div class="db-key" style="color:' + keyColor + '">' + key + '</div><div class="db-val">' + trans_val + '</div></div>';
             });
 
             $("body").append(
@@ -6428,16 +6548,16 @@
             );
         });
 
-        $(document).on('click','.db-modal',function(e){
-            if($(e.target).hasClass('db-modal')) $(this).remove();
+        $(document).on('click', '.db-modal', function (e) {
+            if ($(e.target).hasClass('db-modal')) $(this).remove();
         });
     });
 
-    $(function(){
+    $(function () {
         // 筛选预测结果
-        $("#filterFinalCheck").change(function(){
+        $("#filterFinalCheck").change(function () {
             var val = $(this).val();
-            $("tr[name='medicine_tr']").each(function(){
+            $("tr[name='medicine_tr']").each(function () {
                 var tagElement = $(this).find(".db-tag");
                 var tagText = tagElement.clone()
                     .children()
@@ -6446,9 +6566,9 @@
                     .text()
                     .trim();
 
-                if(val == "" || tagText == val){
+                if (val == "" || tagText == val) {
                     $(this).show();
-                }else{
+                } else {
                     $(this).hide();
                 }
             });
@@ -6467,7 +6587,7 @@
         // unknown2 → 无注释信息
         // . 和 unknown 保留
         // ==============================
-        if ( db === "Clinvar CLNSIGCONF" || db === "Clinvar ONC" || db === "Clinvar SCIDN" || db === "Clinvar SCI") {
+        if (db === "Clinvar CLNSIGCONF" || db === "Clinvar ONC" || db === "Clinvar SCIDN" || db === "Clinvar SCI") {
             if (val === "unknown2") {
                 return "无注释信息";
             }
@@ -6537,7 +6657,7 @@
             db === "Clinvar CLNSIGCONF" || db === "Clinvar ONC" || db === "Clinvar SCIDN" || db === "Clinvar SCI") {
             return "#00B050";
         }
-        
+
         // 默认蓝色
         return "#2f80eb";
     }
