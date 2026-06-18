@@ -42,9 +42,6 @@ public class CyfzExcelExportUtil {
 
         JsonObject reportJson = element.getAsJsonObject();
         List<List<String>> rows = buildRows(reportJson, subbarcode);
-        if (rows.isEmpty()) {
-            return null;
-        }
 
         File dir = new File(outputDir);
         if (!dir.exists() && !dir.mkdirs()) {
@@ -78,16 +75,18 @@ public class CyfzExcelExportUtil {
 
             rows.addAll(buildRows(element.getAsJsonObject(), subbarcode));
         }
-        if (rows.isEmpty()) {
-            return null;
-        }
 
         File dir = new File(outputDir);
         if (!dir.exists() && !dir.mkdirs()) {
             return null;
         }
 
-        String fileName = "CYFZ_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xlsx";
+        String fileName;
+        if (subbarcodes.size() == 1) {
+            fileName = "CYFZ-" + sanitizeFileName(subbarcodes.get(0)) + ".xlsx";
+        } else {
+            fileName = "CYFZ-" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xlsx";
+        }
         File outputFile = new File(dir, fileName);
         writeExcel(outputFile, rows);
         return outputFile.getAbsolutePath();
