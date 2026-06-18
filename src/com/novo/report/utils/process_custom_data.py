@@ -1216,8 +1216,31 @@ def is_same_breakpoint_alk_dna_negative_immune(item, same_breakpoint_variants):
             and not is_rna_fusion_item(item)
     )
 
-
 def process_ZHSRRYY_tip(report_json):
+    bodyDrugTipLineStr = report_json.get('bodyDrugTipLineStr',[])
+    unknownVarAnalysisStr = report_json.get('unknownVarAnalysisStr',[])
+    classI_variant_num = 0
+    classII_variant_num = 0
+    classIII_variant_num = len(unknownVarAnalysisStr)
+    classI_variant_List = []
+    classII_variant_List = []
+
+    for item in bodyDrugTipLineStr:
+        variationClass2 = item.get('variationClass2')
+        if variationClass2 == '1':
+            classI_variant_num += 1
+            classI_variant_List.append(item)
+        elif variationClass2 == '2':
+            classII_variant_num += 1
+            classII_variant_List.append(item)
+
+    report_json['classI_variant_num'] = classI_variant_num
+    report_json['classII_variant_num'] = classII_variant_num
+    report_json['classIII_variant_num'] = classIII_variant_num
+    report_json['classI_variant_List'] = classI_variant_List
+    report_json['classII_variant_List'] = classII_variant_List
+
+def process_ZHSRRYY_tip_v1(report_json):
     # 个性化信息汇总
     res_info = {}
 
