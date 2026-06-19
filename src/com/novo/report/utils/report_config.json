@@ -24,7 +24,8 @@
     "double_sample_BJRT": "NOVO检测报告-双样本-儿童肿瘤",
     "double_sample_GY": "NOVO报告-通用双样本-国药",
     "single_sample_BJXK": "NOVO报告-通用单样本-北京胸科",
-    "double_sample_BJXK": "NOVO报告-通用双样本-北京胸科"
+    "double_sample_BJXK": "NOVO报告-通用双样本-北京胸科",
+    "single_sample_JZSRMYY": "NOVO检测报告-单样本-浙江省人民医院"
   },
   "advanced_templates": {
     "single_sample": [
@@ -275,6 +276,9 @@
       "NOVO泛癌种1238报告-北京胸科",
       "泛实体瘤1238+1166基因报告-北京胸科",
       "泛实体瘤188基因报告-北京胸科"
+    ],
+    "single_sample_JZSRMYY": [
+      "实体瘤299基因检测报告-单样本-浙江省人民医院"
     ]
   }
 }
