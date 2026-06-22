@@ -6353,7 +6353,7 @@
                                                                        style="color: red;"></label></td>
                     <td>
                         <c:choose>
-                            <c:when test="${fn:contains(product, 'wesplus')}">≥400
+                            <c:when test="${fn:contains(geneticMarkerVwPageBean.product_name, 'wesplus')}">≥400
                                 <script>
                                     var sequencing_depth = $("#sequencing_depth").val();
                                     if (sequencing_depth >= 400) {
