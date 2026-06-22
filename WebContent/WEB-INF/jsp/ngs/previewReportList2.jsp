@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
@@ -6352,7 +6353,7 @@
                                                                        style="color: red;"></label></td>
                     <td>
                         <c:choose>
-                            <c:when test="${product.includes('wesplus')}">≥400
+                            <c:when test="${fn:contains(product, 'wesplus')}">≥400
                                 <script>
                                     var sequencing_depth = $("#sequencing_depth").val();
                                     if (sequencing_depth >= 400) {
