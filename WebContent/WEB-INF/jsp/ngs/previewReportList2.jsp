@@ -6352,6 +6352,14 @@
                                                                        style="color: red;"></label></td>
                     <td>
                         <c:choose>
+                            <c:when test="${product.includes('wesplus')}">≥400
+                                <script>
+                                    var sequencing_depth = $("#sequencing_depth").val();
+                                    if (sequencing_depth >= 400) {
+                                        document.getElementById('sequencing_depth').style.color = '';
+                                    }
+                                </script>
+                            </c:when>
                             <c:when test="${qualityType == '白细胞'}">≥100
                                 <script>
                                     var sequencing_depth = $("#sequencing_depth").val();

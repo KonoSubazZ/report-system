@@ -1356,6 +1356,7 @@ public class GeneMarkerVwController {
         }
     }
 
+
     // 获取QC质控信息
     public void getQC(CurrentNgsAvailableData currentNgsAvailable, Model model) {
         // QC质控信息

@@ -54,7 +54,7 @@ def process_custom_data(report_json):
         process_WJM_tip(report_json, to_update_json_data)
 
     # 浙江省人民医院
-    if template_name == '泛实体瘤1238基因检测报告-浙江省人民医院' or template_name == '泛实体瘤299基因检测报告-浙江省人民医院':
+    if "浙江省人民医院" in template_name:
         process_ZHSRRYY_tip(report_json)
 
     # 齐鲁增加白系统对照QC
