@@ -41,7 +41,7 @@ public class CyfzExcelExportUtil {
         }
 
         JsonObject reportJson = element.getAsJsonObject();
-        List<List<String>> rows = buildRows(reportJson, subbarcode);
+        List<List<String>> rows = buildRowsWithFallback(reportJson, subbarcode);
 
         File dir = new File(outputDir);
         if (!dir.exists() && !dir.mkdirs()) {
@@ -73,7 +73,7 @@ public class CyfzExcelExportUtil {
                 continue;
             }
 
-            rows.addAll(buildRows(element.getAsJsonObject(), subbarcode));
+            rows.addAll(buildRowsWithFallback(element.getAsJsonObject(), subbarcode));
         }
 
         File dir = new File(outputDir);
@@ -90,6 +90,27 @@ public class CyfzExcelExportUtil {
         File outputFile = new File(dir, fileName);
         writeExcel(outputFile, rows);
         return outputFile.getAbsolutePath();
+    }
+
+    private static List<List<String>> buildRowsWithFallback(JsonObject reportJson, String subbarcode) {
+        List<List<String>> rows = buildRows(reportJson, subbarcode);
+        if (rows.isEmpty()) {
+            rows.add(buildSampleRow(reportJson, subbarcode));
+        }
+        return rows;
+    }
+
+    private static List<String> buildSampleRow(JsonObject reportJson, String subbarcode) {
+        List<String> row = new ArrayList<String>();
+        for (int i = 0; i < HEADERS.length; i++) {
+            row.add("/");
+        }
+        row.set(0, subbarcode);
+        row.set(1, defaultSlash(getString(reportJson, "client")));
+        row.set(2, defaultSlash(getString(reportJson, "specimentype")));
+        row.set(3, defaultSlash(getString(reportJson, "reportdate")));
+        row.set(18, defaultSlash(firstNotBlank(getString(reportJson, "barcode"), subbarcode)));
+        return row;
     }
 
     private static List<List<String>> buildRows(JsonObject reportJson, String subbarcode) {
@@ -271,6 +292,10 @@ public class CyfzExcelExportUtil {
             }
         }
         return "";
+    }
+
+    private static String defaultSlash(String value) {
+        return StringUtils.isBlank(value) ? "/" : value;
     }
 
     private static String joinWithSpace(String... values) {
